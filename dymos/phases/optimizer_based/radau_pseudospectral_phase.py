@@ -515,8 +515,6 @@ class RadauPseudospectralPhase(OptimizerBasedPhaseBase):
         elif var_type == 'ode':
             prom2abs_all = self.rhs_all._var_allprocs_prom2abs_list
 
-            print(self.list_inputs())
-
             try:
                 # Is var in prom2abs_disc['output']?
                 abs_path_all = prom2abs_all['output'][var][0]
@@ -529,7 +527,7 @@ class RadauPseudospectralPhase(OptimizerBasedPhaseBase):
                 try:
                     abs_path_all = prom2abs_all['input'][var][0]
                     rhs_all_inputs = dict(self.rhs_all.list_inputs(out_stream=None, values=True,
-                                                                  units=True))
+                                                                   units=True))
                     output_value = rhs_all_inputs[abs_path_all]['value']
                     output_units = rhs_all_inputs[abs_path_all]['units']
                 except KeyError:

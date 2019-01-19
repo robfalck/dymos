@@ -111,15 +111,24 @@ class ExplicitPhase(PhaseBase):
 
     def _setup_time(self):
         comps = super(ExplicitPhase, self)._setup_time()
+        t_opts = self.time_options
         gd = self.grid_data
 
         for iseg in range(gd.num_segments):
             i1, i2 = gd.subset_segment_indices['all'][iseg, :]
             seg_idxs = gd.subset_node_indices['all'][i1:i2]
+            seg_nn = len(seg_idxs)
             seg_end_idxs = seg_idxs[[0, -1]]
             self.connect('time', 'seg_{0}.seg_t0_tf'.format(iseg),
                          src_indices=seg_end_idxs)
-            self.connect('t_initial', 'seg_{0}.t_initial_phase'.format(iseg))
+            self.connect('t_initial',
+                         [['seg_{0}.stage_ode.{0}'.format(t) for t in t_opts['t_initial_targets']],
+                          'seg_{0}.t_initial_phase'.format(iseg)],
+                         src_indices=np.zeros(seg_nn, dtype=int))
+            self.connect('t_duration',
+                         ['seg_{0}.stage_ode.{0}'.format(t) for t in t_opts['t_duration_targets']],
+                         src_indices=np.zeros(seg_nn, dtype=int))
+
         return comps
 
     def _setup_rhs(self):
@@ -590,7 +599,7 @@ class ExplicitPhase(PhaseBase):
             for i in range(self.grid_data.num_segments):
                 num_steps = self.grid_data.num_steps_per_segment[i]
                 num_nodes = num_stages * num_steps
-                src_idxs = [0] * num_nodes
+                src_idxs = [0] * num_nodesdef
                 connection_info.append(([template.format(i, t) for t in ode_tgts], src_idxs))
 
         return connection_info

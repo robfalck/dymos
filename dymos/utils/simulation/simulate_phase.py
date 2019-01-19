@@ -116,7 +116,9 @@ def simulate_phase(phase_name, ode_class, time_options, state_options, control_o
     seg_sequence = range(grid_data.num_segments)
 
     # Set the initial time phase value for the integrator
-    rhs_integrator.set_time_values(t_initial=time_values[0], t_duration=time_values[-1])
+    print('time values are', time_values)
+    rhs_integrator.set_time_values(t_initial=time_values[0],
+                                   t_duration=time_values[-1] - time_values[0])
 
     # Set the values of the phase design parameters
     for param_name, options in iteritems(design_parameter_options):
