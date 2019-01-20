@@ -46,14 +46,29 @@ class BallisticRocketEOMComp(ExplicitComponent):
         self.add_input('thrust',
                        val=np.zeros(nn),
                        desc='thrust magnitude',
-                       units='rad')
+                       units='N')
+
+        self.add_input('Isp',
+                       val=np.ones(nn),
+                       desc='specific impulse',
+                       units='s')
+
+        self.add_input('mprop',
+                       val=np.ones(nn),
+                       desc='propellant mass',
+                       units='kg')
+
+        self.add_input('mstruct',
+                       val=np.ones(nn),
+                       desc='structural mass',
+                       units='kg')
 
         self.add_output('x_dot',
                         val=np.zeros(nn),
                         desc='horizontal position rate of change',
                         units='m/s')
 
-        self.add_output('v_dot',
+        self.add_output('y_dot',
                         val=np.zeros(nn),
                         desc='vertical position rate of change',
                         units='m/s')
@@ -68,7 +83,7 @@ class BallisticRocketEOMComp(ExplicitComponent):
                         desc='vertical acceleration magnitude',
                         units='m/s**2')
 
-        self.add_output('m_dot',
+        self.add_output('mprop_dot',
                         val=np.zeros(nn),
                         desc='vehicle mass rate of change',
                         units='kg/s')
@@ -90,8 +105,8 @@ class BallisticRocketEOMComp(ExplicitComponent):
         self.declare_partials(of='vy_dot', wrt='theta', rows=arange, cols=arange)
         self.declare_partials(of='vy_dot', wrt='g', rows=arange, cols=arange, val=-1.0)
 
-        self.declare_partials(of='m', wrt='Isp', rows=arange, cols=arange)
-        self.declare_partials(of='m', wrt='thrust', rows=arange, cols=arange)
+        self.declare_partials(of='mprop_dot', wrt='Isp', rows=arange, cols=arange)
+        self.declare_partials(of='mprop_dot', wrt='thrust', rows=arange, cols=arange)
 
 
     def compute(self, inputs, outputs):
@@ -108,7 +123,7 @@ class BallisticRocketEOMComp(ExplicitComponent):
         outputs['vy_dot'] = (thrust / mtotal) * sin_theta - g
         outputs['x_dot'] = inputs['vx']
         outputs['y_dot'] = inputs['vy']
-        outputs['m_dot'] = inputs['thrust'] / (9.80665 * inputs['Isp'])
+        outputs['mprop_dot'] = -inputs['thrust'] / (9.80665 * inputs['Isp'])
 
     def compute_partials(self, inputs, partials):
         theta = inputs['theta']
@@ -120,8 +135,6 @@ class BallisticRocketEOMComp(ExplicitComponent):
         mstruct = inputs['mstruct']
         mtotal = mstruct + mprop
 
-        -thrust * sin_theta / (mstruct + mprop)
-
         partials['vx_dot', 'thrust'] = cos_theta / mtotal
         partials['vx_dot', 'theta'] = -(thrust / mtotal) * sin_theta
         partials['vx_dot', 'mstruct'] = thrust * sin_theta / mtotal**2
@@ -132,5 +145,5 @@ class BallisticRocketEOMComp(ExplicitComponent):
         partials['vy_dot', 'mstruct'] = -(thrust / mtotal**2) * sin_theta
         partials['vy_dot', 'mprop'] = -(thrust / mtotal**2) * sin_theta
 
-        partials['m_dot', 'thrust'] = 1 / (9.80665 * inputs['Isp'])
-        partials['m_dot', 'Isp'] = -thrust / (9.80665 * inputs['Isp']**2)
+        partials['mprop_dot', 'thrust'] = -1 / (9.80665 * inputs['Isp'])
+        partials['mprop_dot', 'Isp'] = thrust / (9.80665 * inputs['Isp']**2)
