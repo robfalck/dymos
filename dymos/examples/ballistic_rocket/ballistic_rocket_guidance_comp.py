@@ -4,7 +4,6 @@ import numpy as np
 
 from openmdao.api import ExplicitComponent
 
-
 class BallisticRocketGuidanceComp(ExplicitComponent):
     def initialize(self):
         self.options.declare('num_nodes', types=int)
@@ -50,7 +49,7 @@ class BallisticRocketGuidanceComp(ExplicitComponent):
         t_duration = inputs['t_duration']
         theta_f = inputs['theta_f']
         theta_0 = inputs['theta_0']
-        print(time_phase, t_duration)
+        # print(time_phase, t_duration)
         outputs['theta'] = theta_0 - (time_phase / t_duration) * (theta_f - theta_0)
 
     def compute_partials(self, inputs, partials):
