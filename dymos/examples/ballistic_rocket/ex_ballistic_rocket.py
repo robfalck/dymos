@@ -78,7 +78,7 @@ def ballistic_rocket_max_range(transcription='gauss-lobatto', num_segments=8, tr
 
     p.model.add_subsystem('pitchover', pitchover_phase)
 
-    pitchover_phase.set_time_options(fix_initial=False, initial_bounds=(1,20), duration_bounds=(2, 100))
+    pitchover_phase.set_time_options(fix_initial=False, initial_bounds=(1,20), duration_bounds=(0, 20))
 
     pitchover_phase.set_state_options('x', fix_initial=False, fix_final=False)
     pitchover_phase.set_state_options('y', fix_initial=False, fix_final=False)
@@ -115,25 +115,25 @@ def ballistic_rocket_max_range(transcription='gauss-lobatto', num_segments=8, tr
     p['traj.boost.states:x'] = boost_phase.interpolate(ys=[0, 0], nodes='state_input')
     p['traj.boost.states:y'] = boost_phase.interpolate(ys=[0, 100], nodes='state_input')
     p['traj.boost.states:vx'] = boost_phase.interpolate(ys=[0, 0], nodes='state_input')
-    p['traj.boost.states:vy'] = boost_phase.interpolate(ys=[0, 500], nodes='state_input')
+    p['traj.boost.states:vy'] = boost_phase.interpolate(ys=[0, 50], nodes='state_input')
     p['traj.boost.states:mprop'] = boost_phase.interpolate(ys=[20, 10.], nodes='state_input')
 
     p['traj.boost.design_parameters:g'] = 9.80665
     p['traj.boost.design_parameters:theta'] = 90.0
     p['traj.boost.design_parameters:mstruct'] = 100
 
-    p['traj.pitchover.t_initial'] = 2.0
+    p['traj.pitchover.t_initial'] = 10.0
     p['traj.pitchover.t_duration'] = 2.0
 
     p['traj.pitchover.states:x'] = boost_phase.interpolate(ys=[0, 10], nodes='state_input')
-    p['traj.pitchover.states:y'] = boost_phase.interpolate(ys=[20, 100], nodes='state_input')
+    p['traj.pitchover.states:y'] = boost_phase.interpolate(ys=[100, 1000], nodes='state_input')
     p['traj.pitchover.states:vx'] = boost_phase.interpolate(ys=[0, 10], nodes='state_input')
     p['traj.pitchover.states:vy'] = boost_phase.interpolate(ys=[50, 100], nodes='state_input')
-    p['traj.pitchover.states:mprop'] = boost_phase.interpolate(ys=[16, 0], nodes='state_input')
+    p['traj.pitchover.states:mprop'] = boost_phase.interpolate(ys=[10, 0], nodes='state_input')
 
     p['traj.pitchover.design_parameters:g'] = 9.80665
     p['traj.pitchover.design_parameters:theta_0'] = 90.0
-    p['traj.pitchover.design_parameters:theta_f'] = 80.0
+    p['traj.pitchover.design_parameters:theta_f'] = 95.0
     p['traj.pitchover.design_parameters:mstruct'] = 100
 
    
