@@ -136,6 +136,16 @@ def ballistic_rocket_max_range(transcription='gauss-lobatto', num_segments=8, tr
     p['traj.pitchover.design_parameters:theta_f'] = 80.0
     p['traj.pitchover.design_parameters:mstruct'] = 100
 
+   
+
+    return p
+
+
+if __name__ == '__main__':
+    ballistic_rocket_max_range(transcription='radau-ps', num_segments=10, run_driver=True,
+                               transcription_order=3, compressed=False,
+                               optimizer='SNOPT')
+
     # p.run_model()
     p.run_driver()
 
@@ -186,11 +196,3 @@ def ballistic_rocket_max_range(transcription='gauss-lobatto', num_segments=8, tr
         ax.grid(True)
 
         plt.show()
-
-    return p
-
-
-if __name__ == '__main__':
-    ballistic_rocket_max_range(transcription='radau-ps', num_segments=10, run_driver=True,
-                               transcription_order=3, compressed=False,
-                               optimizer='SNOPT')
