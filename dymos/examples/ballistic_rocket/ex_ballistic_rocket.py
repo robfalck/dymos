@@ -32,6 +32,11 @@ def ballistic_rocket_max_range(transcription='gauss-lobatto', num_segments=8, tr
     p.driver.options['dynamic_simul_derivs'] = dynamic_simul_derivs
 
     #
+    # The Trajectory Group
+    #
+    traj = Trajectory()
+
+    #
     # Phase 0: Vertical Boost
     #
 
@@ -57,40 +62,100 @@ def ballistic_rocket_max_range(transcription='gauss-lobatto', num_segments=8, tr
     boost_phase.add_design_parameter('g', units='m/s**2', opt=False, val=9.80665)
     boost_phase.add_design_parameter('Isp', units='s', opt=False, val=300.0)
 
-    boost_phase.add_objective('time_phase', loc='final', scaler=10)
+    # boost_phase.add_objective('time_phase', loc='final', scaler=10)
+    
+    traj.add_phase('boost', boost_phase)
 
-    p.model.options['assembled_jac_type'] = 'csc'
-    p.model.linear_solver = DirectSolver(assemble_jac=True)
+    #
+    # Phase 1: Pitchover 
+    #
+
+    pitchover_phase = Phase(transcription,
+                            ode_class=BallisticRocketGuidedODE,
+                            num_segments=num_segments,
+                            transcription_order=transcription_order,
+                            compressed=compressed)
+
+    p.model.add_subsystem('pitchover', pitchover_phase)
+
+    pitchover_phase.set_time_options(fix_initial=True, duration_bounds=(.5, 10))
+
+    pitchover_phase.set_state_options('x', fix_initial=False, fix_final=False)
+    pitchover_phase.set_state_options('y', fix_initial=False, fix_final=False)
+    pitchover_phase.set_state_options('vx', fix_initial=False, fix_final=False)
+    pitchover_phase.set_state_options('vy', fix_initial=False, fix_final=False)
+    pitchover_phase.set_state_options('mprop', fix_initial=False, fix_final=True)
+
+    pitchover_phase.add_design_parameter('thrust', units='N', opt=False, val=2000.0)
+    pitchover_phase.add_design_parameter('mstruct', units='kg', opt=False, val=100.0)
+    pitchover_phase.add_design_parameter('g', units='m/s**2', opt=False, val=9.80665)
+    pitchover_phase.add_design_parameter('Isp', units='s', opt=False, val=300.0)
+    pitchover_phase.add_design_parameter('theta_0', units='deg', opt=False, val=90.0)
+    pitchover_phase.add_design_parameter('theta_f', units='deg', opt=True, val=45.0, lower=45, upper=89)
+
+    pitchover_phase.add_objective('time', loc='final', scaler=10)
+    
+    traj.add_phase('pitchover', pitchover_phase)
+
+    traj.link_phases(phases=['boost', 'pitchover'], vars=['time', 'x', 'y', 'vx', 'vy', 'mprop'])
+
+    p.model = Group()
+    p.model.add_subsystem('traj', traj)
+
+    #
+    # Setup and set values
+    #
+    # p.model.linear_solver = DirectSolver(assemble_jac=True)
 
     p.setup(check=True)
 
-    p['boost.t_initial'] = 0.0
-    p['boost.t_duration'] = 2.0
+    p['traj.boost.t_initial'] = 0.0
+    p['traj.boost.t_duration'] = 2.0
 
-    p['boost.states:x'] = boost_phase.interpolate(ys=[0, 10], nodes='state_input')
-    p['boost.states:y'] = boost_phase.interpolate(ys=[0, 100], nodes='state_input')
-    p['boost.states:vx'] = boost_phase.interpolate(ys=[0, 0], nodes='state_input')
-    p['boost.states:vy'] = boost_phase.interpolate(ys=[0, 500], nodes='state_input')
+    p['traj.boost.states:x'] = boost_phase.interpolate(ys=[0, 10], nodes='state_input')
+    p['traj.boost.states:y'] = boost_phase.interpolate(ys=[0, 100], nodes='state_input')
+    p['traj.boost.states:vx'] = boost_phase.interpolate(ys=[0, 0], nodes='state_input')
+    p['traj.boost.states:vy'] = boost_phase.interpolate(ys=[0, 500], nodes='state_input')
+    p['traj.boost.states:mprop'] = boost_phase.interpolate(ys=[20, 0], nodes='state_input')
 
-    p['boost.design_parameters:g'] = 9.80665
-    p['boost.design_parameters:theta'] = 90.0
-    p['boost.design_parameters:mstruct'] = 100
+    p['traj.boost.design_parameters:g'] = 9.80665
+    p['traj.boost.design_parameters:theta'] = 90.0
+    p['traj.boost.design_parameters:mstruct'] = 100
+
+    p['traj.pitchover.t_initial'] = 0.0
+    p['traj.pitchover.t_duration'] = 2.0
+
+    p['traj.pitchover.states:x'] = boost_phase.interpolate(ys=[0, 10], nodes='state_input')
+    p['traj.pitchover.states:y'] = boost_phase.interpolate(ys=[20, 100], nodes='state_input')
+    p['traj.pitchover.states:vx'] = boost_phase.interpolate(ys=[0, 10], nodes='state_input')
+    p['traj.pitchover.states:vy'] = boost_phase.interpolate(ys=[50, 100], nodes='state_input')
+    p['traj.pitchover.states:mprop'] = boost_phase.interpolate(ys=[10, 0], nodes='state_input')
+
+    p['traj.pitchover.design_parameters:g'] = 9.80665
+    p['traj.pitchover.design_parameters:theta_0'] = 90.0
+    p['traj.pitchover.design_parameters:theta_f'] = 80.0
+    p['traj.pitchover.design_parameters:mstruct'] = 100
+
+
 
     p.run_model()
 
-    exp_out = boost_phase.simulate()
+    exp_out = traj.simulate()
 
-    t_imp = boost_phase.get_values('time')
-    y_imp = boost_phase.get_values('y')
-
-    t_exp = exp_out.get_values('time')
-    y_exp = exp_out.get_values('y')
-
-    import matplotlib.pyplot as plt
-    plt.plot(t_imp, y_imp, 'ro', label='implicit')
-    plt.plot(t_exp, y_exp, 'b-', label='explicit')
-    plt.show()
     exit(0)
+
+    #
+    # t_imp = boost_phase.get_values('time')
+    # y_imp = boost_phase.get_values('y')
+    #
+    # t_exp = exp_out.get_values('time')
+    # y_exp = exp_out.get_values('y')
+    #
+    # import matplotlib.pyplot as plt
+    # plt.plot(t_imp, y_imp, 'ro', label='implicit')
+    # plt.plot(t_exp, y_exp, 'b-', label='explicit')
+    # plt.show()
+    # exit(0)
 
     # #
     # # Phase 1: Pitchover

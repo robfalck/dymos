@@ -25,12 +25,12 @@ class BallisticRocketGuidanceComp(ExplicitComponent):
         self.add_input('theta_0',
                        val=np.zeros(nn),
                        desc='thrust pitch angle at the start of pitchover',
-                       units='s')
+                       units='rad')
 
         self.add_input('theta_f',
                        val=np.zeros(nn),
                        desc='thrust pitch angle at the end of pitchover',
-                       units='s')
+                       units='rad')
 
         self.add_output('theta',
                         val=np.zeros(nn),
@@ -50,6 +50,7 @@ class BallisticRocketGuidanceComp(ExplicitComponent):
         t_duration = inputs['t_duration']
         theta_f = inputs['theta_f']
         theta_0 = inputs['theta_0']
+        print(time_phase, t_duration)
         outputs['theta'] = theta_0 - (time_phase / t_duration) * (theta_f - theta_0)
 
     def compute_partials(self, inputs, partials):

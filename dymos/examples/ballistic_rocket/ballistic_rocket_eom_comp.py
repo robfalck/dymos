@@ -13,15 +13,15 @@ class BallisticRocketEOMComp(ExplicitComponent):
         nn = self.options['num_nodes']
 
         # Inputs
-        self.add_input('x',
-                       val=np.zeros(nn),
-                       desc='horizontal position',
-                       units='m')
-
-        self.add_input('y',
-                       val=np.zeros(nn),
-                       desc='vertical position',
-                       units='m')
+        # self.add_input('x',
+        #                val=np.zeros(nn),
+        #                desc='horizontal position',
+        #                units='m')
+        #
+        # self.add_input('y',
+        #                val=np.zeros(nn),
+        #                desc='vertical position',
+        #                units='m')
 
         self.add_input('vx',
                        val=np.zeros(nn),
