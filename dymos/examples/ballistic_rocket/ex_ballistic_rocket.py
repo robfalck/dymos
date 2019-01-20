@@ -91,7 +91,7 @@ def ballistic_rocket_max_range(transcription='gauss-lobatto', num_segments=8, tr
     pitchover_phase.add_design_parameter('g', units='m/s**2', opt=False, val=9.80665)
     pitchover_phase.add_design_parameter('Isp', units='s', opt=False, val=300.0)
     pitchover_phase.add_design_parameter('theta_0', units='deg', opt=False, val=90.0)
-    pitchover_phase.add_design_parameter('theta_f', units='deg', opt=True, val=45.0, lower=40., upper=90)
+    pitchover_phase.add_design_parameter('theta_f', units='deg', opt=False, val=45.0, lower=40., upper=90)
 
     pitchover_phase.add_objective('time', loc='final', scaler=10)
     
@@ -142,9 +142,9 @@ def ballistic_rocket_max_range(transcription='gauss-lobatto', num_segments=8, tr
 
 
 if __name__ == '__main__':
-    ballistic_rocket_max_range(transcription='radau-ps', num_segments=10, run_driver=True,
-                               transcription_order=3, compressed=False,
-                               optimizer='SNOPT')
+    p = ballistic_rocket_max_range(transcription='radau-ps', num_segments=10, run_driver=True,
+                                   transcription_order=3, compressed=False,
+                                   optimizer='SNOPT')
 
     # p.run_model()
     p.run_driver()
@@ -157,21 +157,22 @@ if __name__ == '__main__':
 
     # Plot results
     if SHOW_PLOTS:
-        exp_out = traj.simulate()
+        exp_out = p.model.traj.simulate()
 
         fig, axes = plt.subplots(ncols=2)
         fig.suptitle('Ballistic Rocket Solution')
 
+        boost_phase = p.model.traj.phases.boost
         x_imp = boost_phase.get_values('x', nodes='all')
         y_imp = boost_phase.get_values('y', nodes='all')
         t_imp = boost_phase.get_values('time', nodes='all')
         
-        vals = boost_phase.get_values('mprop', nodes='all')
-        print(vals[-1])
-        vals = boost_phase.get_values('vx', nodes='all')
-        print(vals[-1])
-        vals = boost_phase.get_values('vy', nodes='all')
-        print(vals[-1])
+        # vals = boost_phase.get_values('mprop', nodes='all')
+        # print(vals[-1])
+        # vals = boost_phase.get_values('vx', nodes='all')
+        # print(vals[-1])
+        # vals = boost_phase.get_values('vy', nodes='all')
+        # print(vals[-1])
 
         x_exp = exp_out.get_values('x', phases='boost', flat=True)
         y_exp = exp_out.get_values('y', phases='boost', flat=True)
