@@ -68,3 +68,9 @@ parts:
 - caption: Contributing
   chapters:
   - file: contributing/contributing
+- caption: Theory
+  chapters:
+  - file: theory/theory
+    sections:
+    - file: theory/interpolation.ipynb
+    - file: theory/explicit_integration.ipynb
