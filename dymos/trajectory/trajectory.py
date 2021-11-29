@@ -74,7 +74,7 @@ class Trajectory(om.Group):
         self._phase_add_kwargs[name] = kwargs
         return phase
 
-    def add_parameter(self, name, units, val=_unspecified, desc=_unspecified, opt=False,
+    def add_parameter(self, name, units=_unspecified, val=_unspecified, desc=_unspecified, opt=False,
                       targets=_unspecified, lower=_unspecified, upper=_unspecified,
                       scaler=_unspecified, adder=_unspecified, ref0=_unspecified, ref=_unspecified,
                       shape=_unspecified, dynamic=_unspecified, static_target=_unspecified):
@@ -85,8 +85,8 @@ class Trajectory(om.Group):
         ----------
         name : str
             Name of the parameter.
-        units : str or None or 0
-            Units in which the parameter is defined.  If 0, use the units declared
+        units : str or None or _unspecified
+            Units in which the parameter is defined.  If _unspecified, use the units declared
             for the parameter in the ODE.
         val : float or ndarray
             Default value of the parameter at all nodes.
@@ -285,6 +285,7 @@ class Trajectory(om.Group):
         for name, options in parameter_options.items():
             prom_name = f'parameters:{name}'
             targets = options['targets']
+            units = options['units']
 
             # For each phase, use introspection to get the units and shape.
             # If units do not match across all phases, require user to set them.
@@ -327,19 +328,22 @@ class Trajectory(om.Group):
                 promoted_inputs.append(tgt)
                 self.promotes('phases', inputs=[(tgt, prom_name)])
 
-            if len(set(tgt_shapes.values())) == 1:
-                options['shape'] = next(iter(tgt_shapes.values()))
-            else:
-                raise ValueError(f'Parameter {name} in Trajectory {self.pathname} is connected to '
-                                 f'targets in multiple phases that have different shapes.')
+            if options['shape'] is _unspecified:
+                if len(set(tgt_shapes.values())) == 1:
+                    options['shape'] = next(iter(tgt_shapes.values()))
+                else:
+                    raise ValueError(f'Parameter {name} in Trajectory {self.pathname} is connected to '
+                                     f'targets in multiple phases that have different shapes.')
 
-            if len(set(tgt_units.values())) != 1:
-                options['units'] = next(iter(tgt_units))
-            else:
-                ValueError(f'Parameter {name} in Trajectory {self.pathname} is connected to '
-                           f'targets in multiple phases that have different units. You must '
-                           f'explicitly provide units for the parameter since they cannot be '
-                           f'inferred.')
+            if options['units'] is _unspecified:
+                tgt_units_set = set(tgt_units.values())
+                if len(tgt_units_set) == 1:
+                    options['units'] = list(tgt_units_set)[0]
+                else:
+                    ValueError(f'Parameter {name} in Trajectory {self.pathname} is connected to '
+                               f'targets in multiple phases that have different units. You must '
+                               f'explicitly provide units for the parameter since they cannot be '
+                               f'inferred.')
 
             val = options['val']
             _shape = options['shape']
@@ -938,22 +942,6 @@ class Trajectory(om.Group):
         print(f'\n--- Constraint Report [{self.pathname}] ---')
         indent = '    '
 
-        # Find the longest expression
-        max_len = 0
-        max_unit_len = 0
-        for phase_name in self._phases:
-            phs = self._get_subsystem(f'phases.{phase_name}')
-            d = phs._initial_boundary_constraints.copy()
-            d.update(phs._final_boundary_constraints)
-            d.update(phs._path_constraints)
-
-            if d:
-                max_len = max(max_len, *[len(key) for key in d.keys()])
-                max_unit_len = max(max_unit_len,
-                                   *[len(str(options['units'])) for options in d.values()])
-
-        units_fmt = f'<{max_unit_len}s'
-
         def _print_constraints(phs, outstream):
             ds = {'initial': phs._initial_boundary_constraints,
                   'final': phs._final_boundary_constraints,
@@ -966,39 +954,44 @@ class Trajectory(om.Group):
             for loc, d in ds.items():
                 str_loc = f'[{loc}]'
                 for expr, options in d.items():
-                    _, shape, units, linear = phs.options[
-                        'transcription']._get_boundary_constraint_src(expr, loc, phs)
+                    _, shape, units, linear = phs.options['transcription']._get_boundary_constraint_src(expr, loc, phs)
 
                     equals = options['equals']
                     lower = options['lower']
                     upper = options['upper']
-                    str_units = f'{units if units is not None else "":{units_fmt}}'
+
+                    if options['units']:
+                        str_units = options['units']
+                    elif units is not None:
+                        str_units = units
+                    else:
+                        str_units = 'None'
 
                     if equals is not None and np.prod(np.asarray(equals).shape) != 1:
-                        str_equals = f'array<{"x".join([str(i) for i in np.asarray(equals).shape])}> {str_units}'
+                        str_equals = f'array<{"x".join([str(i) for i in np.asarray(equals).shape])}>'
                     elif equals is not None:
-                        str_equals = f'{equals:{float_fmt}} {str_units}'
+                        str_equals = f'{equals:{float_fmt}}'
 
                     if lower is not None and np.prod(np.asarray(lower).shape) != 1:
-                        str_lower = f'array<{"x".join([str(i) for i in np.asarray(lower).shape])}> {str_units} <='
+                        str_lower = f'array<{"x".join([str(i) for i in np.asarray(lower).shape])}> <='
                     elif lower is not None:
-                        str_lower = f'{lower:{float_fmt}} {str_units} <='
+                        str_lower = f'{lower:{float_fmt}} <='
                     else:
                         str_lower = 12 * ''
 
                     if upper is not None and np.prod(np.asarray(upper).shape) != 1:
-                        str_upper = f'>= array<{"x".join([str(i) for i in np.asarray(upper).shape])}> {str_units}'
+                        str_upper = f'<= array<{"x".join([str(i) for i in np.asarray(upper).shape])}> '
                     elif upper is not None:
-                        str_upper = f'>= {upper:{float_fmt}} {str_units}'
+                        str_upper = f'<= {upper:{float_fmt}} '
                     else:
                         str_upper = ''
 
                     if equals is not None:
-                        print(f'{2 * indent}{str_loc:<10s}{str_equals} == {expr}',
+                        print(f'{2 * indent}{str_loc:<10s}{str_equals} == {expr} [{str_units}]',
                               file=outstream)
                     else:
                         print(
-                            f'{2 * indent}{str_loc:<10s}{str_lower} {expr:<{max_len}s} {str_upper}{str_units}',
+                            f'{2 * indent}{str_loc:<10s}{str_lower} {expr} {str_upper} [{str_units}]',
                             file=outstream)
 
         for phase_name in self._phases:

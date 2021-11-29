@@ -1816,7 +1816,12 @@ class Phase(om.Group):
                                  'variable to be interpolated was not provided.\nPlease specify '
                                  'the name of the interpolated variable or a node subset.')
             elif name in self.state_options:
-                node_locations = gd.node_ptau[gd.subset_node_indices['state_input']]
+                # For states in explicit shooting phases, interp should just return the initial
+                # value.
+                if isinstance(self.options['transcription'], dm.ExplicitShooting):
+                    node_locations = np.array([-1.0])
+                else:
+                    node_locations = gd.node_ptau[gd.subset_node_indices['state_input']]
             elif name in self.control_options:
                 node_locations = gd.node_ptau[gd.subset_node_indices['control_input']]
             elif name in self.polynomial_control_options:
@@ -1956,6 +1961,7 @@ class Phase(om.Group):
 
         # Assign parameter values
         for name in phs.parameter_options:
+            units = phs.parameter_options[name]['units']
 
             if skip_params and name in skip_params:
                 continue
@@ -1963,9 +1969,9 @@ class Phase(om.Group):
             # We use this private function to grab the correctly sized variable from the
             # auto_ivc source.
             if om_version < (3, 4, 1):
-                val = phs.get_val(f'parameters:{name}')[0, ...]
+                val = phs.get_val(f'parameters:{name}', units=units)[0, ...]
             else:
-                val = phs.get_val(f'parameters:{name}')
+                val = phs.get_val(f'parameters:{name}', units=units)
 
             if phase_path:
                 prob_path = f'{phase_path}.{self.name}.parameters:{name}'
