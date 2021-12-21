@@ -23,7 +23,7 @@
 
     
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" type="text/css" />
+    <link rel="stylesheet" href="_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
@@ -43,7 +43,7 @@
     <script src="_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
         const thebe_selector_input = "pre"
@@ -71,10 +71,6 @@
         <div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="#">
       
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
-        
-      
-      
       <img src="_static/dymos_logo.png" class="logo" alt="logo">
       
       
@@ -84,7 +80,7 @@
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
     <div class="bd-toc-item active">
         <ul class="nav bd-sidenav">
  <li class="toctree-l1 current">
@@ -112,8 +108,13 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="getting_started/collocation.html">
-   What is collocation?
+  <a class="reference internal" href="getting_started/optimal_control.html">
+   Optimal Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="getting_started/transcriptions.html">
+   Optimal Control Transcriptions
   </a>
  </li>
  <li class="toctree-l1">
@@ -122,8 +123,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="getting_started/optimal_control.html">
-   Optimal Control
+  <a class="reference internal" href="getting_started/collocation.html">
+   What is collocation?
   </a>
  </li>
  <li class="toctree-l1">
@@ -159,6 +160,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="examples/brachistochrone/brachistochrone_upstream_init_duration_states.html">
+     The Brachistochrone with Externally-Sourced initial state values
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="examples/vanderpol/vanderpol.html">
      The Van der Pol Oscillator
     </a>
@@ -166,6 +172,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="examples/balanced_field/balanced_field.html">
      Aircraft Balanced Field Length Calculation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples/bryson_denham/bryson_denham.html">
+     The Bryson-Denham Problem
     </a>
    </li>
    <li class="toctree-l2">
@@ -196,6 +207,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="examples/min_time_climb/min_time_climb.html">
      Supersonic Interceptor Minimum Time Climb
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples/mountain_car/mountain_car.html">
+     The Mountain Car Problem
     </a>
    </li>
    <li class="toctree-l2">
@@ -231,6 +247,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="examples/ssto_moon_polynomial_controls/ssto_moon_polynomial_controls.html">
      SSTO Lunar Ascent with Polynomial Controls
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="examples/robertson_problem/robertson_problem.html">
+     The Robertson Problem
     </a>
    </li>
    <li class="toctree-l2">
@@ -386,6 +407,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="api/transcriptions_api.html">
+     The Transcriptions API
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="api/trajectory_api.html">
      The Trajectory API
     </a>
@@ -489,7 +515,7 @@
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
+            <nav id="bd-toc-nav">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#key-features">
@@ -535,7 +561,7 @@ While normally this would significantly impair performance, Dymos can optimize s
 <div class="section" id="key-features">
 <h2>Key Features<a class="headerlink" href="#key-features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Employ Gauss-Lobatto collocation <span id="id1">[<a class="reference internal" href="#id27">HC96</a>]</span> or the Radau Pseudospectral method <span id="id2">[<a class="reference internal" href="#id28">GPF+11</a>]</span> to find optimal control for a dynamic system.</p></li>
+<li><p>Employ Gauss-Lobatto collocation <span id="id1">[<a class="reference internal" href="#id28">HC96</a>]</span> or the Radau Pseudospectral method <span id="id2">[<a class="reference internal" href="#id29">GPF+11</a>]</span> to find optimal control for a dynamic system.</p></li>
 <li><p>Find the optimal design of a system that can satisfy a variety of different trajectories.</p></li>
 <li><p>Embed nonlinear solvers within the system dynamics.</p></li>
 <li><p>Transform typical state variables into control variables (differential inclusion <span id="id3">[<a class="reference internal" href="#id21">Sey94</a>]</span>).</p></li>
@@ -547,7 +573,7 @@ While normally this would significantly impair performance, Dymos can optimize s
 <div class="section" id="why-dymos">
 <h2>Why Dymos?<a class="headerlink" href="#why-dymos" title="Permalink to this headline">¶</a></h2>
 <p>There is no shortage of optimal control software based on pseudospectral approaches.
-There are a number of other optimal control libraries that tackle similar kinds of problems, such as OTIS4 <span id="id4">[<a class="reference internal" href="#id24">PRS06</a>]</span>, GPOPS-II <span id="id5">[<a class="reference internal" href="#id20">PR14</a>]</span>,and CASADI <span id="id6">[<a class="reference internal" href="#id54">AGH+19</a>]</span>.</p>
+There are a number of other optimal control libraries that tackle similar kinds of problems, such as OTIS4 <span id="id4">[<a class="reference internal" href="#id24">PRS06</a>]</span>, GPOPS-II <span id="id5">[<a class="reference internal" href="#id20">PR14</a>]</span>,and CASADI <span id="id6">[<a class="reference internal" href="#id55">AGH+19</a>]</span>.</p>
 <p>Given the amount of software existing in this space, why did we develop Dymos?</p>
 <p>We wanted to use optimal control in the context of multidisciplinary optimization.
 With existing state-of-the-art tools, this would mean wrapping one of these existing tools and passing between different disciplines.
@@ -564,7 +590,7 @@ Their approach gives us a few key capabilities:</p>
 <ul class="simple">
 <li><p>Adjoint differentiation which can be more efficient for pure shooting-methods in optimal control, where the number of constraints/objectives is far fewer than the number of design variables.</p></li>
 <li><p>The ability to compute derivatives across complex iterative systems <em>without the need to reconverge the system</em>.</p></li>
-<li><p>The ability to provide a general, bidirectional derivative coloring system <span id="id8">[<a class="reference internal" href="#id55">GHN19</a>]</span> which can minimize the computational effort required to compute the sensitivies of the outputs with respect to the inputs.</p></li>
+<li><p>The ability to provide a general, bidirectional derivative coloring system <span id="id8">[<a class="reference internal" href="#id56">GHN19</a>]</span> which can minimize the computational effort required to compute the sensitivies of the outputs with respect to the inputs.</p></li>
 </ul>
 <p>In addition to making optimal control more performant for use in multidisciplinary optimization, we were keen to study what sort of work these capabilities could enable.
 Embedding iterative systems within the optimization, in particular, is generally avoided for performance reasons.
@@ -597,16 +623,16 @@ Dymos features a more modular way for users to define their dynamics, additional
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <p id="id10"><dl class="citation">
-<dt class="label" id="id54"><span class="brackets">AGH+19</span></dt>
+<dt class="label" id="id55"><span class="brackets">AGH+19</span></dt>
 <dd><p>Joel A E Andersson, Joris Gillis, Greg Horn, James B Rawlings, and Moritz Diehl. CasADi – A software framework for nonlinear optimization and optimal control. <em>Mathematical Programming Computation</em>, 11:1–36, 2019.</p>
 </dd>
-<dt class="label" id="id28"><span class="brackets">GPF+11</span></dt>
+<dt class="label" id="id29"><span class="brackets">GPF+11</span></dt>
 <dd><p>Divya Garg, Michael A Patterson, Camila Francolin, Christopher L Darby, Geoffrey T Huntington, William W Hager, and Anil V Rao. Direct trajectory optimization and costate estimation of finite-horizon and infinite-horizon optimal control problems using a radau pseudospectral method. <em>Computational Optimization and Applications</em>, 49(2):335–358, 2011.</p>
 </dd>
-<dt class="label" id="id55"><span class="brackets">GHN19</span></dt>
+<dt class="label" id="id56"><span class="brackets">GHN19</span></dt>
 <dd><p>Justin S Gray, Tristan A Hearn, and Bret A Naylor. Using graph coloring to compute total derivatives more efficiently in openmdao. In <em>AIAA Aviation 2019 Forum</em>, 3108. 2019.</p>
 </dd>
-<dt class="label" id="id27"><span class="brackets">HC96</span></dt>
+<dt class="label" id="id28"><span class="brackets">HC96</span></dt>
 <dd><p>Albert L Herman and Bruce A Conway. Direct optimization using collocation based on high-order gauss-lobatto quadrature rules. <em>Journal of Guidance, Control, and Dynamics</em>, 19(3):592–599, 1996.</p>
 </dd>
 <dt class="label" id="id17"><span class="brackets">HM18</span></dt>
@@ -663,27 +689,15 @@ Dymos features a more modular way for users to define their dynamics, additional
               </div>
               
         
+        <div class='prev-next-bottom'>
             
+    <a class='right-next' id="next-link" href="installation.html" title="next page">Installing Dymos</a>
 
-
-
-<div class='prev-next-bottom'>
-    
-     <div id="next">
-        <a class="right-next" href="installation.html" title="next page">
-            <div class="prevnext-info">
-                <p class="prevnext-label">next</p>
-                <p class="prevnext-title">Installing Dymos</p>
-            </div>
-            <i class="prevnext-label fas fa-angle-right"></i>
-        </a>
-     </div>
-
-</div>
+        </div>
         
         </div>
     </div>
-    <footer class="footer">
+    <footer class="footer mt-5 mt-md-0">
     <div class="container">
       <p>
         

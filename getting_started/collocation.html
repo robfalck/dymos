@@ -23,7 +23,7 @@
 
     
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -43,19 +43,19 @@
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
         const thebe_selector_input = "pre"
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Defining ODEs" href="defining_odes.html" />
-    <link rel="prev" title="Installing Dymos" href="../installation.html" />
+    <link rel="next" title="Modeling Dynamic Systems with Dymos" href="intro_to_dymos/intro_ivp.html" />
+    <link rel="prev" title="Defining ODEs" href="defining_odes.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
     
@@ -74,10 +74,6 @@
         <div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../index.html">
       
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
-        
-      
-      
       <img src="../_static/dymos_logo.png" class="logo" alt="logo">
       
       
@@ -87,7 +83,7 @@
 </div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
     <div class="bd-toc-item active">
         <ul class="nav bd-sidenav">
  <li class="toctree-l1">
@@ -114,9 +110,14 @@
  </span>
 </p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   What is collocation?
+ <li class="toctree-l1">
+  <a class="reference internal" href="optimal_control.html">
+   Optimal Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="transcriptions.html">
+   Optimal Control Transcriptions
   </a>
  </li>
  <li class="toctree-l1">
@@ -124,9 +125,9 @@
    Defining ODEs
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="optimal_control.html">
-   Optimal Control
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   What is collocation?
   </a>
  </li>
  <li class="toctree-l1">
@@ -162,6 +163,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="../examples/brachistochrone/brachistochrone_upstream_init_duration_states.html">
+     The Brachistochrone with Externally-Sourced initial state values
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../examples/vanderpol/vanderpol.html">
      The Van der Pol Oscillator
     </a>
@@ -169,6 +175,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../examples/balanced_field/balanced_field.html">
      Aircraft Balanced Field Length Calculation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../examples/bryson_denham/bryson_denham.html">
+     The Bryson-Denham Problem
     </a>
    </li>
    <li class="toctree-l2">
@@ -199,6 +210,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../examples/min_time_climb/min_time_climb.html">
      Supersonic Interceptor Minimum Time Climb
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../examples/mountain_car/mountain_car.html">
+     The Mountain Car Problem
     </a>
    </li>
    <li class="toctree-l2">
@@ -234,6 +250,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../examples/ssto_moon_polynomial_controls/ssto_moon_polynomial_controls.html">
      SSTO Lunar Ascent with Polynomial Controls
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../examples/robertson_problem/robertson_problem.html">
+     The Robertson Problem
     </a>
    </li>
    <li class="toctree-l2">
@@ -389,6 +410,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="../api/transcriptions_api.html">
+     The Transcriptions API
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../api/trajectory_api.html">
      The Trajectory API
     </a>
@@ -514,7 +540,7 @@
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
+            <nav id="bd-toc-nav">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#example-simulating-the-fall-of-an-object">
@@ -560,7 +586,7 @@
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
 <div class="section" id="what-is-collocation">
-<h1>What is collocation?<a class="headerlink" href="#what-is-collocation" title="Permalink to this headline">¶</a></h1>
+<span id="getting-started-collocation-what-is-collocation"></span><h1>What is collocation?<a class="headerlink" href="#what-is-collocation" title="Permalink to this headline">¶</a></h1>
 <p>Dymos is focused on direct optimization methods based on an implicit integration technique, collocation.</p>
 <p>The <em>state</em> of a dynamic system defines its configuration at a point in time.
 Common state variables for dynamic systems are position, velocity, and mass.
@@ -585,13 +611,13 @@ This makes scaling the problem easier, and gives the implicit variables more int
 <h2>Example:  Simulating the fall of an object<a class="headerlink" href="#example-simulating-the-fall-of-an-object" title="Permalink to this headline">¶</a></h2>
 <p>As a “hello, world” problem for Dymos, consider the vertical fall of an object acting under gravity - like Galileo dropping cannonballs from the Tower of Pisa.
 Ignoring aerodynamics and treating the ball as a point mass in a rectilinear gravity field, the motion is governed by:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9b70f70b-df86-4c9d-ab6f-b7a0b3c4d9be">
-<span class="eqno">(1)<a class="headerlink" href="#equation-9b70f70b-df86-4c9d-ab6f-b7a0b3c4d9be" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-5971eddb-9d2a-4522-ae13-784139f84d4b">
+<span class="eqno">(5)<a class="headerlink" href="#equation-5971eddb-9d2a-4522-ae13-784139f84d4b" title="Permalink to this equation">¶</a></span>\[\begin{align}
     \ddot{y} = -g
 \end{align}\]</div>
 <p>The techniques in Dymos are generally centered around first-order dynamics, so we convert the above equation into the following system of ODEs.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-f0d01dc3-14fb-4ebe-aad7-7a09e4290a65">
-<span class="eqno">(2)<a class="headerlink" href="#equation-f0d01dc3-14fb-4ebe-aad7-7a09e4290a65" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-80d63fb8-2e5c-4c0b-9c7c-f3579fc9d7d3">
+<span class="eqno">(6)<a class="headerlink" href="#equation-80d63fb8-2e5c-4c0b-9c7c-f3579fc9d7d3" title="Permalink to this equation">¶</a></span>\[\begin{align}
     \dot{y} &amp;= v_y \\
     \dot{v_y} &amp;= -g
 \end{align}\]</div>
@@ -667,8 +693,8 @@ In LGL collocation, these points are chosen to be the LGL <em>nodes</em> in the 
 <p>To form 3rd-order polynomials for the states we need four pieces of information, but so far we only have the two endpoint values.
 We’ll use the state rates at the state discretization nodes to provide the other two values needed for interpolation.
 To obtain these, we evaluate our ODE at the state discretization nodes.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-264cbcbe-2879-4172-98f3-2ce8d5334a4e">
-<span class="eqno">(3)<a class="headerlink" href="#equation-264cbcbe-2879-4172-98f3-2ce8d5334a4e" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-0425314e-75da-41b1-b1d8-ba0750fe4e1c">
+<span class="eqno">(7)<a class="headerlink" href="#equation-0425314e-75da-41b1-b1d8-ba0750fe4e1c" title="Permalink to this equation">¶</a></span>\[\begin{align}
     \dot{y}_0 &amp;= 0 \\
     \dot{y}_f &amp;= -50 \\
     \dot{v}_{y0} &amp;= -9.80665 \\
@@ -682,21 +708,21 @@ We call this difference in slope the collocation <em>defect</em>.</p>
 <p>Having computed the ODE at the state discretization nodes, we can form interpolants for the values and the slope of the states at the collocation nodes.
 Dymos uses Lagrange interpolants, such that the inputs to the system are the values of the states and controls, rather than less intuitive coefficients.
 In this case, the state values at our single collocation node are:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-48906357-7cfa-4c05-ab41-412287e153f5">
-<span class="eqno">(4)<a class="headerlink" href="#equation-48906357-7cfa-4c05-ab41-412287e153f5" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-75849128-39ad-4c81-a790-a5e208bda027">
+<span class="eqno">(8)<a class="headerlink" href="#equation-75849128-39ad-4c81-a790-a5e208bda027" title="Permalink to this equation">¶</a></span>\[\begin{align}
     y_m &amp;= 50 \\
     v_{ym} &amp;= -25
 \end{align}\]</div>
 <p><img alt="Screenshot" src="../_images/lgl_animation_2.png" /></p>
 <p>The polynomial slopes at the collocation node are:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-cc48ee3c-f2a2-4024-abf4-2579e82b44ad">
-<span class="eqno">(5)<a class="headerlink" href="#equation-cc48ee3c-f2a2-4024-abf4-2579e82b44ad" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-16dab65a-aa12-4a7d-9146-16a9adfdb451">
+<span class="eqno">(9)<a class="headerlink" href="#equation-16dab65a-aa12-4a7d-9146-16a9adfdb451" title="Permalink to this equation">¶</a></span>\[\begin{align}
     y'_m &amp;= 50 \\
     v'_{ym} &amp;= -25
 \end{align}\]</div>
 <p>Now, having the state and time values at the collocation nodes, we can again evaluate the ODE.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-af63fc20-71df-496d-bf53-9d7cf171946e">
-<span class="eqno">(6)<a class="headerlink" href="#equation-af63fc20-71df-496d-bf53-9d7cf171946e" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-c8bbbd80-22d7-4e4a-b1cd-871929383843">
+<span class="eqno">(10)<a class="headerlink" href="#equation-c8bbbd80-22d7-4e4a-b1cd-871929383843" title="Permalink to this equation">¶</a></span>\[\begin{align}
     \dot{y}_m &amp;= -17 \\
     \dot{v}_{ym} &amp;= -9.80665
 \end{align}\]</div>
@@ -778,36 +804,16 @@ This <code class="docutils literal notranslate"><span class="pre">solve_segments
               </div>
               
         
+        <div class='prev-next-bottom'>
             
+    <a class='left-prev' id="prev-link" href="defining_odes.html" title="previous page">Defining ODEs</a>
+    <a class='right-next' id="next-link" href="intro_to_dymos/intro_ivp.html" title="next page">Modeling Dynamic Systems with Dymos</a>
 
-
-
-<div class='prev-next-bottom'>
-    
-    <div id="prev">
-        <a class="left-prev" href="../installation.html" title="previous page">
-            <i class="prevnext-label fas fa-angle-left"></i>
-            <div class="prevnext-info">
-                <p class="prevnext-label">previous</p>
-                <p class="prevnext-title">Installing Dymos</p>
-            </div>
-        </a>
-    </div>
-     <div id="next">
-        <a class="right-next" href="defining_odes.html" title="next page">
-            <div class="prevnext-info">
-                <p class="prevnext-label">next</p>
-                <p class="prevnext-title">Defining ODEs</p>
-            </div>
-            <i class="prevnext-label fas fa-angle-right"></i>
-        </a>
-     </div>
-
-</div>
+        </div>
         
         </div>
     </div>
-    <footer class="footer">
+    <footer class="footer mt-5 mt-md-0">
     <div class="container">
       <p>
         

@@ -23,7 +23,7 @@
 
     
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -43,7 +43,7 @@
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
         const thebe_selector_input = "pre"
@@ -52,7 +52,7 @@
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="The Trajectory API" href="trajectory_api.html" />
+    <link rel="next" title="The Transcriptions API" href="transcriptions_api.html" />
     <link rel="prev" title="The Dymos run_problem function" href="run_problem.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -72,10 +72,6 @@
         <div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../index.html">
       
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
-        
-      
-      
       <img src="../_static/dymos_logo.png" class="logo" alt="logo">
       
       
@@ -85,7 +81,7 @@
 </div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
     <div class="bd-toc-item active">
         <ul class="nav bd-sidenav">
  <li class="toctree-l1">
@@ -113,8 +109,13 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../getting_started/collocation.html">
-   What is collocation?
+  <a class="reference internal" href="../getting_started/optimal_control.html">
+   Optimal Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started/transcriptions.html">
+   Optimal Control Transcriptions
   </a>
  </li>
  <li class="toctree-l1">
@@ -123,8 +124,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../getting_started/optimal_control.html">
-   Optimal Control
+  <a class="reference internal" href="../getting_started/collocation.html">
+   What is collocation?
   </a>
  </li>
  <li class="toctree-l1">
@@ -160,6 +161,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="../examples/brachistochrone/brachistochrone_upstream_init_duration_states.html">
+     The Brachistochrone with Externally-Sourced initial state values
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../examples/vanderpol/vanderpol.html">
      The Van der Pol Oscillator
     </a>
@@ -167,6 +173,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../examples/balanced_field/balanced_field.html">
      Aircraft Balanced Field Length Calculation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../examples/bryson_denham/bryson_denham.html">
+     The Bryson-Denham Problem
     </a>
    </li>
    <li class="toctree-l2">
@@ -197,6 +208,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../examples/min_time_climb/min_time_climb.html">
      Supersonic Interceptor Minimum Time Climb
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../examples/mountain_car/mountain_car.html">
+     The Mountain Car Problem
     </a>
    </li>
    <li class="toctree-l2">
@@ -232,6 +248,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../examples/ssto_moon_polynomial_controls/ssto_moon_polynomial_controls.html">
      SSTO Lunar Ascent with Polynomial Controls
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../examples/robertson_problem/robertson_problem.html">
+     The Robertson Problem
     </a>
    </li>
    <li class="toctree-l2">
@@ -387,6 +408,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="transcriptions_api.html">
+     The Transcriptions API
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="trajectory_api.html">
      The Trajectory API
     </a>
@@ -512,8 +538,13 @@
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
+            <nav id="bd-toc-nav">
                 <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#options">
+   Options
+  </a>
+ </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#set-time-options">
    set_time_options
@@ -590,8 +621,8 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#interpolate">
-   interpolate
+  <a class="reference internal nav-link" href="#interp">
+   interp
   </a>
  </li>
 </ul>
@@ -609,6 +640,24 @@
 </div>
 <div class="section" id="the-phase-api">
 <h1>The Phase API<a class="headerlink" href="#the-phase-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output text_html"><table>
+<thead>
+<tr><th>Option            </th><th>Default     </th><th>Acceptable Values  </th><th>Acceptable Types     </th><th>Description                                                                                              </th></tr>
+</thead>
+<tbody>
+<tr><td>assembled_jac_type</td><td>csc         </td><td>[&#x27;csc&#x27;, &#x27;dense&#x27;]   </td><td>N/A                  </td><td>Linear solver(s) in this group or implicit component, if using an assembled jacobian, will use this type.</td></tr>
+<tr><td>ode_class         </td><td>N/A         </td><td>N/A                </td><td>N/A                  </td><td>System defining the ODE                                                                                  </td></tr>
+<tr><td>ode_init_kwargs   </td><td>{}          </td><td>N/A                </td><td>[&#x27;dict&#x27;]             </td><td>Keyword arguments provided when initializing the ODE System                                              </td></tr>
+<tr><td>transcription     </td><td>**Required**</td><td>N/A                </td><td>[&#x27;TranscriptionBase&#x27;]</td><td>Transcription technique of the optimal control problem.                                                  </td></tr>
+</tbody>
+</table></div></div>
+</div>
+<p>The transcription is an instance of one of the <a class="reference internal" href="transcriptions_api.html"><span class="doc std std-doc">transcriptions</span></a> available in Dymos.</p>
+</div>
 <div class="section" id="set-time-options">
 <h2>set_time_options<a class="headerlink" href="#set-time-options" title="Permalink to this headline">¶</a></h2>
 <blockquote>
@@ -1463,21 +1512,28 @@ Used in hp refinement method.</p>
 
 </div></blockquote>
 </div>
-<div class="section" id="interpolate">
-<h2>interpolate<a class="headerlink" href="#interpolate" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="interp">
+<h2>interp<a class="headerlink" href="#interp" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><dl class="py method">
 <dt>
-<code class="sig-prename descclassname"><span class="pre">Phase.</span></code><code class="sig-name descname"><span class="pre">interpolate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dymos/phase/phase.html#Phase.interpolate"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Return an array of values on interpolated to the given node subset of the phase.</p>
+<code class="sig-prename descclassname"><span class="pre">Phase.</span></code><code class="sig-name descname"><span class="pre">interp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dymos/phase/phase.html#Phase.interp"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Interpolate values onto the given subset of nodes in the phase.</p>
+<p>If specified, name will be used to determine the kind of variable being interpolated.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>xs</strong><span class="classifier">ndarray or Sequence or None</span></dt><dd><p>Array of integration variable values.</p>
+<dt><strong>name</strong><span class="classifier">str or None</span></dt><dd><p>If nodes is None, then use the name argument to determine which kind of variable is
+being interpolated.  If it is a state, assume nodes is ‘state_input’.  If it is related
+to a control, assume nodes is ‘control_input’.  If it is a polynomial control, assume
+the nodes are the input nodes for that polynomial control.  Any other type of variable
+will result in an error.</p>
 </dd>
 <dt><strong>ys</strong><span class="classifier">ndarray or Sequence or None</span></dt><dd><p>Array of control/state/parameter values.</p>
 </dd>
-<dt><strong>nodes</strong><span class="classifier">str or None</span></dt><dd><p>The name of the node subset.</p>
+<dt><strong>xs</strong><span class="classifier">ndarray or Sequence or None</span></dt><dd><p>Array of integration variable values.</p>
+</dd>
+<dt><strong>nodes</strong><span class="classifier">str or None</span></dt><dd><p>The name of the node subset or None (default).</p>
 </dd>
 <dt><strong>kind</strong><span class="classifier">str</span></dt><dd><p>Specifies the kind of interpolation, as per the scipy.interpolate package.
 One of (‘linear’, ‘nearest’, ‘zero’, ‘slinear’, ‘quadratic’, ‘cubic’
@@ -1527,36 +1583,16 @@ the first axis (0).</p>
               </div>
               
         
+        <div class='prev-next-bottom'>
             
+    <a class='left-prev' id="prev-link" href="run_problem.html" title="previous page">The Dymos run_problem function</a>
+    <a class='right-next' id="next-link" href="transcriptions_api.html" title="next page">The Transcriptions API</a>
 
-
-
-<div class='prev-next-bottom'>
-    
-    <div id="prev">
-        <a class="left-prev" href="run_problem.html" title="previous page">
-            <i class="prevnext-label fas fa-angle-left"></i>
-            <div class="prevnext-info">
-                <p class="prevnext-label">previous</p>
-                <p class="prevnext-title">The Dymos run_problem function</p>
-            </div>
-        </a>
-    </div>
-     <div id="next">
-        <a class="right-next" href="trajectory_api.html" title="next page">
-            <div class="prevnext-info">
-                <p class="prevnext-label">next</p>
-                <p class="prevnext-title">The Trajectory API</p>
-            </div>
-            <i class="prevnext-label fas fa-angle-right"></i>
-        </a>
-     </div>
-
-</div>
+        </div>
         
         </div>
     </div>
-    <footer class="footer">
+    <footer class="footer mt-5 mt-md-0">
     <div class="container">
       <p>
         

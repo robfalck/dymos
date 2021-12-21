@@ -23,7 +23,7 @@
 
     
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" type="text/css" />
+    <link rel="stylesheet" href="../../_static/sphinx-book-theme.acff12b8f9c144ce68a297486a2fa670.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
@@ -43,15 +43,15 @@
     <script src="../../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
         const thebe_selector_input = "pre"
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Single-Phase Space Shuttle Reentry" href="../reentry/reentry.html" />
@@ -74,10 +74,6 @@
         <div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../../index.html">
       
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
-        
-      
-      
       <img src="../../_static/dymos_logo.png" class="logo" alt="logo">
       
       
@@ -87,7 +83,7 @@
 </div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
     <div class="bd-toc-item active">
         <ul class="nav bd-sidenav">
  <li class="toctree-l1">
@@ -115,8 +111,13 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../../getting_started/collocation.html">
-   What is collocation?
+  <a class="reference internal" href="../../getting_started/optimal_control.html">
+   Optimal Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../getting_started/transcriptions.html">
+   Optimal Control Transcriptions
   </a>
  </li>
  <li class="toctree-l1">
@@ -125,8 +126,8 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../getting_started/optimal_control.html">
-   Optimal Control
+  <a class="reference internal" href="../../getting_started/collocation.html">
+   What is collocation?
   </a>
  </li>
  <li class="toctree-l1">
@@ -162,6 +163,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="../brachistochrone/brachistochrone_upstream_init_duration_states.html">
+     The Brachistochrone with Externally-Sourced initial state values
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../vanderpol/vanderpol.html">
      The Van der Pol Oscillator
     </a>
@@ -169,6 +175,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../balanced_field/balanced_field.html">
      Aircraft Balanced Field Length Calculation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../bryson_denham/bryson_denham.html">
+     The Bryson-Denham Problem
     </a>
    </li>
    <li class="toctree-l2">
@@ -199,6 +210,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../min_time_climb/min_time_climb.html">
      Supersonic Interceptor Minimum Time Climb
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../mountain_car/mountain_car.html">
+     The Mountain Car Problem
     </a>
    </li>
    <li class="toctree-l2">
@@ -234,6 +250,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../ssto_moon_polynomial_controls/ssto_moon_polynomial_controls.html">
      SSTO Lunar Ascent with Polynomial Controls
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../robertson_problem/robertson_problem.html">
+     The Robertson Problem
     </a>
    </li>
    <li class="toctree-l2">
@@ -389,6 +410,11 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="../../api/transcriptions_api.html">
+     The Transcriptions API
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../../api/trajectory_api.html">
      The Trajectory API
     </a>
@@ -514,7 +540,7 @@
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
+            <nav id="bd-toc-nav">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#background-of-the-problem">
@@ -1164,10 +1190,9 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 <span class="c1"># Define Controls</span>
 <span class="n">phase</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;delta&#39;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fix_initial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                  <span class="n">fix_final</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;delta&#39;</span><span class="p">],</span> <span class="n">ref</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>  <span class="c1"># steering angle</span>
-<span class="n">phase</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;thrust&#39;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fix_initial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fix_final</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="p">[</span>
-    <span class="s1">&#39;thrust&#39;</span><span class="p">])</span>  <span class="c1"># the thrust controls the longitudinal force of the rear tires and is</span>
-<span class="c1"># positive while accelerating, negative while braking</span>
+                  <span class="n">fix_final</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="mf">0.04</span><span class="p">,</span> <span class="n">rate_continuity</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># steering angle</span>
+<span class="n">phase</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;thrust&#39;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fix_initial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fix_final</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rate_continuity</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># the thrust controls the longitudinal force of the rear tires and is positive while accelerating, negative while braking</span>
 
 <span class="c1"># Performance Constraints</span>
 <span class="n">pmax</span> <span class="o">=</span> <span class="mi">960000</span>  <span class="c1"># W</span>
@@ -1425,26 +1450,34 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Performance constraints&#39;</span><span class="p">)</span>
 <span class="n">axes</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 <span class="n">axes</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">s_final</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/dymos/phase/phase.py:1638: UserWarning: Phase time options have no effect because fix_duration=True or input_duration=True for phase &#39;phase0&#39;: duration_ref, duration_ref0
-  warnings.warn(&#39;Phase time options have no effect because fix_duration=True or &#39;
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/rfalck/Projects/dymos.git/dymos/phase/phase.py:1619: UserWarning: Phase time options have no effect because fix_duration=True or input_duration=True for phase &#39;traj.phases.phase0&#39;: duration_ref, duration_ref0
+  warnings.warn(f&#39;Phase time options have no effect because fix_duration=True &#39;
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- Linkage Report [traj] ---
     --- phase0 - phase0 ---
-        V      [final]  ==  V      [initial]
-        n      [final]  ==  n      [initial]
-        alpha  [final]  ==  alpha  [initial]
-        omega  [final]  ==  omega  [initial]
-        lambda [final]  ==  lambda [initial]
-        ax     [final]  ==  ax     [initial]
-        ay     [final]  ==  ay     [initial]
-----------------------------
+        states:V        [final] ==  states:V        [initial]
+        states:n        [final] ==  states:n        [initial]
+        states:alpha    [final] ==  states:alpha    [initial]
+        states:omega    [final] ==  states:omega    [initial]
+        states:lambda   [final] ==  states:lambda   [initial]
+        states:ax       [final] ==  states:ax       [initial]
+        states:ay       [final] ==  states:ay       [initial]
+
+* : This quantity is fixed or is an input.
+
+
+--- Constraint Report [traj] ---
+    --- phase0 ---
+        [path]     power &lt;= 9.6000e+05  [W]
+        [path]     c_rr &lt;= 1.0000e+00  [None]
+        [path]     c_rl &lt;= 1.0000e+00  [None]
+        [path]     c_fr &lt;= 1.0000e+00  [None]
+        [path]     c_fl &lt;= 1.0000e+00  [None]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking out_of_order
@@ -1502,6 +1535,9 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/rfalck/Codes/OpenMDAO.git/openmdao/recorders/sqlite_recorder.py:223: UserWarning:The existing case recorder file, dymos_solution.db, is being overwritten.
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already has already been recorded for Driver.
 INFO: checking out_of_order
 </pre></div>
@@ -1530,7 +1566,7 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 19.544448 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 14.791475 seconds.
 Total jacobian shape: (1256, 609) 
 </pre></div>
 </div>
@@ -1539,19 +1575,32 @@ FWD solves: 20   REV solves: 0
 Total colors vs. total size: 20 vs 609  (96.7% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 19.544448 sec.
-Time to compute coloring: 1.154351 sec.
+Time to compute sparsity: 14.791475 sec.
+Time to compute coloring: 0.775203 sec.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Using option file &quot;IPOPT_options.opt&quot;.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/rfalck/anaconda3/envs/py39/lib/python3.9/site-packages/pyoptsparse/pyOpt_optimization.py:234: UserWarning: The argument `type=` is deprecated. Use `varType` in the future.
+  warnings.warn(&quot;The argument `type=` is deprecated. Use `varType` in the future.&quot;)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>List of user-set options:
 
-
-******************************************************************************
-This program contains Ipopt, a library for large-scale nonlinear optimization.
- Ipopt is released as open source code under the Eclipse Public License (EPL).
-         For more information visit https://github.com/coin-or/Ipopt
-******************************************************************************
-
+                                    Name   Value                used
+                         acceptable_iter = 0                     yes
+                          acceptable_tol = 0.001                 yes
+                           compl_inf_tol = 0.001                 yes
+                         constr_viol_tol = 0.001                 yes
+                        file_print_level = 5                     yes
+                   hessian_approximation = limited-memory        yes
+                           linear_solver = mumps                 yes
+                                max_iter = 500                   yes
+                                 mu_init = 0.001                  no
+                      nlp_scaling_method = gradient-based        yes
+                             output_file = IPOPT.out             yes
+                             print_level = 5                     yes
+                      print_user_options = yes                   yes
+                                      sb = yes                   yes
+                                     tol = 0.001                 yes
 This is Ipopt version 3.13.5, running with linear solver mumps.
 NOTE: Other linear solvers might be more efficient (see Ipopt documentation).
 
@@ -1570,220 +1619,501 @@ Total number of inequality constraints...............:      750
         inequality constraints with only upper bounds:      750
 
 iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-   0  1.0000000e+02 2.49e+00 8.24e-01  -3.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   0  1.0000000e+02 2.49e+00 8.24e-01   0.0 0.00e+00    -  0.00e+00 0.00e+00   0
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/core/total_jac.py:1539: DerivativesWarning:Constraints or objectives [(&#39;traj.phases.phase0.path_constraints.path:c_fr&#39;, inds=[(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0), (9, 0), (10, 0), (11, 0), (12, 0), (13, 0), (14, 0), (15, 0), (16, 0), (17, 0), (18, 0), (19, 0), (20, 0), (21, 0), (22, 0), (23, 0), (24, 0), (25, 0), (26, 0), (27, 0), (28, 0), (29, 0), (30, 0), (31, 0), (32, 0), (33, 0), (34, 0), (35, 0), (36, 0), (37, 0), (38, 0), (39, 0), (40, 0), (41, 0), (42, 0), (43, 0), (44, 0), (45, 0), (46, 0), (47, 0), (48, 0), (49, 0), (50, 0), (51, 0), (52, 0), (53, 0), (54, 0), (55, 0), (56, 0), (57, 0), (58, 0), (59, 0), (60, 0), (61, 0), (62, 0), (63, 0), (64, 0), (65, 0), (66, 0), (67, 0), (68, 0), (69, 0), (70, 0), (71, 0), (72, 0), (73, 0), (74, 0), (75, 0), (76, 0), (77, 0), (78, 0), (79, 0), (80, 0), (81, 0), (82, 0), (83, 0), (84, 0), (85, 0), (86, 0), (87, 0), (88, 0), (89, 0), (90, 0), (91, 0), (92, 0), (93, 0), (94, 0), (95, 0), (96, 0), (97, 0), (98, 0), (99, 0), (100, 0), (101, 0), (102, 0), (103, 0), (104, 0), (105, 0), (106, 0), (107, 0), (108, 0), (109, 0), (110, 0), (111, 0), (112, 0), (113, 0), (114, 0), (115, 0), (116, 0), (117, 0), (118, 0), (119, 0), (120, 0), (121, 0), (122, 0), (123, 0), (124, 0), (125, 0), (126, 0), (127, 0), (128, 0), (129, 0), (130, 0), (131, 0), (132, 0), (133, 0), (134, 0), (135, 0), (136, 0), (137, 0), (138, 0), (139, 0), (140, 0), (141, 0), (142, 0), (143, 0), (144, 0), (145, 0), (146, 0), (147, 0), (148, 0), (149, 0)]), (&#39;traj.phases.phase0.path_constraints.path:c_fl&#39;, inds=[(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0), (9, 0), (10, 0), (11, 0), (12, 0), (13, 0), (14, 0), (15, 0), (16, 0), (17, 0), (18, 0), (19, 0), (20, 0), (21, 0), (22, 0), (23, 0), (24, 0), (25, 0), (26, 0), (27, 0), (28, 0), (29, 0), (30, 0), (31, 0), (32, 0), (33, 0), (34, 0), (35, 0), (36, 0), (37, 0), (38, 0), (39, 0), (40, 0), (41, 0), (42, 0), (43, 0), (44, 0), (45, 0), (46, 0), (47, 0), (48, 0), (49, 0), (50, 0), (51, 0), (52, 0), (53, 0), (54, 0), (55, 0), (56, 0), (57, 0), (58, 0), (59, 0), (60, 0), (61, 0), (62, 0), (63, 0), (64, 0), (65, 0), (66, 0), (67, 0), (68, 0), (69, 0), (70, 0), (71, 0), (72, 0), (73, 0), (74, 0), (75, 0), (76, 0), (77, 0), (78, 0), (79, 0), (80, 0), (81, 0), (82, 0), (83, 0), (84, 0), (85, 0), (86, 0), (87, 0), (88, 0), (89, 0), (90, 0), (91, 0), (92, 0), (93, 0), (94, 0), (95, 0), (96, 0), (97, 0), (98, 0), (99, 0), (100, 0), (101, 0), (102, 0), (103, 0), (104, 0), (105, 0), (106, 0), (107, 0), (108, 0), (109, 0), (110, 0), (111, 0), (112, 0), (113, 0), (114, 0), (115, 0), (116, 0), (117, 0), (118, 0), (119, 0), (120, 0), (121, 0), (122, 0), (123, 0), (124, 0), (125, 0), (126, 0), (127, 0), (128, 0), (129, 0), (130, 0), (131, 0), (132, 0), (133, 0), (134, 0), (135, 0), (136, 0), (137, 0), (138, 0), (139, 0), (140, 0), (141, 0), (142, 0), (143, 0), (144, 0), (145, 0), (146, 0), (147, 0), (148, 0), (149, 0)])] cannot be impacted by the design variables of the problem.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/rfalck/Codes/OpenMDAO.git/openmdao/core/total_jac.py:1539: DerivativesWarning:Constraints or objectives [(&#39;traj.phases.phase0.path_constraints.path:c_fr&#39;, inds=[(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0), (9, 0), (10, 0), (11, 0), (12, 0), (13, 0), (14, 0), (15, 0), (16, 0), (17, 0), (18, 0), (19, 0), (20, 0), (21, 0), (22, 0), (23, 0), (24, 0), (25, 0), (26, 0), (27, 0), (28, 0), (29, 0), (30, 0), (31, 0), (32, 0), (33, 0), (34, 0), (35, 0), (36, 0), (37, 0), (38, 0), (39, 0), (40, 0), (41, 0), (42, 0), (43, 0), (44, 0), (45, 0), (46, 0), (47, 0), (48, 0), (49, 0), (50, 0), (51, 0), (52, 0), (53, 0), (54, 0), (55, 0), (56, 0), (57, 0), (58, 0), (59, 0), (60, 0), (61, 0), (62, 0), (63, 0), (64, 0), (65, 0), (66, 0), (67, 0), (68, 0), (69, 0), (70, 0), (71, 0), (72, 0), (73, 0), (74, 0), (75, 0), (76, 0), (77, 0), (78, 0), (79, 0), (80, 0), (81, 0), (82, 0), (83, 0), (84, 0), (85, 0), (86, 0), (87, 0), (88, 0), (89, 0), (90, 0), (91, 0), (92, 0), (93, 0), (94, 0), (95, 0), (96, 0), (97, 0), (98, 0), (99, 0), (100, 0), (101, 0), (102, 0), (103, 0), (104, 0), (105, 0), (106, 0), (107, 0), (108, 0), (109, 0), (110, 0), (111, 0), (112, 0), (113, 0), (114, 0), (115, 0), (116, 0), (117, 0), (118, 0), (119, 0), (120, 0), (121, 0), (122, 0), (123, 0), (124, 0), (125, 0), (126, 0), (127, 0), (128, 0), (129, 0), (130, 0), (131, 0), (132, 0), (133, 0), (134, 0), (135, 0), (136, 0), (137, 0), (138, 0), (139, 0), (140, 0), (141, 0), (142, 0), (143, 0), (144, 0), (145, 0), (146, 0), (147, 0), (148, 0), (149, 0)]), (&#39;traj.phases.phase0.path_constraints.path:c_fl&#39;, inds=[(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0), (9, 0), (10, 0), (11, 0), (12, 0), (13, 0), (14, 0), (15, 0), (16, 0), (17, 0), (18, 0), (19, 0), (20, 0), (21, 0), (22, 0), (23, 0), (24, 0), (25, 0), (26, 0), (27, 0), (28, 0), (29, 0), (30, 0), (31, 0), (32, 0), (33, 0), (34, 0), (35, 0), (36, 0), (37, 0), (38, 0), (39, 0), (40, 0), (41, 0), (42, 0), (43, 0), (44, 0), (45, 0), (46, 0), (47, 0), (48, 0), (49, 0), (50, 0), (51, 0), (52, 0), (53, 0), (54, 0), (55, 0), (56, 0), (57, 0), (58, 0), (59, 0), (60, 0), (61, 0), (62, 0), (63, 0), (64, 0), (65, 0), (66, 0), (67, 0), (68, 0), (69, 0), (70, 0), (71, 0), (72, 0), (73, 0), (74, 0), (75, 0), (76, 0), (77, 0), (78, 0), (79, 0), (80, 0), (81, 0), (82, 0), (83, 0), (84, 0), (85, 0), (86, 0), (87, 0), (88, 0), (89, 0), (90, 0), (91, 0), (92, 0), (93, 0), (94, 0), (95, 0), (96, 0), (97, 0), (98, 0), (99, 0), (100, 0), (101, 0), (102, 0), (103, 0), (104, 0), (105, 0), (106, 0), (107, 0), (108, 0), (109, 0), (110, 0), (111, 0), (112, 0), (113, 0), (114, 0), (115, 0), (116, 0), (117, 0), (118, 0), (119, 0), (120, 0), (121, 0), (122, 0), (123, 0), (124, 0), (125, 0), (126, 0), (127, 0), (128, 0), (129, 0), (130, 0), (131, 0), (132, 0), (133, 0), (134, 0), (135, 0), (136, 0), (137, 0), (138, 0), (139, 0), (140, 0), (141, 0), (142, 0), (143, 0), (144, 0), (145, 0), (146, 0), (147, 0), (148, 0), (149, 0)])] cannot be impacted by the design variables of the problem.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   1  9.9999001e-02 1.17e+02 2.65e+01  -3.0 1.62e+00    -  7.29e-01 7.96e-01f  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   1  9.9999901e-01 1.22e+02 5.60e+01  -0.4 1.62e+00    -  1.00e+00 9.86e-01f  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   2  1.0580815e+01 1.63e+02 1.23e+02  -3.0 3.38e+00    -  4.69e-03 4.92e-01h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   2  3.4528353e+01 1.27e+03 3.99e+03   0.0 3.71e+00    -  6.11e-01 5.90e-01f  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   3  1.8986198e+01 1.19e+02 5.73e+01  -3.0 6.29e+00    -  2.23e-01 5.34e-01h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   3  5.2946741e+01 4.50e+04 1.04e+06  -0.2 1.99e+01    -  6.32e-02 9.73e-01f  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   4  2.4684407e+01 3.41e+01 1.37e+01  -3.0 3.95e+00    -  1.29e-01 7.60e-01h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   4  5.2871229e+01 4.43e+04 9.52e+05  -0.2 5.71e+02    -  2.03e-03 1.70e-02h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   5  2.6335173e+01 3.68e+00 1.69e+00  -3.0 2.44e+00    -  7.26e-01 9.22e-01h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   5  5.2781632e+01 4.33e+04 7.89e+05  -0.2 7.43e+02    -  2.14e-02 3.86e-02h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   6  2.6005056e+01 2.23e+00 9.36e-01  -3.0 7.73e-01    -  8.47e-01 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   6  5.3771208e+01 5.74e+04 6.32e+05  -0.2 4.71e+02    -  4.03e-02 1.02e-01h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   7  2.5011166e+01 5.53e+00 1.26e+00  -3.0 2.90e+00    -  6.92e-01 6.17e-01h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   7  5.3970815e+01 5.77e+04 5.82e+05  -0.2 1.10e+03    -  1.28e-02 1.16e-02h  2
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   8  2.3911197e+01 7.55e+00 1.27e+00  -3.0 5.00e+00    -  5.71e-01 5.40e-01h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   8  5.4244325e+01 5.89e+04 5.36e+05  -0.2 1.15e+03    -  7.68e-02 1.14e-02h  2
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   9  2.3297987e+01 7.28e+00 9.77e-01  -3.0 7.01e+00    -  3.59e-01 4.46e-01h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  10  2.3119177e+01 6.69e+00 8.75e-01  -3.0 9.36e+00    -  6.39e-01 2.67e-01h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  11  2.2849009e+01 5.52e+00 5.35e-01  -3.0 7.09e+00    -  5.61e-01 3.55e-01h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  12  2.2612864e+01 4.85e+00 3.04e-01  -3.0 9.59e+00    -  1.96e-01 3.92e-01h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  13  2.2553130e+01 4.19e+00 2.00e-01  -3.0 1.25e+01    -  9.36e-02 3.04e-01h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  14  2.2504235e+01 3.83e+00 1.48e-01  -3.0 2.71e+01    -  4.21e-01 2.31e-01h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  15  2.2493839e+01 2.71e+00 9.77e-02  -3.0 4.06e+00    -  8.89e-01 4.49e-01h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  16  2.2474714e+01 1.07e+00 5.23e-02  -3.0 3.17e+00    -  7.30e-01 1.00e+00h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  17  2.2464875e+01 1.70e-01 2.16e-02  -3.0 9.08e-01    -  1.00e+00 1.00e+00h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  18  2.2465988e+01 5.05e-02 1.62e-02  -3.0 4.00e-01    -  1.00e+00 1.00e+00h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  19  2.2470639e+01 2.29e-02 2.09e-02  -3.0 9.23e-02    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   9  5.4495199e+01 6.04e+04 5.07e+05  -0.2 1.49e+03    -  1.11e-02 1.11e-02h  2
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  20  2.2471284e+01 2.41e-03 2.33e-03  -3.0 5.32e-02    -  1.00e+00 1.00e+00h  1
+  10  5.4687711e+01 6.14e+04 4.89e+05  -0.2 1.69e+03    -  5.37e-02 7.67e-03h  2
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  21  2.2366744e+01 7.78e-01 6.70e-02  -4.0 8.84e-01    -  1.00e+00 7.49e-01f  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  11  5.4680673e+01 6.48e+04 5.01e+05  -0.2 2.43e+03    -  3.04e-02 9.77e-03h  2
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  22  2.2337433e+01 1.16e+00 6.49e-02  -4.0 3.13e+00    -  9.66e-01 2.73e-01h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  12  5.4482619e+01 6.45e+04 5.61e+05  -0.2 6.68e+03    -  2.22e-02 3.80e-03h  3
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  23  2.2310939e+01 1.41e+00 3.30e-02  -4.0 2.51e+00    -  4.98e-01 4.29e-01h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  13  5.4480385e+01 6.44e+04 5.66e+05  -0.2 6.59e+03    -  3.43e-03 2.79e-04h  4
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  24  2.2289053e+01 1.25e+00 5.45e-02  -4.0 1.76e+00    -  1.00e+00 6.33e-01h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  14  5.4465886e+01 6.44e+04 5.97e+05  -0.2 6.99e+03    -  3.54e-05 1.73e-03f  2
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  25  2.2285524e+01 9.75e-01 7.41e-02  -4.0 4.57e-01    -  1.00e+00 2.40e-01h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  15  5.4449413e+01 6.44e+04 6.20e+05  -0.2 2.14e+04    -  4.33e-04 2.93e-03h  2
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  26  2.2276642e+01 1.28e-01 2.17e-02  -4.0 5.50e-01    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  16  5.4810977e+01 6.55e+04 5.25e+05  -0.2 3.14e+04    -  6.85e-03 1.95e-02F  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  27  2.2279558e+01 1.49e-01 1.13e-02  -4.0 2.64e-01    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  17  5.4882499e+01 6.54e+04 5.30e+05  -0.2 2.44e+04    -  6.74e-04 4.75e-03h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  28  2.2279414e+01 2.03e-02 1.55e-02  -4.0 2.43e-01    -  1.00e+00 1.00e+00H  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  18  5.4900074e+01 6.52e+04 5.25e+05  -0.2 1.73e+04    -  2.59e-05 3.61e-03f  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  29  2.2278518e+01 1.76e-01 1.98e-02  -4.0 2.72e-01    -  1.00e+00 1.00e+00h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  30  2.2277991e+01 5.76e-03 1.39e-03  -4.0 7.38e-02    -  1.00e+00 1.00e+00h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  31  2.2278161e+01 1.07e-02 1.31e-03  -4.0 1.12e-01    -  1.00e+00 1.00e+00H  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  32  2.2274160e+01 7.47e-02 8.16e-03  -4.0 1.57e+00    -  1.00e+00 1.00e+00H  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  33  2.2272696e+01 3.16e+00 2.33e-02  -4.0 7.27e+00    -  1.00e+00 6.90e-01h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  34  2.2264661e+01 2.43e-01 1.32e-02  -4.0 2.13e+00    -  1.00e+00 7.56e-01h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  35  2.2265618e+01 2.22e-01 5.71e-02  -4.0 3.19e-01    -  1.00e+00 1.00e+00f  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  36  2.2265539e+01 3.77e-01 5.33e-03  -4.0 6.12e-01    -  1.00e+00 1.00e+00h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  37  2.2266269e+01 1.98e-01 3.93e-03  -4.0 3.34e-01    -  1.00e+00 1.00e+00h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  38  2.2265748e+01 7.21e-02 1.22e-02  -4.0 1.23e-01    -  1.00e+00 1.00e+00h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  39  2.2265536e+01 4.61e-02 1.05e-02  -4.0 7.95e-02    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  19  5.4834446e+01 6.29e+04 4.41e+05  -0.2 2.70e+04    -  3.18e-03 3.54e-02f  1
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  40  2.2265600e+01 4.55e-02 7.41e-03  -4.0 4.23e-02    -  1.00e+00 1.00e+00h  1
+  20  5.3507506e+01 4.24e+04 3.76e+05  -0.2 2.49e+04    -  3.98e-02 4.74e-01h  2
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  41  2.2265665e+01 1.90e-02 1.43e-03  -4.0 5.64e-02    -  1.00e+00 1.00e+00H  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  21  5.6121741e+01 2.09e+04 6.33e+05  -0.2 3.83e+03    -  7.26e-01 2.50e-01h  3
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  42  2.2265775e+01 1.07e-02 9.12e-04  -4.0 1.79e-02    -  1.00e+00 1.00e+00H  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  22  5.3803394e+01 1.25e+04 3.45e+05  -0.2 1.04e+04    -  1.31e-03 7.26e-04H  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  43  2.2265781e+01 1.34e-02 9.36e-04  -4.0 2.29e-02    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  23  5.3836256e+01 1.17e+04 3.72e+05  -0.2 1.02e+04    -  1.06e-01 2.07e-01h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  44  2.2265735e+01 9.45e-03 1.64e-03  -4.0 1.59e-02    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  24  5.3936937e+01 1.14e+04 3.81e+05  -0.2 8.82e+03    -  5.37e-02 1.39e-01h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  45  2.2265717e+01 1.13e-02 1.09e-04  -4.0 1.93e-02    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  25  5.3706060e+01 8.26e+03 2.12e+05  -0.2 6.98e+03    -  6.40e-02 3.62e-01h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  46  2.2265754e+01 4.17e-03 1.66e-04  -4.0 3.43e-03    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  26  5.3469714e+01 3.75e+03 5.51e+04  -0.2 4.67e+03    -  1.76e-01 6.79e-01h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  47  2.2265808e+01 2.76e-03 1.23e-03  -4.0 1.99e-02    -  1.00e+00 1.00e+00H  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  27  5.3320462e+01 3.40e+03 4.91e+04  -0.2 1.77e+03    -  3.70e-01 9.89e-02h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  48  2.2265862e+01 1.49e-03 2.69e-03  -4.0 4.69e-02    -  1.00e+00 1.00e+00H  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  28  5.2868143e+01 2.79e+03 3.70e+04  -0.2 1.61e+03    -  1.61e-01 2.14e-01h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  49  2.2265749e+01 1.30e-03 1.92e-03  -4.0 2.82e-02    -  1.00e+00 1.00e+00H  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  50  2.2266305e+01 5.59e-04 2.38e-02  -4.0 6.88e-02    -  1.00e+00 1.00e+00H  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  51  2.2265174e+01 2.43e-02 1.21e-03  -4.0 7.45e-02    -  1.00e+00 1.00e+00h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  52  2.2265683e+01 8.55e-03 1.28e-03  -4.0 1.03e-02    -  1.00e+00 1.00e+00h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  53r 2.2265683e+01 8.55e-03 9.86e+02  -2.1 0.00e+00    -  0.00e+00 4.77e-07R 22
-  54r 2.2266571e+01 7.64e-03 9.61e+02  -2.1 8.53e+00    -  2.48e-02 1.00e-03f  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  55  2.2265686e+01 1.61e-02 1.63e-03  -4.0 1.25e-02    -  1.00e+00 1.00e+00s 22
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  56  2.2265728e+01 1.30e-02 1.10e-03  -4.0 1.11e-02    -  1.00e+00 1.00e+00s 22
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  57  2.2265744e+01 3.23e-03 3.65e-03  -4.0 9.96e-03    -  1.00e+00 0.00e+00S 22
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  58  2.2265744e+01 3.18e-03 4.64e-04  -4.0 8.32e-03    -  1.00e+00 1.00e+00h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  59  2.2265748e+01 3.25e-03 3.82e-04  -4.0 2.95e-03    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  29  5.2536681e+01 2.48e+03 3.05e+04  -0.2 1.29e+03    -  9.40e-02 1.29e-01h  1
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  60  2.2265754e+01 1.19e-03 3.41e-04  -4.0 2.36e-03    -  1.00e+00 1.00e+00h  1
+  30  5.3793152e+01 1.59e+03 3.15e+04  -0.2 1.14e+03    -  2.43e-01 6.94e-02H  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  61  2.2265749e+01 2.16e-03 4.98e-04  -4.0 4.55e-03    -  1.00e+00 1.00e+00H  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  31  5.7838134e+01 5.63e+02 1.26e+03  -0.2 1.02e+03    -  1.59e-01 8.59e-01f  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  62  2.2265741e+01 7.09e-04 1.16e-04  -4.0 4.17e-03    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  32  6.0601692e+01 4.76e+02 9.52e+02  -0.2 1.53e+02    -  2.57e-01 4.20e-01f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  33  6.7950197e+01 1.76e+03 1.28e+04  -0.2 8.67e+01    -  4.49e-01 8.15e-01f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  34  6.7464546e+01 1.36e+03 1.43e+04  -0.2 1.97e+01    -  5.05e-02 2.21e-01f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  35  6.9689302e+01 2.85e+03 3.03e+05  -0.2 1.92e+01    -  1.68e-01 1.00e+00f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  36  7.0180255e+01 1.81e+03 1.19e+05  -0.2 8.35e+01    -  1.43e-02 2.92e-01f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  37  6.9973053e+01 1.33e+03 3.59e+04  -0.2 1.66e+01    -  3.24e-01 3.22e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  38  6.9772632e+01 1.19e+03 2.63e+04  -0.2 1.13e+01    -  5.52e-01 1.20e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  39  6.9158436e+01 1.04e+03 2.33e+04  -0.2 1.45e+01    -  1.42e-01 1.53e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  40  6.6240475e+01 3.47e+02 9.81e+03  -0.2 8.41e+00    -  2.64e-01 6.66e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  41  6.3604040e+01 3.02e+02 3.63e+03  -0.2 2.02e+01    -  2.92e-01 5.63e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  42  6.3570289e+01 2.97e+02 3.56e+03  -0.2 1.22e+01    -  2.74e-01 1.50e-02h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  43  7.5673669e+01 1.36e+03 5.11e+03   0.4 1.16e+01    -  1.11e-01 4.06e-01f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  44  7.5674365e+01 1.26e+03 4.45e+03  -0.2 5.67e+01    -  5.96e-02 7.37e-02f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  45  7.7608991e+01 8.18e+02 2.55e+03  -0.2 4.48e+01    -  2.28e-01 1.00e+00f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  46  7.9569567e+01 8.34e+02 2.75e+03  -0.2 5.57e+01    -  4.97e-01 3.68e-02H  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  47  7.5099119e+01 7.19e+02 1.87e+03  -0.2 5.37e+01    -  8.95e-02 1.35e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  48  7.5363825e+01 7.17e+02 1.86e+03  -0.2 4.65e+01    -  2.84e-01 5.82e-03H  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  49  6.3140861e+01 3.01e+02 5.78e+03  -0.2 4.64e+01    -  4.46e-02 3.00e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  50  6.3503505e+01 2.98e+02 5.66e+03  -0.2 3.16e+01    -  8.63e-02 9.36e-03H  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  51  5.8897051e+01 3.99e+02 4.26e+04  -0.2 3.30e+01    -  2.04e-01 3.82e-01f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  52  5.9581310e+01 6.46e+02 1.19e+04  -0.2 1.34e+01    -  7.42e-02 1.44e-01F  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  53  6.0265320e+01 4.92e+02 1.61e+04  -0.2 1.15e+01    -  1.49e-02 1.73e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  54  6.1237064e+01 2.47e+02 2.83e+04  -0.2 1.03e+01    -  7.44e-02 3.72e-01f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  55  6.2431853e+01 1.26e+02 1.77e+04  -0.2 9.96e+00    -  1.00e+00 3.51e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  56  5.0978496e+01 1.26e+03 1.43e+03  -0.5 8.01e+00    -  9.08e-01 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  57  5.4675460e+01 9.81e+02 8.20e+02  -0.5 1.57e+01    -  8.14e-02 4.68e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  58  5.3810706e+01 2.91e+02 1.94e+02  -0.5 1.16e+01    -  1.69e-01 1.00e+00f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  59  5.5743212e+01 1.16e+02 1.19e+02  -0.2 1.75e+01    -  5.09e-01 8.38e-01f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  60  5.0950233e+01 1.09e+02 4.47e+02  -0.5 7.87e+00    -  6.78e-01 1.00e+00f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  61  6.1263775e+01 1.02e+02 2.65e+02  -0.2 1.84e+00    -  1.00e+00 8.70e-01f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  62  6.4211990e+01 9.29e+01 5.36e+02  -0.2 8.37e+00    -  8.66e-02 1.49e-01H  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  63  5.8414813e+01 2.97e+01 2.42e+03  -0.2 2.65e+00    -  1.86e-02 1.00e+00f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  64  6.7354663e+01 6.30e+01 3.01e+02  -0.2 1.59e+00    -  1.00e+00 1.00e+00H  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  65  6.3863437e+01 9.67e+01 3.15e+02  -0.3 5.65e-01    -  7.29e-01 1.00e+00f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  66  5.2045459e+01 4.83e+01 1.32e+02  -0.4 9.73e-01    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  67  4.2549612e+01 5.30e+01 3.43e+01  -1.2 1.42e+00    -  1.00e+00 1.00e+00f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  68  4.2252412e+01 3.98e+01 2.98e+01  -0.9 1.34e+00    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  69  2.9473806e+01 3.06e+01 6.56e+00  -1.4 1.96e+00    -  1.00e+00 1.00e+00f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  70  3.0997881e+01 5.04e+01 4.18e+00  -1.5 3.73e+00    -  9.84e-01 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  71  3.1016007e+01 5.17e+00 3.40e+00  -1.5 3.64e+00    -  7.45e-01 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  72  2.7354268e+01 2.51e+01 4.58e+00  -1.9 7.56e+00    -  9.95e-01 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  73  2.5742614e+01 7.54e+00 1.03e+00  -2.0 1.69e+00    -  1.00e+00 9.99e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  74  2.4321129e+01 1.61e+01 2.12e+00  -2.2 2.66e+00    -  8.28e-01 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  75  2.5186607e+01 9.49e+00 6.19e-01  -1.9 2.14e+00    -  4.99e-01 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  76  2.4475268e+01 3.46e+00 2.24e-01  -2.1 3.29e+00    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  77  2.3045075e+01 5.57e+00 4.62e-01  -2.6 2.87e+00    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  78  2.2986235e+01 1.18e+00 1.26e-01  -2.5 2.47e+00    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  79  2.2668162e+01 2.34e+00 6.75e-02  -2.9 1.69e+00    -  1.00e+00 9.94e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  80  2.2508839e+01 2.22e+00 9.35e-02  -3.0 2.92e+00    -  9.90e-01 9.99e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  81  2.2769191e+01 2.60e+00 1.55e-01  -2.6 1.72e+00    -  5.84e-01 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  82  2.2636651e+01 1.73e+00 6.52e-02  -2.8 2.22e+00    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  83  2.2504162e+01 1.25e+00 3.49e-02  -2.9 1.80e+00    -  1.00e+00 9.98e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  84  2.2418538e+01 9.49e-01 2.06e-02  -3.2 2.03e+00    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  85  2.2378872e+01 1.23e+00 1.87e-02  -3.2 2.66e+00    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  86  2.2317680e+01 7.60e-01 3.55e-02  -3.6 8.95e-01    -  9.79e-01 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  87  2.2422645e+01 1.34e+00 3.46e-02  -3.0 2.05e+00    -  8.31e-01 9.96e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  88  2.2405006e+01 2.67e-01 4.17e-02  -3.1 3.65e-01    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  89  2.2338997e+01 9.06e-01 3.57e-02  -3.4 1.26e+00    -  9.78e-01 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  90  2.2324434e+01 3.26e-01 5.19e-02  -3.5 5.61e-01    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  91  2.2287719e+01 5.02e-01 3.80e-02  -4.0 6.22e-01    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  92  2.2297830e+01 1.07e-01 5.71e-03  -3.7 2.88e-01    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  93  2.2281198e+01 3.52e-01 1.13e-02  -4.2 3.89e-01    -  1.00e+00 9.98e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  94  2.2276944e+01 5.60e-01 1.72e-02  -4.4 8.66e-01    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  95  2.2289723e+01 2.35e-01 2.42e-02  -3.8 5.80e-01    -  7.83e-01 9.92e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  96  2.2276702e+01 4.99e-01 6.50e-03  -4.1 6.50e-01    -  1.00e+00 9.99e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  97  2.2270899e+01 7.70e-01 1.29e-02  -4.4 1.16e+00    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  98  2.2271213e+01 1.12e+00 2.82e-02  -4.1 1.85e+00    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  99  2.2268131e+01 5.44e-01 2.46e-02  -4.2 2.29e-01    -  1.00e+00 5.89e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 100  2.2263698e+01 9.42e-02 6.21e-02  -4.3 2.56e-01    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 101  2.2259709e+01 2.23e-01 5.40e-03  -4.7 3.17e-01    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 102  2.2260415e+01 2.68e-01 5.33e-03  -4.9 4.08e-01    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 103  2.2260073e+01 1.53e+00 1.09e-02  -4.6 2.50e+00    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 104  2.2259250e+01 1.84e+00 1.26e-02  -4.7 6.87e+00    -  7.29e-01 1.18e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 105  2.2254941e+01 2.79e-01 4.04e-02  -4.5 4.40e-01    -  6.30e-01 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 106  2.2251689e+01 1.59e-01 3.09e-02  -4.6 2.76e-01    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 107  2.2257585e+01 2.13e-01 3.84e-02  -4.1 2.47e-01    -  7.04e-01 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 108  2.2254984e+01 1.43e-01 9.02e-03  -4.5 1.79e-01    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 109  2.2253323e+01 1.68e-01 1.56e-02  -5.0 2.14e-01    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 110  2.2252215e+01 3.28e-02 3.45e-03  -5.4 4.06e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 111  2.2252049e+01 2.22e-02 4.01e-03  -5.5 3.38e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 112  2.2251808e+01 4.26e-02 4.32e-03  -6.0 2.32e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 113  2.2251849e+01 9.65e-02 4.33e-03  -5.8 4.41e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 114  2.2251748e+01 2.27e-01 1.18e-02  -5.9 1.04e-01    -  7.46e-01 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 115  2.2252248e+01 2.00e-01 8.68e-03  -5.2 1.85e-01    -  1.00e+00 9.87e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 116  2.2251384e+01 5.35e-02 3.56e-02  -5.3 1.81e-01    -  5.16e-01 7.74e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 117  2.2251557e+01 2.26e-02 6.32e-03  -5.0 1.04e-01    -  1.00e+00 1.00e+00f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 118  2.2252432e+01 4.36e-02 9.09e-03  -5.3 3.47e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 119  2.2252262e+01 1.56e-02 9.59e-03  -5.4 4.03e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 120  2.2252232e+01 1.81e-02 3.84e-03  -5.4 3.25e-02    -  9.40e-01 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 121  2.2251973e+01 1.17e-02 3.23e-03  -5.8 2.88e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 122  2.2251858e+01 9.20e-03 2.12e-03  -6.1 1.56e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 123  2.2251773e+01 5.38e-03 1.99e-03  -6.7 2.51e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 124  2.2251812e+01 4.45e-03 1.08e-03  -6.4 1.45e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 125  2.2251774e+01 7.73e-03 6.12e-03  -7.2 1.29e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 126  2.2251767e+01 3.33e-03 1.09e-03  -7.3 1.05e-02    -  1.00e+00 7.47e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 127  2.2251771e+01 2.92e-03 3.58e-04  -8.0 4.07e-03    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 128  2.2251775e+01 1.04e-03 1.85e-03  -8.7 1.02e-02    -  1.00e+00 1.00e+00H  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 129  2.2251765e+01 2.79e-02 5.65e-03  -7.1 1.21e-01    -  1.00e+00 2.64e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 130  2.2251738e+01 6.66e-02 7.22e-03  -7.5 9.04e-02    -  7.92e-01 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 131  2.2251668e+01 2.05e-03 2.61e-03  -6.7 4.23e-02    -  6.70e-01 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 132  2.2251763e+01 2.28e-03 2.13e-03  -6.8 3.10e-02    -  1.00e+00 9.73e-01H  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 133  2.2251753e+01 7.36e-03 7.72e-04  -6.5 2.20e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 134  2.2251755e+01 4.05e-04 1.73e-03  -6.6 2.10e-02    -  1.00e+00 1.00e+00H  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 135  2.2251712e+01 5.69e-02 6.00e-03  -7.0 9.29e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 136  2.2251681e+01 1.09e-01 7.54e-03  -7.1 4.12e-01    -  6.76e-01 2.76e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 137  2.2251584e+01 1.51e-01 1.30e-02  -7.1 3.94e-01    -  1.11e-01 3.67e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 138  2.2251497e+01 1.02e-02 9.31e-03  -7.1 1.82e-01    -  1.91e-01 5.23e-01f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 139  2.2251445e+01 7.36e-02 7.82e-03  -6.6 7.76e-01    -  1.82e-01 1.71e-01f  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 140  2.2251542e+01 6.23e-02 4.96e-03  -6.6 9.70e-02    -  3.24e-02 6.15e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 141  2.2251551e+01 5.60e-02 3.72e-03  -7.0 8.36e-02    -  2.66e-01 1.53e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 142  2.2251617e+01 4.93e-03 1.71e-02  -7.0 4.83e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 143  2.2251564e+01 3.35e-03 7.61e-03  -7.1 4.10e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 144  2.2251697e+01 4.59e-03 2.81e-03  -7.3 1.25e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 145  2.2251716e+01 1.33e-03 8.22e-04  -7.6 4.65e-03    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 146  2.2251717e+01 1.06e-03 2.28e-04  -8.3 2.29e-03    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 147  2.2251716e+01 1.56e-03 8.47e-05  -9.5 1.38e-03    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 148  2.2251716e+01 2.60e-03 1.36e-03  -9.6 3.71e-03    -  1.00e+00 2.38e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 149  2.2251716e+01 6.64e-03 6.50e-04  -9.6 5.75e-03    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 150  2.2251716e+01 8.35e-03 1.44e-03  -9.6 1.04e-02    -  2.83e-01 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 151  2.2251710e+01 1.23e-03 3.28e-03  -9.6 9.27e-03    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 152  2.2251708e+01 7.71e-04 7.33e-04  -9.6 9.80e-03    -  1.00e+00 1.00e+00h  1
 
-Number of Iterations....: 62
+Number of Iterations....: 152
 
                                    (scaled)                 (unscaled)
-Objective...............:   2.2265741109870437e+01    2.2265741109870437e+01
-Dual infeasibility......:   1.1595046336387860e-04    1.1595046336387860e-04
-Constraint violation....:   7.0918609182468728e-04    7.0918609182468728e-04
-Complementarity.........:   9.0909090909090931e-05    9.0909090909090931e-05
-Overall NLP error.......:   7.0918609182468728e-04    7.0918609182468728e-04
+Objective...............:   2.2251707568937420e+01    2.2251707568937420e+01
+Dual infeasibility......:   7.3278054827796701e-04    7.3278054827796701e-04
+Constraint violation....:   7.7069079890179637e-04    7.7069079890179637e-04
+Complementarity.........:   2.2636471836692830e-10    2.2636471836692830e-10
+Overall NLP error.......:   7.7069079890179637e-04    7.7069079890179637e-04
 
 
-Number of objective function evaluations             = 132
-Number of objective gradient evaluations             = 63
-Number of equality constraint evaluations            = 132
-Number of inequality constraint evaluations          = 132
-Number of equality constraint Jacobian evaluations   = 64
-Number of inequality constraint Jacobian evaluations = 64
+Number of objective function evaluations             = 187
+Number of objective gradient evaluations             = 153
+Number of equality constraint evaluations            = 192
+Number of inequality constraint evaluations          = 192
+Number of equality constraint Jacobian evaluations   = 153
+Number of inequality constraint Jacobian evaluations = 153
 Number of Lagrangian Hessian evaluations             = 0
-Total CPU secs in IPOPT (w/o function evaluations)   =      1.737
-Total CPU secs in NLP function evaluations           =     20.807
+Total CPU secs in IPOPT (w/o function evaluations)   =      1.846
+Total CPU secs in NLP function evaluations           =     26.266
 
 EXIT: Optimal Solution Found.
 </pre></div>
@@ -1792,11 +2122,14 @@ EXIT: Optimal Solution Found.
 Plotting
 </pre></div>
 </div>
-<img alt="../../_images/racecar_7_95.png" src="../../_images/racecar_7_95.png" />
-<img alt="../../_images/racecar_7_96.png" src="../../_images/racecar_7_96.png" />
-<img alt="../../_images/racecar_7_97.png" src="../../_images/racecar_7_97.png" />
-<img alt="../../_images/racecar_7_98.png" src="../../_images/racecar_7_98.png" />
-<img alt="../../_images/racecar_7_99.png" src="../../_images/racecar_7_99.png" />
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.0, 1244.8229715025711)
+</pre></div>
+</div>
+<img alt="../../_images/racecar_7_189.png" src="../../_images/racecar_7_189.png" />
+<img alt="../../_images/racecar_7_190.png" src="../../_images/racecar_7_190.png" />
+<img alt="../../_images/racecar_7_191.png" src="../../_images/racecar_7_191.png" />
+<img alt="../../_images/racecar_7_192.png" src="../../_images/racecar_7_192.png" />
+<img alt="../../_images/racecar_7_193.png" src="../../_images/racecar_7_193.png" />
 </div>
 </div>
 <div class="cell tag_remove-input tag_remove-output docutils container">
@@ -1828,36 +2161,16 @@ Plotting
               </div>
               
         
+        <div class='prev-next-bottom'>
             
+    <a class='left-prev' id="prev-link" href="../multibranch_trajectory/multibranch_trajectory.html" title="previous page">Multibranch Trajectory</a>
+    <a class='right-next' id="next-link" href="../reentry/reentry.html" title="next page">Single-Phase Space Shuttle Reentry</a>
 
-
-
-<div class='prev-next-bottom'>
-    
-    <div id="prev">
-        <a class="left-prev" href="../multibranch_trajectory/multibranch_trajectory.html" title="previous page">
-            <i class="prevnext-label fas fa-angle-left"></i>
-            <div class="prevnext-info">
-                <p class="prevnext-label">previous</p>
-                <p class="prevnext-title">Multibranch Trajectory</p>
-            </div>
-        </a>
-    </div>
-     <div id="next">
-        <a class="right-next" href="../reentry/reentry.html" title="next page">
-            <div class="prevnext-info">
-                <p class="prevnext-label">next</p>
-                <p class="prevnext-title">Single-Phase Space Shuttle Reentry</p>
-            </div>
-            <i class="prevnext-label fas fa-angle-right"></i>
-        </a>
-     </div>
-
-</div>
+        </div>
         
         </div>
     </div>
-    <footer class="footer">
+    <footer class="footer mt-5 mt-md-0">
     <div class="container">
       <p>
         
