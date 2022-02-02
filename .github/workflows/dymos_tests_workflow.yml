@@ -1,5 +1,8 @@
 # Run Tests
 
+# Matrix Options
+# DOCS: 2-Build and publish, 1-build only, 0-no docs
+
 name: Dymos Tests
 
 on:
@@ -30,6 +33,28 @@ jobs:
             MBI: 1
             OPENMDAO: 'latest'
             OPTIONAL: '[all]'
+            DOCS: 2
+
+          # baseline versions except no pyoptsparse or SNOPT
+          - PY: 3.8
+            NUMPY: 1.18
+            SCIPY: 1.4
+            PETSc: 3.12
+            MBI: 1
+            OPENMDAO: 'latest'
+            OPTIONAL: '[all]'
+            DOCS: 0
+
+          # baseline versions except with pyoptsparse but no SNOPT
+          # build docs to verify those that use pyoptsparse do not use SNOPT
+          - PY: 3.8
+            NUMPY: 1.18
+            SCIPY: 1.4
+            PETSc: 3.12
+            PYOPTSPARSE: 'v2.1.5'
+            MBI: 1
+            OPENMDAO: 'latest'
+            OPTIONAL: '[all]'
             DOCS: 1
 
           # try latest versions
@@ -45,7 +70,7 @@ jobs:
             DOCS: 0
 
           # oldest supported versions
-          - PY: 3.6
+          - PY: 3.7
             NUMPY: 1.16
             SCIPY: 1.2
             PETSc: 3.10.2
@@ -201,12 +226,16 @@ jobs:
           conda list
 
       - name: Run tests
+        env:
+          DYMOS_CHECK_PARTIALS: True
         shell: bash -l {0}
         run: |
           echo "============================================================="
           echo "Run Tests"
+          echo "Environment:"
+          echo "   DYMOS_CHECK_PARTIALS: $DYMOS_CHECK_PARTIALS"
           echo "============================================================="
-          testflo -n 1 docs/test --pre_announce
+          testflo -n 1 docs/dymos_book/test --pre_announce
           testflo -n 1 joss/test --pre_announce
           testflo -b benchmark --pre_announce
           cd $HOME
@@ -228,21 +257,31 @@ jobs:
           coveralls --basedir $SITE_DIR
 
       - name: Build docs
-        if: ${{ matrix.DOCS == '1' }}
+        if: ${{ matrix.DOCS == '1' || matrix.DOCS == '2' }}
+        id: build_docs
         shell: bash -l {0}
         run: |
           echo "============================================================="
           echo "Building Docs"
           echo "============================================================="
-          pwd
-          git clone -q https://github.com/executablebooks/jupyter-book
-          cd jupyter-book
-          pip install -e .
-          cd ..
-          jupyter-book build docs/
+          pip install git+https://github.com/executablebooks/jupyter-book
+          cd docs
+          jupyter-book build -W --keep-going dymos_book
+          python copy_build_artifacts.py
+
+      - name: Display doc build reports
+        continue-on-error: True
+        if: failure() && (matrix.DOCS == '1' || matrix.DOCS == '2') && steps.build_docs.outcome == 'failure'
+        run: |
+          for f in /home/runner/work/dymos/dymos/docs/dymos_book/_build/html/reports/*; do
+            echo "============================================================="
+            echo $f
+            echo "============================================================="
+            cat $f
+          done
 
       - name: Publish docs
-        if: ${{ matrix.DOCS == '1' && github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        if: ${{ matrix.DOCS == '2' && github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         shell: bash -l {0}
         run: |
           echo "============================================================="
@@ -251,7 +290,7 @@ jobs:
           pip install ghp-import
           cd $HOME/work/dymos/dymos
           pwd
-          ghp-import -n -p -f docs/_build/html
+          ghp-import -n -p -f docs/dymos_book/_build/html
 
   coveralls:
     name: Finish coveralls

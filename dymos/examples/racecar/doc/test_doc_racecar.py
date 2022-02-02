@@ -1,6 +1,7 @@
 import unittest
 
 from openmdao.utils.testing_utils import use_tempdirs, require_pyoptsparse
+from openmdao.utils.assert_utils import assert_near_equal
 
 
 @use_tempdirs
@@ -10,7 +11,6 @@ class TestRaceCarForDocs(unittest.TestCase):
     def test_racecar_for_docs(self):
         import numpy as np
         import openmdao.api as om
-        from openmdao.utils.assert_utils import assert_near_equal
         import dymos as dm
         import matplotlib.pyplot as plt
         import matplotlib as mpl
@@ -82,10 +82,9 @@ class TestRaceCarForDocs(unittest.TestCase):
 
         # Define Controls
         phase.add_control(name='delta', units='rad', lower=None, upper=None, fix_initial=False,
-                          fix_final=False, targets=['delta'], ref=0.04)  # steering angle
-        phase.add_control(name='thrust', units=None, fix_initial=False, fix_final=False, targets=[
-            'thrust'])  # the thrust controls the longitudinal force of the rear tires and is
-        # positive while accelerating, negative while braking
+                          fix_final=False, ref=0.04, rate_continuity=True)  # steering angle
+        phase.add_control(name='thrust', units=None, fix_initial=False, fix_final=False, rate_continuity=True)
+        # the thrust controls the longitudinal force of the rear tires and is positive while accelerating, negative while braking
 
         # Performance Constraints
         pmax = 960000  # W
@@ -138,10 +137,11 @@ class TestRaceCarForDocs(unittest.TestCase):
         p.driver.opt_settings['compl_inf_tol'] = 1e-3
         p.driver.opt_settings['acceptable_iter'] = 0
         p.driver.opt_settings['tol'] = 1e-3
-        p.driver.opt_settings['nlp_scaling_method'] = 'none'
         p.driver.opt_settings['print_level'] = 5
         p.driver.opt_settings['nlp_scaling_method'] = 'gradient-based'  # for faster convergence
-        p.driver.options['print_results'] = False
+        p.driver.opt_settings['alpha_for_y'] = 'safer-min-dual-infeas'
+        p.driver.opt_settings['mu_strategy'] = 'monotone'
+        # p.driver.options['print_results'] = False
 
         # Allow OpenMDAO to automatically determine our sparsity pattern.
         # Doing so can significant speed up the execution of Dymos.
@@ -172,9 +172,6 @@ class TestRaceCarForDocs(unittest.TestCase):
         dm.run_problem(p, run_driver=True)
         print('Optimization finished')
 
-        # Test this example in Dymos' continuous integration process
-        assert_near_equal(p.get_val('traj.phase0.timeseries.states:t')[-1], 22.2657, tolerance=0.01)
-
         # Get optimized time series
         n = p.get_val('traj.phase0.timeseries.states:n')
         s = p.get_val('traj.phase0.timeseries.time')
@@ -182,6 +179,8 @@ class TestRaceCarForDocs(unittest.TestCase):
         thrust = p.get_val('traj.phase0.timeseries.controls:thrust')
         delta = p.get_val('traj.phase0.timeseries.controls:delta')
         power = p.get_val('traj.phase0.timeseries.power', units='W')
+
+        assert_near_equal(p.get_val('traj.phase0.timeseries.states:t')[-1, ...], 22.2657, tolerance=1.0E-2)
 
         print("Plotting")
 
@@ -346,8 +345,6 @@ class TestRaceCarForDocs(unittest.TestCase):
         axes.set_ylabel('Performance constraints')
         axes.grid()
         axes.set_xlim(0, s_final)
-
-        plt.show()
 
 
 if __name__ == '__main__':  # pragma: no cover

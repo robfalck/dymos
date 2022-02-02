@@ -5,7 +5,7 @@ from ...options import options as dymos_options
 
 from .ode_evaluation_group import ODEEvaluationGroup
 from ...utils.misc import get_rate_units
-from ...utils.introspection import filter_outputs
+from ...utils.introspection import filter_outputs, get_promoted_vars
 
 
 rk_methods = {'rk4': {'a': np.array([[0.0, 0.0, 0.0, 0.0],
@@ -169,7 +169,6 @@ class RKIntegrationComp(om.ExplicitComponent):
         p.final_setup()
 
         self._deriv_subprob = p = om.Problem(comm=self.comm)
-        p.driver = om.pyOptSparseDriver(optimizer='SNOPT')
         p.model.add_subsystem('ode_eval',
                               ODEEvaluationGroup(self.ode_class, self.time_options,
                                                  self.state_options,
@@ -570,6 +569,7 @@ class RKIntegrationComp(om.ExplicitComponent):
         """
         num_output_rows = self._num_output_rows
         ode_eval = self._eval_subprob.model._get_subsystem('ode_eval.ode')
+        ode_outputs = get_promoted_vars(ode_eval, 'output')
 
         self._timeseries_output_names = {}
         self._timeseries_idxs_in_y = {}
@@ -577,7 +577,7 @@ class RKIntegrationComp(om.ExplicitComponent):
 
         for ts_name, ts_opts in self.timeseries_options.items():
             patterns = list(ts_opts['outputs'].keys())
-            matching_outputs = filter_outputs(patterns, ode_eval)
+            matching_outputs = filter_outputs(patterns, ode_outputs)
 
             explicit_requests = set([key for key in
                                      self.timeseries_options[ts_name]['outputs'].keys()
