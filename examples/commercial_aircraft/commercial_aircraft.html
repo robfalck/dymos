@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Commercial Aircraft Range Maximization by Differential Inclusion &#8212; Dymos</title>
     
-  <link href="../../_static/css/theme.css" rel="stylesheet">
-  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,12 +19,8 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
@@ -32,7 +29,8 @@
     <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
-  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
@@ -40,12 +38,12 @@
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -65,7 +63,21 @@ const thebe_selector_output = ".output, .cell_output"
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
     
     <div class="container-fluid" id="banner"></div>
 
@@ -74,9 +86,10 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="container-xl">
       <div class="row">
           
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../../index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
@@ -94,14 +107,15 @@ const thebe_selector_output = ".output, .cell_output"
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../index.html">
-   Multidisciplinary Optimal Control Library
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    Multidisciplinary Optimal Control Library
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Installation
  </span>
@@ -450,112 +464,227 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-</div>
-
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
             
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../../_sources/examples/commercial_aircraft/commercial_aircraft.ipynb"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.ipynb</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
-
-            <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/OpenMDAO/dymos"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        <a class="issues-button"
-            href="https://github.com/OpenMDAO/dymos/issues/new?title=Issue%20on%20page%20%2Fexamples/commercial_aircraft/commercial_aircraft.html&body=Your%20issue%20content%20here."><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
-        
-    </div>
-</div>
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
-    <div class="dropdown-buttons">
-        
-        <a class="binder-button" href="https://mybinder.org/v2/gh/OpenMDAO/dymos/master?urlpath=tree/docs/examples/commercial_aircraft/commercial_aircraft.ipynb"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
-                data-placement="left"><img class="binder-button-logo"
-                    src="../../_static/images/logo_binder.svg"
-                    alt="Interact on binder">Binder</button></a>
-        
-        
-        
-        <a class="colab-button" href="https://colab.research.google.com/github/OpenMDAO/dymos/blob/master/docs/examples/commercial_aircraft/commercial_aircraft.ipynb"><button type="button" class="btn btn-secondary topbarbtn"
-                title="Launch Colab" data-toggle="tooltip" data-placement="left"><img class="colab-button-logo"
-                    src="../../_static/images/logo_colab.png"
-                    alt="Interact on Colab">Colab</button></a>
-        
-        
-    </div>
-</div>
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/OpenMDAO/dymos/master?urlpath=tree/docs/examples/commercial_aircraft/commercial_aircraft.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://colab.research.google.com/github/OpenMDAO/dymos/blob/master/docs/examples/commercial_aircraft/commercial_aircraft.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Colab"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../../_static/images/logo_colab.png">
+  </span>
+<span class="headerbtn__text-container">Colab</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/OpenMDAO/dymos"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/OpenMDAO/dymos/issues/new?title=Issue%20on%20page%20%2Fexamples/commercial_aircraft/commercial_aircraft.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../../_sources/examples/commercial_aircraft/commercial_aircraft.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#differential-inclusion">
    Differential Inclusion
@@ -686,12 +815,11 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
 </ul>
 
-            </nav>
-        </div>
-    </div>
+    </nav>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
                 <h1>Commercial Aircraft Range Maximization by Differential Inclusion</h1>
@@ -838,13 +966,14 @@ const thebe_selector_output = ".output, .cell_output"
                     </div>
                 </div>
             </div>
-            
+            <main id="main-content" role="main">
+                
               <div>
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
 <div class="tex2jax_ignore mathjax_ignore section" id="commercial-aircraft-range-maximization-by-differential-inclusion">
-<h1>Commercial Aircraft Range Maximization by Differential Inclusion<a class="headerlink" href="#commercial-aircraft-range-maximization-by-differential-inclusion" title="Permalink to this headline">¶</a></h1>
+<h1>Commercial Aircraft Range Maximization by Differential Inclusion<a class="headerlink" href="#commercial-aircraft-range-maximization-by-differential-inclusion" title="Permalink to this headline">#</a></h1>
 <p>In this example we seek to maximize the range of a commercial aircraft
 flying at a constant Mach number with a fixed initial fuel load. The
 initial and final altitudes are constrained to 10000 ft (that is, in
@@ -856,7 +985,7 @@ slower to conserve fuel, ignoring the running costs of being airborne.</p>
 <p>For a more detailed optimization of commercial aircraft performance, see
 Betts <span id="id1">[<a class="reference internal" href="#id30" title="John T Betts and Evin J Cramer. Application of direct transcription to commercial aircraft trajectory optimization. Journal of Guidance, Control, and Dynamics, 18(1):151–159, 1995.">CBC95</a>]</span>.</p>
 <div class="section" id="differential-inclusion">
-<h2>Differential Inclusion<a class="headerlink" href="#differential-inclusion" title="Permalink to this headline">¶</a></h2>
+<h2>Differential Inclusion<a class="headerlink" href="#differential-inclusion" title="Permalink to this headline">#</a></h2>
 <p>In this case we also use the steady flight assumption to allow the
 problem to be parameterized with a different control set. Rather than
 providing throttle/thrust and angle of attack as control variables, we
@@ -880,7 +1009,7 @@ can lead to inaccurate derivatives based on the properties of the
 solver. With OpenMDAO’s unified derivatives framework, the sensitivy to
 solver tolerances is greatly reduced.</p>
 <div class="section" id="pitfalls-of-differential-inclusion">
-<h3>Pitfalls of Differential Inclusion<a class="headerlink" href="#pitfalls-of-differential-inclusion" title="Permalink to this headline">¶</a></h3>
+<h3>Pitfalls of Differential Inclusion<a class="headerlink" href="#pitfalls-of-differential-inclusion" title="Permalink to this headline">#</a></h3>
 <p>Differential inclusion works well in this case but it is highly
 dependent on the parameterization of the problem. For instance, it is
 possible for the optimizer to suggest a flight profile that requires
@@ -901,7 +1030,7 @@ constraint <span class="math notranslate nohighlight">\(climb\_rate\)</span> wit
 time-history of altitude will be smoother since it is the time integral
 of the rate of climb.</p>
 <div class="section" id="solver-options">
-<h4>Solver Options<a class="headerlink" href="#solver-options" title="Permalink to this headline">¶</a></h4>
+<h4>Solver Options<a class="headerlink" href="#solver-options" title="Permalink to this headline">#</a></h4>
 <p>In general, <em>openmdao.api.AnalysisError</em> should be raised
 when the design variables provided by the optimizer result in
 nonconvergence of the solvers. This informs pyoptsparse to backtrack
@@ -926,7 +1055,7 @@ up-to-date.</p>
 </div>
 </div>
 <div class="section" id="the-impact-of-choice-of-transcription">
-<h4>The Impact of Choice of Transcription<a class="headerlink" href="#the-impact-of-choice-of-transcription" title="Permalink to this headline">¶</a></h4>
+<h4>The Impact of Choice of Transcription<a class="headerlink" href="#the-impact-of-choice-of-transcription" title="Permalink to this headline">#</a></h4>
 <p>The high-order Gauss-Lobatto method used by Dymos evaluates the ordinary
 differential equations in a two-step process. First, the ODEs are
 evaluated at the <em>state discretization</em> nodes. Using the state values
@@ -948,9 +1077,9 @@ preferable when using a differential inclusion approach to problems.</p>
 </div>
 </div>
 <div class="section" id="problem-formulation">
-<h2>Problem Formulation<a class="headerlink" href="#problem-formulation" title="Permalink to this headline">¶</a></h2>
+<h2>Problem Formulation<a class="headerlink" href="#problem-formulation" title="Permalink to this headline">#</a></h2>
 <div class="section" id="state-variables">
-<h3>State Variables<a class="headerlink" href="#state-variables" title="Permalink to this headline">¶</a></h3>
+<h3>State Variables<a class="headerlink" href="#state-variables" title="Permalink to this headline">#</a></h3>
 <table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Name</p></th>
@@ -979,7 +1108,7 @@ preferable when using a differential inclusion approach to problems.</p>
 </table>
 </div>
 <div class="section" id="dynamic-controls">
-<h3>Dynamic Controls<a class="headerlink" href="#dynamic-controls" title="Permalink to this headline">¶</a></h3>
+<h3>Dynamic Controls<a class="headerlink" href="#dynamic-controls" title="Permalink to this headline">#</a></h3>
 <table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Name</p></th>
@@ -1000,7 +1129,7 @@ preferable when using a differential inclusion approach to problems.</p>
 </table>
 </div>
 <div class="section" id="parameters">
-<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
+<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">#</a></h3>
 <table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Name</p></th>
@@ -1029,7 +1158,7 @@ preferable when using a differential inclusion approach to problems.</p>
 </table>
 </div>
 <div class="section" id="objective">
-<h3>Objective<a class="headerlink" href="#objective" title="Permalink to this headline">¶</a></h3>
+<h3>Objective<a class="headerlink" href="#objective" title="Permalink to this headline">#</a></h3>
 <table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Name</p></th>
@@ -1048,7 +1177,7 @@ preferable when using a differential inclusion approach to problems.</p>
 </table>
 </div>
 <div class="section" id="nonlinear-path-constraints">
-<h3>Nonlinear Path Constraints<a class="headerlink" href="#nonlinear-path-constraints" title="Permalink to this headline">¶</a></h3>
+<h3>Nonlinear Path Constraints<a class="headerlink" href="#nonlinear-path-constraints" title="Permalink to this headline">#</a></h3>
 <table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Name</p></th>
@@ -1067,14 +1196,14 @@ preferable when using a differential inclusion approach to problems.</p>
 </table>
 </div>
 <div class="section" id="nonlinear-boundary-constraints">
-<h3>Nonlinear Boundary Constraints<a class="headerlink" href="#nonlinear-boundary-constraints" title="Permalink to this headline">¶</a></h3>
+<h3>Nonlinear Boundary Constraints<a class="headerlink" href="#nonlinear-boundary-constraints" title="Permalink to this headline">#</a></h3>
 <p>None</p>
 </div>
 </div>
 <div class="section" id="models">
-<h2>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h2>
+<h2>Models<a class="headerlink" href="#models" title="Permalink to this headline">#</a></h2>
 <div class="section" id="atmosphere">
-<h3>Atmosphere<a class="headerlink" href="#atmosphere" title="Permalink to this headline">¶</a></h3>
+<h3>Atmosphere<a class="headerlink" href="#atmosphere" title="Permalink to this headline">#</a></h3>
 <p>This problem uses an analytic fit to the 1976 standard atmosphere.</p>
 <table class="colwidths-auto table">
 <thead>
@@ -1108,12 +1237,12 @@ preferable when using a differential inclusion approach to problems.</p>
 </table>
 </div>
 <div class="section" id="true-airspeed">
-<h3>True Airspeed<a class="headerlink" href="#true-airspeed" title="Permalink to this headline">¶</a></h3>
+<h3>True Airspeed<a class="headerlink" href="#true-airspeed" title="Permalink to this headline">#</a></h3>
 <p><em>TrueAirspeedComp</em> uses the Mach number, provided as a
 control, and the speed of sound from the atmosphere model to compute the
 true airspeed of the aircraft.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-d5d23467-7fa8-4e6d-a356-43676bc8cdeb">
-<span class="eqno">(33)<a class="headerlink" href="#equation-d5d23467-7fa8-4e6d-a356-43676bc8cdeb" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-e7e94efd-ee51-4eb7-a067-5704b22af56b">
+<span class="eqno">(33)<a class="headerlink" href="#equation-e7e94efd-ee51-4eb7-a067-5704b22af56b" title="Permalink to this equation">#</a></span>\[\begin{align}
   TAS &amp;= mach \cdot sos
 \end{align}\]</div>
 <table class="colwidths-auto table">
@@ -1140,12 +1269,12 @@ true airspeed of the aircraft.</p>
 </table>
 </div>
 <div class="section" id="flight-path-angle">
-<h3>Flight Path Angle<a class="headerlink" href="#flight-path-angle" title="Permalink to this headline">¶</a></h3>
+<h3>Flight Path Angle<a class="headerlink" href="#flight-path-angle" title="Permalink to this headline">#</a></h3>
 <p><em>SteadyFlightPathAngleComp</em> uses the true airspeed and the
 climb rate, obtained by differentiating the altitude time history at the
 nodes, to compute the flight path angle.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-21da5ec3-60c3-4825-9e86-c210181a7b97">
-<span class="eqno">(34)<a class="headerlink" href="#equation-21da5ec3-60c3-4825-9e86-c210181a7b97" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-cc4273f4-d319-4e3d-b685-182f04ca060c">
+<span class="eqno">(34)<a class="headerlink" href="#equation-cc4273f4-d319-4e3d-b685-182f04ca060c" title="Permalink to this equation">#</a></span>\[\begin{align}
   \gamma &amp;= \arcsin \frac{\dot h}{TAS}
 \end{align}\]</div>
 <table class="colwidths-auto table">
@@ -1172,12 +1301,12 @@ nodes, to compute the flight path angle.</p>
 </table>
 </div>
 <div class="section" id="range-rate">
-<h3>Range Rate<a class="headerlink" href="#range-rate" title="Permalink to this headline">¶</a></h3>
+<h3>Range Rate<a class="headerlink" href="#range-rate" title="Permalink to this headline">#</a></h3>
 <p><em>RangeRateComp</em> uses the true airspeed and the flight path
 angle to determine the velocity projected along the ground. This is the
 derivative of the state variable <em>range</em>.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8cd406f7-51de-42f3-b0f9-c737a985425d">
-<span class="eqno">(35)<a class="headerlink" href="#equation-8cd406f7-51de-42f3-b0f9-c737a985425d" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-bbd9bced-7f74-4a3d-a2a3-b9098be0b297">
+<span class="eqno">(35)<a class="headerlink" href="#equation-bbd9bced-7f74-4a3d-a2a3-b9098be0b297" title="Permalink to this equation">#</a></span>\[\begin{align}
   \dot{range} &amp;= TAS \cos \gamma
 \end{align}\]</div>
 <table class="colwidths-auto table">
@@ -1204,13 +1333,13 @@ derivative of the state variable <em>range</em>.</p>
 </table>
 </div>
 <div class="section" id="mass">
-<h3>Mass<a class="headerlink" href="#mass" title="Permalink to this headline">¶</a></h3>
+<h3>Mass<a class="headerlink" href="#mass" title="Permalink to this headline">#</a></h3>
 <p>The component <em>MassComp</em> defined in
 <code class="docutils literal notranslate"><span class="pre">mass_comp.py</span></code> computes the aircraft total mass based on
 its empty mass, payload mass, and current fuel mass. It also computes
 total weight which simplifies some equations later on.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-b3aed0ed-79ef-44e1-b051-2db07b8ec7a7">
-<span class="eqno">(36)<a class="headerlink" href="#equation-b3aed0ed-79ef-44e1-b051-2db07b8ec7a7" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-2fbd6cb7-e405-49d7-8698-6541f469e616">
+<span class="eqno">(36)<a class="headerlink" href="#equation-2fbd6cb7-e405-49d7-8698-6541f469e616" title="Permalink to this equation">#</a></span>\[\begin{align}
   mass_{total} &amp;= mass_{empty} + mass_{payload} + mass_{fuel} \\
   W_{total} &amp;= 9.80665 \, mass_{total}
 \end{align}\]</div>
@@ -1246,11 +1375,11 @@ total weight which simplifies some equations later on.</p>
 </table>
 </div>
 <div class="section" id="dynamic-pressure">
-<h3>Dynamic Pressure<a class="headerlink" href="#dynamic-pressure" title="Permalink to this headline">¶</a></h3>
+<h3>Dynamic Pressure<a class="headerlink" href="#dynamic-pressure" title="Permalink to this headline">#</a></h3>
 <p>The <em>DynamicPressureComp</em> computes the dynamic pressure from
 true airspeed and atmospheric density.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-150dc2b4-dc10-4cde-aa67-4a6822e3d343">
-<span class="eqno">(37)<a class="headerlink" href="#equation-150dc2b4-dc10-4cde-aa67-4a6822e3d343" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-6372f950-34ff-41cd-a2ea-db6957b672b8">
+<span class="eqno">(37)<a class="headerlink" href="#equation-6372f950-34ff-41cd-a2ea-db6957b672b8" title="Permalink to this equation">#</a></span>\[\begin{align}
   q &amp;= \frac{1}{2} \rho TAS^2
 \end{align}\]</div>
 <table class="colwidths-auto table">
@@ -1277,7 +1406,7 @@ true airspeed and atmospheric density.</p>
 </table>
 </div>
 <div class="section" id="aerodynamics">
-<h3>Aerodynamics<a class="headerlink" href="#aerodynamics" title="Permalink to this headline">¶</a></h3>
+<h3>Aerodynamics<a class="headerlink" href="#aerodynamics" title="Permalink to this headline">#</a></h3>
 <p>The aerodynamics group computes the aerodynamic coefficients and forces
 on the vehicle. It consists of an interpolation component which outputs
 lift, drag, and moment coefficients as a function of Mach number, angle
@@ -1352,7 +1481,7 @@ problem will solve roughly 20 times faster.</p>
 </div>
 </div>
 <div class="section" id="flight-equilibrium">
-<h3>Flight Equilibrium<a class="headerlink" href="#flight-equilibrium" title="Permalink to this headline">¶</a></h3>
+<h3>Flight Equilibrium<a class="headerlink" href="#flight-equilibrium" title="Permalink to this headline">#</a></h3>
 <p>The steady flight equilibrium group uses balances to solve for the angle
 of attack and tail plane rotation angle such that the aircraft is in
 steady flight (the rates of change in flight path angle and true
@@ -1362,55 +1491,55 @@ profile being modeled is so benign that assuming steady flight at
 discrete points (nodes) in the trajectory is not terribly inaccurate.</p>
 <p>The thrust necessary for steady flight is computed by balancing the drag
 equation</p>
-<div class="amsmath math notranslate nohighlight" id="equation-fc51b7c7-bdda-414d-ab1d-8730162c1842">
-<span class="eqno">(38)<a class="headerlink" href="#equation-fc51b7c7-bdda-414d-ab1d-8730162c1842" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-125e68a6-8979-4df4-8c3b-b9ac69d4aa19">
+<span class="eqno">(38)<a class="headerlink" href="#equation-125e68a6-8979-4df4-8c3b-b9ac69d4aa19" title="Permalink to this equation">#</a></span>\[\begin{align}
   C_T &amp;= W_{total} \frac{sin \gamma}{q \cdot S \cdot \cos \alpha} + \frac{C_D}{\cos \alpha}
 \end{align}\]</div>
 <p>The lift coefficient required for steady flight is found by balancing
 lift and weight:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-1b7cc34c-3feb-4db1-9c2e-ff208ac50b17">
-<span class="eqno">(39)<a class="headerlink" href="#equation-1b7cc34c-3feb-4db1-9c2e-ff208ac50b17" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-5db7d8a6-76da-4b51-9030-e6c1ce5d47a3">
+<span class="eqno">(39)<a class="headerlink" href="#equation-5db7d8a6-76da-4b51-9030-e6c1ce5d47a3" title="Permalink to this equation">#</a></span>\[\begin{align}
   \tilde{C_L} &amp;= W_{total} \frac{cos \gamma}{q \cdot S} - C_T \sin \alpha
 \end{align}\]</div>
 <p>Using coefficients in the balance equations is better scaled from a numerical standpoint.</p>
 </div>
 <div class="section" id="propulsion">
-<h3>Propulsion<a class="headerlink" href="#propulsion" title="Permalink to this headline">¶</a></h3>
+<h3>Propulsion<a class="headerlink" href="#propulsion" title="Permalink to this headline">#</a></h3>
 <p>Having determined the thrust, the propulsion group then computes the
 rate of fuel burn. In addition, by normalizing thrust at any point by
 the maximum possible thrust, we obtain the throttle parameter <span class="math notranslate nohighlight">\(\tau\)</span>.
 The propulsion group uses a number of components to perform these
 calculations.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-e7e95e98-899b-4249-bf5e-63b03d42ec06">
-<span class="eqno">(40)<a class="headerlink" href="#equation-e7e95e98-899b-4249-bf5e-63b03d42ec06" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-f9eb8e2c-3840-44f7-8aa0-e047993bc1c4">
+<span class="eqno">(40)<a class="headerlink" href="#equation-f9eb8e2c-3840-44f7-8aa0-e047993bc1c4" title="Permalink to this equation">#</a></span>\[\begin{align}
   T &amp;= C_T \cdot q \cdot S
 \end{align}\]</div>
 <p>Maximum thrust is computed by multiplying sea-level thrust by the ratio
 of pressure to sea-level atmospheric pressure.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-3a2a2b52-aa78-4ffd-adf8-dc69da76a5d4">
-<span class="eqno">(41)<a class="headerlink" href="#equation-3a2a2b52-aa78-4ffd-adf8-dc69da76a5d4" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-b565963d-e7d6-42e5-aaeb-4337a2472436">
+<span class="eqno">(41)<a class="headerlink" href="#equation-b565963d-e7d6-42e5-aaeb-4337a2472436" title="Permalink to this equation">#</a></span>\[\begin{align}
   T_{max} &amp;= T_{max,sl} \frac{P}{P_{sl}}
 \end{align}\]</div>
 <p>The throttle parameter is then the ratio current thrust to maximum
 possible thrust.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8da0ede7-509c-4e36-9e35-970a68eb4a40">
-<span class="eqno">(42)<a class="headerlink" href="#equation-8da0ede7-509c-4e36-9e35-970a68eb4a40" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-d6126db4-d4b3-4da6-a51d-fcd8a670542f">
+<span class="eqno">(42)<a class="headerlink" href="#equation-d6126db4-d4b3-4da6-a51d-fcd8a670542f" title="Permalink to this equation">#</a></span>\[\begin{align}
   \tau &amp;= \frac{T}{T_{max}}
 \end{align}\]</div>
 <p>The thrust specific fuel consumption is computed as follows:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-5f270024-078c-4b45-ac2a-e0c72017ade8">
-<span class="eqno">(43)<a class="headerlink" href="#equation-5f270024-078c-4b45-ac2a-e0c72017ade8" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-b6c85995-8c86-49ca-abec-95c3544b5a0a">
+<span class="eqno">(43)<a class="headerlink" href="#equation-b6c85995-8c86-49ca-abec-95c3544b5a0a" title="Permalink to this equation">#</a></span>\[\begin{align}
   TSFC &amp;= TSFC_{sl} - 1.5 E - 10 \cdot 9.80665 \cdot alt
 \end{align}\]</div>
 <p>Finally, fuel burn rate is:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-528618ff-b0b1-489c-8a03-97c5fae6a916">
-<span class="eqno">(44)<a class="headerlink" href="#equation-528618ff-b0b1-489c-8a03-97c5fae6a916" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-a4a2160c-6d6f-42a2-b70e-638c7cce2056">
+<span class="eqno">(44)<a class="headerlink" href="#equation-a4a2160c-6d6f-42a2-b70e-638c7cce2056" title="Permalink to this equation">#</a></span>\[\begin{align}
   \dot{mass_{fuel}} &amp;= -TSFC \frac{T}{9.80665}
 \end{align}\]</div>
 </div>
 </div>
 <div class="section" id="the-ode-system-aircraft-ode-py">
-<h2>The ODE System: aircraft_ode.py<a class="headerlink" href="#the-ode-system-aircraft-ode-py" title="Permalink to this headline">¶</a></h2>
+<h2>The ODE System: aircraft_ode.py<a class="headerlink" href="#the-ode-system-aircraft-ode-py" title="Permalink to this headline">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AircraftODE</span><span class="p">(</span><span class="n">om</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1475,7 +1604,7 @@ The other four (<em>mach</em>, <em>S</em>, <em>mass_empty</em>, and <em>mass_pay
 More details on the various models involved can be found in the examples code.</p>
 </div>
 <div class="section" id="building-and-running-the-problem">
-<h2>Building and running the problem<a class="headerlink" href="#building-and-running-the-problem" title="Permalink to this headline">¶</a></h2>
+<h2>Building and running the problem<a class="headerlink" href="#building-and-running-the-problem" title="Permalink to this headline">#</a></h2>
 <p>In the following code we define and solve the optimal control problem.
 Note that we demonstrate the use of externally-connected design parameters in this case.
 The four parameters are connected to a source provided by the <em>assumptions</em> IndepVarComp.</p>
@@ -1731,7 +1860,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 Model viewer data has already has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 1.175573 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 1.334175 seconds.
 Total jacobian shape: (224, 221) 
 
 
@@ -1740,8 +1869,8 @@ FWD solves: 11   REV solves: 0
 Total colors vs. total size: 11 vs 221  (95.0% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 1.175573 sec.
-Time to compute coloring: 0.154710 sec.
+Time to compute sparsity: 1.334175 sec.
+Time to compute coloring: 0.140948 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1927,8 +2056,8 @@ Number of inequality constraint evaluations          = 45
 Number of equality constraint Jacobian evaluations   = 45
 Number of inequality constraint Jacobian evaluations = 45
 Number of Lagrangian Hessian evaluations             = 0
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.265
-Total CPU secs in NLP function evaluations           =     11.294
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.311
+Total CPU secs in NLP function evaluations           =     11.940
 
 EXIT: Optimal Solution Found.
 
@@ -1939,11 +2068,11 @@ Optimization Problem -- Optimization using pyOpt_sparse
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                   11.5608
-       User Objective Time :       8.4451
-       User Sensitivity Time :     2.5497
-       Interface Time :            0.2967
-       Opt Solver Time:            0.2693
+    Total Time:                   12.2354
+       User Objective Time :       8.7749
+       User Sensitivity Time :     2.7988
+       Interface Time :            0.3360
+       Opt Solver Time:            0.3256
     Calls to Objective Function :      45
     Calls to Sens Function :           45
 
@@ -2483,8 +2612,9 @@ Optimization Problem -- Optimization using pyOpt_sparse
 </div>
 </div>
 <div class="section" id="references">
-<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
-<p id="id5"><dl class="citation">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h2>
+<div class="docutils container" id="id5">
+<dl class="citation">
 <dt class="label" id="id30"><span class="brackets">CBC95</span></dt>
 <dd><p>John T Betts and Evin J Cramer. Application of direct transcription to commercial aircraft trajectory optimization. <em>Journal of Guidance, Control, and Dynamics</em>, 18(1):151–159, 1995.</p>
 </dd>
@@ -2498,7 +2628,7 @@ Optimization Problem -- Optimization using pyOpt_sparse
 <dd><p>Hans Seywald. Trajectory optimization based on differential inclusion (Revised). <em>Journal of Guidance, Control, and Dynamics</em>, 17(3):480–487, may 1994. URL: <a class="reference external" href="https://doi.org/10.2514/3.21224">https://doi.org/10.2514/3.21224</a>, <a class="reference external" href="https://doi.org/10.2514/3.21224">doi:10.2514/3.21224</a>.</p>
 </dd>
 </dl>
-</p>
+</div>
 </div>
 </div>
 
@@ -2524,9 +2654,11 @@ Optimization Problem -- Optimization using pyOpt_sparse
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="../bryson_denham/bryson_denham.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -2542,24 +2674,28 @@ Optimization Problem -- Optimization using pyOpt_sparse
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            
+            </footer>
         </div>
     </div>
-    <footer class="footer">
-  <p>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By The Dymos Development Team<br/>
+  
+      &copy; Copyright 2021.<br/>
+</p>
+        </footer>
+    </div>
     
-      By The Dymos Development Team<br/>
-    
-        &copy; Copyright 2021.<br/>
-  </p>
-</footer>
-</main>
+</div>
 
 
       </div>
     </div>
   
-  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
 
   </body>
 </html>

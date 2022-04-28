@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Bryson-Denham Problem &#8212; Dymos</title>
     
-  <link href="../../_static/css/theme.css" rel="stylesheet">
-  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,12 +19,8 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
@@ -32,7 +29,8 @@
     <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
-  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
@@ -40,12 +38,12 @@
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -65,7 +63,21 @@ const thebe_selector_output = ".output, .cell_output"
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
     
     <div class="container-fluid" id="banner"></div>
 
@@ -74,9 +86,10 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="container-xl">
       <div class="row">
           
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../../index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
@@ -94,14 +107,15 @@ const thebe_selector_output = ".output, .cell_output"
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item active">
-        <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../index.html">
-   Multidisciplinary Optimal Control Library
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../index.html">
+                    Multidisciplinary Optimal Control Library
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Installation
  </span>
@@ -450,112 +464,227 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-</div>
-
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
             
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../../_sources/examples/bryson_denham/bryson_denham.ipynb"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.ipynb</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
-
-            <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/OpenMDAO/dymos"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        <a class="issues-button"
-            href="https://github.com/OpenMDAO/dymos/issues/new?title=Issue%20on%20page%20%2Fexamples/bryson_denham/bryson_denham.html&body=Your%20issue%20content%20here."><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
-        
-    </div>
-</div>
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
-    <div class="dropdown-buttons">
-        
-        <a class="binder-button" href="https://mybinder.org/v2/gh/OpenMDAO/dymos/master?urlpath=tree/docs/examples/bryson_denham/bryson_denham.ipynb"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
-                data-placement="left"><img class="binder-button-logo"
-                    src="../../_static/images/logo_binder.svg"
-                    alt="Interact on binder">Binder</button></a>
-        
-        
-        
-        <a class="colab-button" href="https://colab.research.google.com/github/OpenMDAO/dymos/blob/master/docs/examples/bryson_denham/bryson_denham.ipynb"><button type="button" class="btn btn-secondary topbarbtn"
-                title="Launch Colab" data-toggle="tooltip" data-placement="left"><img class="colab-button-logo"
-                    src="../../_static/images/logo_colab.png"
-                    alt="Interact on Colab">Colab</button></a>
-        
-        
-    </div>
-</div>
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/OpenMDAO/dymos/master?urlpath=tree/docs/examples/bryson_denham/bryson_denham.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://colab.research.google.com/github/OpenMDAO/dymos/blob/master/docs/examples/bryson_denham/bryson_denham.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Colab"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../../_static/images/logo_colab.png">
+  </span>
+<span class="headerbtn__text-container">Colab</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/OpenMDAO/dymos"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/OpenMDAO/dymos/issues/new?title=Issue%20on%20page%20%2Fexamples/bryson_denham/bryson_denham.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../../_sources/examples/bryson_denham/bryson_denham.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#state-and-control-variables">
    State and control variables
@@ -598,12 +727,11 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
 </ul>
 
-            </nav>
-        </div>
-    </div>
+    </nav>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
                 <h1>The Bryson-Denham Problem</h1>
@@ -662,63 +790,64 @@ const thebe_selector_output = ".output, .cell_output"
                     </div>
                 </div>
             </div>
-            
+            <main id="main-content" role="main">
+                
               <div>
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
 <div class="tex2jax_ignore mathjax_ignore section" id="the-bryson-denham-problem">
-<span id="examples-bryson-denham"></span><h1>The Bryson-Denham Problem<a class="headerlink" href="#the-bryson-denham-problem" title="Permalink to this headline">¶</a></h1>
+<span id="examples-bryson-denham"></span><h1>The Bryson-Denham Problem<a class="headerlink" href="#the-bryson-denham-problem" title="Permalink to this headline">#</a></h1>
 <p>The Bryson-Denham problem is a variation of the double integrator problem <span id="id1">[<a class="reference internal" href="#id18" title="Arthur E Bryson and Yu-Chi Ho. Applied Optimal Control: Optimization, Estimation and Control. CRC Press, 1975.">BH75</a>]</span>. It can be stated as:</p>
 <p>Minimize the control effort required to reverse the direction of motion of a frictionless sliding block such that the reversal happens with some limited amount of displacement.</p>
 <div class="section" id="state-and-control-variables">
-<h2>State and control variables<a class="headerlink" href="#state-and-control-variables" title="Permalink to this headline">¶</a></h2>
+<h2>State and control variables<a class="headerlink" href="#state-and-control-variables" title="Permalink to this headline">#</a></h2>
 <p>This system has two state variables, the position (<span class="math notranslate nohighlight">\(x\)</span>) and velocity (<span class="math notranslate nohighlight">\(v\)</span>) of the sliding block.</p>
 <p>This system has a single control variable (<span class="math notranslate nohighlight">\(u\)</span>), the acceleration of the block.</p>
 <p>The dynamics of the system are governed by</p>
-<div class="amsmath math notranslate nohighlight" id="equation-1876545b-5419-44be-88c5-b1804b31263e">
-<span class="eqno">(27)<a class="headerlink" href="#equation-1876545b-5419-44be-88c5-b1804b31263e" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-5be746b1-23f7-4162-a646-5dd05202b17e">
+<span class="eqno">(27)<a class="headerlink" href="#equation-5be746b1-23f7-4162-a646-5dd05202b17e" title="Permalink to this equation">#</a></span>\[\begin{align}
   \dot{x} &amp;= v \\
   \dot{v} &amp;= u
 \end{align}\]</div>
 </div>
 <div class="section" id="problem-definition">
-<h2>Problem Definition<a class="headerlink" href="#problem-definition" title="Permalink to this headline">¶</a></h2>
+<h2>Problem Definition<a class="headerlink" href="#problem-definition" title="Permalink to this headline">#</a></h2>
 <p>We seek to minimize the time required to exit the well in the positive direction.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-f801c921-a222-42f6-96d8-bda12a96856d">
-<span class="eqno">(28)<a class="headerlink" href="#equation-f801c921-a222-42f6-96d8-bda12a96856d" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-ca2849ac-a3aa-44cb-a163-a97ce51479a9">
+<span class="eqno">(28)<a class="headerlink" href="#equation-ca2849ac-a3aa-44cb-a163-a97ce51479a9" title="Permalink to this equation">#</a></span>\[\begin{align}
     \mathrm{Minimize} \, J &amp;= 0.5 \int_0^1 u^2 dt
 \end{align}\]</div>
 <p>Subject to the initial conditions</p>
-<div class="amsmath math notranslate nohighlight" id="equation-ed120a2e-8dc7-46a7-bfb2-77caa70718ff">
-<span class="eqno">(29)<a class="headerlink" href="#equation-ed120a2e-8dc7-46a7-bfb2-77caa70718ff" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-0b999f52-6251-4db9-a9db-29bfd2bff2c5">
+<span class="eqno">(29)<a class="headerlink" href="#equation-0b999f52-6251-4db9-a9db-29bfd2bff2c5" title="Permalink to this equation">#</a></span>\[\begin{align}
     x_0 &amp;= 0.0 \\
     v_0 &amp;= 1.0
 \end{align}\]</div>
 <p>and the terminal constraints</p>
-<div class="amsmath math notranslate nohighlight" id="equation-c9cd8517-9fa8-4aef-8af5-89321ef04cc9">
-<span class="eqno">(30)<a class="headerlink" href="#equation-c9cd8517-9fa8-4aef-8af5-89321ef04cc9" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-c1f97f17-aa65-4797-abc6-0562e91d41bf">
+<span class="eqno">(30)<a class="headerlink" href="#equation-c1f97f17-aa65-4797-abc6-0562e91d41bf" title="Permalink to this equation">#</a></span>\[\begin{align}
     x_f &amp;= 0.0 \\
     v_f &amp;= -1.0
 \end{align}\]</div>
 <p>In addition, <span class="math notranslate nohighlight">\(x\)</span> is consrained to remain below a displacement of 1/9.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8625be23-2cb2-4085-b482-f889fc760f4f">
-<span class="eqno">(31)<a class="headerlink" href="#equation-8625be23-2cb2-4085-b482-f889fc760f4f" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-00b24051-cb8d-4103-88db-2cc5383c7073">
+<span class="eqno">(31)<a class="headerlink" href="#equation-00b24051-cb8d-4103-88db-2cc5383c7073" title="Permalink to this equation">#</a></span>\[\begin{align}
     x &amp;\le 1/9
 \end{align}\]</div>
 </div>
 <div class="section" id="dealing-with-integral-costs-in-dymos">
-<h2>Dealing with integral costs in Dymos<a class="headerlink" href="#dealing-with-integral-costs-in-dymos" title="Permalink to this headline">¶</a></h2>
+<h2>Dealing with integral costs in Dymos<a class="headerlink" href="#dealing-with-integral-costs-in-dymos" title="Permalink to this headline">#</a></h2>
 <p>In classic optimal control, the objective is often broken into the terminal component (the Mayer term) and the integral component (the Lagrange term).
 Dymos does not distinguish between the two.
 In this case, since the objective <span class="math notranslate nohighlight">\(J\)</span> is an integrated quantity, we add a term to the ODE</p>
-<div class="amsmath math notranslate nohighlight" id="equation-06335175-a50c-4628-96d1-220897ac2ec4">
-<span class="eqno">(32)<a class="headerlink" href="#equation-06335175-a50c-4628-96d1-220897ac2ec4" title="Permalink to this equation">¶</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-ab46e41e-bfbd-41a6-b84a-50382701375a">
+<span class="eqno">(32)<a class="headerlink" href="#equation-ab46e41e-bfbd-41a6-b84a-50382701375a" title="Permalink to this equation">#</a></span>\[\begin{align}
 \dot{J} &amp;= 0.5 u^2
 \end{align}\]</div>
 </div>
 <div class="section" id="defining-the-ode">
-<h2>Defining the ODE<a class="headerlink" href="#defining-the-ode" title="Permalink to this headline">¶</a></h2>
+<h2>Defining the ODE<a class="headerlink" href="#defining-the-ode" title="Permalink to this headline">#</a></h2>
 <p>The following code implements the equations of motion for the mountain car problem.
 Since the rate of <span class="math notranslate nohighlight">\(x\)</span> is given by another state (<span class="math notranslate nohighlight">\(v\)</span>), and the rate of <span class="math notranslate nohighlight">\(v\)</span> is given by a control (<span class="math notranslate nohighlight">\(u\)</span>), there is no need to compute their rates in the ODE.
 Dymos can pull their values from those other states and controls.
@@ -767,7 +896,7 @@ The ODE, therefore, only needs to compute the rate of change of <span class="mat
 </div>
 </div>
 <div class="section" id="solving-the-bryson-denham-problem-with-dymos">
-<h2>Solving the Bryson-Denham problem with Dymos<a class="headerlink" href="#solving-the-bryson-denham-problem-with-dymos" title="Permalink to this headline">¶</a></h2>
+<h2>Solving the Bryson-Denham problem with Dymos<a class="headerlink" href="#solving-the-bryson-denham-problem-with-dymos" title="Permalink to this headline">#</a></h2>
 <p>The following script solves the minimum-time mountain car problem with Dymos.
 This problem is pretty trivial and can be solved using the SLSQP optimizer in scipy.</p>
 <p>To begin, import the packages we require:</p>
@@ -857,7 +986,7 @@ The rate source and units for the states are obtained from the tags in the ODE c
         [path]     x &lt;= 1.1111e-01  [m]
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;openmdao.core.problem.Problem at 0x7f64b0037a60&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;openmdao.core.problem.Problem at 0x7f228c68bfd0&gt;
 </pre></div>
 </div>
 </div>
@@ -898,7 +1027,7 @@ This will attempt to repeatedly solve the problem and change the number of segme
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.434220 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.562321 seconds.
 Total jacobian shape: (336, 286) 
 
 
@@ -907,8 +1036,8 @@ FWD solves: 7   REV solves: 0
 Total colors vs. total size: 7 vs 286  (97.6% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.434220 sec.
-Time to compute coloring: 0.133876 sec.
+Time to compute sparsity: 0.562321 sec.
+Time to compute coloring: 0.141553 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -922,8 +1051,9 @@ Memory to compute coloring: 0.000000 MB.
             Gradient evaluations: 38
 Optimization Complete
 -----------------------------------
-
-Simulating trajectory traj
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Done simulating trajectory traj
@@ -936,7 +1066,7 @@ Simulating trajectory traj
 </div>
 </div>
 <div class="section" id="plotting-the-solution">
-<h2>Plotting the solution<a class="headerlink" href="#plotting-the-solution" title="Permalink to this headline">¶</a></h2>
+<h2>Plotting the solution<a class="headerlink" href="#plotting-the-solution" title="Permalink to this headline">#</a></h2>
 <p>The recommended practice is to obtain values from the recorded cases.
 While the problem object can also be queried for values, building plotting scripts that use the case recorder files as the data source means that the problem doesn’t need to be solved just to change a plot.
 Here we load values of various variables from the solution and simulation for use in the animation to follow.</p>
@@ -999,7 +1129,7 @@ Here we load values of various variables from the solution and simulation for us
 </div>
 </div>
 <div class="section" id="animating-the-solution">
-<h2>Animating the Solution<a class="headerlink" href="#animating-the-solution" title="Permalink to this headline">¶</a></h2>
+<h2>Animating the Solution<a class="headerlink" href="#animating-the-solution" title="Permalink to this headline">#</a></h2>
 <p>The collapsed code cell below contains the code used to produce an animation of the mountain car solution using Matplotlib.</p>
 <p>The green area represents the hilly terrain the car is traversing.  The black circle is the center of the car, and the orange arrow is the applied control.</p>
 <p>The applied control <em>generally</em> has the same sign as the velocity and is ‘bang-bang’, that is, it wants to be at its maximum possible magnitude.  Interestingly, the sign of the control flips shortly before the sign of the velocity changes.</p>
@@ -1314,42 +1444,42 @@ input[type=range].anim-slider {
 </style>
 
 <div class="animation">
-  <img id="_anim_img1121e8158d6a4b0d8b2362aeacb0b755">
+  <img id="_anim_img557b4cea2e2043a2bbaeeb3ca777a055">
   <div class="anim-controls">
-    <input id="_anim_slider1121e8158d6a4b0d8b2362aeacb0b755" type="range" class="anim-slider"
+    <input id="_anim_slider557b4cea2e2043a2bbaeeb3ca777a055" type="range" class="anim-slider"
            name="points" min="0" max="1" step="1" value="0"
-           oninput="anim1121e8158d6a4b0d8b2362aeacb0b755.set_frame(parseInt(this.value));"></input>
+           oninput="anim557b4cea2e2043a2bbaeeb3ca777a055.set_frame(parseInt(this.value));"></input>
     <div class="anim-buttons">
-      <button title="Decrease speed" aria-label="Decrease speed" onclick="anim1121e8158d6a4b0d8b2362aeacb0b755.slower()">
+      <button title="Decrease speed" aria-label="Decrease speed" onclick="anim557b4cea2e2043a2bbaeeb3ca777a055.slower()">
           <i class="fa fa-minus"></i></button>
-      <button title="First frame" aria-label="First frame" onclick="anim1121e8158d6a4b0d8b2362aeacb0b755.first_frame()">
+      <button title="First frame" aria-label="First frame" onclick="anim557b4cea2e2043a2bbaeeb3ca777a055.first_frame()">
         <i class="fa fa-fast-backward"></i></button>
-      <button title="Previous frame" aria-label="Previous frame" onclick="anim1121e8158d6a4b0d8b2362aeacb0b755.previous_frame()">
+      <button title="Previous frame" aria-label="Previous frame" onclick="anim557b4cea2e2043a2bbaeeb3ca777a055.previous_frame()">
           <i class="fa fa-step-backward"></i></button>
-      <button title="Play backwards" aria-label="Play backwards" onclick="anim1121e8158d6a4b0d8b2362aeacb0b755.reverse_animation()">
+      <button title="Play backwards" aria-label="Play backwards" onclick="anim557b4cea2e2043a2bbaeeb3ca777a055.reverse_animation()">
           <i class="fa fa-play fa-flip-horizontal"></i></button>
-      <button title="Pause" aria-label="Pause" onclick="anim1121e8158d6a4b0d8b2362aeacb0b755.pause_animation()">
+      <button title="Pause" aria-label="Pause" onclick="anim557b4cea2e2043a2bbaeeb3ca777a055.pause_animation()">
           <i class="fa fa-pause"></i></button>
-      <button title="Play" aria-label="Play" onclick="anim1121e8158d6a4b0d8b2362aeacb0b755.play_animation()">
+      <button title="Play" aria-label="Play" onclick="anim557b4cea2e2043a2bbaeeb3ca777a055.play_animation()">
           <i class="fa fa-play"></i></button>
-      <button title="Next frame" aria-label="Next frame" onclick="anim1121e8158d6a4b0d8b2362aeacb0b755.next_frame()">
+      <button title="Next frame" aria-label="Next frame" onclick="anim557b4cea2e2043a2bbaeeb3ca777a055.next_frame()">
           <i class="fa fa-step-forward"></i></button>
-      <button title="Last frame" aria-label="Last frame" onclick="anim1121e8158d6a4b0d8b2362aeacb0b755.last_frame()">
+      <button title="Last frame" aria-label="Last frame" onclick="anim557b4cea2e2043a2bbaeeb3ca777a055.last_frame()">
           <i class="fa fa-fast-forward"></i></button>
-      <button title="Increase speed" aria-label="Increase speed" onclick="anim1121e8158d6a4b0d8b2362aeacb0b755.faster()">
+      <button title="Increase speed" aria-label="Increase speed" onclick="anim557b4cea2e2043a2bbaeeb3ca777a055.faster()">
           <i class="fa fa-plus"></i></button>
     </div>
-    <form title="Repetition mode" aria-label="Repetition mode" action="#n" name="_anim_loop_select1121e8158d6a4b0d8b2362aeacb0b755"
+    <form title="Repetition mode" aria-label="Repetition mode" action="#n" name="_anim_loop_select557b4cea2e2043a2bbaeeb3ca777a055"
           class="anim-state">
-      <input type="radio" name="state" value="once" id="_anim_radio1_1121e8158d6a4b0d8b2362aeacb0b755"
+      <input type="radio" name="state" value="once" id="_anim_radio1_557b4cea2e2043a2bbaeeb3ca777a055"
              >
-      <label for="_anim_radio1_1121e8158d6a4b0d8b2362aeacb0b755">Once</label>
-      <input type="radio" name="state" value="loop" id="_anim_radio2_1121e8158d6a4b0d8b2362aeacb0b755"
+      <label for="_anim_radio1_557b4cea2e2043a2bbaeeb3ca777a055">Once</label>
+      <input type="radio" name="state" value="loop" id="_anim_radio2_557b4cea2e2043a2bbaeeb3ca777a055"
              checked>
-      <label for="_anim_radio2_1121e8158d6a4b0d8b2362aeacb0b755">Loop</label>
-      <input type="radio" name="state" value="reflect" id="_anim_radio3_1121e8158d6a4b0d8b2362aeacb0b755"
+      <label for="_anim_radio2_557b4cea2e2043a2bbaeeb3ca777a055">Loop</label>
+      <input type="radio" name="state" value="reflect" id="_anim_radio3_557b4cea2e2043a2bbaeeb3ca777a055"
              >
-      <label for="_anim_radio3_1121e8158d6a4b0d8b2362aeacb0b755">Reflect</label>
+      <label for="_anim_radio3_557b4cea2e2043a2bbaeeb3ca777a055">Reflect</label>
     </form>
   </div>
 </div>
@@ -1359,9 +1489,9 @@ input[type=range].anim-slider {
   /* Instantiate the Animation class. */
   /* The IDs given should match those used in the template above. */
   (function() {
-    var img_id = "_anim_img1121e8158d6a4b0d8b2362aeacb0b755";
-    var slider_id = "_anim_slider1121e8158d6a4b0d8b2362aeacb0b755";
-    var loop_select_id = "_anim_loop_select1121e8158d6a4b0d8b2362aeacb0b755";
+    var img_id = "_anim_img557b4cea2e2043a2bbaeeb3ca777a055";
+    var slider_id = "_anim_slider557b4cea2e2043a2bbaeeb3ca777a055";
+    var loop_select_id = "_anim_loop_select557b4cea2e2043a2bbaeeb3ca777a055";
     var frames = new Array(90);
 
   frames[0] = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA2AAAAGwCAYAAADPMwaiAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90\
@@ -45968,7 +46098,7 @@ NXEDzMzMzMzMrCZugJmZmZmZmdXEDTAzMzMzM7Oa/B/U/Ti1/S5C6AAAAABJRU5ErkJggg==\
     /* set a timeout to make sure all the above elements are created before
        the object is initialized. */
     setTimeout(function() {
-        anim1121e8158d6a4b0d8b2362aeacb0b755 = new Animation(frames, img_id, slider_id, 50.0,
+        anim557b4cea2e2043a2bbaeeb3ca777a055 = new Animation(frames, img_id, slider_id, 50.0,
                                  loop_select_id);
     }, 0);
   })()
@@ -45977,13 +46107,14 @@ NXEDzMzMzMzMrCZugJmZmZmZmdXEDTAzMzMzM7Oa/B/U/Ti1/S5C6AAAAABJRU5ErkJggg==\
 </div>
 </div>
 <div class="section" id="references">
-<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
-<p id="id2"><dl class="citation">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h2>
+<div class="docutils container" id="id2">
+<dl class="citation">
 <dt class="label" id="id18"><span class="brackets">BH75</span></dt>
 <dd><p>Arthur E Bryson and Yu-Chi Ho. <em>Applied Optimal Control: Optimization, Estimation and Control</em>. CRC Press, 1975.</p>
 </dd>
 </dl>
-</p>
+</div>
 </div>
 </div>
 
@@ -46009,9 +46140,11 @@ NXEDzMzMzMzMrCZugJmZmZmZmdXEDTAzMzMzM7Oa/B/U/Ti1/S5C6AAAAABJRU5ErkJggg==\
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="../balanced_field/balanced_field_funccomp.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -46027,24 +46160,28 @@ NXEDzMzMzMzMrCZugJmZmZmZmdXEDTAzMzMzM7Oa/B/U/Ti1/S5C6AAAAABJRU5ErkJggg==\
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            
+            </footer>
         </div>
     </div>
-    <footer class="footer">
-  <p>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By The Dymos Development Team<br/>
+  
+      &copy; Copyright 2021.<br/>
+</p>
+        </footer>
+    </div>
     
-      By The Dymos Development Team<br/>
-    
-        &copy; Copyright 2021.<br/>
-  </p>
-</footer>
-</main>
+</div>
 
 
       </div>
     </div>
   
-  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
 
   </body>
 </html>
