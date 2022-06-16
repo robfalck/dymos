@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Objective &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -734,7 +735,7 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="objective">
+<section class="tex2jax_ignore mathjax_ignore" id="objective">
 <h1>Objective<a class="headerlink" href="#objective" title="Permalink to this headline">#</a></h1>
 <p>Optimal control problems in Dymos are posed within the context of <em>phases</em>.</p>
 <p>When using an optimizer-based transcription, (Gauss-Lobatto or Radau <em>without</em> <code class="docutils literal notranslate"><span class="pre">solve_segments=forward</span></code>), the user is <strong>required</strong> to provide an objective somewhere in the problem, even for a simple initial value problem.</p>
@@ -764,20 +765,20 @@ vector valued variable that is to be considered the objective value, which must 
 have value <code class="docutils literal notranslate"><span class="pre">initial</span></code> or <code class="docutils literal notranslate"><span class="pre">final</span></code>, specifying whether the objective is to be quantified at the
 start or end of the phase.  The <code class="docutils literal notranslate"><span class="pre">index</span></code> option gives the index into a non-scalar variable value
 to be used as the objective, which must be scalar.</p>
-<div class="section" id="example-minimizing-final-time">
+<section id="example-minimizing-final-time">
 <h2>Example: Minimizing Final Time<a class="headerlink" href="#example-minimizing-final-time" title="Permalink to this headline">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">phase</span><span class="o">.</span><span class="n">add_objective</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;final&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="example-maximizing-final-mass">
+</section>
+<section id="example-maximizing-final-mass">
 <h2>Example: Maximizing Final Mass<a class="headerlink" href="#example-maximizing-final-mass" title="Permalink to this headline">#</a></h2>
 <p>This example assumes that the phase has a state variable named <em>mass</em>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">phase</span><span class="o">.</span><span class="n">add_objective</span><span class="p">(</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;final&#39;</span><span class="p">,</span> <span class="n">scaler</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -829,7 +830,7 @@ to be used as the objective, which must be scalar.</p>
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

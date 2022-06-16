@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>SSTO Lunar Ascent with Linear Tangent Guidance &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -746,7 +747,7 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="ssto-lunar-ascent-with-linear-tangent-guidance">
+<section class="tex2jax_ignore mathjax_ignore" id="ssto-lunar-ascent-with-linear-tangent-guidance">
 <h1>SSTO Lunar Ascent with Linear Tangent Guidance<a class="headerlink" href="#ssto-lunar-ascent-with-linear-tangent-guidance" title="Permalink to this headline">#</a></h1>
 <p>The following example implements a minimum time, single-stage to orbit
 ascent problem for launching from the lunar surface. Unlike the SSTO
@@ -762,15 +763,15 @@ In short, we’ve simplified the problem by finding the optimal value of <span c
 <p>Implementing this modified control scheme requires only a few changes.
 Rather than declaring <span class="math notranslate nohighlight">\(\theta\)</span> as a controllable parameter for the ODE system, we implement a new component, <em>LinearTangentGuidanceComp</em> that accepts <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span> as parameters to be optimized.
 It calculates <span class="math notranslate nohighlight">\(\theta\)</span>, which is then connected to the equations of motion component.</p>
-<div class="section" id="extended-design-structure-matrix">
+<section id="extended-design-structure-matrix">
 <h2>Extended Design Structure Matrix<a class="headerlink" href="#extended-design-structure-matrix" title="Permalink to this headline">#</a></h2>
 <p><img alt="The XDSM diagram for the ODE system in the SSTO inear tangent problem." src="../../_images/ssto_linear_tangent_xdsm.png" /></p>
 <p>In the XDSM for the ODE system for the SSTO linear tangent problem, the
 only significant change is that we have a new component,
 <em>guidance</em>, which accepts <span class="math notranslate nohighlight">\(a\)</span>, <span class="math notranslate nohighlight">\(b\)</span>, and <span class="math notranslate nohighlight">\(time\)</span>, and computes
 <span class="math notranslate nohighlight">\(\theta\)</span>.</p>
-</div>
-<div class="section" id="solving-the-problem">
+</section>
+<section id="solving-the-problem">
 <h2>Solving the problem<a class="headerlink" href="#solving-the-problem" title="Permalink to this headline">#</a></h2>
 <div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
@@ -1067,10 +1068,10 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/utils/options_dictionary.py:347: OMDeprecationWarning:&#39;gradient method&#39; is not a valid python name and will become an invalid option name in a future release. You can prevent this warning (and future exceptions) by declaring this option using a valid python name.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/utils/options_dictionary.py:354: OMDeprecationWarning:&#39;gradient method&#39; is not a valid python name and will become an invalid option name in a future release. You can prevent this warning (and future exceptions) by declaring this option using a valid python name.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already has already been recorded for Driver.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
 INFO: checking out_of_order
 </pre></div>
 </div>
@@ -1098,7 +1099,7 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.119693 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.111926 seconds.
 Total jacobian shape: (103, 103) 
 </pre></div>
 </div>
@@ -1107,8 +1108,8 @@ FWD solves: 18   REV solves: 0
 Total colors vs. total size: 18 vs 103  (82.5% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.119693 sec.
-Time to compute coloring: 0.125288 sec.
+Time to compute sparsity: 0.111926 sec.
+Time to compute coloring: 0.119312 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1118,11 +1119,11 @@ Memory to compute coloring: 0.000000 MB.
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    0.1155
-       User Objective Time :       0.0149
-       User Sensitivity Time :     0.0508
-       Interface Time :            0.0266
-       Opt Solver Time:            0.0232
+    Total Time:                    0.1124
+       User Objective Time :       0.0139
+       User Sensitivity Time :     0.0500
+       Interface Time :            0.0257
+       Opt Solver Time:            0.0228
     Calls to Objective Function :       6
     Calls to Sens Function :            5
 
@@ -1434,8 +1435,8 @@ Memory to compute coloring: 0.000000 MB.
 </div>
 <div class="cell tag_remove-input tag_remove-output docutils container">
 </div>
-</div>
-<div class="section" id="references">
+</section>
+<section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h2>
 <div class="docutils container" id="id2">
 <dl class="citation">
@@ -1444,8 +1445,8 @@ Memory to compute coloring: 0.000000 MB.
 </dd>
 </dl>
 </div>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1497,7 +1498,7 @@ Memory to compute coloring: 0.000000 MB.
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

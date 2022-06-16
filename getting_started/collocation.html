@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>What is collocation? &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -776,7 +777,7 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="what-is-collocation">
+<section class="tex2jax_ignore mathjax_ignore" id="what-is-collocation">
 <span id="getting-started-collocation-what-is-collocation"></span><h1>What is collocation?<a class="headerlink" href="#what-is-collocation" title="Permalink to this headline">#</a></h1>
 <p>Dymos is focused on direct optimization methods based on an implicit integration technique, collocation.</p>
 <p>The <em>state</em> of a dynamic system defines its configuration at a point in time.
@@ -798,17 +799,17 @@ The value of the state at any point throughout the trajectory can then be inferr
 While one could use a power series polynomial coefficients (<span class="math notranslate nohighlight">\(a t^2 + b t + c\)</span>), these coefficients can have vastly different values depending on the shape of the curve, making them difficult to scale numerically.
 Instead, Lagrange interpolating polynomials are typically used, where the actual values to be interpolated at various points are the implicit variables.
 This makes scaling the problem easier, and gives the implicit variables more intuitive meaning, making it easier to provide an initial guess.</p>
-<div class="section" id="example-simulating-the-fall-of-an-object">
+<section id="example-simulating-the-fall-of-an-object">
 <h2>Example:  Simulating the fall of an object<a class="headerlink" href="#example-simulating-the-fall-of-an-object" title="Permalink to this headline">#</a></h2>
 <p>As a “hello, world” problem for Dymos, consider the vertical fall of an object acting under gravity - like Galileo dropping cannonballs from the Tower of Pisa.
 Ignoring aerodynamics and treating the ball as a point mass in a rectilinear gravity field, the motion is governed by:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-c5b74d28-c4e8-4367-9baf-6d01276fb001">
-<span class="eqno">(5)<a class="headerlink" href="#equation-c5b74d28-c4e8-4367-9baf-6d01276fb001" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-c3029fb3-1bf1-4d14-898f-b9423504cf54">
+<span class="eqno">(5)<a class="headerlink" href="#equation-c3029fb3-1bf1-4d14-898f-b9423504cf54" title="Permalink to this equation">#</a></span>\[\begin{align}
     \ddot{y} = -g
 \end{align}\]</div>
 <p>The techniques in Dymos are generally centered around first-order dynamics, so we convert the above equation into the following system of ODEs.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-6c4d7b40-09a6-4474-bde3-ef862d187387">
-<span class="eqno">(6)<a class="headerlink" href="#equation-6c4d7b40-09a6-4474-bde3-ef862d187387" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-b9d36e62-65f2-4caa-83f1-3511efdabc25">
+<span class="eqno">(6)<a class="headerlink" href="#equation-b9d36e62-65f2-4caa-83f1-3511efdabc25" title="Permalink to this equation">#</a></span>\[\begin{align}
     \dot{y} &amp;= v_y \\
     \dot{v_y} &amp;= -g
 \end{align}\]</div>
@@ -825,8 +826,8 @@ We know the initial and final height of the ball.
 We know the initial velocity but not the terminal velocity.</p>
 <p><em>How long does it take the ball to reach the ground from an initial height of 100 m?</em></p>
 <p>We will explain how this problem is solved using the two implicit simulation techniques in Dymos:  high-order Gauss-Lobatto collocation, and the Radau Pseudospectral Method.</p>
-</div>
-<div class="section" id="finding-the-trajectory-using-high-order-legendre-gauss-lobatto-collocation">
+</section>
+<section id="finding-the-trajectory-using-high-order-legendre-gauss-lobatto-collocation">
 <h2>Finding the trajectory using high-order Legendre-Gauss-Lobatto collocation<a class="headerlink" href="#finding-the-trajectory-using-high-order-legendre-gauss-lobatto-collocation" title="Permalink to this headline">#</a></h2>
 <p>Using a 3rd-order polynomial segment to mimic the trajectory, we have two states and thus two polynomials.
 Legendre-Gauss-Lobatto (LGL) collocation uses knowledge of the states and state-rates to form an interpolating polynomial.
@@ -884,8 +885,8 @@ In LGL collocation, these points are chosen to be the LGL <em>nodes</em> in the 
 <p>To form 3rd-order polynomials for the states we need four pieces of information, but so far we only have the two endpoint values.
 We’ll use the state rates at the state discretization nodes to provide the other two values needed for interpolation.
 To obtain these, we evaluate our ODE at the state discretization nodes.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-a2fbfbf3-e8d8-44b2-9657-128898689f44">
-<span class="eqno">(7)<a class="headerlink" href="#equation-a2fbfbf3-e8d8-44b2-9657-128898689f44" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-d7717464-3907-40a8-b4fe-d65ddb6ba38e">
+<span class="eqno">(7)<a class="headerlink" href="#equation-d7717464-3907-40a8-b4fe-d65ddb6ba38e" title="Permalink to this equation">#</a></span>\[\begin{align}
     \dot{y}_0 &amp;= 0 \\
     \dot{y}_f &amp;= -50 \\
     \dot{v}_{y0} &amp;= -9.80665 \\
@@ -899,21 +900,21 @@ We call this difference in slope the collocation <em>defect</em>.</p>
 <p>Having computed the ODE at the state discretization nodes, we can form interpolants for the values and the slope of the states at the collocation nodes.
 Dymos uses Lagrange interpolants, such that the inputs to the system are the values of the states and controls, rather than less intuitive coefficients.
 In this case, the state values at our single collocation node are:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-6ec80f6f-6b7d-4cf8-9a12-a11ff8478c94">
-<span class="eqno">(8)<a class="headerlink" href="#equation-6ec80f6f-6b7d-4cf8-9a12-a11ff8478c94" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-b3813cb2-33a5-41d2-922f-ee23e0744297">
+<span class="eqno">(8)<a class="headerlink" href="#equation-b3813cb2-33a5-41d2-922f-ee23e0744297" title="Permalink to this equation">#</a></span>\[\begin{align}
     y_m &amp;= 50 \\
     v_{ym} &amp;= -25
 \end{align}\]</div>
 <p><img alt="Screenshot" src="../_images/lgl_animation_2.png" /></p>
 <p>The polynomial slopes at the collocation node are:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-b526d8aa-1ab3-4963-85b7-9f7d2b780c93">
-<span class="eqno">(9)<a class="headerlink" href="#equation-b526d8aa-1ab3-4963-85b7-9f7d2b780c93" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-5910363f-4369-4205-a1e3-2d4ac4aae271">
+<span class="eqno">(9)<a class="headerlink" href="#equation-5910363f-4369-4205-a1e3-2d4ac4aae271" title="Permalink to this equation">#</a></span>\[\begin{align}
     y'_m &amp;= 50 \\
     v'_{ym} &amp;= -25
 \end{align}\]</div>
 <p>Now, having the state and time values at the collocation nodes, we can again evaluate the ODE.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-1409ef65-044e-4e04-84d4-5a1d47d48ef1">
-<span class="eqno">(10)<a class="headerlink" href="#equation-1409ef65-044e-4e04-84d4-5a1d47d48ef1" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-13317a1e-16a2-48dc-b5f7-292a6822cbaf">
+<span class="eqno">(10)<a class="headerlink" href="#equation-13317a1e-16a2-48dc-b5f7-292a6822cbaf" title="Permalink to this equation">#</a></span>\[\begin{align}
     \dot{y}_m &amp;= -17 \\
     \dot{v}_{ym} &amp;= -9.80665
 \end{align}\]</div>
@@ -924,8 +925,8 @@ However, if there were, the value of the control would also need to be provided 
 Thus, in high-order Gauss-Lobatto collocation, the <em>control input nodes</em> include both the state discretization nodes and the collocation nodes.</p>
 <p>The free variables in the problem (<span class="math notranslate nohighlight">\(t_{duration}\)</span> and <span class="math notranslate nohighlight">\(vy_f\)</span>) can be iterated until the difference between the interpolated state rates and the ODE-computed state rates is zero.</p>
 <p><img alt="Screenshot" src="../_images/lgl_solution_5.png" /></p>
-</div>
-<div class="section" id="finding-the-trajectory-using-the-radau-pseudospectral-method">
+</section>
+<section id="finding-the-trajectory-using-the-radau-pseudospectral-method">
 <h2>Finding the trajectory using the Radau Pseudospectral Method<a class="headerlink" href="#finding-the-trajectory-using-the-radau-pseudospectral-method" title="Permalink to this headline">#</a></h2>
 <p>Again, there are two states, and two corresponding 3rd-order polynomials representing the time history.
 As with the Gauss-Lobatto method, a third-order polynomial requires four pieces of information to define it.
@@ -940,8 +941,8 @@ Since these are a subset of the state discretization nodes, no interpolation of 
 <p><img alt="Screenshot" src="../_images/lgr_animation_3.png" /></p>
 <p>Again, the free variables are iterated until the defects are zero and any boundary conditions are met.</p>
 <p><img alt="Screenshot" src="../_images/lgr_solution_5.png" /></p>
-</div>
-<div class="section" id="multiple-segments">
+</section>
+<section id="multiple-segments">
 <h2>Multiple Segments<a class="headerlink" href="#multiple-segments" title="Permalink to this headline">#</a></h2>
 <p>The simple examples above use one single 3rd-order polynomial to represent the time history of the states.
 With more complex states, a single 3rd-order polynomial would not be capable of replicating the time history.
@@ -951,16 +952,16 @@ If they are shared, fewer design variables are necessary, but it may be more dif
 This is called “compressed” transcription.
 On the other hand, we can doubly-specify state values at segment boundaries as design variables, thus increasing the size of the problem.
 In this “uncompressed” formulation, continuity constraints are imposed at the segment bounds to ensure that there are no discontinuities in the state time-history at segment bounds.</p>
-</div>
-<div class="section" id="lgl-vs-lgr-collocation">
+</section>
+<section id="lgl-vs-lgr-collocation">
 <h2>LGL vs LGR Collocation<a class="headerlink" href="#lgl-vs-lgr-collocation" title="Permalink to this headline">#</a></h2>
 <p>Gauss-Lobatto collocation results in smaller NLP sizes for the optimizer since fewer states are treated as design variables.
 The cost of this reduction is the interpolation step in the Gauss-Lobatto algorithm.
 While the Radau Pseudospectral method requires one evaluation of the ODE to assess the defects, the Gauss-Lobatto method requires two.
 In addition, the interpolation step used by the Gauss-Lobatto method can result in interpolated state values falling well outside the user’s expected range if the initial guess is not sufficiently accurate.
 This can cause convergence issues if there are nonlinear solvers within the ODE that rely on a reasonable guess to achieve convergence.</p>
-</div>
-<div class="section" id="satisfying-defects-with-a-nonlinear-solver">
+</section>
+<section id="satisfying-defects-with-a-nonlinear-solver">
 <h2>Satisfying Defects with a Nonlinear Solver<a class="headerlink" href="#satisfying-defects-with-a-nonlinear-solver" title="Permalink to this headline">#</a></h2>
 <p>Typically, collocation problems are solved by posing the defects as constraints to an optimizer.
 In Dymos, another option exists.
@@ -969,8 +970,8 @@ This mode, which we call <code class="docutils literal notranslate"><span class=
 The optimizer only controls the initial or final value, and the solver is responsible for converging the trajectory time history.
 This results in a shooting method, but one that is mathematically consistent with the collocation methods.
 This <code class="docutils literal notranslate"><span class="pre">solve_segments</span></code> capability is useful if a user simply wants to propagate a dynamic system and not optimize it.</p>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1022,7 +1023,7 @@ This <code class="docutils literal notranslate"><span class="pre">solve_segments
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

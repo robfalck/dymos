@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Organizing Phases into Trajectories &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -812,7 +813,7 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="organizing-phases-into-trajectories">
+<section class="tex2jax_ignore mathjax_ignore" id="organizing-phases-into-trajectories">
 <h1>Organizing Phases into Trajectories<a class="headerlink" href="#organizing-phases-into-trajectories" title="Permalink to this headline">#</a></h1>
 <p>The majority of real-world use cases of optimal control involve complex trajectories that cannot be modeled with a single phase.
 For instance, different phases of a trajectory may have different equations of motion, different control parameterizations, or different path constraints.
@@ -822,7 +823,7 @@ It serves as a Group which contains the various phases belonging to the trajecto
 This enables trajectories that are not only a sequence of phases in time, but may include branching behavior, allowing us to do things like track/constrain the path of a jettisoned rocket stage.</p>
 <p>It supports a <code class="docutils literal notranslate"><span class="pre">get_values</span></code> method similar to that of Phases that allows the user to retrieve the value of a variable within the trajectory.
 When verifying an answer with explicit simulation, the <code class="docutils literal notranslate"><span class="pre">simulate</span></code> method of Trajectory can simulate all of its member phases in parallel, providing a significant performance improvement for some cases.</p>
-<div class="section" id="instantiating-a-trajectory">
+<section id="instantiating-a-trajectory">
 <h2>Instantiating a Trajectory<a class="headerlink" href="#instantiating-a-trajectory" title="Permalink to this headline">#</a></h2>
 <p>Instantiating a Trajectory is simple.  Simply invoke <code class="docutils literal notranslate"><span class="pre">Trajectory()</span></code>.  The trajectory object
 itself is an OpenMDAO <code class="docutils literal notranslate"><span class="pre">Group</span></code> which serves as a container for its constituent Phases.</p>
@@ -832,8 +833,8 @@ An OpenMDAO <code class="docutils literal notranslate"><span class="pre">Group</
 <li><p>linkages
 A Dymos <code class="docutils literal notranslate"><span class="pre">PhaseLinkageComp</span></code> that manages all of the linkage constraints that dictate how the phases are connected.</p></li>
 </ul>
-</div>
-<div class="section" id="adding-phases">
+</section>
+<section id="adding-phases">
 <h2>Adding Phases<a class="headerlink" href="#adding-phases" title="Permalink to this headline">#</a></h2>
 <p>Phases are added to a Trajectory using the <code class="docutils literal notranslate"><span class="pre">add_phase</span></code> method.</p>
 <blockquote>
@@ -863,16 +864,16 @@ A Dymos <code class="docutils literal notranslate"><span class="pre">PhaseLinkag
 </dd></dl>
 
 </div></blockquote>
-</div>
-<div class="section" id="defining-phase-linkages">
+</section>
+<section id="defining-phase-linkages">
 <h2>Defining Phase Linkages<a class="headerlink" href="#defining-phase-linkages" title="Permalink to this headline">#</a></h2>
 <p>Having added phases to the Trajectory, they now exist as independent Groups within the OpenMDAO model.
 In order to enforce continuity among certain variables across phases, the user must declare which variables are to be continuous in value at each phase boundary.
 There are two methods in dymos which provide this functionality.
 The <code class="docutils literal notranslate"><span class="pre">add_linkage_constraint</span></code> method provides a very general way of coupling two phases together.
 It does so by generating a constraint of the following form:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-d69db406-3893-49f4-90f6-bff4bd4d3bad">
-<span class="eqno">(84)<a class="headerlink" href="#equation-d69db406-3893-49f4-90f6-bff4bd4d3bad" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-b072f778-b73a-4ace-a746-12cb68a8dea0">
+<span class="eqno">(84)<a class="headerlink" href="#equation-b072f778-b73a-4ace-a746-12cb68a8dea0" title="Permalink to this equation">#</a></span>\[\begin{align}
     c = \mathrm{sign}_a \mathrm{var}_a + \mathrm{sign}_b \mathrm{var}_b
 \end{align}\]</div>
 <p>Method <code class="docutils literal notranslate"><span class="pre">add_linkage_constraint</span></code> lets the user specify the variables and phases to be compared for this constraint, as well as the location of the variable in each phase (either ‘initial’ or ‘final’)
@@ -892,7 +893,7 @@ The <code class="docutils literal notranslate"><span class="pre">link_phases</sp
 In the finite-burn orbit raising example, there are three phases:  <code class="docutils literal notranslate"><span class="pre">burn1</span></code>, <code class="docutils literal notranslate"><span class="pre">coast</span></code>, <code class="docutils literal notranslate"><span class="pre">burn2</span></code>.
 This case is somewhat unusual in that the thrust acceleration is modeled as a state variable.<br />
 The acceleration needs to be zero in the coast phase, but continuous between <code class="docutils literal notranslate"><span class="pre">burn1</span></code> and <code class="docutils literal notranslate"><span class="pre">burn2</span></code>, assuming no mass was jettisoned during the coast and that the thrust magnitude doesn’t change.</p>
-<div class="section" id="add-linkage-constraint">
+<section id="add-linkage-constraint">
 <h3>add_linkage_constraint<a class="headerlink" href="#add-linkage-constraint" title="Permalink to this headline">#</a></h3>
 <blockquote>
 <div><dl class="py method">
@@ -981,8 +982,8 @@ for the optimizer.  This is only valid for states and time.</p>
 </dd></dl>
 
 </div></blockquote>
-</div>
-<div class="section" id="link-phases">
+</section>
+<section id="link-phases">
 <h3>link_phases<a class="headerlink" href="#link-phases" title="Permalink to this headline">#</a></h3>
 <blockquote>
 <div><dl class="py method">
@@ -1027,9 +1028,9 @@ for the optimizer to solve.</p>
 </dd></dl>
 
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="examples-of-using-the-link-phases-method">
+</section>
+</section>
+<section id="examples-of-using-the-link-phases-method">
 <h2>Examples of using the <code class="docutils literal notranslate"><span class="pre">link_phases</span></code> method<a class="headerlink" href="#examples-of-using-the-link-phases-method" title="Permalink to this headline">#</a></h2>
 <p><strong>Typical Phase Linkage Sequence</strong></p>
 <p>A typical phase linkage sequence, where all phases use the same ODE (and therefore have
@@ -1065,8 +1066,8 @@ specifiers given.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span><span class="o">.</span><span class="n">link_phases</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="n">locs</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;initial&#39;</span><span class="p">,</span> <span class="s1">&#39;initial&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;final&#39;</span><span class="p">,</span> <span class="s1">&#39;initial&#39;</span><span class="p">)])</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="trajectory-level-parameters">
+</section>
+<section id="trajectory-level-parameters">
 <h2>Trajectory-Level Parameters<a class="headerlink" href="#trajectory-level-parameters" title="Permalink to this headline">#</a></h2>
 <p>Often times, there are parameters which apply to the entirety of a trajectory that potentially need to be optimized.
 If we implemented these as parameters within each phase individually, we would need some constraints to ensure that they held the same value within each phase.
@@ -1086,13 +1087,13 @@ It can take on the following values.</p>
 </ul>
 </li>
 </ul>
-</div>
-<div class="section" id="explicit-simulation-of-trajectories">
+</section>
+<section id="explicit-simulation-of-trajectories">
 <h2>Explicit Simulation of Trajectories<a class="headerlink" href="#explicit-simulation-of-trajectories" title="Permalink to this headline">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">simulate</span></code> method on Trajectory is similar to that of the <code class="docutils literal notranslate"><span class="pre">simulate</span></code> method of Phases.  When
 invoked, it will perform a simulation of each Phase in the trajectory.</p>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1144,7 +1145,7 @@ invoked, it will perform a simulation of each Phase in the trajectory.</p>
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

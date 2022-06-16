@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Double Integrator &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -736,34 +737,34 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="double-integrator">
+<section class="tex2jax_ignore mathjax_ignore" id="double-integrator">
 <h1>Double Integrator<a class="headerlink" href="#double-integrator" title="Permalink to this headline">#</a></h1>
 <p>In the double integrator problem, we seek to maximize the distance
 traveled by a block (that starts and ends at rest) sliding without
 friction along a horizontal surface, with acceleration as the control.</p>
 <p>We minimize the final time, <span class="math notranslate nohighlight">\(t_f\)</span>, by varying the dynamic control,
 <span class="math notranslate nohighlight">\(u\)</span>, subject to the dynamics:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9616d781-7299-477b-92b0-d253df2fdbb3">
-<span class="eqno">(45)<a class="headerlink" href="#equation-9616d781-7299-477b-92b0-d253df2fdbb3" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-75bbc377-5290-483f-a188-dfe613d0759b">
+<span class="eqno">(45)<a class="headerlink" href="#equation-75bbc377-5290-483f-a188-dfe613d0759b" title="Permalink to this equation">#</a></span>\[\begin{align}
   \frac{dx}{dt} &amp;= v \\
   \frac{dv}{dt} &amp;= u
 \end{align}\]</div>
 <p>The initial conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-67d3d8c4-e48b-4643-aa3a-20922a034165">
-<span class="eqno">(46)<a class="headerlink" href="#equation-67d3d8c4-e48b-4643-aa3a-20922a034165" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-1de424a6-031a-42e6-b98f-2672fda657d4">
+<span class="eqno">(46)<a class="headerlink" href="#equation-1de424a6-031a-42e6-b98f-2672fda657d4" title="Permalink to this equation">#</a></span>\[\begin{align}
   x_0 &amp;= 0 \\
   v_0 &amp;= 0
 \end{align}\]</div>
 <p>and the final conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-84059ab2-49b1-496c-b982-0e3c7a1a99c8">
-<span class="eqno">(47)<a class="headerlink" href="#equation-84059ab2-49b1-496c-b982-0e3c7a1a99c8" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-5d3306bf-8089-472b-806a-9f40da1d56b0">
+<span class="eqno">(47)<a class="headerlink" href="#equation-5d3306bf-8089-472b-806a-9f40da1d56b0" title="Permalink to this equation">#</a></span>\[\begin{align}
   x_f &amp;= \rm{free} \\
   v_f &amp;= 0
 \end{align}\]</div>
 <p>The control <span class="math notranslate nohighlight">\(u\)</span> is constrained to fall between -1 and 1. Due to the fact
 that the control appears linearly in the equations of motion, we should
 expect <em>bang-bang</em> behavior in the control (alternation between its extreme values).</p>
-<div class="section" id="the-ode-system-double-integrator-ode-py">
+<section id="the-ode-system-double-integrator-ode-py">
 <h2>The ODE System: double_integrator_ode.py<a class="headerlink" href="#the-ode-system-double-integrator-ode-py" title="Permalink to this headline">#</a></h2>
 <p>This problem is unique in that we do not actually have to calculate
 anything in the Dymos formulation of the ODE. We create an
@@ -792,8 +793,8 @@ are entirely provided by the other states and controls.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="building-and-running-the-problem">
+</section>
+<section id="building-and-running-the-problem">
 <h2>Building and running the problem<a class="headerlink" href="#building-and-running-the-problem" title="Permalink to this headline">#</a></h2>
 <p>In order to facilitate the bang-bang behavior in the control, we disable
 continuity and rate continuity in the control value.</p>
@@ -988,10 +989,10 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/utils/options_dictionary.py:347: OMDeprecationWarning:&#39;gradient method&#39; is not a valid python name and will become an invalid option name in a future release. You can prevent this warning (and future exceptions) by declaring this option using a valid python name.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/utils/options_dictionary.py:354: OMDeprecationWarning:&#39;gradient method&#39; is not a valid python name and will become an invalid option name in a future release. You can prevent this warning (and future exceptions) by declaring this option using a valid python name.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already has already been recorded for Driver.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
 INFO: checking out_of_order
 </pre></div>
 </div>
@@ -1023,17 +1024,17 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.126696 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.138312 seconds.
 Total jacobian shape: (181, 327) 
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Jacobian shape: (181, 327)  ( 1.51% nonzero)
+
+
+Jacobian shape: (181, 327)  ( 1.51% nonzero)
 FWD solves: 0   REV solves: 6
 Total colors vs. total size: 6 vs 181  (96.7% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.126696 sec.
-Time to compute coloring: 0.157325 sec.
+Time to compute sparsity: 0.138312 sec.
+Time to compute coloring: 0.159178 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1043,11 +1044,11 @@ Memory to compute coloring: 0.000000 MB.
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    3.1397
-       User Objective Time :       0.0316
-       User Sensitivity Time :     0.1069
-       Interface Time :            0.1787
-       Opt Solver Time:            2.8226
+    Total Time:                    3.2164
+       User Objective Time :       0.0357
+       User Sensitivity Time :     0.1078
+       Interface Time :            0.1935
+       Opt Solver Time:            2.8794
     Calls to Objective Function :      19
     Calls to Sens Function :           19
 
@@ -1665,8 +1666,8 @@ Memory to compute coloring: 0.000000 MB.
 </div>
 <div class="cell tag_remove-input tag_remove-output docutils container">
 </div>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1718,7 +1719,7 @@ Memory to compute coloring: 0.000000 MB.
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

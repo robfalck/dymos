@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Water Rocket &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -942,12 +943,12 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="water-rocket">
+<section class="tex2jax_ignore mathjax_ignore" id="water-rocket">
 <h1>Water Rocket<a class="headerlink" href="#water-rocket" title="Permalink to this headline">#</a></h1>
 <p>Author: Bernardo Bahia Monteiro (<a class="reference external" href="mailto:bbahia&#37;&#52;&#48;umich&#46;edu">bbahia<span>&#64;</span>umich<span>&#46;</span>edu</a>)</p>
 <p>In this example, we will optimize a water rocket for range and height at the apogee, using design variables that are easily modifiable just before launch: the empty mass, the initial water volume and the launch angle.
 This example builds on <a class="reference internal" href="../multi_phase_cannonball/multi_phase_cannonball.html"><span class="doc std std-doc">multi-phase cannonball</span></a> ane is adapted from <em>Optimization of a Water Rocket in OpenMDAO/Dymos</em> <span id="id1">[<a class="reference internal" href="#id58" title="Bernardo Bahia Monteiro. Optimization of a water rocket in openmdao/dymos. Aug 2020. URL: engrxiv.org/nqta8, doi:10.31224/osf.io/nqta8.">BM20</a>]</span>.</p>
-<div class="section" id="nomenclature">
+<section id="nomenclature">
 <h2>Nomenclature<a class="headerlink" href="#nomenclature" title="Permalink to this headline">#</a></h2>
 <table class="colwidths-auto table">
 <thead>
@@ -1000,16 +1001,16 @@ This example builds on <a class="reference internal" href="../multi_phase_cannon
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section" id="problem-formulation">
+</section>
+<section id="problem-formulation">
 <h2>Problem Formulation<a class="headerlink" href="#problem-formulation" title="Permalink to this headline">#</a></h2>
 <p>A natural objective function for a water rocket is the maximum height achieved by the rocket during flight, or the horizontal distance it travels, i.e. its range.
 The design of a water rocket is somewhat constrained by the soda bottle used as its engine.
 This means that the volume available for water and air is fixed, the initial launch pressure is limited by the bottle’s strength (since the pressure is directly related to the energy available for the rocket, it is easy to see that it should be as high as possible) and the nozzle throat area is also fixed.
 Given these manufacturing constraints, the design variables we are left with are the empty mass (it can be easily changed through adding ballast), the water volume at the launch, and the launch angle.
 With this considerations in mind, a natural formulation for the water rocket problem is</p>
-<div class="amsmath math notranslate nohighlight" id="equation-a6ee473a-af3a-479f-a826-b36ed254857e">
-<span class="eqno">(79)<a class="headerlink" href="#equation-a6ee473a-af3a-479f-a826-b36ed254857e" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-484a572b-6542-46c5-8e31-c1dba5819540">
+<span class="eqno">(79)<a class="headerlink" href="#equation-484a572b-6542-46c5-8e31-c1dba5819540" title="Permalink to this equation">#</a></span>\[\begin{align}
     \text{maximize}   &amp;\quad \text{range or height} \\
     \text{w.r.t.}     &amp;\quad \text{empty mass, initial water volume, launch angle, trajectory} \\
     \text{subject to} &amp;\quad \text{flight dynamics} \\
@@ -1018,8 +1019,8 @@ With this considerations in mind, a natural formulation for the water rocket pro
                       &amp;\quad 0^\circ &lt; \text{launch angle} &lt; 90^\circ \\
                       &amp;\quad 0 &lt; \text{empty mass}
 \end{align}\]</div>
-</div>
-<div class="section" id="model">
+</section>
+<section id="model">
 <h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">#</a></h2>
 <p>The water rocket model is divided into three basic components: a <em>water engine</em>, responsible for modelling the fluid dynamics inside the rocket and returning its thrust;  the <em>aerodynamics</em>, responsible for calculating the atmospheric drag of the rocket; and the <em>equations of motion</em>, responsible for propagating the rocket’s trajectory in time, using Newton’s laws and the forces provided by the other two components.</p>
 <p>In order to integrate these three basic components, some additional interfacing components are necessary: an atmospheric model to provide values of ambient pressure for the water engine and air density to the calculation of the dynamic pressure for the aerodynamic model, and a component that calculates the instantaneous mass of the rocket by summing the water mass with the rocket’s empty mass.
@@ -1040,7 +1041,7 @@ This can cause convergence problems if the launch velocity is set to zero or the
 <p class="admonition-title">Note</p>
 <p>Since the range of altitudes achieved by the water rocket is very small (100m), the air density and pressure are practically constant, thus the use of an atmospheric model is not necessary. However, using it makes it easier to reuse code from [multi-phase cannonball (../multi_phase_cannonball/multi_phase_cannonball.md).</p>
 </div>
-<div class="section" id="water-engine">
+<section id="water-engine">
 <h3>Water engine<a class="headerlink" href="#water-engine" title="Permalink to this headline">#</a></h3>
 <p>The water engine is modelled by assuming that the air expansion in the rocket
 follows an adiabatic process and the water flow is incompressible and inviscid,
@@ -1057,8 +1058,8 @@ A more rigorous formulation, which drops all these simplifying assumptions can b
 This simplified model, however, produces physically meaningful results.</p>
 <p>There are two states in this dynamical model, the water volume in the rocket <span class="math notranslate nohighlight">\(V_w\)</span> and the gauge pressure inside the rocket <span class="math notranslate nohighlight">\(p\)</span>.
 The constitutive equations and the N2 diagram showing the model organization are shown below.</p>
-</div>
-<div class="section" id="constitutive-equations-of-the-water-engine-model">
+</section>
+<section id="constitutive-equations-of-the-water-engine-model">
 <h3>Constitutive equations of the water engine model<a class="headerlink" href="#constitutive-equations-of-the-water-engine-model" title="Permalink to this headline">#</a></h3>
 <table class="colwidths-auto table">
 <thead>
@@ -1085,8 +1086,8 @@ The constitutive equations and the N2 diagram showing the model organization are
   <img src="figures/water_rocket_waterengine.svg"/>
   <figcaption>N2 diagram for the water engine group</figcaption>
 </figure>
-</div>
-<div class="section" id="id2">
+</section>
+<section id="id2">
 <h3>Water engine<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h3>
 <p>The water engine is modelled by assuming that the air expansion in the rocket
 follows an adiabatic process and the water flow is incompressible and inviscid,
@@ -1103,8 +1104,8 @@ A more rigorous formulation, which drops all these simplifying assumptions can b
 This simplified model, however, produces physically meaningful results.</p>
 <p>There are two states in this dynamical model, the water volume in the rocket <span class="math notranslate nohighlight">\(V_w\)</span> and the gauge pressure inside the rocket <span class="math notranslate nohighlight">\(p\)</span>.
 The constitutive equations and the N2 diagram showing the model organization are shown below.</p>
-</div>
-<div class="section" id="id8">
+</section>
+<section id="id8">
 <h3>Constitutive equations of the water engine model<a class="headerlink" href="#id8" title="Permalink to this headline">#</a></h3>
 <table class="colwidths-auto table">
 <thead>
@@ -1596,8 +1597,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">_MassAdder</span></code> component calculates the rocket’s instantaneous mass by
 summing the water mass with the rockets empty mass, i.e.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8747fd2b-afe7-4825-8d7e-faae0ee748d1">
-<span class="eqno">(80)<a class="headerlink" href="#equation-8747fd2b-afe7-4825-8d7e-faae0ee748d1" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-6f667fa1-8fd1-47ad-a649-df1932284bb1">
+<span class="eqno">(80)<a class="headerlink" href="#equation-6f667fa1-8fd1-47ad-a649-df1932284bb1" title="Permalink to this equation">#</a></span>\[\begin{align}
     m = m_\text{empty}+\rho_w V_w
 \end{align}\]</div>
 <div class="cell tag_remove-input docutils container">
@@ -1827,9 +1828,9 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </pre></div>
 </div></div>
 </div>
-</div>
-</div>
-<div class="section" id="phases">
+</section>
+</section>
+<section id="phases">
 <h2>Phases<a class="headerlink" href="#phases" title="Permalink to this headline">#</a></h2>
 <p>The flight of the water rocket is split in three distinct phases: propelled ascent, ballistic ascent and ballistic descent.
 If the simplification of no thrust without water were lifted, there would be an extra “air propelled ascent” phase between the propelled ascent and ballistic ascent phases.</p>
@@ -2157,8 +2158,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </pre></div>
 </div></div>
 </div>
-</div>
-<div class="section" id="model-parameters">
+</section>
+<section id="model-parameters">
 <h2>Model parameters<a class="headerlink" href="#model-parameters" title="Permalink to this headline">#</a></h2>
 <p>The model requires a few constant parameters.
 The values used are shown in the following table.</p>
@@ -2232,8 +2233,8 @@ The drag coefficient <span class="math notranslate nohighlight">\(C_D\)</span> i
 The initial pressure <span class="math notranslate nohighlight">\(p_0\)</span> should be maximized in order to obtain the maximum range or height for the rocket.
 It is limited by the structural properties of the bottle, which are modifiable by the designer, since the bottle needs to be available commercially.
 Finally, the starting point of the rocket is set to the origin.</p>
-</div>
-<div class="section" id="putting-it-all-together">
+</section>
+<section id="putting-it-all-together">
 <h2>Putting it all together<a class="headerlink" href="#putting-it-all-together" title="Permalink to this headline">#</a></h2>
 <p>The different phases must be combined in a single trajectory, and linked in a sequence.
 Here we also define the design variables.</p>
@@ -2387,8 +2388,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </pre></div>
 </div></div>
 </div>
-</div>
-<div class="section" id="helper-functions-to-access-the-results">
+</section>
+<section id="helper-functions-to-access-the-results">
 <h2>Helper Functions to Access the Results<a class="headerlink" href="#helper-functions-to-access-the-results" title="Permalink to this headline">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2559,8 +2560,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="optimizing-for-height">
+</section>
+<section id="optimizing-for-height">
 <h2>Optimizing for Height<a class="headerlink" href="#optimizing-for-height" title="Permalink to this headline">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2595,7 +2596,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/utils/options_dictionary.py:347: OMDeprecationWarning:&#39;gradient method&#39; is not a valid python name and will become an invalid option name in a future release. You can prevent this warning (and future exceptions) by declaring this option using a valid python name.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/utils/options_dictionary.py:354: OMDeprecationWarning:&#39;gradient method&#39; is not a valid python name and will become an invalid option name in a future release. You can prevent this warning (and future exceptions) by declaring this option using a valid python name.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- Constraint Report [traj] ---
@@ -2607,11 +2608,13 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
         None
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already has already been recorded for Driver.
-Model viewer data has already has already been recorded for Driver.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 3.574011 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 3.563075 seconds.
 Total jacobian shape: (1151, 1153) 
 </pre></div>
 </div>
@@ -2620,8 +2623,8 @@ FWD solves: 19   REV solves: 0
 Total colors vs. total size: 19 vs 1153  (98.4% improvement)
 
 Sparsity computed using tolerance: 1e-12
-Time to compute sparsity: 3.574011 sec.
-Time to compute coloring: 2.714352 sec.
+Time to compute sparsity: 3.563075 sec.
+Time to compute coloring: 2.735785 sec.
 Memory to compute coloring: -20.132812 MB.
 </pre></div>
 </div>
@@ -2662,8 +2665,8 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 72
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 0
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.943
-Total CPU secs in NLP function evaluations           =     10.220
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.926
+Total CPU secs in NLP function evaluations           =     10.028
 
 EXIT: Optimal Solution Found.
 </pre></div>
@@ -2685,7 +2688,7 @@ Maximum velocity: 46.1550 m/s
 </div>
 </div>
 </div>
-<div class="section" id="maximum-height-solution-propulsive-phase">
+<section id="maximum-height-solution-propulsive-phase">
 <h3>Maximum Height Solution: Propulsive Phase<a class="headerlink" href="#maximum-height-solution-propulsive-phase" title="Permalink to this headline">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2697,9 +2700,9 @@ Maximum velocity: 46.1550 m/s
 <img alt="../../_images/water_rocket_28_0.png" src="../../_images/water_rocket_28_0.png" />
 </div>
 </div>
-</div>
-</div>
-<div class="section" id="maximum-height-solution-height-vs-range">
+</section>
+</section>
+<section id="maximum-height-solution-height-vs-range">
 <h2>Maximum Height Solution: Height vs. Range<a class="headerlink" href="#maximum-height-solution-height-vs-range" title="Permalink to this headline">#</a></h2>
 <p>Note that the equations of motion used here are singular in vertical flight, so the launch angle (the initial flight path angle) was limited to 85 degrees.</p>
 <div class="cell docutils container">
@@ -2712,8 +2715,8 @@ Maximum velocity: 46.1550 m/s
 <img alt="../../_images/water_rocket_30_0.png" src="../../_images/water_rocket_30_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="maximum-height-solution-state-history">
+</section>
+<section id="maximum-height-solution-state-history">
 <h2>Maximum Height Solution: State History<a class="headerlink" href="#maximum-height-solution-state-history" title="Permalink to this headline">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2727,9 +2730,9 @@ Maximum velocity: 46.1550 m/s
 </div>
 <div class="cell tag_remove-input tag_remove-output docutils container">
 </div>
-</div>
-</div>
-<div class="tex2jax_ignore mathjax_ignore section" id="optimizing-for-range">
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="optimizing-for-range">
 <h1>Optimizing for Range<a class="headerlink" href="#optimizing-for-range" title="Permalink to this headline">#</a></h1>
 <div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
@@ -2776,13 +2779,13 @@ Maximum velocity: 46.1550 m/s
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/recorders/sqlite_recorder.py:227: UserWarning:The existing case recorder file, dymos_solution.db, is being overwritten.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already has already been recorded for Driver.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already has already been recorded for Driver.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 3.578548 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 3.544929 seconds.
 Total jacobian shape: (1151, 1153) 
 </pre></div>
 </div>
@@ -2791,8 +2794,8 @@ FWD solves: 19   REV solves: 0
 Total colors vs. total size: 19 vs 1153  (98.4% improvement)
 
 Sparsity computed using tolerance: 1e-12
-Time to compute sparsity: 3.578548 sec.
-Time to compute coloring: 2.650077 sec.
+Time to compute sparsity: 3.544929 sec.
+Time to compute coloring: 2.773493 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -2826,8 +2829,8 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 56
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 0
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.727
-Total CPU secs in NLP function evaluations           =      8.618
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.719
+Total CPU secs in NLP function evaluations           =      8.545
 
 EXIT: Optimal Solution Found.
 
@@ -2838,11 +2841,11 @@ Optimization Problem -- Optimization using pyOpt_sparse
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    9.5181
-       User Objective Time :       0.3753
-       User Sensitivity Time :     6.3944
-       Interface Time :            2.0015
-       Opt Solver Time:            0.7469
+    Total Time:                    9.4312
+       User Objective Time :       0.3765
+       User Sensitivity Time :     6.3604
+       Interface Time :            1.9600
+       Opt Solver Time:            0.7342
     Calls to Objective Function :      70
     Calls to Sens Function :           56
 
@@ -5183,7 +5186,7 @@ Maximum velocity: 41.3133 m/s
 </div>
 </div>
 </div>
-<div class="section" id="maximum-range-solution-propulsive-phase">
+<section id="maximum-range-solution-propulsive-phase">
 <h2>Maximum Range Solution: Propulsive Phase<a class="headerlink" href="#maximum-range-solution-propulsive-phase" title="Permalink to this headline">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -5195,8 +5198,8 @@ Maximum velocity: 41.3133 m/s
 <img alt="../../_images/water_rocket_37_0.png" src="../../_images/water_rocket_37_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="maximum-range-solution-height-vs-range">
+</section>
+<section id="maximum-range-solution-height-vs-range">
 <h2>Maximum Range Solution: Height vs. Range<a class="headerlink" href="#maximum-range-solution-height-vs-range" title="Permalink to this headline">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -5208,8 +5211,8 @@ Maximum velocity: 41.3133 m/s
 <img alt="../../_images/water_rocket_39_0.png" src="../../_images/water_rocket_39_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="maximum-range-solution-state-history">
+</section>
+<section id="maximum-range-solution-state-history">
 <h2>Maximum Range Solution: State History<a class="headerlink" href="#maximum-range-solution-state-history" title="Permalink to this headline">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -5223,8 +5226,8 @@ Maximum velocity: 41.3133 m/s
 </div>
 <div class="cell tag_remove-input tag_remove-output docutils container">
 </div>
-</div>
-<div class="section" id="references">
+</section>
+<section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h2>
 <div class="docutils container" id="id15">
 <dl class="citation">
@@ -5260,8 +5263,8 @@ Maximum velocity: 41.3133 m/s
 </dd>
 </dl>
 </div>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -5313,7 +5316,7 @@ Maximum velocity: 41.3133 m/s
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

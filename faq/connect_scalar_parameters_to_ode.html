@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>How do I connect a scalar input to the ODE? &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -726,7 +727,7 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="how-do-i-connect-a-scalar-input-to-the-ode">
+<section class="tex2jax_ignore mathjax_ignore" id="how-do-i-connect-a-scalar-input-to-the-ode">
 <h1>How do I connect a scalar input to the ODE?<a class="headerlink" href="#how-do-i-connect-a-scalar-input-to-the-ode" title="Permalink to this headline">#</a></h1>
 <p>By default, we recommend that users treat all ODE input variables as if they are <em>potentially</em> dynamic.
 This allows the user to use the input as either a dynamic control, or as a static design or input parameter.
@@ -734,7 +735,7 @@ By default, parameters will “fan” the value out to all nodes.
 This allows the partials to be defined in a consistent fashion (generally a diagonal matrix for a scalar input and output) regardless of whether the input is static or dynamic.</p>
 <p><strong>But</strong> there are some cases in which the user may know that a variable will never have the potential to change throughout the trajectory.
 In these cases, we can reduce a bit of the data transfer OpenMDAO needs to perform by defining the input as a scalar in the ODE, rather than sizing it based on the number of nodes.</p>
-<div class="section" id="the-brachistochrone-with-a-static-input">
+<section id="the-brachistochrone-with-a-static-input">
 <h2>The Brachistochrone with a static input.<a class="headerlink" href="#the-brachistochrone-with-a-static-input" title="Permalink to this headline">#</a></h2>
 <p>The local gravity <code class="docutils literal notranslate"><span class="pre">g</span></code> in the brachistochrone problem makes a good candidate for a static input parameter.
 The brachistochrone generally won’t be in an environment where the local acceleration of gravity is varying by any significant amount.</p>
@@ -1028,10 +1029,10 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     --- phase0 ---
         None
 
-Model viewer data has already has already been recorded for Driver.
+Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.163074 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.160159 seconds.
 Total jacobian shape: (40, 50) 
 
 
@@ -1040,8 +1041,8 @@ FWD solves: 8   REV solves: 0
 Total colors vs. total size: 8 vs 50  (84.0% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.163074 sec.
-Time to compute coloring: 0.037915 sec.
+Time to compute sparsity: 0.160159 sec.
+Time to compute coloring: 0.037035 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1064,8 +1065,8 @@ Simulating trajectory traj
 </div>
 <div class="cell tag_remove-input tag_remove-output docutils container">
 </div>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1117,7 +1118,7 @@ Simulating trajectory traj
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

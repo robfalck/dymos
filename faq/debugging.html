@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>How can I debug models when things go wrong? &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -764,12 +765,12 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="how-can-i-debug-models-when-things-go-wrong">
+<section class="tex2jax_ignore mathjax_ignore" id="how-can-i-debug-models-when-things-go-wrong">
 <h1>How can I debug models when things go wrong?<a class="headerlink" href="#how-can-i-debug-models-when-things-go-wrong" title="Permalink to this headline">#</a></h1>
 <p>Dymos allow the user to build complex optimization models that include dynamic behavior.
 Managing that complexity can be a challenge as models grow larger.
 In this section we’ll talk about some tools that can help when things are going as expected.</p>
-<div class="section" id="testing">
+<section id="testing">
 <h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">#</a></h2>
 <p>If you look at the dymos source code, a considerable portion of it is used for testing.
 We strongly recommend that you develop tests of your models, from testing that the most basic components work as expected, to testing integrated systems with nonlinear solvers.
@@ -909,8 +910,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 <p>This consists of two separate tests: one that tests results, and one that tests the partials against finite-differencing.
 OpenMDAO includes a useful <code class="docutils literal notranslate"><span class="pre">assert_check_partials</span></code> method that can be used to programmatically verify accurate partials in automated testing.</p>
-</div>
-<div class="section" id="the-n2-viewer">
+</section>
+<section id="the-n2-viewer">
 <h2>The N2 Viewer<a class="headerlink" href="#the-n2-viewer" title="Permalink to this headline">#</a></h2>
 <p>When complex models don’t output the correct value and the compute method has been double-checked, an incorrect or non-existent connection is frequently to blame.
 The goto tool for checking to see if models are correctly connected is <a class="reference external" href="http://openmdao.org/newdocs/versions/latest/features/model_visualization/n2_details.html">OpenMDAO’s N-squared (N2) viewer</a>.
@@ -924,16 +925,16 @@ This tool provides information about how models are connected and lets the user 
 </pre></div>
 </div>
 <p>where <a class="reference external" href="http://file.py">file.py</a> is the file that contains an instantiated OpenMDAO Problem.</p>
-</div>
-<div class="section" id="an-example-of-an-n2-of-a-dymos-model">
+</section>
+<section id="an-example-of-an-n2-of-a-dymos-model">
 <h2>An example of an N2 of a Dymos model<a class="headerlink" href="#an-example-of-an-n2-of-a-dymos-model" title="Permalink to this headline">#</a></h2>
 <p>Coming soon</p>
-</div>
-<div class="section" id="using-debug-print">
+</section>
+<section id="using-debug-print">
 <h2>Using <code class="docutils literal notranslate"><span class="pre">debug_print</span></code><a class="headerlink" href="#using-debug-print" title="Permalink to this headline">#</a></h2>
 <p>Coming soon</p>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -985,7 +986,7 @@ This tool provides information about how models are connected and lets the user 
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

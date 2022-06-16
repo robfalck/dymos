@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>How do connect the outputs of an upstream analysis as inputs to Dymos? &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -754,12 +755,12 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="how-do-connect-the-outputs-of-an-upstream-analysis-as-inputs-to-dymos">
+<section class="tex2jax_ignore mathjax_ignore" id="how-do-connect-the-outputs-of-an-upstream-analysis-as-inputs-to-dymos">
 <h1>How do connect the outputs of an upstream analysis as inputs to Dymos?<a class="headerlink" href="#how-do-connect-the-outputs-of-an-upstream-analysis-as-inputs-to-dymos" title="Permalink to this headline">#</a></h1>
 <p>One of the design goals of Dymos is to allow the trajectory to be a part of a larger multidisciplinary optimization problem.
 Sometimes, you may want to take the results of some upstream design and use them as an input to a Dymos trajectory.
 There are different ways of doing this depending on what is being connected from the upstream source.</p>
-<div class="section" id="upstream-outputs-as-parameters">
+<section id="upstream-outputs-as-parameters">
 <h2>Upstream outputs as parameters<a class="headerlink" href="#upstream-outputs-as-parameters" title="Permalink to this headline">#</a></h2>
 <p>If an upstream component performs some calculations to compute an output that is static through the trajectory, this is a use-case for parameters.
 For instance, we might use an upstream analysis to compute a wing area, spacecraft dry mass, or rotor radius.</p>
@@ -768,8 +769,8 @@ For instance, we might use an upstream analysis to compute a wing area, spacecra
 The problem then seeks to find the radius which provides the maximum range for a given initial muzzle energy.
 If the cannonball is too large, it will be heavy and have lower initial velocity given the fixed initial energy.
 If the cannonball is too small, its ballistic coefficient will be low and it will not maintain velocity in the presence of drag.</p>
-</div>
-<div class="section" id="upstream-outputs-as-controls">
+</section>
+<section id="upstream-outputs-as-controls">
 <h2>Upstream outputs as controls<a class="headerlink" href="#upstream-outputs-as-controls" title="Permalink to this headline">#</a></h2>
 <p>It is possible to connect a control time history as inputs to a phase.
 This is somewhat more complex compared to static parameters because we now need to know the points in time at which the control input values are needed.
@@ -777,8 +778,8 @@ When the controls in a phase are not optimized (<code class="docutils literal no
 <p>Example: <a class="reference internal" href="../examples/brachistochrone/brachistochrone_upstream_controls.html"><span class="doc std std-doc">Brachistochrone with upstream controls</span></a></p>
 <p>In the <a class="reference internal" href="../examples/brachistochrone/brachistochrone_upstream_controls.html"><span class="doc std std-doc">Brachistochrone with upstream controls example</span></a>, an upstream IndepVarComp provides the control input values, rather than the phase itself.
 Optimization settings have to be applied using the OpenMDAO <code class="docutils literal notranslate"><span class="pre">add_design_var</span></code> method, since these controls are not “owned” by the Dymos phase.</p>
-</div>
-<div class="section" id="upstream-outputs-as-initial-state-values">
+</section>
+<section id="upstream-outputs-as-initial-state-values">
 <h2>Upstream outputs as initial state values<a class="headerlink" href="#upstream-outputs-as-initial-state-values" title="Permalink to this headline">#</a></h2>
 <p>States behave a bit differently than controls.
 Rather than connecting the entire time history at the state input nodes, those are still managed by Dymos.
@@ -786,13 +787,13 @@ If using <code class="docutils literal notranslate"><span class="pre">solve_segm
 When using optimizer-driven collocation (<code class="docutils literal notranslate"><span class="pre">solve_segments=False</span></code>), states should be “connected” via constraint.
 In fact, this is how phases are connected in trajectories…new constraints are added that constrain the value of states at phase junctions.</p>
 <p>Example: <a class="reference internal" href="../examples/brachistochrone/brachistochrone_upstream_states.html"><span class="doc std std-doc">Brachistochrone with upstream state</span></a></p>
-</div>
-<div class="section" id="upstream-outputs-as-phase-initial-time-or-duration">
+</section>
+<section id="upstream-outputs-as-phase-initial-time-or-duration">
 <h2>Upstream outputs as phase initial time or duration<a class="headerlink" href="#upstream-outputs-as-phase-initial-time-or-duration" title="Permalink to this headline">#</a></h2>
 <p>When inputting a phase’s initial time and duration, we recommend doing so through <code class="docutils literal notranslate"><span class="pre">set_time_options</span></code>. However, you can also pass those in via an external source as demonstrated in the example below.</p>
 <p>Example: <a class="reference internal" href="../examples/brachistochrone/brachistochrone_upstream_init_duration_states.html"><span class="doc std std-doc">Brachistochrone with upstream initial and duration states</span></a></p>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -844,7 +845,7 @@ In fact, this is how phases are connected in trajectories…new constraints are 
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

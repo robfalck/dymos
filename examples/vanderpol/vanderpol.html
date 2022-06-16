@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>The Van der Pol Oscillator &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -816,24 +817,24 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="the-van-der-pol-oscillator">
+<section class="tex2jax_ignore mathjax_ignore" id="the-van-der-pol-oscillator">
 <h1>The Van der Pol Oscillator<a class="headerlink" href="#the-van-der-pol-oscillator" title="Permalink to this headline">#</a></h1>
 <p>In dynamics, the Van Der Pol oscillator <span id="id1">[<a class="reference internal" href="#id23" title="Wikipedia contributors. Van der pol oscillator — Wikipedia, the free encyclopedia. 2020. [Online; accessed 12-June-2020]. URL: https://en.wikipedia.org/w/index.php?title=Van_der_Pol_oscillator&amp;oldid=953857769.">Wikipediacontributors20</a>]</span> is a non-conservative oscillator with non-linear damping. It evolves in time according to the second-order differential equation:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-289c1856-996a-4d5d-9041-2faed728cc78">
-<span class="eqno">(16)<a class="headerlink" href="#equation-289c1856-996a-4d5d-9041-2faed728cc78" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-ec0841b0-e1e4-4a8e-94c0-71856c845550">
+<span class="eqno">(16)<a class="headerlink" href="#equation-ec0841b0-e1e4-4a8e-94c0-71856c845550" title="Permalink to this equation">#</a></span>\[\begin{align}
     \frac{d^2x}{dt^2} - u (1 - x^2) \frac{dx}{dt} + x &amp;= 0
 \end{align}\]</div>
 <p>where <span class="math notranslate nohighlight">\(x\)</span> is the position coordinate (a function of the time <span class="math notranslate nohighlight">\(t\)</span>), and <span class="math notranslate nohighlight">\(u\)</span> is a scalar parameter
 indicating the nonlinearity and the strength of the damping.</p>
 <p>To make this an optimal control problem, we want to find the smallest control that will dampen the oscillation
 (drive the state variables to zero). We can express this as an objective function <span class="math notranslate nohighlight">\(J\)</span> to minimize:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-fb7ebc78-e9c7-4743-96c5-396881730a79">
-<span class="eqno">(17)<a class="headerlink" href="#equation-fb7ebc78-e9c7-4743-96c5-396881730a79" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-51aa55de-c365-4982-8592-79697649b045">
+<span class="eqno">(17)<a class="headerlink" href="#equation-51aa55de-c365-4982-8592-79697649b045" title="Permalink to this equation">#</a></span>\[\begin{align}
     J &amp;= \int x^2_0 + x^2_1 + u^2
 \end{align}\]</div>
 <p>In other words, we want to find the optimal (smallest) trajectory of the control <span class="math notranslate nohighlight">\(u\)</span> such that the oscillation
 and the oscillation’s rate of change are driven to zero.</p>
-<div class="section" id="state-variables">
+<section id="state-variables">
 <h2>State Variables<a class="headerlink" href="#state-variables" title="Permalink to this headline">#</a></h2>
 <p>There are three <em>state</em> variables are used to define the configuration of the system at any given instant in time.</p>
 <ul class="simple">
@@ -843,45 +844,45 @@ and the oscillation’s rate of change are driven to zero.</p>
 </ul>
 <p>The objective function is included as a state variable so that Dymos will do the integration.</p>
 <p>The <span class="math notranslate nohighlight">\(x_1\)</span> and <span class="math notranslate nohighlight">\(x_0\)</span> state variables are also inputs to the system, along with the control <span class="math notranslate nohighlight">\(u\)</span>.</p>
-</div>
-<div class="section" id="system-dynamics">
+</section>
+<section id="system-dynamics">
 <h2>System Dynamics<a class="headerlink" href="#system-dynamics" title="Permalink to this headline">#</a></h2>
 <p>The evolution of the state variables is given by the following ordinary differential equations (ODE):</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8567cf81-c897-45f5-8f90-6949c5dba9ff">
-<span class="eqno">(18)<a class="headerlink" href="#equation-8567cf81-c897-45f5-8f90-6949c5dba9ff" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-141a2afb-e7d0-402c-8ee0-94b29672b05f">
+<span class="eqno">(18)<a class="headerlink" href="#equation-141a2afb-e7d0-402c-8ee0-94b29672b05f" title="Permalink to this equation">#</a></span>\[\begin{align}
     \frac{dx_0}{dt} &amp;= (1 - x^2_1) x_0 - x_1 + u \\
     \frac{dx_1}{dt} &amp;= x_0 \\
     \frac{dJ}{dt} &amp;= x^2_0 + x^2_1 + u^2
 \end{align}\]</div>
-</div>
-<div class="section" id="control-variables">
+</section>
+<section id="control-variables">
 <h2>Control Variables<a class="headerlink" href="#control-variables" title="Permalink to this headline">#</a></h2>
 <p>This system has a single control variable:</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(u\)</span>: The control input.</p></li>
 </ul>
 <p>The control variable has a constraint: <span class="math notranslate nohighlight">\(-0.75 \leq u \leq 1.0\)</span></p>
-</div>
-<div class="section" id="the-initial-and-final-conditions">
+</section>
+<section id="the-initial-and-final-conditions">
 <h2>The initial and final conditions<a class="headerlink" href="#the-initial-and-final-conditions" title="Permalink to this headline">#</a></h2>
 <p>The initial conditions are:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-75337104-ec87-4931-a985-0a9724e8b094">
-<span class="eqno">(19)<a class="headerlink" href="#equation-75337104-ec87-4931-a985-0a9724e8b094" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-5c8c948a-d1f6-42e6-bb44-fa12945cac38">
+<span class="eqno">(19)<a class="headerlink" href="#equation-5c8c948a-d1f6-42e6-bb44-fa12945cac38" title="Permalink to this equation">#</a></span>\[\begin{align}
     t_i &amp;= 0 \\
     x_{0i} &amp;= 1 \\
     x_{1i} &amp;= 1 \\
       u_i &amp;= -0.75
 \end{align}\]</div>
 <p>The final conditions are:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-4be1ddc8-1e1e-40ee-8a4b-bbd3446e35c2">
-<span class="eqno">(20)<a class="headerlink" href="#equation-4be1ddc8-1e1e-40ee-8a4b-bbd3446e35c2" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-56540042-973c-4579-8ac9-9648165fc282">
+<span class="eqno">(20)<a class="headerlink" href="#equation-56540042-973c-4579-8ac9-9648165fc282" title="Permalink to this equation">#</a></span>\[\begin{align}
     t_f &amp;= 10 \\
     x_{0f} &amp;= 0 \\
     x_{1f} &amp;= 0 \\
       u_f &amp;= 0
 \end{align}\]</div>
-</div>
-<div class="section" id="defining-the-ode-as-an-openmdao-system">
+</section>
+<section id="defining-the-ode-as-an-openmdao-system">
 <h2>Defining the ODE as an OpenMDAO System<a class="headerlink" href="#defining-the-ode-as-an-openmdao-system" title="Permalink to this headline">#</a></h2>
 <p>In Dymos, the ODE is an OpenMDAO System (a Component, or a Group of components).
 The following <em>ExplicitComponent</em> computes the state rates for the Van der Pol problem.</p>
@@ -997,8 +998,8 @@ the <strong>compute_partials</strong> method. So although 7 partials are declare
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="defining-the-dymos-problem">
+</section>
+<section id="defining-the-dymos-problem">
 <h2>Defining the Dymos Problem<a class="headerlink" href="#defining-the-dymos-problem" title="Permalink to this headline">#</a></h2>
 <p>Once the ODEs are defined, they are used to create a Dymos <em>Problem</em> object that allows solution.</p>
 <div class="admonition note">
@@ -1098,8 +1099,8 @@ This is required so that the inputs are correctly calculated.</p></li>
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="simulating-the-problem-without-control">
+</section>
+<section id="simulating-the-problem-without-control">
 <h2>Simulating the Problem (without control)<a class="headerlink" href="#simulating-the-problem-without-control" title="Permalink to this headline">#</a></h2>
 <p>The following script creates an instance of the Dymos vanderpol problem and simulates it.</p>
 <p>Since the problem was only simulated and not solved, the solution lines in the plots show only
@@ -1147,10 +1148,10 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/utils/options_dictionary.py:347: OMDeprecationWarning:&#39;gradient method&#39; is not a valid python name and will become an invalid option name in a future release. You can prevent this warning (and future exceptions) by declaring this option using a valid python name.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/utils/options_dictionary.py:354: OMDeprecationWarning:&#39;gradient method&#39; is not a valid python name and will become an invalid option name in a future release. You can prevent this warning (and future exceptions) by declaring this option using a valid python name.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already has already been recorded for Driver.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
 INFO: checking out_of_order
 </pre></div>
 </div>
@@ -1238,8 +1239,8 @@ control variable <span class="math notranslate nohighlight">\(u\)</span> vs time
 <img alt="../../_images/vanderpol_8_0.png" src="../../_images/vanderpol_8_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="solving-the-optimal-control-problem">
+</section>
+<section id="solving-the-optimal-control-problem">
 <h2>Solving the Optimal Control Problem<a class="headerlink" href="#solving-the-optimal-control-problem" title="Permalink to this headline">#</a></h2>
 <p>The next example shows optimization followed by simulation.</p>
 <p>With a successful optimization, the resulting plots show a good match between the simulated (with varying control)
@@ -1292,7 +1293,7 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already has already been recorded for Driver.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
 INFO: checking out_of_order
 </pre></div>
 </div>
@@ -1323,7 +1324,7 @@ INFO: checking out_of_order
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/recorders/sqlite_recorder.py:227: UserWarning:The existing case recorder file, dymos_solution.db, is being overwritten.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.210386 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.206348 seconds.
 Total jacobian shape: (60, 130) 
 
 
@@ -1332,8 +1333,8 @@ FWD solves: 0   REV solves: 5
 Total colors vs. total size: 5 vs 60  (91.7% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.210386 sec.
-Time to compute coloring: 0.059790 sec.
+Time to compute sparsity: 0.206348 sec.
+Time to compute coloring: 0.059105 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1374,8 +1375,8 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 30
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 0
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.109
-Total CPU secs in NLP function evaluations           =      0.451
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.100
+Total CPU secs in NLP function evaluations           =      0.399
 
 EXIT: Optimal Solution Found.
 </pre></div>
@@ -1404,8 +1405,8 @@ EXIT: Optimal Solution Found.
 <img alt="../../_images/vanderpol_11_0.png" src="../../_images/vanderpol_11_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="solving-the-optimal-control-problem-with-grid-refinement">
+</section>
+<section id="solving-the-optimal-control-problem-with-grid-refinement">
 <h2>Solving the Optimal Control Problem with Grid Refinement<a class="headerlink" href="#solving-the-optimal-control-problem-with-grid-refinement" title="Permalink to this headline">#</a></h2>
 <p>Repeating the optimization with grid refinement enabled requires changing only two lines in the code. For the sake
 of grid refinement demonstration, the initial number of segments is also reduced by a factor of 5.</p>
@@ -1456,7 +1457,7 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already has already been recorded for Driver.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
 INFO: checking out_of_order
 </pre></div>
 </div>
@@ -1484,7 +1485,7 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.203261 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.212458 seconds.
 Total jacobian shape: (60, 74) 
 
 
@@ -1493,8 +1494,8 @@ FWD solves: 9   REV solves: 0
 Total colors vs. total size: 9 vs 74  (87.8% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.203261 sec.
-Time to compute coloring: 0.045617 sec.
+Time to compute sparsity: 0.212458 sec.
+Time to compute coloring: 0.045119 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1521,23 +1522,25 @@ Optimization Complete
             Segment Ends = [-1.0, -0.8667, -0.7333, -0.6, -0.4667, -0.3333, -0.2, -0.0667, 0.0667, 0.2, 0.3333, 0.4667, 0.6, 0.7333, 0.8667, 1.0]
             Segment Order = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
             Error = [0.009519, 0.003042, 0.0003774, 0.0006496, 0.0004868, 0.0002292, 0.0001781, 8.934e-05, 3.454e-05, 1.197e-05, 1.256e-05, 9.183e-06, 4.124e-06, 4.358e-06, 2.004e-05]
-    Phase: traj.phases.phase0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    Phase: traj.phases.phase0
         New Grid:
             Number of Segments = 15
             Segment Ends = [-1.0, -0.8667, -0.7333, -0.6, -0.4667, -0.3333, -0.2, -0.0667, 0.0667, 0.2, 0.3333, 0.4667, 0.6, 0.7333, 0.8667, 1.0]
             Segment Order = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
         Refined: True
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- Constraint Report [traj] ---
+
+
+--- Constraint Report [traj] ---
     --- phase0 ---
         None
 
-Model viewer data has already has already been recorded for Driver.
-Model viewer data has already has already been recorded for Driver.
+Model viewer data has already been recorded for Driver.
+Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.391525 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.388268 seconds.
 Total jacobian shape: (105, 149) 
 
 
@@ -1546,8 +1549,8 @@ FWD solves: 14   REV solves: 0
 Total colors vs. total size: 14 vs 149  (90.6% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.391525 sec.
-Time to compute coloring: 0.090787 sec.
+Time to compute sparsity: 0.388268 sec.
+Time to compute coloring: 0.091074 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1588,21 +1591,21 @@ Optimization Complete
     --- phase0 ---
         None
 
-Model viewer data has already has already been recorded for Driver.
-Model viewer data has already has already been recorded for Driver.
+Model viewer data has already been recorded for Driver.
+Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.574094 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.559101 seconds.
 Total jacobian shape: (147, 209) 
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Jacobian shape: (147, 209)  ( 4.88% nonzero)
+
+
+Jacobian shape: (147, 209)  ( 4.88% nonzero)
 FWD solves: 14   REV solves: 0
 Total colors vs. total size: 14 vs 209  (93.3% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.574094 sec.
-Time to compute coloring: 0.237982 sec.
+Time to compute sparsity: 0.559101 sec.
+Time to compute coloring: 0.125473 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1648,12 +1651,13 @@ Optimization Complete
 --- Constraint Report [traj] ---
     --- phase0 ---
         None
-
-Model viewer data has already has already been recorded for Driver.
-Model viewer data has already has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.920499 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
+Model viewer data has already been recorded for Driver.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.914804 seconds.
 Total jacobian shape: (215, 314) 
 </pre></div>
 </div>
@@ -1662,8 +1666,8 @@ FWD solves: 0   REV solves: 33
 Total colors vs. total size: 33 vs 215  (84.7% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.920499 sec.
-Time to compute coloring: 0.204839 sec.
+Time to compute sparsity: 0.914804 sec.
+Time to compute coloring: 0.206778 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1705,11 +1709,11 @@ Optimization Complete
         None
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already has already been recorded for Driver.
-Model viewer data has already has already been recorded for Driver.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
+Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 1.168529 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 1.142257 seconds.
 Total jacobian shape: (258, 384) 
 </pre></div>
 </div>
@@ -1718,8 +1722,8 @@ FWD solves: 0   REV solves: 33
 Total colors vs. total size: 33 vs 258  (87.2% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 1.168529 sec.
-Time to compute coloring: 0.262471 sec.
+Time to compute sparsity: 1.142257 sec.
+Time to compute coloring: 0.264262 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1761,11 +1765,11 @@ Optimization Complete
         None
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already has already been recorded for Driver.
-Model viewer data has already has already been recorded for Driver.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
+Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 1.195257 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 1.241446 seconds.
 Total jacobian shape: (261, 389) 
 </pre></div>
 </div>
@@ -1774,8 +1778,8 @@ FWD solves: 0   REV solves: 33
 Total colors vs. total size: 33 vs 261  (87.4% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 1.195257 sec.
-Time to compute coloring: 0.266646 sec.
+Time to compute sparsity: 1.241446 sec.
+Time to compute coloring: 0.277848 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1811,8 +1815,8 @@ Successfully completed grid refinement.
 <img alt="../../_images/vanderpol_14_0.png" src="../../_images/vanderpol_14_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="references">
+</section>
+<section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h2>
 <div class="docutils container" id="id2">
 <dl class="citation">
@@ -1821,8 +1825,8 @@ Successfully completed grid refinement.
 </dd>
 </dl>
 </div>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1874,7 +1878,7 @@ Successfully completed grid refinement.
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

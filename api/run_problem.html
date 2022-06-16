@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>The Dymos run_problem function &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -687,7 +688,7 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="the-dymos-run-problem-function">
+<section class="tex2jax_ignore mathjax_ignore" id="the-dymos-run-problem-function">
 <h1>The Dymos run_problem function<a class="headerlink" href="#the-dymos-run-problem-function" title="Permalink to this headline">#</a></h1>
 <p>In the Brachistochrone example we used two methods on the OpenMDAO Problem class to execute the model.</p>
 <p><strong>run_model</strong> Takes the current model design variables and runs a single execution of the Problem’s model.<br />
@@ -709,7 +710,7 @@ In general, they follow the following procedure:</p>
 <p>This requires another layer of iteration outside of the OpenMDAO <code class="docutils literal notranslate"><span class="pre">run_driver</span></code> method.
 This is the original motivation for Dymos’ <code class="docutils literal notranslate"><span class="pre">run_problem</span></code> function.</p>
 <p>dymos.run_problem.run_problem</p>
-</div>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -761,7 +762,7 @@ This is the original motivation for Dymos’ <code class="docutils literal notra
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

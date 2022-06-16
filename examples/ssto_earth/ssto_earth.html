@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>SSTO Earth Launch &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -746,7 +747,7 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="ssto-earth-launch">
+<section class="tex2jax_ignore mathjax_ignore" id="ssto-earth-launch">
 <h1>SSTO Earth Launch<a class="headerlink" href="#ssto-earth-launch" title="Permalink to this headline">#</a></h1>
 <p>This example is based on the <em>Time-Optimal Launch of a Titan II</em>
 example given in Appendix B of Longuski <span id="id1">[<a class="reference internal" href="#id26" title="James M Longuski, José J Guzmán, and John E Prussing. Optimal control with aerospace applications. Springer, 1 edition, 2014. ISBN 978-1-4939-4917-5. doi:https://doi.org/10.1007/978-1-4614-8945-0.">LGuzmanP14</a>]</span>.
@@ -754,8 +755,8 @@ It finds the pitch profile for a single-stage-to-orbit launch vehicle that minim
 required to reach orbit insertion under constant thrust.</p>
 <p><img alt="The free-body-diagram of the single-stage-to-orbit problem." src="../../_images/ssto_fbd.png" /></p>
 <p>The vehicle dynamics are given by</p>
-<div class="amsmath math notranslate nohighlight" id="equation-c4701eab-c854-46fe-a0c9-4b74ecd0e547">
-<span class="eqno">(74)<a class="headerlink" href="#equation-c4701eab-c854-46fe-a0c9-4b74ecd0e547" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-0597b23c-78de-4f0c-85cd-5ba5f46a5fdf">
+<span class="eqno">(74)<a class="headerlink" href="#equation-0597b23c-78de-4f0c-85cd-5ba5f46a5fdf" title="Permalink to this equation">#</a></span>\[\begin{align}
   \frac{dx}{dt} &amp;= v_x \\
   \frac{dy}{dt} &amp;= v_y \\
   \frac{dv_x}{dt} &amp;= \frac{1}{m} (T \cos \theta - D \cos \gamma) \\
@@ -763,8 +764,8 @@ required to reach orbit insertion under constant thrust.</p>
   \frac{dm}{dt} &amp;= \frac{T}{g I_{sp}}
 \end{align}\]</div>
 <p>The initial conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-aad4f449-57fe-48ff-abbc-0d29e7e2e939">
-<span class="eqno">(75)<a class="headerlink" href="#equation-aad4f449-57fe-48ff-abbc-0d29e7e2e939" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-ba86c469-7285-4a90-a26f-cd88928adea0">
+<span class="eqno">(75)<a class="headerlink" href="#equation-ba86c469-7285-4a90-a26f-cd88928adea0" title="Permalink to this equation">#</a></span>\[\begin{align}
   x_0 &amp;= 0 \\
   y_0 &amp;= 0 \\
   v_{x0} &amp;= 0 \\
@@ -772,15 +773,15 @@ required to reach orbit insertion under constant thrust.</p>
   m_0 &amp;= 117000 \rm{\,kg}
 \end{align}\]</div>
 <p>and the final conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-939314bc-ce44-4d13-8e92-5781108c68ca">
-<span class="eqno">(76)<a class="headerlink" href="#equation-939314bc-ce44-4d13-8e92-5781108c68ca" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-49542d75-e3ca-48a9-bf74-a8cf5e7cd5fc">
+<span class="eqno">(76)<a class="headerlink" href="#equation-49542d75-e3ca-48a9-bf74-a8cf5e7cd5fc" title="Permalink to this equation">#</a></span>\[\begin{align}
   x_f &amp;= \rm{free} \\
   y_f &amp;= 185 \rm{\,km} \\
   v_{xf} &amp;= V_{circ} \\
   v_{yf} &amp;= 0 \\
   m_f &amp;= \rm{free}
 \end{align}\]</div>
-<div class="section" id="defining-the-ode">
+<section id="defining-the-ode">
 <h2>Defining the ODE<a class="headerlink" href="#defining-the-ode" title="Permalink to this headline">#</a></h2>
 <p>Generally, one could define the ODE system as a composite group of multile components.
 The atmosphere component computes density (<span class="math notranslate nohighlight">\(\rho\)</span>).
@@ -919,8 +920,8 @@ The Dymos phases use state rate values to ensure that the integration technique 
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="solving-the-problem">
+</section>
+<section id="solving-the-problem">
 <h2>Solving the problem<a class="headerlink" href="#solving-the-problem" title="Permalink to this headline">#</a></h2>
 <div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
@@ -1033,10 +1034,10 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/utils/options_dictionary.py:347: OMDeprecationWarning:&#39;gradient method&#39; is not a valid python name and will become an invalid option name in a future release. You can prevent this warning (and future exceptions) by declaring this option using a valid python name.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/utils/options_dictionary.py:354: OMDeprecationWarning:&#39;gradient method&#39; is not a valid python name and will become an invalid option name in a future release. You can prevent this warning (and future exceptions) by declaring this option using a valid python name.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already has already been recorded for Driver.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
 INFO: checking out_of_order
 </pre></div>
 </div>
@@ -1132,7 +1133,10 @@ f.......................f...............................................f.......
 ................f.......................f...............................................f.......................f.......................f............................... 64  vxdot
 .................f.......................f...............................................f.......................f.......................f.............................. 65  vxdot
 ..................f.......................f...............................................f.......................f.......................f............................. 66  vxdot
-...................f.......................f...............................................f.......................f.......................f............................ 67  vxdot
+...................f.......................f...............................................f..................
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.....f.......................f............................ 67  vxdot
 ....................f.......................f...............................................f.......................f.......................f........................... 68  vxdot
 .....................f.......................f...............................................f.......................f.......................f.......................... 69  vxdot
 ......................f.......................f...............................................f.......................f.......................f......................... 70  vxdot
@@ -1147,7 +1151,10 @@ f...............................................f.......................f.......
 .......................................................f.......................f.......................f.......................f........................................ 79  vydot
 ........................................................f.......................f.......................f.......................f....................................... 80  vydot
 .........................................................f.......................f.......................f.......................f...................................... 81  vydot
-..........................................................f.......................f.......................f.......................f..................................... 82  vydot
+..........................................................f.......................f.......................f......................
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.f..................................... 82  vydot
 ...........................................................f.......................f.......................f.......................f.................................... 83  vydot
 ............................................................f.......................f.......................f.......................f................................... 84  vydot
 .............................................................f.......................f.......................f.......................f.................................. 85  vydot
@@ -1158,14 +1165,14 @@ f...............................................f.......................f.......
 ..................................................................f.......................f.......................f.......................f............................. 90  vydot
 ...................................................................f.......................f.......................f.......................f............................ 91  vydot
 ....................................................................f.......................f.......................f.......................f........................... 92  vydot
-.....................................................................f.......................f.......................f..................
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.....f.......................... 93  vydot
+.....................................................................f.......................f.......................f.......................f.......................... 93  vydot
 ......................................................................f.......................f.......................f.......................f......................... 94  vydot
 .......................................................................f.......................f.......................f.......................f........................ 95  vydot
 ........................................................................................................................f.......................f....................... 96  mdot
-.........................................................................................................................f.......................f...................... 97  mdot
+.........................................................................................................................f...............
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>........f...................... 97  mdot
 ..........................................................................................................................f.......................f..................... 98  mdot
 ...........................................................................................................................f.......................f.................... 99  mdot
 ............................................................................................................................f.......................f................... 100  mdot
@@ -1173,13 +1180,13 @@ f...............................................f.......................f.......
 ..............................................................................................................................f.......................f................. 102  mdot
 ...............................................................................................................................f.......................f................ 103  mdot
 ................................................................................................................................f.......................f............... 104  mdot
-.................................................................................................................................f.......................f.............. 105  mdot
-..................................................................................................................................f.......................f............. 106  mdot
-...................................................................................................................................f.......................f............ 107  mdot
-............................................................................................................................
+..............................................
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>........f.......................f........... 108  mdot
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>...................................................................................f.......................f.............. 105  mdot
+..................................................................................................................................f.......................f............. 106  mdot
+...................................................................................................................................f.......................f............ 107  mdot
+....................................................................................................................................f.......................f........... 108  mdot
 .....................................................................................................................................f.......................f.......... 109  mdot
 ......................................................................................................................................f.......................f......... 110  mdot
 .......................................................................................................................................f.......................f........ 111  mdot
@@ -1194,20 +1201,14 @@ f...............................................f.......................f.......
 f....................................................................................................................................................................... 120  rho
 .f...................................................................................................................................................................... 121  rho
 ..f..................................................................................................................................................................... 122  rho
-...f..............................................................
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>...................................................................................................... 123  rho
+...f.................................................................................................................................................................... 123  rho
 ....f................................................................................................................................................................... 124  rho
 .....f.................................................................................................................................................................. 125  rho
 ......f................................................................................................................................................................. 126  rho
 .......f................................................................................................................................................................ 127  rho
 ........f............................................................................................................................................................... 128  rho
 .........f.............................................................................................................................................................. 129  rho
-..........f..........................................................................................................
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>................................................... 130  rho
+..........f............................................................................................................................................................. 130  rho
 ...........f............................................................................................................................................................ 131  rho
 ............f........................................................................................................................................................... 132  rho
 .............f.......................................................................................................................................................... 133  rho
@@ -1215,10 +1216,7 @@ f...............................................................................
 ...............f........................................................................................................................................................ 135  rho
 ................f....................................................................................................................................................... 136  rho
 .................f...................................................................................................................................................... 137  rho
-..................f................
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>..................................................................................................................................... 138  rho
+..................f..................................................................................................................................................... 138  rho
 ...................f.................................................................................................................................................... 139  rho
 ....................f................................................................................................................................................... 140  rho
 .....................f.................................................................................................................................................. 141  rho
@@ -1237,8 +1235,8 @@ FWD solves: 5   REV solves: 0
 Total colors vs. total size: 5 vs 168  (97.0% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.055387 sec.
-Time to compute coloring: 0.022993 sec.
+Time to compute sparsity: 0.052891 sec.
+Time to compute coloring: 0.022496 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1328,23 +1326,23 @@ FWD solves: 5   REV solves: 0
 Total colors vs. total size: 5 vs 84  (94.0% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.027155 sec.
-Time to compute coloring: 0.012041 sec.
+Time to compute sparsity: 0.024201 sec.
+Time to compute coloring: 0.011586 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.441635 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.412405 seconds.
 Total jacobian shape: (74, 152) 
-
-
-Jacobian shape: (74, 152)  ( 5.38% nonzero)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Jacobian shape: (74, 152)  ( 5.38% nonzero)
 FWD solves: 12   REV solves: 0
 Total colors vs. total size: 12 vs 152  (92.1% improvement)
 
 Sparsity computed using tolerance: 1e-12
-Time to compute sparsity: 0.441635 sec.
-Time to compute coloring: 0.096923 sec.
-Memory to compute coloring: 0.070312 MB.
+Time to compute sparsity: 0.412405 sec.
+Time to compute coloring: 0.093447 sec.
+Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Optimization Problem -- Optimization using pyOpt_sparse
@@ -1353,11 +1351,11 @@ Memory to compute coloring: 0.070312 MB.
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    2.4313
-       User Objective Time :       0.1372
-       User Sensitivity Time :     1.0799
-       Interface Time :            0.4662
-       Opt Solver Time:            0.7480
+    Total Time:                    2.3741
+       User Objective Time :       0.1364
+       User Sensitivity Time :     1.0426
+       Interface Time :            0.4532
+       Opt Solver Time:            0.7418
     Calls to Objective Function :      51
     Calls to Sens Function :           48
 
@@ -1731,8 +1729,8 @@ Memory to compute coloring: 0.070312 MB.
 </div>
 <div class="cell tag_remove-input tag_remove-output docutils container">
 </div>
-</div>
-<div class="section" id="references">
+</section>
+<section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h2>
 <div class="docutils container" id="id2">
 <dl class="citation">
@@ -1741,8 +1739,8 @@ Memory to compute coloring: 0.070312 MB.
 </dd>
 </dl>
 </div>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1794,7 +1792,7 @@ Memory to compute coloring: 0.070312 MB.
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

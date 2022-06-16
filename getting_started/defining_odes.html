@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Defining ODEs &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -840,14 +841,14 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="defining-odes">
+<section class="tex2jax_ignore mathjax_ignore" id="defining-odes">
 <h1>Defining ODEs<a class="headerlink" href="#defining-odes" title="Permalink to this headline">#</a></h1>
 <p>Optimal control problems contain ordinary differential equations (ODE) or differential algebraic equations (DAE) that dictate the evolution of the state of the system.
 Typically this evolution occurs in time, and the ODE represents equations of motion (EOM).
 The equations of motion can define a variety of systems, not just mechanical ones.
 In other fields they are sometimes referred to as <em>process equations</em>.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-d0ee97f0-e82c-4778-bba4-d8c667a59567">
-<span class="eqno">(4)<a class="headerlink" href="#equation-d0ee97f0-e82c-4778-bba4-d8c667a59567" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-5a9ae3f0-bd30-435b-ab43-788944432d13">
+<span class="eqno">(4)<a class="headerlink" href="#equation-5a9ae3f0-bd30-435b-ab43-788944432d13" title="Permalink to this equation">#</a></span>\[\begin{align}
     \dot{\bar{x}} = f_{ode}(\bar{x},t,\bar{u},\bar{d})
 \end{align}\]</div>
 <p>To represent EOM, Dymos uses a standard OpenMDAO System (a Group or Component).
@@ -855,18 +856,18 @@ This System takes some set of variables as input and computes outputs that inclu
 The ODE may also be a function of the current time <span class="math notranslate nohighlight">\(t\)</span>.</p>
 <p>Finally, the dynamics may be subject to some set of controllable parameters.
 In Dymos these are broken into the dynamic controls <span class="math notranslate nohighlight">\(\bar{u}\)</span> and the static parameters <span class="math notranslate nohighlight">\(\bar{d}\)</span>.</p>
-<div class="section" id="system-options">
+<section id="system-options">
 <h2>System Options<a class="headerlink" href="#system-options" title="Permalink to this headline">#</a></h2>
 <p>ODE Systems in Dymos need to provide values at numerous points in time we call nodes.
 For performance reasons, it’s best if it can do so using vectorized mathematical operations to compute the values simultaneously rather than using the loop to perform the calculation at each node.
 Different optimal control transcriptions will need to have computed ODE values at different numbers of nodes, so each ODE system in Dymos is required to support the option <code class="docutils literal notranslate"><span class="pre">num_nodes</span></code>, which is defined in the <code class="docutils literal notranslate"><span class="pre">initialize</span></code> method.</p>
 <p>ODE systems may define initial options as well.
 Since these options in OpenMDAO are typically provided as arguments to the instantiation of the ODE system, the user has the ability to provide additional input keyword arguments using the <code class="docutils literal notranslate"><span class="pre">ode_init_kwargs</span></code> option on Phase.</p>
-</div>
-<div class="section" id="variables-of-the-optimal-control-problem">
+</section>
+<section id="variables-of-the-optimal-control-problem">
 <h2>Variables of the Optimal Control Problem<a class="headerlink" href="#variables-of-the-optimal-control-problem" title="Permalink to this headline">#</a></h2>
 <p>Dymos needs to know how state, time, and control variables are to be connected to the System, and needs to know which outputs to use as state time-derivatives.</p>
-<div class="section" id="time">
+<section id="time">
 <h3>Time<a class="headerlink" href="#time" title="Permalink to this headline">#</a></h3>
 <p>The following time options can be set via the <code class="docutils literal notranslate"><span class="pre">set_time_options</span></code> method of Phase:</p>
 <div class="cell tag_remove-input docutils container">
@@ -900,8 +901,8 @@ Since these options in OpenMDAO are typically provided as arguments to the insta
 </tbody>
 </table></div></div>
 </div>
-</div>
-<div class="section" id="states">
+</section>
+<section id="states">
 <h3>States<a class="headerlink" href="#states" title="Permalink to this headline">#</a></h3>
 <p>States have the following options set via the <code class="docutils literal notranslate"><span class="pre">add_state</span></code> and <code class="docutils literal notranslate"><span class="pre">set_state_options</span></code> methods of Phase:</p>
 <div class="cell tag_remove-input docutils container">
@@ -937,8 +938,8 @@ Since these options in OpenMDAO are typically provided as arguments to the insta
 </tbody>
 </table></div></div>
 </div>
-</div>
-<div class="section" id="controls">
+</section>
+<section id="controls">
 <h3>Controls<a class="headerlink" href="#controls" title="Permalink to this headline">#</a></h3>
 <p>Inputs to the ODE which are to be dynamic controls are added via the <code class="docutils literal notranslate"><span class="pre">add_control</span></code> and <code class="docutils literal notranslate"><span class="pre">set_control_options</span></code> methods of Phase. The available options are as follows:</p>
 <div class="cell tag_remove-input docutils container">
@@ -973,8 +974,8 @@ Since these options in OpenMDAO are typically provided as arguments to the insta
 </tbody>
 </table></div></div>
 </div>
-</div>
-<div class="section" id="parameters">
+</section>
+<section id="parameters">
 <h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">#</a></h3>
 <p>Inputs to the ODE which are non-time-varying can be specified using the <code class="docutils literal notranslate"><span class="pre">add_parameter</span></code> method of Phase.
 Parameters may be used as design variables (by setting <code class="docutils literal notranslate"><span class="pre">opt</span> <span class="pre">=</span> <span class="pre">True</span></code>), or they may be connected to an output external to the Phase or Trajectory.
@@ -1009,8 +1010,8 @@ Note that &#x27;static_target&#x27; has the opposite meaning of option &#x27;dyn
 <p>By default, Dymos assumes that the ODE is defined such that a value of the parameter is provided at each node.
 This makes it easier to define the partials for the ODE in a way such that some inputs may be used interchangeably as either controls or parameters.
 If an ODE input is only to be used as a static variable (and not sized as <code class="docutils literal notranslate"><span class="pre">num_nodes</span></code> in the first dimension), then the user may specify option <code class="docutils literal notranslate"><span class="pre">static_target</span> <span class="pre">=</span> <span class="pre">True</span></code> to override this behavior.</p>
-</div>
-<div class="section" id="tagging-variables">
+</section>
+<section id="tagging-variables">
 <h3>Tagging Variables<a class="headerlink" href="#tagging-variables" title="Permalink to this headline">#</a></h3>
 <p>Dymos will also automatically find and add any states that have been declared in components in the ODE. The syntax
 for declaring them is as follows.</p>
@@ -1049,14 +1050,14 @@ Inputs tagged with ‘dymos.static_target’ cannot be used as controls or polyn
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-<div class="section" id="automatic-target-detection">
+</section>
+</section>
+<section id="automatic-target-detection">
 <h2>Automatic target detection<a class="headerlink" href="#automatic-target-detection" title="Permalink to this headline">#</a></h2>
 <p>Dymos will attempt to automatically connect variables to targets in the same name if those targets
 exist at the top-level of the ODE and have the same name as the state, control, parameter, or ‘time’.</p>
-</div>
-<div class="section" id="vectorizing-the-ode">
+</section>
+<section id="vectorizing-the-ode">
 <h2>Vectorizing the ODE<a class="headerlink" href="#vectorizing-the-ode" title="Permalink to this headline">#</a></h2>
 <p>In addition to specifying the ODE Options, a system used as an ODE is required to have a metadata
 entry called <code class="docutils literal notranslate"><span class="pre">num_nodes</span></code>.  When evaluating the dynamics, these systems will receive time, states,
@@ -1134,23 +1135,23 @@ row-major order.</p>
 <p>In this example, the partial of <code class="docutils literal notranslate"><span class="pre">y</span></code> with respect to <code class="docutils literal notranslate"><span class="pre">b</span></code> is linear, so we can simply provide it in
 the <code class="docutils literal notranslate"><span class="pre">declare_partials</span></code> call rather than reassigning it every time <code class="docutils literal notranslate"><span class="pre">compute_partials</span></code> is called.
 The provided scalar value of <code class="docutils literal notranslate"><span class="pre">1.0</span></code> is broadcast to all <code class="docutils literal notranslate"><span class="pre">nn</span></code> values of the Jacobian matrix.</p>
-</div>
-<div class="section" id="dimensioned-inputs-and-outputs">
+</section>
+<section id="dimensioned-inputs-and-outputs">
 <h2>Dimensioned Inputs and Outputs<a class="headerlink" href="#dimensioned-inputs-and-outputs" title="Permalink to this headline">#</a></h2>
 <p>The above example assumes all inputs and outputs are scalar at each node.  Sometimes the user may
 encounter a situation in which the inputs and/or outputs are vectors, matrices, or tensors at
 each node.  In this case the dimension of the variable is <code class="docutils literal notranslate"><span class="pre">num_nodes</span></code>, with the dimension of the
 variable at a single node filling out the remaining indices. A 3-vector is thus dimensioned
 <code class="docutils literal notranslate"><span class="pre">(num_nodes,</span> <span class="pre">3)</span></code>, while a 3 x 3 matrix would be sized <code class="docutils literal notranslate"><span class="pre">(num_nodes,</span> <span class="pre">3,</span> <span class="pre">3)</span></code>.</p>
-</div>
-<div class="section" id="non-vector-inputs">
+</section>
+<section id="non-vector-inputs">
 <h2>Non-Vector Inputs<a class="headerlink" href="#non-vector-inputs" title="Permalink to this headline">#</a></h2>
 <p>Declaring inputs as vectors means that they have the potential to be used either as parameters or as dynamic controls which can assume a different value at each node.
 For some quantities, such as gravitational acceleration in the Brachistochrone example, we can assume that the value will never need to be dynamic.
 To accommodate this, parameters can be declared static with the argument <code class="docutils literal notranslate"><span class="pre">static_target=True</span></code>.
 This prevents Dymos from “fanning out” the static value to the <em>n</em> nodes in the ODE system.</p>
-</div>
-<div class="section" id="providing-the-ode-to-the-phase">
+</section>
+<section id="providing-the-ode-to-the-phase">
 <h2>Providing the ODE to the Phase<a class="headerlink" href="#providing-the-ode-to-the-phase" title="Permalink to this headline">#</a></h2>
 <p>Phases in Dymos are instantiated with both the <code class="docutils literal notranslate"><span class="pre">ode_class</span></code> and the <code class="docutils literal notranslate"><span class="pre">transcription</span></code> to be used.
 Internally, Dymos needs to instantiate the ODE multiple times.
@@ -1241,8 +1242,8 @@ Note that the implementation below does not deal with any options provided via t
 </div>
 <p>This can potentially lead to unintended behavior if multiple copeis of the ODE are intended to share data.
 See <a class="reference external" href="https://docs.python.org/3/library/copy.html">the Python docs</a> for some of the limitations of deepcopy.</p>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1294,7 +1295,7 @@ See <a class="reference external" href="https://docs.python.org/3/library/copy.h
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

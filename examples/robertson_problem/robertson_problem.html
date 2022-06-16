@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>The Robertson Problem &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -736,21 +737,21 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="the-robertson-problem">
+<section class="tex2jax_ignore mathjax_ignore" id="the-robertson-problem">
 <span id="examples-the-robertson-problem"></span><h1>The Robertson Problem<a class="headerlink" href="#the-robertson-problem" title="Permalink to this headline">#</a></h1>
 <p>The <a class="reference external" href="https://en.wikipedia.org/w/index.php?title=Stiff_equation&amp;oldid=1017928453#Motivating_example">Robertson Problem</a> is a famous example for a <a class="reference external" href="https://en.wikipedia.org/w/index.php?title=Stiff_equation&amp;oldid=1017928453">stiff ODE</a>. Solving stiff ODEs with <a class="reference external" href="https://en.wikipedia.org/w/index.php?title=Explicit_and_implicit_methods&amp;oldid=1036001392">explicit integration methods</a> leads to unstable behaviour unless an extremly small step size is choosen. <a class="reference external" href="https://en.wikipedia.org/w/index.php?title=Explicit_and_implicit_methods&amp;oldid=1036001392">Implicit methods</a> such as the <a class="reference external" href="https://en.wikipedia.org/w/index.php?title=Runge%E2%80%93Kutta_methods&amp;oldid=1052924118#Implicit_Runge%E2%80%93Kutta_methods">Radau</a>, <a class="reference external" href="https://en.wikipedia.org/w/index.php?title=Backward_differentiation_formula&amp;oldid=1027943694">BDF</a> and LSODA methods can help solve such problems. The following example shows how to solve the Robertson Problem using <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html#scipy.integrate.solve_ivp">SciPys LSODA method</a> and Dymos.</p>
-<div class="section" id="the-ode-system">
+<section id="the-ode-system">
 <h2>The ODE system<a class="headerlink" href="#the-ode-system" title="Permalink to this headline">#</a></h2>
 <p>The ODE of the Robertson Problem is</p>
-<div class="amsmath math notranslate nohighlight" id="equation-f530be24-1a6d-4127-bd24-d0da52a9411e">
-<span class="eqno">(77)<a class="headerlink" href="#equation-f530be24-1a6d-4127-bd24-d0da52a9411e" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-40d3ffa4-f385-4c5e-b2d2-1833a65efaee">
+<span class="eqno">(77)<a class="headerlink" href="#equation-40d3ffa4-f385-4c5e-b2d2-1833a65efaee" title="Permalink to this equation">#</a></span>\[\begin{align}
     \dot x = &amp;        - 0.04 x + 10^4 y \cdot z &amp;                          \\
     \dot y = &amp; \;\;\;\: 0.04 x - 10^4 y \cdot z &amp;        - 3\cdot 10^7 y^2 \\
     \dot z = &amp;                                  &amp; \;\;\;\: 3\cdot 10^7 y^2 \\
 \end{align}\]</div>
 <p>where <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(z\)</span> are arbitrary states. The initial conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-b0d5df90-f6c8-45f2-8d72-6705ae591148">
-<span class="eqno">(78)<a class="headerlink" href="#equation-b0d5df90-f6c8-45f2-8d72-6705ae591148" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-32b82c89-4312-4498-9e93-573403ec0ed0">
+<span class="eqno">(78)<a class="headerlink" href="#equation-32b82c89-4312-4498-9e93-573403ec0ed0" title="Permalink to this equation">#</a></span>\[\begin{align}
     x_0 &amp;= 1 \\
     y_0 &amp;= z_0 = 0.
 \end{align}\]</div>
@@ -835,8 +836,8 @@ title="Print to PDF"
 </div>
 <div class="cell tag_remove-input tag_remove-output docutils container">
 </div>
-</div>
-<div class="section" id="building-and-running-the-problem">
+</section>
+<section id="building-and-running-the-problem">
 <h2>Building and running the problem<a class="headerlink" href="#building-and-running-the-problem" title="Permalink to this headline">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -966,8 +967,8 @@ INFO: checking out_of_order
 <img alt="../../_images/robertson_problem_14_0.png" src="../../_images/robertson_problem_14_0.png" />
 </div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1019,7 +1020,7 @@ INFO: checking out_of_order
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

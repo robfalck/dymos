@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Modeling Dynamic Systems with Dymos &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -786,7 +787,7 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="modeling-dynamic-systems-with-dymos">
+<section class="tex2jax_ignore mathjax_ignore" id="modeling-dynamic-systems-with-dymos">
 <h1>Modeling Dynamic Systems with Dymos<a class="headerlink" href="#modeling-dynamic-systems-with-dymos" title="Permalink to this headline">#</a></h1>
 <div class="admonition-things-you-ll-learn-through-this-example admonition">
 <p class="admonition-title">Things you’ll learn through this example</p>
@@ -801,17 +802,17 @@ Dynamic systems are typically defined by some set of ordinary
 differential equations (the ODE) which governs their behavior.</p>
 <p>Consider a simple damped harmonic oscillator.</p>
 <p><img alt="Damped harmonic oscillator free-body diagram" src="../../_images/spring_mass_damper.png" /></p>
-<div class="amsmath math notranslate nohighlight" id="equation-84375ce4-4e59-45ac-9a72-0accd3105a65">
-<span class="eqno">(11)<a class="headerlink" href="#equation-84375ce4-4e59-45ac-9a72-0accd3105a65" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-9fb1bd6d-ecee-4c01-875f-96748e31d4ba">
+<span class="eqno">(11)<a class="headerlink" href="#equation-9fb1bd6d-ecee-4c01-875f-96748e31d4ba" title="Permalink to this equation">#</a></span>\[\begin{align}
     \ddot{x} &amp;= -\frac{kx}{m} - \frac{c \dot{x}}{m}
 \end{align}\]</div>
 <p>Converting this to a first order system results in an ODE system with two states:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-74b61df3-ddb9-4e7b-b9e0-714d2252a928">
-<span class="eqno">(12)<a class="headerlink" href="#equation-74b61df3-ddb9-4e7b-b9e0-714d2252a928" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-8fcb6b4a-1097-4aa2-a702-9f0be8aeffbc">
+<span class="eqno">(12)<a class="headerlink" href="#equation-8fcb6b4a-1097-4aa2-a702-9f0be8aeffbc" title="Permalink to this equation">#</a></span>\[\begin{align}
     \dot{x} &amp;= v \\
     \dot{v} &amp;= -\frac{kx}{m} - \frac{c \dot{x}}{m}
 \end{align}\]</div>
-<div class="section" id="the-openmdao-model-of-the-ode">
+<section id="the-openmdao-model-of-the-ode">
 <h2>The OpenMDAO model of the ODE<a class="headerlink" href="#the-openmdao-model-of-the-ode" title="Permalink to this headline">#</a></h2>
 <p>In Dymos, the ODE is an OpenMDAO System (a Component, or a Group of components).
 The following ExplicitComponent computes the velocity rate for the damped harmonic oscillator.</p>
@@ -874,8 +875,8 @@ The following ExplicitComponent computes the velocity rate for the damped harmon
 <li><p>It’s possible that we might want to use parameters <code class="docutils literal notranslate"><span class="pre">c</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, and <code class="docutils literal notranslate"><span class="pre">m</span></code> as design variables at some point, so they’re also included as inputs here. Alternatively, if we had no interest in ever treating them as design variables, we could add their values as options to the ODE system in the <code class="docutils literal notranslate"><span class="pre">initialize</span></code> method.</p></li>
 </ul>
 </div>
-</div>
-<div class="section" id="hello-world-propagating-the-dynamics">
+</section>
+<section id="hello-world-propagating-the-dynamics">
 <h2>Hello World: Propagating the dynamics<a class="headerlink" href="#hello-world-propagating-the-dynamics" title="Permalink to this headline">#</a></h2>
 <p>One of the first things one might be interested in regarding an ODE is propagating it from some given initial conditions.
 This is known as solving the initial value problem (IVP), and there are many software packages that can do this.
@@ -964,8 +965,8 @@ Simulating trajectory traj
 <img alt="../../_images/intro_ivp_5_2.png" src="../../_images/intro_ivp_5_2.png" />
 </div>
 </div>
-</div>
-<div class="section" id="what-happened">
+</section>
+<section id="what-happened">
 <h2>What happened?<a class="headerlink" href="#what-happened" title="Permalink to this headline">#</a></h2>
 <p>This script consists of the following general steps:</p>
 <ol class="simple">
@@ -998,8 +999,8 @@ For the rate_source of <code class="docutils literal notranslate"><span class="p
 It uses the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html">scipy.integrate.solve_ivp</a> function to propagate the states defined in each phase of the trajectory from their initial values at the initial time to some final value at <code class="docutils literal notranslate"><span class="pre">time</span> <span class="pre">=</span> <span class="pre">t_initial</span> <span class="pre">+</span> <span class="pre">t_duration</span></code>.</p>
 <p>In Dymos, the <code class="docutils literal notranslate"><span class="pre">simulate</span></code> method is useful for testing the functionality of an ODE (making sure it behaves as expected) and for checking the validity of answers after optimization.
 However, it cannot solve boundary value problems.</p>
-</div>
-<div class="section" id="why-is-the-solution-different-from-the-simulation-results">
+</section>
+<section id="why-is-the-solution-different-from-the-simulation-results">
 <h2>Why is the solution different from the simulation results?<a class="headerlink" href="#why-is-the-solution-different-from-the-simulation-results" title="Permalink to this headline">#</a></h2>
 <p>The plots above display both the solution from the implicit transcription (blue dots) and the results of the simulation (orange line).
 Here they do not match because we only performed a single execution of the model.
@@ -1017,8 +1018,8 @@ The <code class="docutils literal notranslate"><span class="pre">simulate()</spa
 OpenMDAO provides a lot of versatility in adding nonlinear solvers within the optimization problem.
 In our case, using a solver to converge state-time history means that the optimizer “sees” a physical trajectory at every iteration.
 In an optimization context, we can use the solver-based convergence of defects to obtain a shooting method with analytic derivatives.</p>
-</div>
-<div class="section" id="using-a-solver-to-converge-the-physical-trajectory">
+</section>
+<section id="using-a-solver-to-converge-the-physical-trajectory">
 <h2>Using a solver to converge the physical trajectory<a class="headerlink" href="#using-a-solver-to-converge-the-physical-trajectory" title="Permalink to this headline">#</a></h2>
 <p>We let Dymos know that one or more states should be converged using the <code class="docutils literal notranslate"><span class="pre">solve_segments=forward</span></code> argument.
 If passed to the transcription, it applies to all states.
@@ -1114,8 +1115,8 @@ Simulating trajectory traj
 <img alt="../../_images/intro_ivp_7_2.png" src="../../_images/intro_ivp_7_2.png" />
 </div>
 </div>
-</div>
-<div class="section" id="using-an-optimization-driver-to-converge-the-physical-trajectory">
+</section>
+<section id="using-an-optimization-driver-to-converge-the-physical-trajectory">
 <h2>Using an optimization driver to converge the physical trajectory<a class="headerlink" href="#using-an-optimization-driver-to-converge-the-physical-trajectory" title="Permalink to this headline">#</a></h2>
 <p>Alternatively, we can use an optimization driver to converge the state time histories.</p>
 <p>In the case of an initial value problem (fixed time duration, fixed initial states, and no controls or parameters as design variables) there are no
@@ -1213,20 +1214,21 @@ Even though the initial time and duration of the phase are fixed, we provide the
             Gradient evaluations: 1
 Optimization Complete
 -----------------------------------
+
+Simulating trajectory traj
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/core/total_jac.py:1568: DerivativesWarning:Constraints or objectives [(&#39;traj.phases.phase0.time.time&#39;, inds=[15])] cannot be impacted by the design variables of the problem.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/core/total_jac.py:1569: DerivativesWarning:Constraints or objectives [(&#39;traj.phases.phase0.time.time&#39;, inds=[15])] cannot be impacted by the design variables of the problem.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
-Done simulating trajectory traj
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Done simulating trajectory traj
 </pre></div>
 </div>
 <img alt="../../_images/intro_ivp_10_4.png" src="../../_images/intro_ivp_10_4.png" />
 </div>
 </div>
-</div>
-<div class="section" id="but-the-solution-still-doesn-t-match-the-simulation">
+</section>
+<section id="but-the-solution-still-doesn-t-match-the-simulation">
 <h2>But the solution still doesn’t match the simulation<a class="headerlink" href="#but-the-solution-still-doesn-t-match-the-simulation" title="Permalink to this headline">#</a></h2>
 <p>If you look at the plots from the last two examples, you’ll notice that the state time-history from the solution has some pretty significant deviations from the simulation results.
 This is an important lesson in using implicit collocation techniques.</p>
@@ -1237,8 +1239,8 @@ This is an important lesson in using implicit collocation techniques.</p>
 <p>As we mentioned before, the <code class="docutils literal notranslate"><span class="pre">simulate()</span></code> method exists to provide a check on a converged trajectory.
 In this case, the trajectory found using <code class="docutils literal notranslate"><span class="pre">simulate()</span></code> doesn’t really interpolate the solution from the collocation technique.
 In the next section, we’ll explain how to deal with this.</p>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1290,7 +1292,7 @@ In the next section, we’ll explain how to deal with this.</p>
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

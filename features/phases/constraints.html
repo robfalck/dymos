@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Constraints &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -756,21 +757,21 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="constraints">
+<section class="tex2jax_ignore mathjax_ignore" id="constraints">
 <h1>Constraints<a class="headerlink" href="#constraints" title="Permalink to this headline">#</a></h1>
 <p>Now that we’ve shown how to add degrees of freedom to a system with variables in the form of
 time, states, and controls, we need to look at how to constrain the system.  In optimal control,
 constraints typically come in two flavors:  boundary constraints and path constraints.</p>
 <p>As OpenMDAO components, outputs of Dymos Phases can be constrained using OpenMDAO’s <code class="docutils literal notranslate"><span class="pre">add_constraint</span></code> method, but Dymos Phases provide their own methods to make defining these constraints somewhat simpler.</p>
-<div class="section" id="boundary-constraints">
+<section id="boundary-constraints">
 <h2>Boundary Constraints<a class="headerlink" href="#boundary-constraints" title="Permalink to this headline">#</a></h2>
 <p>Boundary constraints are constraints on a variable value at the start or end of a phase.  There
 are a few different ways to impose these in Dymos, each with slightly different behavior.</p>
 <p>Let’s consider that we want to solve for the elevation angle that results in the maximum possible
 range flown by a cannonball.  In this situation we have some set of initial conditions that are
 fixed.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-fe799a10-8d1e-474c-be41-9b1ae01a2e6d">
-<span class="eqno">(83)<a class="headerlink" href="#equation-fe799a10-8d1e-474c-be41-9b1ae01a2e6d" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-f69e57c3-cae3-4be8-a9de-f4ae095ec60a">
+<span class="eqno">(83)<a class="headerlink" href="#equation-f69e57c3-cae3-4be8-a9de-f4ae095ec60a" title="Permalink to this equation">#</a></span>\[\begin{align}
     t_0 &amp;= 0 \, \mathrm{s} \\
     x_0 &amp;= 0 \, \mathrm{m} \\
     y_0 &amp;= 0 \, \mathrm{m} \\
@@ -810,8 +811,8 @@ satisfied before forcing an infeasible boundary constraint to be satisfied, for 
 <p>In conclusion, while using <code class="docutils literal notranslate"><span class="pre">fix_initial=True</span></code> for problems with fixed initial conditions is not a bad solution, the generality of <code class="docutils literal notranslate"><span class="pre">add_boundary_constraint</span></code>, especially for terminal constraints that risk being over-constrained, makes it a good first-choice in those situations.
 In forward-shooting phases (<code class="docutils literal notranslate"><span class="pre">solve_segments='forward'</span></code>) only the initial values of the states are design variables for the optimizer.
 As such, simple bounds on final state values are not possible in those situations, and <code class="docutils literal notranslate"><span class="pre">add_boundary_constraint</span></code> must be used instead.</p>
-</div>
-<div class="section" id="path-constraints">
+</section>
+<section id="path-constraints">
 <h2>Path Constraints<a class="headerlink" href="#path-constraints" title="Permalink to this headline">#</a></h2>
 <p>The second class of constraints supported by Dymos are <em>path</em> constraints, so called because they are imposed throughout the entire phase.
 Like bound constraints, path constraints can be imposed on design variables using simple bounds.
@@ -828,8 +829,8 @@ Therefore, the bounds will have no impact on these interpolated values which the
 <p>Phases also support the <code class="docutils literal notranslate"><span class="pre">add_path_constraint</span></code> method, which imposes path constraints as constraints in the NLP problem.
 As with <code class="docutils literal notranslate"><span class="pre">add_boundary_constraint</span></code>, the <code class="docutils literal notranslate"><span class="pre">add_path_constraint</span></code> method is the only option for path constraining an output of the ODE.</p>
 <p>The downside of path constraints is that they add a considerable number of constraints to the NLP problem and thus may negatively impact performance, although this is generally minor for many problems.</p>
-</div>
-<div class="section" id="implementation-detail-constraint-aliasing">
+</section>
+<section id="implementation-detail-constraint-aliasing">
 <h2>Implementation Detail - Constraint Aliasing<a class="headerlink" href="#implementation-detail-constraint-aliasing" title="Permalink to this headline">#</a></h2>
 <p>As of OpenMDAO Version 3.17.0, multiple constraints are allowed to exist on the same output as long as they use different indices and are provided different aliases.
 In Dymos, this allows us to always apply multiple constraints (initial, final, or path constraints) to the timeseries outputs of the phase.
@@ -838,15 +839,15 @@ To allow boundary and path constraints to potentially be applied to the same tim
 <p>A final boundary constraint on the name <code class="docutils literal notranslate"><span class="pre">'alpha'</span></code> will be given the alias <code class="docutils literal notranslate"><span class="pre">f'{path_to_phase}.final_boundary_constraints-&gt;alpha</span></code>.</p>
 <p>A path constraint on the name <code class="docutils literal notranslate"><span class="pre">'alpha'</span></code> will be given the alias <code class="docutils literal notranslate"><span class="pre">f'{path_to_phase}.path_constraints-&gt;alpha</span></code>.</p>
 <p>The use of the <code class="docutils literal notranslate"><span class="pre">-&gt;</span></code> in this case is intended to remind the user that this is not the actual path to the variable being constrained.</p>
-</div>
-<div class="section" id="constraint-linearity">
+</section>
+<section id="constraint-linearity">
 <h2>Constraint Linearity<a class="headerlink" href="#constraint-linearity" title="Permalink to this headline">#</a></h2>
 <p>OpenMDAO will treat all boundary and path consraints as nonlinear unless the user provides the argument <code class="docutils literal notranslate"><span class="pre">linear=True</span></code> to <code class="docutils literal notranslate"><span class="pre">add_boundary_constraint</span></code> or <code class="docutils literal notranslate"><span class="pre">add_path_constraint</span></code>.
 Note that it is the responsibility of the user to understand the inner workings of Dymos and their model well enough to know if the constraint may be treated as linear.
 Specifying an output that is actually a nonlinear function of the design variables as a linear constraint will almost certainly result of the failure of the optimization due to incorrect derivatives.
 The derivatives of linear constraints are computed once and cached by OpenMDAO for the remainder of the optimization.</p>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -898,7 +899,7 @@ The derivatives of linear constraints are computed once and cached by OpenMDAO f
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

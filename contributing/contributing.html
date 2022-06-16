@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Contributing to Dymos &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -787,27 +788,27 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="contributing-to-dymos">
+<section class="tex2jax_ignore mathjax_ignore" id="contributing-to-dymos">
 <h1>Contributing to Dymos<a class="headerlink" href="#contributing-to-dymos" title="Permalink to this headline">#</a></h1>
 <p>Dymos is open-source software and the developers welcome collaboration with the community on finding and fixing bugs or requesting and implementing new features.</p>
-<div class="section" id="found-a-bug-in-dymos">
+<section id="found-a-bug-in-dymos">
 <h2>Found a bug in Dymos?<a class="headerlink" href="#found-a-bug-in-dymos" title="Permalink to this headline">#</a></h2>
 <p>If you believe you’ve found a bug in Dymos, <a class="reference external" href="https://github.com/OpenMDAO/dymos/issues">submit a new issue</a>.
 If at all possible, please include a functional code example which demonstrates the issue (the expected behavior vs. the actual behavior).</p>
-</div>
-<div class="section" id="fixed-a-bug-in-dymos">
+</section>
+<section id="fixed-a-bug-in-dymos">
 <h2>Fixed a bug in Dymos?<a class="headerlink" href="#fixed-a-bug-in-dymos" title="Permalink to this headline">#</a></h2>
 <p>If you believe you have a fix for an existing bug in Dymos, please submit the fix as <a class="reference external" href="https://github.com/OpenMDAO/dymos/pulls">pull request</a>.
 Under the “related issues” section of the pull request template, include the issue resolved by the pull request using Github’s <a class="reference external" href="https://help.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue">referencing syntax</a>.
 When submitting a bug-fix pull request, please include a <a class="reference external" href="https://docs.python.org/3.8/library/unittest.html">unit test</a> that demonstrates the corrected behavior.
 This will prevent regressions in the future.</p>
-</div>
-<div class="section" id="need-new-functionality-in-dymos">
+</section>
+<section id="need-new-functionality-in-dymos">
 <h2>Need new functionality in Dymos?<a class="headerlink" href="#need-new-functionality-in-dymos" title="Permalink to this headline">#</a></h2>
 <p>If you would like to have new functionality that currently doesn’t exist in Dymos, please submit your request via <a class="reference external" href="https://github.com/OpenMDAO/dymos/issues">the Dymos issues on Github</a>.
 The Dymos development team is small and we can’t promise that we’ll add every requested capability, but we’ll happily have a discussion and try to accommodate reasonable requests that fit within the goals of the library.</p>
-</div>
-<div class="section" id="adding-new-examples">
+</section>
+<section id="adding-new-examples">
 <h2>Adding new examples<a class="headerlink" href="#adding-new-examples" title="Permalink to this headline">#</a></h2>
 <p>Adding new examples are a great way to contribute to Dymos.
 They’re a great introduction to the Dymos development process, and examples provide a great way for users to learn to apply Dymos in new applications.
@@ -821,8 +822,8 @@ New examples should do the following:</p>
 <li><p>A new markdown file should be added under <code class="docutils literal notranslate"><span class="pre">mkdocs/docs/examples/&lt;example</span> <span class="pre">name&gt;</span></code> within the Dymos repository.</p></li>
 </ul>
 <p>The Dymos docs are built on <a class="reference external" href="https://jupyterbook.org/intro.html">JupyterBook</a> which allows users to run any page of the documentation by opening it in colab as a <a class="reference external" href="https://jupyter.org">Jupyter Notebook</a>. For those wanting to contribute, they are able to contribute by writing their own Jupyter Notebooks. Below are some important ways on how to build notebooks for Dymos.</p>
-</div>
-<div class="section" id="notebook-creation">
+</section>
+<section id="notebook-creation">
 <h2>Notebook Creation<a class="headerlink" href="#notebook-creation" title="Permalink to this headline">#</a></h2>
 <p><strong>Header</strong></p>
 <p>At the begining of every notebook, we require (without exception) to have the following code cell at the top of every notebook with the three tags: <code class="docutils literal notranslate"><span class="pre">active-ipynb</span></code>, <code class="docutils literal notranslate"><span class="pre">remove-input</span></code>, <code class="docutils literal notranslate"><span class="pre">remove-output</span></code>. Tags can be added at the top of the notebook menu by going to <code class="docutils literal notranslate"><span class="pre">View</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Cell</span> <span class="pre">Toolbar</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Tags</span></code>.</p>
@@ -1017,21 +1018,21 @@ Component: BrachistochroneODE &#39;ode&#39;
 &#39;&lt;output&gt;&#39; wrt &#39;&lt;variable&gt;&#39; | calc mag.  | check mag. | a(cal-chk) | r(cal-chk)
 -------------------------------------------------------------------------------
 
-&#39;check&#39;    wrt &#39;theta&#39;      | 7.2869e+04 | 7.2869e+04 | 2.9104e-11 | 3.9940e-16
-&#39;check&#39;    wrt &#39;v&#39;          | 9.2176e+01 | 9.2176e+01 | 1.0175e-15 | 1.1039e-17
-&#39;vdot&#39;     wrt &#39;theta&#39;      | 1.3125e+01 | 1.3125e+01 | 1.8311e-15 | 1.3951e-16
+&#39;check&#39;    wrt &#39;theta&#39;      | 3.1629e+01 | 3.1629e+01 | 3.8266e-15 | 1.2099e-16
+&#39;check&#39;    wrt &#39;v&#39;          | 3.2218e+00 | 3.2218e+00 | 3.8459e-16 | 1.1937e-16
+&#39;vdot&#39;     wrt &#39;theta&#39;      | 1.9156e+01 | 1.9156e+01 | 2.5121e-15 | 1.3114e-16
 &#39;vdot&#39;     wrt &#39;v&#39;          | 0.0000e+00 | 0.0000e+00 | 0.0000e+00 | nan
-&#39;xdot&#39;     wrt &#39;theta&#39;      | 1.1690e+01 | 1.1690e+01 | 1.8311e-15 | 1.5663e-16
-&#39;xdot&#39;     wrt &#39;v&#39;          | 1.3384e+00 | 1.3384e+00 | 2.2377e-16 | 1.6720e-16
-&#39;ydot&#39;     wrt &#39;theta&#39;      | 9.7625e+00 | 9.7625e+00 | 1.7902e-15 | 1.8337e-16
-&#39;ydot&#39;     wrt &#39;v&#39;          | 1.7913e+00 | 1.7913e+00 | 1.9429e-16 | 1.0846e-16
+&#39;xdot&#39;     wrt &#39;theta&#39;      | 5.9684e+00 | 5.9684e+00 | 3.1402e-16 | 5.2613e-17
+&#39;xdot&#39;     wrt &#39;v&#39;          | 1.9533e+00 | 1.9533e+00 | 3.3307e-16 | 1.7051e-16
+&#39;ydot&#39;     wrt &#39;theta&#39;      | 1.0481e+01 | 1.0481e+01 | 2.5511e-15 | 2.4341e-16
+&#39;ydot&#39;     wrt &#39;v&#39;          | 1.0884e+00 | 1.0884e+00 | 1.1444e-16 | 1.0515e-16
 
 ##################################################################
 Sub Jacobian with Largest Relative Error: BrachistochroneODE &#39;ode&#39;
 ##################################################################
 &#39;&lt;output&gt;&#39; wrt &#39;&lt;variable&gt;&#39; | calc mag.  | check mag. | a(cal-chk) | r(cal-chk)
 -------------------------------------------------------------------------------
-&#39;check&#39;    wrt &#39;theta&#39;      | 7.2869e+04 | 7.2869e+04 | 2.9104e-11 | 3.9940e-16
+&#39;ydot&#39;     wrt &#39;theta&#39;      | 1.0481e+01 | 1.0481e+01 | 2.5511e-15 | 2.4341e-16
 </pre></div>
 </div>
 </div>
@@ -1239,7 +1240,7 @@ If you want to cite a journal, article, book, etc, simply add <code class="docut
 </pre></div>
 </div>
 <p>Grey <span id="id1">[<a class="reference internal" href="#id5" title="Justin Gray, Kenneth Moore, and Bret Naylor. Openmdao: an open source framework for multidisciplinary analysis and optimization. In 13th AIAA/ISSMO Multidisciplinary Analysis Optimization Conference, 9101. 2010.">GMN10</a>]</span></p>
-<div class="section" id="references">
+<section id="references">
 <h3>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h3>
 <div class="docutils container" id="id2">
 <dl class="citation">
@@ -1250,9 +1251,9 @@ If you want to cite a journal, article, book, etc, simply add <code class="docut
 </div>
 <p><strong>Building Docs</strong></p>
 <p>When you want to build the docs, run the following line from the top level of the Dymos folder: <code class="docutils literal notranslate"><span class="pre">jupyter-book</span> <span class="pre">build</span> <span class="pre">docs/</span></code></p>
-</div>
-</div>
-<div class="section" id="running-tests">
+</section>
+</section>
+<section id="running-tests">
 <h2>Running Tests<a class="headerlink" href="#running-tests" title="Permalink to this headline">#</a></h2>
 <p>Dymos tests can be run with any test runner such as <a class="reference external" href="https://nose.readthedocs.io/en/latest/">nosetests</a> or <a class="reference external" href="https://docs.pytest.org/en/stable/">pytest</a>.
 However, due to some MPI-specific tests in our examples, we prefer our <a class="reference external" href="https://github.com/OpenMDAO/testflo">testflo</a> package.
@@ -1280,8 +1281,8 @@ The lack of MPI capability or pyoptsparse will cause additional tests to be skip
 <span class="n">Ran</span> <span class="mi">451</span> <span class="n">tests</span> <span class="n">using</span> <span class="mi">2</span> <span class="n">processes</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1326,7 +1327,7 @@ The lack of MPI capability or pyoptsparse will cause additional tests to be skip
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

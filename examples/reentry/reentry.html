@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Single-Phase Space Shuttle Reentry &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -756,15 +757,15 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="single-phase-space-shuttle-reentry">
+<section class="tex2jax_ignore mathjax_ignore" id="single-phase-space-shuttle-reentry">
 <h1>Single-Phase Space Shuttle Reentry<a class="headerlink" href="#single-phase-space-shuttle-reentry" title="Permalink to this headline">#</a></h1>
 <p>The problem of the space shuttle reentering Earth’s atmosphere is an
 optimal control problem governed by six equations of motion and limited
 by the aerodynamic heating rate. For a detailed layout of this problem
 and other optimal control problems see Betts <span id="id1">[<a class="reference internal" href="#id19" title="J. Betts. Practical Methods for Optimal Control and Estimation Using Nonlinear Programming. Society for Industrial and Applied Mathematics, second edition, 2010. URL: https://epubs.siam.org/doi/abs/10.1137/1.9780898718577, arXiv:https://epubs.siam.org/doi/pdf/10.1137/1.9780898718577, doi:10.1137/1.9780898718577.">Bet10</a>]</span>.
 The governing equations of motion for this problem are:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9bc328ae-ed36-49f3-9067-35dc583ae953">
-<span class="eqno">(69)<a class="headerlink" href="#equation-9bc328ae-ed36-49f3-9067-35dc583ae953" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-2dcc01eb-8ddb-44cc-88ee-380e5c49a400">
+<span class="eqno">(69)<a class="headerlink" href="#equation-2dcc01eb-8ddb-44cc-88ee-380e5c49a400" title="Permalink to this equation">#</a></span>\[\begin{align}
   \frac{dh}{dt} &amp;= v \sin \gamma \\
   \frac{d\phi}{dt} &amp;= \frac{v}{r} \cos \gamma \frac{\sin \psi}{\cos \theta} \\
   \frac{d\theta}{dt} &amp;= \frac{v}{r} \cos \gamma \cos \psi  \\
@@ -787,8 +788,8 @@ final altitude, without exceding a maximum heat rate at the leading
 edges. This heat rate is constrained by <span class="math notranslate nohighlight">\(q \leq 70\)</span> where q
 <span class="math notranslate nohighlight">\([\frac{btu}{ft^2s}]\)</span> is the heating rate.</p>
 <p>The initial conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-22c50c99-f648-4ff5-8214-19bf2f5990cd">
-<span class="eqno">(70)<a class="headerlink" href="#equation-22c50c99-f648-4ff5-8214-19bf2f5990cd" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-78be6f80-95b9-4ad6-8007-260b50d210f0">
+<span class="eqno">(70)<a class="headerlink" href="#equation-78be6f80-95b9-4ad6-8007-260b50d210f0" title="Permalink to this equation">#</a></span>\[\begin{align}
   h_0 &amp;= 26000 \\
   v_0 &amp;= 25600 \\
   \phi_0 &amp;= 0 \\
@@ -797,8 +798,8 @@ edges. This heat rate is constrained by <span class="math notranslate nohighligh
   \psi_0 &amp;= \frac{\pi}{2}
 \end{align}\]</div>
 <p>and the final conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-72c67ec0-4de1-4953-a462-90521ce32e86">
-<span class="eqno">(71)<a class="headerlink" href="#equation-72c67ec0-4de1-4953-a462-90521ce32e86" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-36757d30-0bf5-43ff-825a-9dc1ec1fe734">
+<span class="eqno">(71)<a class="headerlink" href="#equation-36757d30-0bf5-43ff-825a-9dc1ec1fe734" title="Permalink to this equation">#</a></span>\[\begin{align}
   h_0 &amp;= 80000 \\
   v_0 &amp;= 2500 \\
   \gamma_0 &amp;= -0.08727 \\
@@ -816,13 +817,13 @@ second component computes the aerodynamic forces of lift and drag on the
 shuttle. The third component is where the heating rate on the leading
 edge of the shuttles wings is computed. The heating rate is given by
 <span class="math notranslate nohighlight">\(q = q_a q_r\)</span> where</p>
-<div class="amsmath math notranslate nohighlight" id="equation-a48e911c-d76a-4739-95ef-c12487149a6a">
-<span class="eqno">(72)<a class="headerlink" href="#equation-a48e911c-d76a-4739-95ef-c12487149a6a" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-f08b8e28-1832-4130-a29d-f65b41c4416f">
+<span class="eqno">(72)<a class="headerlink" href="#equation-f08b8e28-1832-4130-a29d-f65b41c4416f" title="Permalink to this equation">#</a></span>\[\begin{align}
   q_a &amp;= c_0 + c_1\alpha + c_2 \alpha^2 + c_3 \alpha^3
 \end{align}\]</div>
 <p>and</p>
-<div class="amsmath math notranslate nohighlight" id="equation-187c1400-d46e-4fd8-b496-3e7cd7f2b9de">
-<span class="eqno">(73)<a class="headerlink" href="#equation-187c1400-d46e-4fd8-b496-3e7cd7f2b9de" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-9f603014-27f1-4e3d-a85a-92d1ac9b4b38">
+<span class="eqno">(73)<a class="headerlink" href="#equation-9f603014-27f1-4e3d-a85a-92d1ac9b4b38" title="Permalink to this equation">#</a></span>\[\begin{align}
   q_r &amp;= 17700 \rho^.5 (.0001v)^{3.07}
 \end{align}\]</div>
 <p>where <span class="math notranslate nohighlight">\(c_0, c_1, c_2,\)</span> and <span class="math notranslate nohighlight">\(c_3\)</span> are constants, <span class="math notranslate nohighlight">\(\alpha\)</span> <span class="math notranslate nohighlight">\([deg]\)</span> is the
@@ -831,7 +832,7 @@ and <span class="math notranslate nohighlight">\(v\)</span> <span class="math no
 equations of motion are implemented. These four components are put
 together in the ShuttleODE group, which is the top level ode that the
 dymos model sees.</p>
-<div class="section" id="component-models">
+<section id="component-models">
 <h2>Component Models<a class="headerlink" href="#component-models" title="Permalink to this headline">#</a></h2>
 <p>Below is the code for the atmospheric component:</p>
 <div class="cell docutils container">
@@ -1174,8 +1175,8 @@ dymos model sees.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="defining-the-ode">
+</section>
+<section id="defining-the-ode">
 <h2>Defining the ODE<a class="headerlink" href="#defining-the-ode" title="Permalink to this headline">#</a></h2>
 <p>Below is the code for the top level ode group that will be fed to dymos:</p>
 <div class="cell docutils container">
@@ -1214,8 +1215,8 @@ dymos model sees.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="building-and-running-the-problem">
+</section>
+<section id="building-and-running-the-problem">
 <h2>Building and running the problem<a class="headerlink" href="#building-and-running-the-problem" title="Permalink to this headline">#</a></h2>
 <p>The following code is the dymos implementation of the model. As the code
 shows, there are six states, two controls, and one constraint in the
@@ -1327,10 +1328,10 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/utils/options_dictionary.py:347: OMDeprecationWarning:&#39;gradient method&#39; is not a valid python name and will become an invalid option name in a future release. You can prevent this warning (and future exceptions) by declaring this option using a valid python name.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/utils/options_dictionary.py:354: OMDeprecationWarning:&#39;gradient method&#39; is not a valid python name and will become an invalid option name in a future release. You can prevent this warning (and future exceptions) by declaring this option using a valid python name.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already has already been recorded for Driver.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
 INFO: checking out_of_order
 </pre></div>
 </div>
@@ -1358,7 +1359,7 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already has already been recorded for Driver.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
 INFO: checking out_of_order
 </pre></div>
 </div>
@@ -1386,7 +1387,7 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 1.936420 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 1.886704 seconds.
 Total jacobian shape: (327, 358) 
 </pre></div>
 </div>
@@ -1395,8 +1396,8 @@ FWD solves: 20   REV solves: 0
 Total colors vs. total size: 20 vs 358  (94.4% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 1.936420 sec.
-Time to compute coloring: 0.434115 sec.
+Time to compute sparsity: 1.886704 sec.
+Time to compute coloring: 0.422186 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1406,11 +1407,11 @@ Memory to compute coloring: 0.000000 MB.
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                   78.7215
-       User Objective Time :       1.6870
-       User Sensitivity Time :    13.1648
-       Interface Time :            3.6956
-       Opt Solver Time:           60.1740
+    Total Time:                   79.7437
+       User Objective Time :       1.7682
+       User Sensitivity Time :    12.8788
+       Interface Time :            3.6590
+       Opt Solver Time:           61.4377
     Calls to Objective Function :     747
     Calls to Sens Function :          318
 
@@ -2148,8 +2149,8 @@ Memory to compute coloring: 0.000000 MB.
 </div>
 <div class="cell tag_remove-input tag_remove-output docutils container">
 </div>
-</div>
-<div class="section" id="references">
+</section>
+<section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h2>
 <div class="docutils container" id="id2">
 <dl class="citation">
@@ -2158,8 +2159,8 @@ Memory to compute coloring: 0.000000 MB.
 </dd>
 </dl>
 </div>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -2211,7 +2212,7 @@ Memory to compute coloring: 0.000000 MB.
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

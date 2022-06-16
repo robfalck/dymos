@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>How do connect the outputs of Dymos to a downstream analysis? &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -687,7 +688,7 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="how-do-connect-the-outputs-of-dymos-to-a-downstream-analysis">
+<section class="tex2jax_ignore mathjax_ignore" id="how-do-connect-the-outputs-of-dymos-to-a-downstream-analysis">
 <h1>How do connect the outputs of Dymos to a downstream analysis?<a class="headerlink" href="#how-do-connect-the-outputs-of-dymos-to-a-downstream-analysis" title="Permalink to this headline">#</a></h1>
 <p>One of the design goals of Dymos is to allow the trajectory to be a part of a larger multidisciplinary optimization problem.
 Sometimes, you may want to take the results from the Dymos trajectory and feed them to some downstream analysis.</p>
@@ -707,7 +708,7 @@ the timeseries with <code class="docutils literal notranslate"><span class="pre"
 We need to know the number of nodes in a phase when we’re building the problem, so the downstream component knows how many values of a variable to expect.
 To do this, we can initialize the transcription object and obtain the total number of nodes in the phase using the transcriptions <code class="docutils literal notranslate"><span class="pre">grid_data.num_nodes</span></code> attribute.
 The <a class="reference internal" href="../examples/length_constrained_brachistochrone/length_constrained_brachistochrone.html"><span class="doc std std-doc">length-constrained brachistochrone example</span></a> demonstrates how to do this.</p>
-</div>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -759,7 +760,7 @@ The <a class="reference internal" href="../examples/length_constrained_brachisto
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

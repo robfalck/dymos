@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Segments of Phases &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -744,7 +745,7 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="segments-of-phases">
+<section class="tex2jax_ignore mathjax_ignore" id="segments-of-phases">
 <h1>Segments of Phases<a class="headerlink" href="#segments-of-phases" title="Permalink to this headline">#</a></h1>
 <div class="admonition-things-you-ll-learn-through-this-example admonition">
 <p class="admonition-title">Things you’ll learn through this example</p>
@@ -754,7 +755,7 @@ title="Print to PDF"
 <li><p>How to use the Dymos run_problem function to find the right number of segments automatically.</p></li>
 </ul>
 </div>
-<div class="section" id="what-are-segments">
+<section id="what-are-segments">
 <h2>What are segments?<a class="headerlink" href="#what-are-segments" title="Permalink to this headline">#</a></h2>
 <p>In the previous section we showed a converged trajectory that didn’t really match the state propagation found using Scipy’s variable step <code class="docutils literal notranslate"><span class="pre">solve_ivp</span></code> method.</p>
 <div class="cell tag_remove-input tag_hide-output docutils container">
@@ -956,8 +957,8 @@ The implicit collocation techniques used by Dymos (the Radau Pseudospectral Meth
 It does this by breaking the time domain of each phase into multiple polynomial <em>segments</em>.
 On each segment, each state is treated as a continuous polynomial of some given order.
 In Dymos, segments must have an order of <strong>at least 3</strong>.  That is also the default order for segments.</p>
-</div>
-<div class="section" id="how-does-the-number-and-order-of-segments-affect-the-solution">
+</section>
+<section id="how-does-the-number-and-order-of-segments-affect-the-solution">
 <h2>How does the number and order of segments affect the solution?<a class="headerlink" href="#how-does-the-number-and-order-of-segments-affect-the-solution" title="Permalink to this headline">#</a></h2>
 <p>Obviously, a single third-order polynomial won’t be able to fit highly oscillator behavior.
 In this case, our guess of using four segments (equally spaced) in the phase wasn’t quite sufficient.
@@ -1045,7 +1046,7 @@ Let’s try increasing that number to ten third-order segments.</p>
         None
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/core/total_jac.py:1568: DerivativesWarning:Constraints or objectives [(&#39;traj.phases.phase0.time.time&#39;, inds=[39])] cannot be impacted by the design variables of the problem.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/core/total_jac.py:1569: DerivativesWarning:Constraints or objectives [(&#39;traj.phases.phase0.time.time&#39;, inds=[39])] cannot be impacted by the design variables of the problem.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Optimization terminated successfully.    (Exit mode 0)
@@ -1158,7 +1159,7 @@ Optimization Complete
 -----------------------------------
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/core/total_jac.py:1568: DerivativesWarning:Constraints or objectives [(&#39;traj.phases.phase0.time.time&#39;, inds=[31])] cannot be impacted by the design variables of the problem.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/core/total_jac.py:1569: DerivativesWarning:Constraints or objectives [(&#39;traj.phases.phase0.time.time&#39;, inds=[31])] cannot be impacted by the design variables of the problem.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
@@ -1173,8 +1174,8 @@ Done simulating trajectory traj
 <p>Each element in the sequence provides the location of a segment boundary in the phase.
 The items in <code class="docutils literal notranslate"><span class="pre">segment_ends</span></code> are normalized by Dymos, so feel free to provide them in whatever scale makes sense.
 That is, <code class="docutils literal notranslate"><span class="pre">segment_ends=[0,</span> <span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">5]</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">segment_ends=[10,</span> <span class="pre">20,</span> <span class="pre">30,</span> <span class="pre">60]</span></code>.</p>
-</div>
-<div class="section" id="letting-dymos-automatically-find-the-right-segmentation-of-the-phase">
+</section>
+<section id="letting-dymos-automatically-find-the-right-segmentation-of-the-phase">
 <h2>Letting Dymos automatically find the right segmentation of the phase<a class="headerlink" href="#letting-dymos-automatically-find-the-right-segmentation-of-the-phase" title="Permalink to this headline">#</a></h2>
 <p>Manually tweaking the “grid” (the number of segments, their order, and relative spacing) isn’t ideal.
 In reality, another nested level of iteration is required:</p>
@@ -1184,8 +1185,8 @@ In reality, another nested level of iteration is required:</p>
 <li><p>Some “outer” function iterates on <code class="docutils literal notranslate"><span class="pre">run_driver()</span></code>, varying the grid until a satisfactory accuracy is achieved.</p></li>
 </ol>
 <p>This third level is filled by the role of automated grid refinement via the <code class="docutils literal notranslate"><span class="pre">dymos.run_problem</span></code>.  In the next section, we’ll learn how to use automated grid refinement in Dymos.</p>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -1237,7 +1238,7 @@ In reality, another nested level of iteration is required:</p>
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

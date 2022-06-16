@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Timeseries Outputs &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -744,7 +745,7 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<div class="tex2jax_ignore mathjax_ignore section" id="timeseries-outputs">
+<section class="tex2jax_ignore mathjax_ignore" id="timeseries-outputs">
 <h1>Timeseries Outputs<a class="headerlink" href="#timeseries-outputs" title="Permalink to this headline">#</a></h1>
 <p>Different optimal control transcriptions work in different ways.
 The Radau Pseudospectral transcription keeps a contiguous vector of state values at all nodes.
@@ -753,7 +754,7 @@ Retrieving a timeseries values of output values is thus transcription dependent.
 <p>In order to make obtaining the timeseries output of a phase easier, each phase provides a timeseries component which collects and outputs the appropriate timeseries data.
 For the pseudospectral transcriptions, timeseries outputs are provided at all nodes.
 By default, the timeseries output will include the following variables for every problem.</p>
-<div class="section" id="paths-to-timeseries-outputs-in-dymos">
+<section id="paths-to-timeseries-outputs-in-dymos">
 <h2>Paths to timeseries outputs in Dymos<a class="headerlink" href="#paths-to-timeseries-outputs-in-dymos" title="Permalink to this headline">#</a></h2>
 <table class="colwidths-auto table">
 <thead>
@@ -794,8 +795,8 @@ By default, the timeseries output will include the following variables for every
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section" id="adding-additional-timeseries-outputs">
+</section>
+<section id="adding-additional-timeseries-outputs">
 <h2>Adding additional timeseries outputs<a class="headerlink" href="#adding-additional-timeseries-outputs" title="Permalink to this headline">#</a></h2>
 <p>In addition to these default values, any output of the ODE can be added to the timeseries output
 using the <code class="docutils literal notranslate"><span class="pre">add_timeseries_output</span></code> method on Phase.  These outputs are available as
@@ -837,8 +838,8 @@ since Dymos doesn’t necessarily know the shape of ODE outputs until setup time
 </dd></dl>
 
 </div></blockquote>
-</div>
-<div class="section" id="interpolated-timeseries-outputs">
+</section>
+<section id="interpolated-timeseries-outputs">
 <h2>Interpolated Timeseries Outputs<a class="headerlink" href="#interpolated-timeseries-outputs" title="Permalink to this headline">#</a></h2>
 <p>Sometimes a user may want to interpolate the results of a phase onto a different grid.  This is particularly
 useful in the context of tandem phases.  Additional timeseries may be added to a phase using the
@@ -867,8 +868,8 @@ are to be provided.</p>
 </dd></dl>
 
 </div></blockquote>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -920,7 +921,7 @@ are to be provided.</p>
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>

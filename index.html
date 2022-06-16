@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Multidisciplinary Optimal Control Library &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
@@ -26,8 +27,7 @@
     <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="_static/myfile.css" />
-    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
@@ -44,6 +44,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -704,7 +705,7 @@ title="Print to PDF"
                 
               <div>
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="multidisciplinary-optimal-control-library">
+  <section class="tex2jax_ignore mathjax_ignore" id="multidisciplinary-optimal-control-library">
 <h1>Multidisciplinary Optimal Control Library<a class="headerlink" href="#multidisciplinary-optimal-control-library" title="Permalink to this headline">#</a></h1>
 <p>The goal of Dymos is to enable the optimization of subsystem designs which are tightly connected with each other as well as the operation of the overall system.</p>
 <p>Dymos is a library for the optimal control of dynamic multidisciplinary systems.
@@ -714,7 +715,7 @@ Instead, Dymos allows you to impose higher-fidelity design considerations on the
 <p>To do this, Dymos relies on ability of OpenMDAO to compute accurate derivatives very efficiently.
 This capability enables users of Dymos to embed iterative procedures within their system dynamics.
 While normally this would significantly impair performance, Dymos can optimize such systems with minimal performance degradation, freeing the user from reformulating their design specifically for the purposes of the optimal control implementation.</p>
-<div class="section" id="key-features">
+<section id="key-features">
 <h2>Key Features<a class="headerlink" href="#key-features" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
 <li><p>Employ Gauss-Lobatto collocation <span id="id1">[<a class="reference internal" href="#id28" title="Albert L Herman and Bruce A Conway. Direct optimization using collocation based on high-order gauss-lobatto quadrature rules. Journal of Guidance, Control, and Dynamics, 19(3):592–599, 1996.">HC96</a>]</span> or the Radau Pseudospectral method <span id="id2">[<a class="reference internal" href="#id29" title="Divya Garg, Michael A Patterson, Camila Francolin, Christopher L Darby, Geoffrey T Huntington, William W Hager, and Anil V Rao. Direct trajectory optimization and costate estimation of finite-horizon and infinite-horizon optimal control problems using a radau pseudospectral method. Computational Optimization and Applications, 49(2):335–358, 2011.">GPF+11</a>]</span> to find optimal control for a dynamic system.</p></li>
@@ -725,8 +726,8 @@ While normally this would significantly impair performance, Dymos can optimize s
 <li><p>Single and multiple shooting within the same interface.</p></li>
 <li><p>Leverage multiprocessing capabilities to improve performance</p></li>
 </ul>
-</div>
-<div class="section" id="why-dymos">
+</section>
+<section id="why-dymos">
 <h2>Why Dymos?<a class="headerlink" href="#why-dymos" title="Permalink to this headline">#</a></h2>
 <p>There is no shortage of optimal control software based on pseudospectral approaches.
 There are a number of other optimal control libraries that tackle similar kinds of problems, such as OTIS4 <span id="id4">[<a class="reference internal" href="#id24" title="Stephen W Paris, John P Riehl, and Waldy K Sjauw. Enhanced Procedures for Direct Trajectory Optimization Using Nonlinear Programming and Implicit Integration. In Proceedings of the AIAA/AAS Astrodynamics Specialists Conference and Exhibit, number 2006–6309. American Institute of Aeronautics and Astronautics, 2006.">PRS06</a>]</span>, GPOPS-II <span id="id5">[<a class="reference internal" href="#id20" title="Michael A Patterson and Anil V Rao. Gpops-ii: a matlab software for solving multiple-phase optimal control problems using hp-adaptive gaussian quadrature collocation methods and sparse nonlinear programming. ACM Transactions on Mathematical Software (TOMS), 41(1):1, 2014.">PR14</a>]</span>,and CASADI <span id="id6">[<a class="reference internal" href="#id55" title="Joel A E Andersson, Joris Gillis, Greg Horn, James B Rawlings, and Moritz Diehl. CasADi – A software framework for nonlinear optimization and optimal control. Mathematical Programming Computation, 11:1–36, 2019.">AGH+19</a>]</span>.</p>
@@ -756,8 +757,8 @@ This enables more efficient optimization via differential inclusion <span id="id
 The general approach used by Dymos is similar to that of OTIS (trajectories divided into time portions called Phases, dynamic controls and static parameters, and both bound constraints as well as nonlinear boundary constraints and path constraints are all notions carried over from OTIS.
 OTIS was pioneering software and offers some great capabilities, but it also lacks a lot of desirable modern features that have been developed by the community since its inception over thirty years ago.
 Dymos features a more modular way for users to define their dynamics, additional pseudospectral methods, and better differentiation approaches for more reliable convergence.</p>
-</div>
-<div class="section" id="citation">
+</section>
+<section id="citation">
 <h2>Citation<a class="headerlink" href="#citation" title="Permalink to this headline">#</a></h2>
 <p>See our <a class="reference external" href="https://joss.theoj.org/papers/10.21105/joss.02809">overview paper</a> in the Journal of Open Source Software</p>
 <p>If you use Dymos in your work, please cite:</p>
@@ -775,8 +776,8 @@ Dymos features a more modular way for users to define their dynamics, additional
 <span class="p">}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="references">
+</section>
+<section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h2>
 <div class="docutils container" id="id10">
 <dl class="citation">
@@ -806,7 +807,7 @@ Dymos features a more modular way for users to define their dynamics, additional
 </dd>
 </dl>
 </div>
-</div>
+</section>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
@@ -821,7 +822,7 @@ Dymos features a more modular way for users to define their dynamics, additional
 </div>
 <div class="toctree-wrapper compound">
 </div>
-</div>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -866,7 +867,7 @@ Dymos features a more modular way for users to define their dynamics, additional
   
     By The Dymos Development Team<br/>
   
-      &copy; Copyright 2021.<br/>
+      &copy; Copyright 2022.<br/>
 </p>
         </footer>
     </div>
