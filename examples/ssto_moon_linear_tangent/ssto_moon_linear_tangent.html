@@ -1068,9 +1068,6 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/utils/options_dictionary.py:354: OMDeprecationWarning:&#39;gradient method&#39; is not a valid python name and will become an invalid option name in a future release. You can prevent this warning (and future exceptions) by declaring this option using a valid python name.
-</pre></div>
-</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
 INFO: checking out_of_order
 </pre></div>
@@ -1099,7 +1096,7 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.111926 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.088026 seconds.
 Total jacobian shape: (103, 103) 
 </pre></div>
 </div>
@@ -1108,9 +1105,13 @@ FWD solves: 18   REV solves: 0
 Total colors vs. total size: 18 vs 103  (82.5% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.111926 sec.
-Time to compute coloring: 0.119312 sec.
+Time to compute sparsity: 0.088026 sec.
+Time to compute coloring: 0.102988 sec.
 Memory to compute coloring: 0.000000 MB.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/pyoptsparse/pyOpt_optimization.py:234: UserWarning: The argument `type=` is deprecated. Use `varType` in the future.
+  warnings.warn(&quot;The argument `type=` is deprecated. Use `varType` in the future.&quot;)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Optimization Problem -- Optimization using pyOpt_sparse
@@ -1119,18 +1120,18 @@ Memory to compute coloring: 0.000000 MB.
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    0.1124
-       User Objective Time :       0.0139
-       User Sensitivity Time :     0.0500
-       Interface Time :            0.0257
-       Opt Solver Time:            0.0228
+    Total Time:                    0.0913
+       User Objective Time :       0.0100
+       User Sensitivity Time :     0.0406
+       Interface Time :            0.0194
+       Opt Solver Time:            0.0213
     Calls to Objective Function :       6
     Calls to Sens Function :            5
 
 
    Objectives
-      Index  Name                                    Value          Optimum
-          0  traj.phases.phase0.time.time     4.817168E+00     0.000000E+00
+      Index  Name                                    Value
+          0  traj.phases.phase0.time.time     4.817168E+00
 
    Variables (c - continuous, i - integer, d - discrete)
       Index  Name                                           Type      Lower Bound            Value      Upper Bound     Status
@@ -1356,6 +1357,7 @@ Memory to compute coloring: 0.000000 MB.
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>False
 </pre></div>
 </div>
+<img alt="../../_images/ssto_moon_linear_tangent_2_25.png" src="../../_images/ssto_moon_linear_tangent_2_25.png" />
 </div>
 </div>
 <div class="cell tag_hide-input docutils container">

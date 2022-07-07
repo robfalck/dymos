@@ -695,7 +695,7 @@ By default, these timeseries outputs include Dymos phase variables (times, state
 Often, there will be some other intermediate or auxiliary output calculations in the ODE that we want to track over time.
 These can be added to the timeseries outputs using the <code class="docutils literal notranslate"><span class="pre">add_timeseries_output</span></code> method on Phase.</p>
 <p>Multiple timeseries outputs can be added at one time by matching a glob pattern.
-For instance, to add all outputs of the ODE to the timeseries, one can use ‘*’ as the</p>
+For instance, to add all outputs of the ODE to the timeseries, one can use ‘*’ as the <code class="docutils literal notranslate"><span class="pre">name</span></code> argument.</p>
 <p>See the <a class="reference internal" href="../features/phases/timeseries.html"><span class="doc std std-doc">Timeseries documentation</span></a> for more information.</p>
 <p>The <a class="reference internal" href="../examples/commercial_aircraft/commercial_aircraft.html"><span class="doc std std-doc">commercial aircraft example</span></a> uses the <code class="docutils literal notranslate"><span class="pre">add_timeseries_output</span></code> method to add the lift and drag coefficients to the timeseries outputs.</p>
 </section>

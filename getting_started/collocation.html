@@ -803,19 +803,19 @@ This makes scaling the problem easier, and gives the implicit variables more int
 <h2>Example:  Simulating the fall of an object<a class="headerlink" href="#example-simulating-the-fall-of-an-object" title="Permalink to this headline">#</a></h2>
 <p>As a “hello, world” problem for Dymos, consider the vertical fall of an object acting under gravity - like Galileo dropping cannonballs from the Tower of Pisa.
 Ignoring aerodynamics and treating the ball as a point mass in a rectilinear gravity field, the motion is governed by:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-c3029fb3-1bf1-4d14-898f-b9423504cf54">
-<span class="eqno">(5)<a class="headerlink" href="#equation-c3029fb3-1bf1-4d14-898f-b9423504cf54" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-79eeaad8-cf92-4e23-9dcb-0f7bc66eaa3a">
+<span class="eqno">(5)<a class="headerlink" href="#equation-79eeaad8-cf92-4e23-9dcb-0f7bc66eaa3a" title="Permalink to this equation">#</a></span>\[\begin{align}
     \ddot{y} = -g
 \end{align}\]</div>
 <p>The techniques in Dymos are generally centered around first-order dynamics, so we convert the above equation into the following system of ODEs.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-b9d36e62-65f2-4caa-83f1-3511efdabc25">
-<span class="eqno">(6)<a class="headerlink" href="#equation-b9d36e62-65f2-4caa-83f1-3511efdabc25" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-7d37f4e7-e1b2-4a75-a68c-9279779c95f5">
+<span class="eqno">(6)<a class="headerlink" href="#equation-7d37f4e7-e1b2-4a75-a68c-9279779c95f5" title="Permalink to this equation">#</a></span>\[\begin{align}
     \dot{y} &amp;= v_y \\
     \dot{v_y} &amp;= -g
 \end{align}\]</div>
 <p>One common way to propagate this trajectory would be to use an “explicit time-marching” approach.
 That is, we can use Euler’s method or a Runge-Kutta approach to propagate the trajectory of the ball, one small slice of time at a time.
-When performing trajectory optimization, the trajectory is typically evaluated at least dozens of time.
+When performing trajectory optimization, the trajectory is typically evaluated at least dozens of times.
 If the ODE for the system is computationally expensive, this time-marching approach can take a very long time.</p>
 <p>Instead, we can use an implicit simulation technique to more efficiently model the trajectory.
 First, let’s assume that the value of the <em>states</em> <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(v_y\)</span> smoothly vary in time (there’s no teleportation or instantaneous changes in velocity).
@@ -885,8 +885,8 @@ In LGL collocation, these points are chosen to be the LGL <em>nodes</em> in the 
 <p>To form 3rd-order polynomials for the states we need four pieces of information, but so far we only have the two endpoint values.
 We’ll use the state rates at the state discretization nodes to provide the other two values needed for interpolation.
 To obtain these, we evaluate our ODE at the state discretization nodes.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-d7717464-3907-40a8-b4fe-d65ddb6ba38e">
-<span class="eqno">(7)<a class="headerlink" href="#equation-d7717464-3907-40a8-b4fe-d65ddb6ba38e" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-5b314169-3c39-41bd-a139-315f78ca572b">
+<span class="eqno">(7)<a class="headerlink" href="#equation-5b314169-3c39-41bd-a139-315f78ca572b" title="Permalink to this equation">#</a></span>\[\begin{align}
     \dot{y}_0 &amp;= 0 \\
     \dot{y}_f &amp;= -50 \\
     \dot{v}_{y0} &amp;= -9.80665 \\
@@ -900,21 +900,21 @@ We call this difference in slope the collocation <em>defect</em>.</p>
 <p>Having computed the ODE at the state discretization nodes, we can form interpolants for the values and the slope of the states at the collocation nodes.
 Dymos uses Lagrange interpolants, such that the inputs to the system are the values of the states and controls, rather than less intuitive coefficients.
 In this case, the state values at our single collocation node are:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-b3813cb2-33a5-41d2-922f-ee23e0744297">
-<span class="eqno">(8)<a class="headerlink" href="#equation-b3813cb2-33a5-41d2-922f-ee23e0744297" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-6265e5f5-3eb4-4436-8a02-6b150348bdd8">
+<span class="eqno">(8)<a class="headerlink" href="#equation-6265e5f5-3eb4-4436-8a02-6b150348bdd8" title="Permalink to this equation">#</a></span>\[\begin{align}
     y_m &amp;= 50 \\
     v_{ym} &amp;= -25
 \end{align}\]</div>
 <p><img alt="Screenshot" src="../_images/lgl_animation_2.png" /></p>
 <p>The polynomial slopes at the collocation node are:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-5910363f-4369-4205-a1e3-2d4ac4aae271">
-<span class="eqno">(9)<a class="headerlink" href="#equation-5910363f-4369-4205-a1e3-2d4ac4aae271" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-acc2606c-5f46-4732-bef3-900d6226c932">
+<span class="eqno">(9)<a class="headerlink" href="#equation-acc2606c-5f46-4732-bef3-900d6226c932" title="Permalink to this equation">#</a></span>\[\begin{align}
     y'_m &amp;= 50 \\
     v'_{ym} &amp;= -25
 \end{align}\]</div>
 <p>Now, having the state and time values at the collocation nodes, we can again evaluate the ODE.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-13317a1e-16a2-48dc-b5f7-292a6822cbaf">
-<span class="eqno">(10)<a class="headerlink" href="#equation-13317a1e-16a2-48dc-b5f7-292a6822cbaf" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-92772f60-6fc9-452b-a2bb-6b31a98a0e09">
+<span class="eqno">(10)<a class="headerlink" href="#equation-92772f60-6fc9-452b-a2bb-6b31a98a0e09" title="Permalink to this equation">#</a></span>\[\begin{align}
     \dot{y}_m &amp;= -17 \\
     \dot{v}_{ym} &amp;= -9.80665
 \end{align}\]</div>

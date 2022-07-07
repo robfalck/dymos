@@ -1150,8 +1150,7 @@ This allows us to declare a single ODE component for use in the problem regardle
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/utils/options_dictionary.py:354: OMDeprecationWarning:&#39;gradient method&#39; is not a valid python name and will become an invalid option name in a future release. You can prevent this warning (and future exceptions) by declaring this option using a valid python name.
-WARNING:absl:No GPU/TPU found, falling back to CPU. (Set TF_CPP_MIN_LOG_LEVEL=0 and rerun for more info.)
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING:absl:No GPU/TPU found, falling back to CPU. (Set TF_CPP_MIN_LOG_LEVEL=0 and rerun for more info.)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- Constraint Report [traj] ---
@@ -1173,7 +1172,7 @@ WARNING:absl:No GPU/TPU found, falling back to CPU. (Set TF_CPP_MIN_LOG_LEVEL=0 
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking out_of_order
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/recorders/sqlite_recorder.py:227: UserWarning:The existing case recorder file, dymos_solution.db, is being overwritten.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/recorders/sqlite_recorder.py:227: UserWarning:The existing case recorder file, dymos_solution.db, is being overwritten.
 INFO:check_config:checking out_of_order
 </pre></div>
 </div>
@@ -1280,37 +1279,37 @@ INFO: checking out_of_order
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/core/system.py:1138: DerivativesWarning:&#39;traj.phases.br_to_v1.rhs_all&#39; &lt;class ExplicitFuncComp&gt;: No partials found but coloring was requested.  Declaring ALL partials as dense (method=&#39;jax&#39;)
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/system.py:1131: DerivativesWarning:&#39;traj.phases.br_to_v1.rhs_all&#39; &lt;class ExplicitFuncComp&gt;: No partials found but coloring was requested.  Declaring ALL partials as dense (method=&#39;jax&#39;)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Coloring for &#39;traj.phases.br_to_v1.rhs_all&#39; (class ExplicitFuncComp)
 
-Jacobian shape: (132, 60)  ( 9.79% nonzero)
+Jacobian shape: (132, 60)  ( 9.80% nonzero)
 FWD solves: 16   REV solves: 0
 Total colors vs. total size: 16 vs 60  (73.3% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.393747 sec.
-Time to compute coloring: 0.083579 sec.
+Time to compute sparsity: 0.345691 sec.
+Time to compute coloring: 0.070933 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/core/system.py:1138: DerivativesWarning:&#39;traj.phases.rto.rhs_all&#39; &lt;class ExplicitFuncComp&gt;: No partials found but coloring was requested.  Declaring ALL partials as dense (method=&#39;jax&#39;)
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/system.py:1131: DerivativesWarning:&#39;traj.phases.rto.rhs_all&#39; &lt;class ExplicitFuncComp&gt;: No partials found but coloring was requested.  Declaring ALL partials as dense (method=&#39;jax&#39;)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Coloring for &#39;traj.phases.rto.rhs_all&#39; (class ExplicitFuncComp)
 
-Jacobian shape: (132, 60)  ( 9.79% nonzero)
+Jacobian shape: (132, 60)  ( 9.80% nonzero)
 FWD solves: 16   REV solves: 0
 Total colors vs. total size: 16 vs 60  (73.3% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.365655 sec.
-Time to compute coloring: 0.082803 sec.
+Time to compute sparsity: 0.324444 sec.
+Time to compute coloring: 0.071131 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/core/system.py:1138: DerivativesWarning:&#39;traj.phases.v1_to_vr.rhs_all&#39; &lt;class ExplicitFuncComp&gt;: No partials found but coloring was requested.  Declaring ALL partials as dense (method=&#39;jax&#39;)
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/system.py:1131: DerivativesWarning:&#39;traj.phases.v1_to_vr.rhs_all&#39; &lt;class ExplicitFuncComp&gt;: No partials found but coloring was requested.  Declaring ALL partials as dense (method=&#39;jax&#39;)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Coloring for &#39;traj.phases.v1_to_vr.rhs_all&#39; (class ExplicitFuncComp)
@@ -1320,12 +1319,12 @@ FWD solves: 16   REV solves: 0
 Total colors vs. total size: 16 vs 60  (73.3% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.365166 sec.
-Time to compute coloring: 0.083580 sec.
+Time to compute sparsity: 0.324569 sec.
+Time to compute coloring: 0.072220 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/core/system.py:1138: DerivativesWarning:&#39;traj.phases.rotate.rhs_all&#39; &lt;class ExplicitFuncComp&gt;: No partials found but coloring was requested.  Declaring ALL partials as dense (method=&#39;jax&#39;)
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/system.py:1131: DerivativesWarning:&#39;traj.phases.rotate.rhs_all&#39; &lt;class ExplicitFuncComp&gt;: No partials found but coloring was requested.  Declaring ALL partials as dense (method=&#39;jax&#39;)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Coloring for &#39;traj.phases.rotate.rhs_all&#39; (class ExplicitFuncComp)
@@ -1335,12 +1334,12 @@ FWD solves: 16   REV solves: 0
 Total colors vs. total size: 16 vs 60  (73.3% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.370295 sec.
-Time to compute coloring: 0.083616 sec.
+Time to compute sparsity: 0.325685 sec.
+Time to compute coloring: 0.072602 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/core/system.py:1138: DerivativesWarning:&#39;traj.phases.climb.rhs_all&#39; &lt;class ExplicitFuncComp&gt;: No partials found but coloring was requested.  Declaring ALL partials as dense (method=&#39;jax&#39;)
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/system.py:1131: DerivativesWarning:&#39;traj.phases.climb.rhs_all&#39; &lt;class ExplicitFuncComp&gt;: No partials found but coloring was requested.  Declaring ALL partials as dense (method=&#39;jax&#39;)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Coloring for &#39;traj.phases.climb.rhs_all&#39; (class ExplicitFuncComp)
@@ -1350,12 +1349,12 @@ FWD solves: 16   REV solves: 0
 Total colors vs. total size: 16 vs 111  (85.6% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.540429 sec.
-Time to compute coloring: 0.189631 sec.
-Memory to compute coloring: 0.316406 MB.
+Time to compute sparsity: 0.481534 sec.
+Time to compute coloring: 0.163328 sec.
+Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 5.651472 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 4.771441 seconds.
 Total jacobian shape: (178, 166) 
 
 
@@ -1364,28 +1363,38 @@ FWD solves: 12   REV solves: 0
 Total colors vs. total size: 12 vs 166  (92.8% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 5.651472 sec.
-Time to compute coloring: 0.124306 sec.
+Time to compute sparsity: 4.771441 sec.
+Time to compute coloring: 0.104993 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Using option file &quot;IPOPT_options.opt&quot;.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/pyoptsparse/pyOpt_optimization.py:234: UserWarning: The argument `type=` is deprecated. Use `varType` in the future.
+  warnings.warn(&quot;The argument `type=` is deprecated. Use `varType` in the future.&quot;)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>List of user-set options:
 
-
-******************************************************************************
-This program contains Ipopt, a library for large-scale nonlinear optimization.
- Ipopt is released as open source code under the Eclipse Public License (EPL).
-         For more information visit https://github.com/coin-or/Ipopt
-******************************************************************************
-
+                                    Name   Value                used
+                  bound_mult_init_method = mu-based              yes
+                        file_print_level = 5                     yes
+                   hessian_approximation = limited-memory        yes
+                           linear_solver = mumps                 yes
+                                 mu_init = 0.01                  yes
+                             mu_strategy = adaptive              yes
+                      nlp_scaling_method = gradient-based        yes
+                             output_file = IPOPT.out             yes
+                             print_level = 5                     yes
+                      print_user_options = yes                   yes
+                                      sb = yes                   yes
 This is Ipopt version 3.13.5, running with linear solver mumps.
 NOTE: Other linear solvers might be more efficient (see Ipopt documentation).
 
 Number of nonzeros in equality constraint Jacobian...:     1076
 Number of nonzeros in inequality constraint Jacobian.:     1602
 Number of nonzeros in Lagrangian Hessian.............:        0
-
-Total number of variables............................:      166
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total number of variables............................:      166
                      variables with only lower bounds:       85
                 variables with lower and upper bounds:       77
                      variables with only upper bounds:        0
@@ -1399,7 +1408,7 @@ iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
    0  5.0000000e+00 1.45e+03 1.34e-01   0.0 0.00e+00    -  0.00e+00 0.00e+00   0
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/core/total_jac.py:1569: DerivativesWarning:Constraints or objectives [(&#39;traj.phases.climb.timeseries.states:gam&#39;, inds=[(0, 0)])] cannot be impacted by the design variables of the problem.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/total_jac.py:1567: DerivativesWarning:Constraints or objectives [(&#39;traj.phases.climb.timeseries.states:gam&#39;, inds=[(0, 0)])] cannot be impacted by the design variables of the problem.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   1  4.7292571e+00 6.78e+02 5.02e+01   0.0 2.23e+01    -  3.03e-02 5.32e-01f  1
@@ -1408,104 +1417,95 @@ iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   2  4.7453576e+00 5.28e+02 3.73e+01  -0.2 8.45e+00    -  7.80e-01 2.21e-01f  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   3  4.8751648e+00 1.41e+02 4.31e+01   0.2 7.81e+00    -  8.14e-01 7.33e-01f  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   3  4.8766377e+00 1.42e+02 4.80e+01   0.2 7.83e+00    -  8.23e-01 7.32e-01f  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   4  4.9912102e+00 1.41e+00 6.04e+01  -0.1 1.68e+00    -  9.21e-01 9.90e-01h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   4  4.9939984e+00 1.41e+00 5.96e+01  -0.1 1.68e+00    -  9.23e-01 9.90e-01h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   5  5.0357123e+00 1.26e-02 5.61e+02  -0.2 3.21e-01    -  1.00e+00 9.91e-01h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   5  5.0387272e+00 1.27e-02 5.19e+02  -0.2 3.19e-01    -  9.99e-01 9.91e-01h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   6  5.0307706e+00 4.71e-06 3.47e-02  -1.9 3.47e-02    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   6  5.0337905e+00 4.70e-06 7.89e+00  -1.9 3.46e-02    -  1.00e+00 1.00e+00h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   7  5.0240599e+00 1.31e-05 6.74e+02  -4.0 4.07e-02    -  9.96e-01 1.00e+00f  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   7  5.0270967e+00 1.28e-05 4.07e-02  -3.6 4.07e-02    -  1.00e+00 1.00e+00f  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   8  4.4864353e+00 5.17e-02 4.69e+05  -1.8 1.76e+02    -  3.30e-01 2.23e-02f  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   8  4.4670648e+00 5.56e-02 1.29e+05  -1.9 1.66e+02    -  1.22e-01 2.45e-02f  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   9  3.1586156e+00 3.82e-01 1.77e+06  -1.6 3.50e+01    -  1.00e+00 3.07e-01f  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  10  4.0922231e+00 1.79e-01 2.11e-01  -1.4 6.89e+00    -  1.00e+00 1.00e+00f  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  11  2.8244815e+00 4.74e-01 2.51e+04  -1.5 9.73e+00    -  9.83e-01 1.00e+00h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  12  2.1294476e+00 5.19e-01 2.24e+05  -1.8 8.18e+00    -  1.00e+00 8.40e-01h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  13  2.2152494e+00 1.31e-03 1.05e-02  -2.4 2.88e-01    -  1.00e+00 1.00e+00h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  14  2.2115798e+00 5.25e-03 3.14e+04  -8.4 2.37e-01    -  7.89e-01 7.18e-01h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  15  2.2001209e+00 6.00e-02 2.28e+04  -3.4 8.63e-01    -  1.00e+00 7.34e-01f  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  16  2.2042330e+00 3.44e-03 1.46e-03  -3.0 2.11e-01    -  1.00e+00 1.00e+00h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  17  2.2006369e+00 7.79e-03 3.27e-03  -3.7 2.63e-01    -  1.00e+00 1.00e+00h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  18  2.1977206e+00 8.83e-03 4.22e-03  -4.7 6.16e-01    -  1.00e+00 1.00e+00h  1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  19  2.1978359e+00 1.89e-03 2.39e-03  -4.1 1.84e-01    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   9  3.2034127e+00 3.60e-01 1.05e+06  -1.9 5.71e+01    -  1.00e+00 1.71e-01f  1
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  20  2.1978262e+00 2.64e-04 1.90e+01  -4.8 8.07e-02    -  9.97e-01 1.00e+00h  1
+  10  2.0222073e+00 8.31e-01 4.67e+05  -1.6 1.40e+01    -  1.00e+00 7.70e-01f  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  21  2.1977282e+00 3.57e-04 1.14e-03  -6.1 5.10e-02    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  11  2.2668245e+00 2.56e-02 6.69e-02  -2.2 1.10e+00    -  1.00e+00 1.00e+00h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  22  2.1977320e+00 8.91e-05 1.97e-04  -5.4 2.08e-02    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  12  2.2128648e+00 8.91e-03 2.17e+05  -3.1 6.75e-01    -  9.97e-01 6.48e-01h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  23  2.1977166e+00 1.25e-05 3.28e+00  -6.2 1.06e-02    -  1.00e+00 9.90e-01h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  13  2.2029190e+00 6.47e-02 1.07e-02  -3.3 5.47e-01    -  1.00e+00 1.00e+00h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  24  2.1977152e+00 5.95e-06 3.31e-05  -6.6 6.90e-03    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  14  2.1966620e+00 6.07e-02 2.82e+02  -3.6 9.92e-01    -  9.91e-01 1.00e+00h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  25  2.1977136e+00 5.29e-07 2.29e-01  -7.7 2.82e-03    -  1.00e+00 9.91e-01h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  15  2.1978934e+00 2.58e-04 5.69e-03  -3.7 3.17e-01    -  1.00e+00 1.00e+00h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  26  2.1977136e+00 1.02e-07 4.15e-06  -9.1 8.83e-04    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  16  2.1982797e+00 6.98e-05 3.84e+01  -4.5 1.45e-01    -  9.97e-01 1.00e+00H  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  27  2.1977136e+00 5.32e-10 1.14e-04 -10.1 9.97e-05    -  1.00e+00 9.98e-01h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  17  2.1977229e+00 1.62e-03 8.73e-04  -5.3 8.94e-02    -  1.00e+00 1.00e+00h  1
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  28  2.1977136e+00 1.27e-12 4.85e-09 -11.0 3.57e-06    -  1.00e+00 1.00e+00h  1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  18  2.1977492e+00 2.09e-04 2.92e-01  -5.6 3.75e-02    -  1.00e+00 9.99e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  19  2.1977185e+00 2.71e-04 2.01e+02  -5.3 1.43e-01    -  1.00e+00 3.25e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  20  2.1977176e+00 8.28e-06 5.71e-05  -6.0 1.06e-02    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  21  2.1977142e+00 3.65e-06 2.91e-05  -7.0 4.42e-03    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  22  2.1977138e+00 3.15e-07 1.42e-05  -7.6 2.37e-03    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  23  2.1977136e+00 5.69e-08 3.49e-07  -9.6 9.20e-04    -  1.00e+00 9.95e-01h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  24  2.1977136e+00 5.26e-11 5.21e-08 -11.0 4.09e-05    -  1.00e+00 1.00e+00h  1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  25  2.1977136e+00 2.92e-13 6.55e-10 -11.0 2.48e-06    -  1.00e+00 1.00e+00h  1
 
-Number of Iterations....: 28
+Number of Iterations....: 25
 
                                    (scaled)                 (unscaled)
-Objective...............:   2.1977135635050145e+00    2.1977135635050145e+00
-Dual infeasibility......:   4.8492105072694239e-09    4.8492105072694239e-09
-Constraint violation....:   1.2651095633198063e-12    1.2651095633198063e-12
-Complementarity.........:   1.0037873013553377e-11    1.0037873013553377e-11
-Overall NLP error.......:   4.8492105072694239e-09    4.8492105072694239e-09
+Objective...............:   2.1977135635051934e+00    2.1977135635051934e+00
+Dual infeasibility......:   6.5461615531094463e-10    6.5461615531094463e-10
+Constraint violation....:   2.9225422562293224e-13    2.9225422562293224e-13
+Complementarity.........:   1.0001319429127834e-11    1.0001319429127834e-11
+Overall NLP error.......:   6.5461615531094463e-10    6.5461615531094463e-10
 
 
-Number of objective function evaluations             = 29
-Number of objective gradient evaluations             = 29
-Number of equality constraint evaluations            = 29
-Number of inequality constraint evaluations          = 29
-Number of equality constraint Jacobian evaluations   = 29
-Number of inequality constraint Jacobian evaluations = 29
+Number of objective function evaluations             = 27
+Number of objective gradient evaluations             = 26
+Number of equality constraint evaluations            = 27
+Number of inequality constraint evaluations          = 27
+Number of equality constraint Jacobian evaluations   = 26
+Number of inequality constraint Jacobian evaluations = 26
 Number of Lagrangian Hessian evaluations             = 0
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.290
-Total CPU secs in NLP function evaluations           =      4.811
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.216
+Total CPU secs in NLP function evaluations           =      2.943
 
 EXIT: Optimal Solution Found.
 </pre></div>
@@ -1513,13 +1513,14 @@ EXIT: Optimal Solution Found.
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/recorders/sqlite_recorder.py:227: UserWarning:The existing case recorder file, dymos_simulation.db, is being overwritten.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/recorders/sqlite_recorder.py:227: UserWarning:The existing case recorder file, dymos_simulation.db, is being overwritten.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Done simulating trajectory traj
 [2197.71356351]
 </pre></div>
 </div>
+<img alt="../../_images/balanced_field_funccomp_9_81.png" src="../../_images/balanced_field_funccomp_9_81.png" />
 </div>
 </div>
 <div class="cell docutils container">

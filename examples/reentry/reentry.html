@@ -764,8 +764,8 @@ optimal control problem governed by six equations of motion and limited
 by the aerodynamic heating rate. For a detailed layout of this problem
 and other optimal control problems see Betts <span id="id1">[<a class="reference internal" href="#id19" title="J. Betts. Practical Methods for Optimal Control and Estimation Using Nonlinear Programming. Society for Industrial and Applied Mathematics, second edition, 2010. URL: https://epubs.siam.org/doi/abs/10.1137/1.9780898718577, arXiv:https://epubs.siam.org/doi/pdf/10.1137/1.9780898718577, doi:10.1137/1.9780898718577.">Bet10</a>]</span>.
 The governing equations of motion for this problem are:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-2dcc01eb-8ddb-44cc-88ee-380e5c49a400">
-<span class="eqno">(69)<a class="headerlink" href="#equation-2dcc01eb-8ddb-44cc-88ee-380e5c49a400" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-4e2466e6-b71c-49c3-af08-309bdbb840e1">
+<span class="eqno">(69)<a class="headerlink" href="#equation-4e2466e6-b71c-49c3-af08-309bdbb840e1" title="Permalink to this equation">#</a></span>\[\begin{align}
   \frac{dh}{dt} &amp;= v \sin \gamma \\
   \frac{d\phi}{dt} &amp;= \frac{v}{r} \cos \gamma \frac{\sin \psi}{\cos \theta} \\
   \frac{d\theta}{dt} &amp;= \frac{v}{r} \cos \gamma \cos \psi  \\
@@ -788,8 +788,8 @@ final altitude, without exceding a maximum heat rate at the leading
 edges. This heat rate is constrained by <span class="math notranslate nohighlight">\(q \leq 70\)</span> where q
 <span class="math notranslate nohighlight">\([\frac{btu}{ft^2s}]\)</span> is the heating rate.</p>
 <p>The initial conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-78be6f80-95b9-4ad6-8007-260b50d210f0">
-<span class="eqno">(70)<a class="headerlink" href="#equation-78be6f80-95b9-4ad6-8007-260b50d210f0" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-d353b6cd-1374-41ab-add0-54093aa580e6">
+<span class="eqno">(70)<a class="headerlink" href="#equation-d353b6cd-1374-41ab-add0-54093aa580e6" title="Permalink to this equation">#</a></span>\[\begin{align}
   h_0 &amp;= 26000 \\
   v_0 &amp;= 25600 \\
   \phi_0 &amp;= 0 \\
@@ -798,8 +798,8 @@ edges. This heat rate is constrained by <span class="math notranslate nohighligh
   \psi_0 &amp;= \frac{\pi}{2}
 \end{align}\]</div>
 <p>and the final conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-36757d30-0bf5-43ff-825a-9dc1ec1fe734">
-<span class="eqno">(71)<a class="headerlink" href="#equation-36757d30-0bf5-43ff-825a-9dc1ec1fe734" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-8c512c46-380d-4097-9540-0f043d2edea4">
+<span class="eqno">(71)<a class="headerlink" href="#equation-8c512c46-380d-4097-9540-0f043d2edea4" title="Permalink to this equation">#</a></span>\[\begin{align}
   h_0 &amp;= 80000 \\
   v_0 &amp;= 2500 \\
   \gamma_0 &amp;= -0.08727 \\
@@ -817,13 +817,13 @@ second component computes the aerodynamic forces of lift and drag on the
 shuttle. The third component is where the heating rate on the leading
 edge of the shuttles wings is computed. The heating rate is given by
 <span class="math notranslate nohighlight">\(q = q_a q_r\)</span> where</p>
-<div class="amsmath math notranslate nohighlight" id="equation-f08b8e28-1832-4130-a29d-f65b41c4416f">
-<span class="eqno">(72)<a class="headerlink" href="#equation-f08b8e28-1832-4130-a29d-f65b41c4416f" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-b9d33014-0a19-4ff0-9577-71ac6f04c402">
+<span class="eqno">(72)<a class="headerlink" href="#equation-b9d33014-0a19-4ff0-9577-71ac6f04c402" title="Permalink to this equation">#</a></span>\[\begin{align}
   q_a &amp;= c_0 + c_1\alpha + c_2 \alpha^2 + c_3 \alpha^3
 \end{align}\]</div>
 <p>and</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9f603014-27f1-4e3d-a85a-92d1ac9b4b38">
-<span class="eqno">(73)<a class="headerlink" href="#equation-9f603014-27f1-4e3d-a85a-92d1ac9b4b38" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-10e692f8-ffce-494f-bbfe-837ce231c271">
+<span class="eqno">(73)<a class="headerlink" href="#equation-10e692f8-ffce-494f-bbfe-837ce231c271" title="Permalink to this equation">#</a></span>\[\begin{align}
   q_r &amp;= 17700 \rho^.5 (.0001v)^{3.07}
 \end{align}\]</div>
 <p>where <span class="math notranslate nohighlight">\(c_0, c_1, c_2,\)</span> and <span class="math notranslate nohighlight">\(c_3\)</span> are constants, <span class="math notranslate nohighlight">\(\alpha\)</span> <span class="math notranslate nohighlight">\([deg]\)</span> is the
@@ -1328,9 +1328,6 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.8/site-packages/openmdao/utils/options_dictionary.py:354: OMDeprecationWarning:&#39;gradient method&#39; is not a valid python name and will become an invalid option name in a future release. You can prevent this warning (and future exceptions) by declaring this option using a valid python name.
-</pre></div>
-</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
 INFO: checking out_of_order
 </pre></div>
@@ -1387,7 +1384,7 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 1.886704 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 1.196145 seconds.
 Total jacobian shape: (327, 358) 
 </pre></div>
 </div>
@@ -1396,9 +1393,13 @@ FWD solves: 20   REV solves: 0
 Total colors vs. total size: 20 vs 358  (94.4% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 1.886704 sec.
-Time to compute coloring: 0.422186 sec.
+Time to compute sparsity: 1.196145 sec.
+Time to compute coloring: 0.376045 sec.
 Memory to compute coloring: 0.000000 MB.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/pyoptsparse/pyOpt_optimization.py:234: UserWarning: The argument `type=` is deprecated. Use `varType` in the future.
+  warnings.warn(&quot;The argument `type=` is deprecated. Use `varType` in the future.&quot;)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Optimization Problem -- Optimization using pyOpt_sparse
@@ -1407,18 +1408,18 @@ Memory to compute coloring: 0.000000 MB.
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                   79.7437
-       User Objective Time :       1.7682
-       User Sensitivity Time :    12.8788
-       Interface Time :            3.6590
-       Opt Solver Time:           61.4377
+    Total Time:                   72.5319
+       User Objective Time :       1.3029
+       User Sensitivity Time :     7.9932
+       Interface Time :            2.7984
+       Opt Solver Time:           60.4374
     Calls to Objective Function :     747
     Calls to Sens Function :          318
 
 
    Objectives
-      Index  Name                                                    Value          Optimum
-          0  traj.phases.phase0.indep_states.states:theta    -5.957515E+01     0.000000E+00
+      Index  Name                                                    Value
+          0  traj.phases.phase0.indep_states.states:theta    -5.957515E+01
 
    Variables (c - continuous, i - integer, d - discrete)
       Index  Name                                                                Type      Lower Bound            Value      Upper Bound     Status
@@ -2122,6 +2123,7 @@ Memory to compute coloring: 0.000000 MB.
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>False
 </pre></div>
 </div>
+<img alt="../../_images/reentry_10_34.png" src="../../_images/reentry_10_34.png" />
 </div>
 </div>
 <div class="cell docutils container">
