@@ -21,7 +21,7 @@
     href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
@@ -38,7 +38,7 @@
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
@@ -386,12 +386,12 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="../../faq/upstream_analysis.html">
-     How do connect the outputs of an upstream analysis as inputs to Dymos?
+     How do I connect the outputs of an upstream analysis as inputs to Dymos?
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="../../faq/downstream_analysis.html">
-     How do connect the outputs of Dymos to a downstream analysis?
+     How do I connect the outputs of Dymos to a downstream analysis?
     </a>
    </li>
    <li class="toctree-l2">
@@ -429,8 +429,8 @@ const thebe_selector_output = ".output, .cell_output"
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../api/run_problem.html">
-     The Dymos run_problem function
+    <a class="reference internal" href="../../api/run_problem_function.html">
+     The run_problem function
     </a>
    </li>
    <li class="toctree-l2">
@@ -840,8 +840,8 @@ without friction along the wire moves from point A to point B in minimum time.</
 <section id="system-dynamics">
 <h2>System dynamics<a class="headerlink" href="#system-dynamics" title="Permalink to this headline">#</a></h2>
 <p>From the free-body diagram above, the evolution of the state variables is given by the following ordinary differential equations (ODE).</p>
-<div class="amsmath math notranslate nohighlight" id="equation-0ffb47b8-152a-44af-8a84-476c8290a174">
-<span class="eqno">(13)<a class="headerlink" href="#equation-0ffb47b8-152a-44af-8a84-476c8290a174" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-c127d098-3d19-407a-bca8-37832d51bc88">
+<span class="eqno">(13)<a class="headerlink" href="#equation-c127d098-3d19-407a-bca8-37832d51bc88" title="Permalink to this equation">#</a></span>\[\begin{align}
     \frac{d x}{d t} &amp;= v \sin(\theta) \\
     \frac{d y}{d t} &amp;= -v \cos(\theta) \\
     \frac{d v}{d t} &amp;= g \cos(\theta)
@@ -859,8 +859,8 @@ without friction along the wire moves from point A to point B in minimum time.</
 <p>In this case, starting point <strong>A</strong> is given as <em>(0, 10)</em>.
 The point moving along the curve will begin there with zero initial velocity.</p>
 <p>The initial conditions are:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-81dff16f-3f46-42ec-8468-50337c3229f7">
-<span class="eqno">(14)<a class="headerlink" href="#equation-81dff16f-3f46-42ec-8468-50337c3229f7" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-e60aeb27-49e2-4b00-83c9-c77856046f54">
+<span class="eqno">(14)<a class="headerlink" href="#equation-e60aeb27-49e2-4b00-83c9-c77856046f54" title="Permalink to this equation">#</a></span>\[\begin{align}
     x_0 &amp;= 0 \\
     y_0 &amp;= 10 \\
     v_0 &amp;= 0
@@ -868,8 +868,8 @@ The point moving along the curve will begin there with zero initial velocity.</p
 <p>The end point <strong>B</strong> is given as <em>(10, 5)</em>.
 The point will end there, but the velocity at that point is not constrained.</p>
 <p>The final conditions are:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-82198c34-199d-4574-9352-b99cbfd40c0f">
-<span class="eqno">(15)<a class="headerlink" href="#equation-82198c34-199d-4574-9352-b99cbfd40c0f" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-c1cc860e-1e41-458c-8554-1fac0aec96ba">
+<span class="eqno">(15)<a class="headerlink" href="#equation-c1cc860e-1e41-458c-8554-1fac0aec96ba" title="Permalink to this equation">#</a></span>\[\begin{align}
     x_f &amp;= 10 \\
     y_f &amp;= 5 \\
     v_f &amp;= \mathrm{free}
@@ -1029,28 +1029,30 @@ Complex step typically produces derivative approximations with an error on the o
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-----------------------------------
 Component: BrachistochroneODE &#39;ode&#39;
 -----------------------------------
+
 &#39;&lt;output&gt;&#39; wrt &#39;&lt;variable&gt;&#39; | calc mag.  | check mag. | a(cal-chk) | r(cal-chk)
 -------------------------------------------------------------------------------
 
 &#39;check&#39;    wrt &#39;g&#39;          | 0.0000e+00 | 0.0000e+00 | 0.0000e+00 | nan
-&#39;check&#39;    wrt &#39;theta&#39;      | 1.1463e+01 | 1.1463e+01 | 1.3323e-15 | 1.1622e-16
-&#39;check&#39;    wrt &#39;v&#39;          | 3.2556e+00 | 3.2556e+00 | 5.4390e-16 | 1.6706e-16
-&#39;vdot&#39;     wrt &#39;g&#39;          | 1.3537e+00 | 1.3537e+00 | 1.6653e-16 | 1.2302e-16
-&#39;vdot&#39;     wrt &#39;theta&#39;      | 1.7454e+01 | 1.7454e+01 | 2.5121e-15 | 1.4393e-16
+&#39;check&#39;    wrt &#39;theta&#39;      | 6.6534e+01 | 6.6534e+01 | 7.3577e-15 | 1.1059e-16
+&#39;check&#39;    wrt &#39;v&#39;          | 4.0290e+00 | 4.0290e+00 | 3.1402e-16 | 7.7939e-17
+&#39;vdot&#39;     wrt &#39;g&#39;          | 1.4972e+00 | 1.4972e+00 | 2.7336e-16 | 1.8258e-16
+&#39;vdot&#39;     wrt &#39;theta&#39;      | 1.6287e+01 | 1.6287e+01 | 9.9301e-16 | 6.0969e-17
 &#39;vdot&#39;     wrt &#39;v&#39;          | 0.0000e+00 | 0.0000e+00 | 0.0000e+00 | nan
 &#39;xdot&#39;     wrt &#39;g&#39;          | 0.0000e+00 | 0.0000e+00 | 0.0000e+00 | nan
-&#39;xdot&#39;     wrt &#39;theta&#39;      | 4.0520e+00 | 4.0520e+00 | 3.1404e-16 | 7.7502e-17
-&#39;xdot&#39;     wrt &#39;v&#39;          | 1.7798e+00 | 1.7798e+00 | 2.0015e-16 | 1.1246e-16
+&#39;xdot&#39;     wrt &#39;theta&#39;      | 1.0363e+01 | 1.0363e+01 | 1.3506e-15 | 1.3033e-16
+&#39;xdot&#39;     wrt &#39;v&#39;          | 1.6608e+00 | 1.6608e+00 | 1.1102e-16 | 6.6847e-17
 &#39;ydot&#39;     wrt &#39;g&#39;          | 0.0000e+00 | 0.0000e+00 | 0.0000e+00 | nan
-&#39;ydot&#39;     wrt &#39;theta&#39;      | 8.3296e+00 | 8.3296e+00 | 1.0175e-15 | 1.2216e-16
-&#39;ydot&#39;     wrt &#39;v&#39;          | 1.3537e+00 | 1.3537e+00 | 1.6653e-16 | 1.2302e-16
+&#39;ydot&#39;     wrt &#39;theta&#39;      | 1.2460e+01 | 1.2460e+01 | 6.2804e-16 | 5.0406e-17
+&#39;ydot&#39;     wrt &#39;v&#39;          | 1.4972e+00 | 1.4972e+00 | 2.7336e-16 | 1.8258e-16
 
 ##################################################################
 Sub Jacobian with Largest Relative Error: BrachistochroneODE &#39;ode&#39;
 ##################################################################
+
 &#39;&lt;output&gt;&#39; wrt &#39;&lt;variable&gt;&#39; | calc mag.  | check mag. | a(cal-chk) | r(cal-chk)
 -------------------------------------------------------------------------------
-&#39;check&#39;    wrt &#39;v&#39;          | 3.2556e+00 | 3.2556e+00 | 5.4390e-16 | 1.6706e-16
+&#39;vdot&#39;     wrt &#39;g&#39;          | 1.4972e+00 | 1.4972e+00 | 2.7336e-16 | 1.8258e-16
 </pre></div>
 </div>
 </div>
@@ -1138,21 +1140,22 @@ Sub Jacobian with Largest Relative Error: BrachistochroneODE &#39;ode&#39;
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- Constraint Report [traj] ---
     --- phase0 ---
         None
-
-Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.028188 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.034126 seconds.
 Total jacobian shape: (40, 50) 
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Jacobian shape: (40, 50)  (19.85% nonzero)
+
+
+Jacobian shape: (40, 50)  (19.85% nonzero)
 FWD solves: 13   REV solves: 0
 Total colors vs. total size: 13 vs 50  (74.0% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.028188 sec.
-Time to compute coloring: 0.035767 sec.
+Time to compute sparsity: 0.034126 sec.
+Time to compute coloring: 0.040966 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1163,10 +1166,11 @@ Memory to compute coloring: 0.000000 MB.
             Gradient evaluations: 24
 Optimization Complete
 -----------------------------------
-[1.80161673]
 </pre></div>
 </div>
-<img alt="../../_images/brachistochrone_9_4.png" src="../../_images/brachistochrone_9_4.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1.80161673]
+</pre></div>
+</div>
 </div>
 </div>
 <div class="cell tag_remove-input tag_remove-output docutils container">
@@ -1189,10 +1193,12 @@ Optimization Complete
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
-Done simulating trajectory traj
 </pre></div>
 </div>
-<img alt="../../_images/brachistochrone_11_1.png" src="../../_images/brachistochrone_11_1.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Done simulating trajectory traj
+</pre></div>
+</div>
+<img alt="../../_images/brachistochrone_11_2.png" src="../../_images/brachistochrone_11_2.png" />
 </div>
 </div>
 </section>
@@ -1301,7 +1307,7 @@ Model viewer data has already been recorded for Driver.
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/recorders/sqlite_recorder.py:227: UserWarning:The existing case recorder file, dymos_solution.db, is being overwritten.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.009239 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.010890 seconds.
 Total jacobian shape: (12, 22) 
 
 
@@ -1310,8 +1316,8 @@ FWD solves: 0   REV solves: 12
 Total colors vs. total size: 12 vs 12  (0.0% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.009239 sec.
-Time to compute coloring: 0.014696 sec.
+Time to compute sparsity: 0.010890 sec.
+Time to compute coloring: 0.017002 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1322,10 +1328,11 @@ Memory to compute coloring: 0.000000 MB.
             Gradient evaluations: 11
 Optimization Complete
 -----------------------------------
-[1.80164719]
 </pre></div>
 </div>
-<img alt="../../_images/brachistochrone_13_4.png" src="../../_images/brachistochrone_13_4.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1.80164719]
+</pre></div>
+</div>
 </div>
 </div>
 <div class="cell tag_remove-input tag_remove-output docutils container">

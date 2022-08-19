@@ -21,7 +21,7 @@
     href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
@@ -38,7 +38,7 @@
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
@@ -386,12 +386,12 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="../../faq/upstream_analysis.html">
-     How do connect the outputs of an upstream analysis as inputs to Dymos?
+     How do I connect the outputs of an upstream analysis as inputs to Dymos?
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="../../faq/downstream_analysis.html">
-     How do connect the outputs of Dymos to a downstream analysis?
+     How do I connect the outputs of Dymos to a downstream analysis?
     </a>
    </li>
    <li class="toctree-l2">
@@ -429,8 +429,8 @@ const thebe_selector_output = ".output, .cell_output"
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../api/run_problem.html">
-     The Dymos run_problem function
+    <a class="reference internal" href="../../api/run_problem_function.html">
+     The run_problem function
     </a>
    </li>
    <li class="toctree-l2">
@@ -753,18 +753,18 @@ title="Print to PDF"
 Patterson <span id="id1">[<a class="reference internal" href="#id22" title="Michael A Patterson, William W Hager, and Anil V Rao. A ph mesh refinement method for optimal control. Optimal Control Applications and Methods, 36(4):398–421, 2015.">PHR15</a>]</span>. In this problem we seek to minimize both
 the distance traveled when moving between fixed boundary conditions and
 also to minimize the control <span class="math notranslate nohighlight">\(u\)</span> used. The cost function to be minimized is:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-6d2edf2a-fd87-43aa-92fc-5730c7bfe31b">
-<span class="eqno">(48)<a class="headerlink" href="#equation-6d2edf2a-fd87-43aa-92fc-5730c7bfe31b" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-92b34a55-e8d4-4871-96cb-1015c1eaa4de">
+<span class="eqno">(48)<a class="headerlink" href="#equation-92b34a55-e8d4-4871-96cb-1015c1eaa4de" title="Permalink to this equation">#</a></span>\[\begin{align}
     J &amp;= \frac{1}{2} \int_{0}^{t_f} (x^2 + u^2) dt
 \end{align}\]</div>
 <p>The system is subject to the dynamic constraints:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-6052444b-b46b-49ab-8f21-25d7a4574d30">
-<span class="eqno">(49)<a class="headerlink" href="#equation-6052444b-b46b-49ab-8f21-25d7a4574d30" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-48f3acf9-ab4f-49cf-9e05-df9c127582cf">
+<span class="eqno">(49)<a class="headerlink" href="#equation-48f3acf9-ab4f-49cf-9e05-df9c127582cf" title="Permalink to this equation">#</a></span>\[\begin{align}
     \frac{dx}{dt} &amp;= -x + u
 \end{align}\]</div>
 <p>The boundary conditions are:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-01d4491e-e1d6-42f4-bfeb-0b9db494f6d7">
-<span class="eqno">(50)<a class="headerlink" href="#equation-01d4491e-e1d6-42f4-bfeb-0b9db494f6d7" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-9cc02f68-23b9-4646-bf75-35baf4a6d53e">
+<span class="eqno">(50)<a class="headerlink" href="#equation-9cc02f68-23b9-4646-bf75-35baf4a6d53e" title="Permalink to this equation">#</a></span>\[\begin{align}
     x(t_0) &amp;= 1.5 \\
     x(t_f) &amp;= 1
 \end{align}\]</div>
@@ -774,14 +774,14 @@ the problem exhibits a <em>dive</em>, <em>cruise</em>, and <em>resurface</em> ty
 structure, where the all interesting behavior occurs at the beginning and
 end while remaining relatively constant in the middle.</p>
 <p>This problem has a known analytic optimal solution:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-6418d0dd-c2fa-48a8-9068-3d8cd86a63ed">
-<span class="eqno">(51)<a class="headerlink" href="#equation-6418d0dd-c2fa-48a8-9068-3d8cd86a63ed" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-858cbf88-116b-4cd5-bb42-957f92a69ab0">
+<span class="eqno">(51)<a class="headerlink" href="#equation-858cbf88-116b-4cd5-bb42-957f92a69ab0" title="Permalink to this equation">#</a></span>\[\begin{align}
     x^*(t) &amp;= c_1 e^{\sqrt{2} t} + c_2 e^{-\sqrt{2} t} \\
       u^*(t) &amp;= \dot{x}^*(t) + x^*(t)
 \end{align}\]</div>
 <p>where:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-d76c3b7d-ed9a-4d92-91a8-5d29608fe15b">
-<span class="eqno">(52)<a class="headerlink" href="#equation-d76c3b7d-ed9a-4d92-91a8-5d29608fe15b" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-b4172759-3423-4d97-affb-e2311a108eaf">
+<span class="eqno">(52)<a class="headerlink" href="#equation-b4172759-3423-4d97-affb-e2311a108eaf" title="Permalink to this equation">#</a></span>\[\begin{align}
     c_1 &amp;= \frac{1.5 e^{-\sqrt{2} t_f} - 1}{e^{-\sqrt{2} t_f} - e^{\sqrt{2} t_f}} \\
     c_2 &amp;= \frac{1 - 1.5 e^{\sqrt{2} t_f}}{e^{-\sqrt{2} t_f} - e^{\sqrt{2} t_f}}
 \end{align}\]</div>
@@ -902,59 +902,113 @@ To counter this, grid refinement algorithms are used to assess error in the inte
 INFO: checking out_of_order
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking out_of_order
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking system
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking system
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking solvers
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking solvers
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking dup_inputs
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking dup_inputs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking missing_recorders
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking missing_recorders
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The Problem has no recorder of any kind attached
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING:check_config:The Problem has no recorder of any kind attached
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking unserializable_options
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking unserializable_options
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking comp_has_no_outputs
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking comp_has_no_outputs
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking auto_ivc_warnings
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
 INFO: checking out_of_order
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking out_of_order
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking system
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking system
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking solvers
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking solvers
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking dup_inputs
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking dup_inputs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking missing_recorders
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking missing_recorders
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The Problem has no recorder of any kind attached
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING:check_config:The Problem has no recorder of any kind attached
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking unserializable_options
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking unserializable_options
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking comp_has_no_outputs
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking comp_has_no_outputs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.112432 seconds.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking auto_ivc_warnings
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.141158 seconds.
 Total jacobian shape: (80, 108) 
 </pre></div>
 </div>
@@ -963,8 +1017,8 @@ FWD solves: 0   REV solves: 9
 Total colors vs. total size: 9 vs 80  (88.8% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.112432 sec.
-Time to compute coloring: 0.054994 sec.
+Time to compute sparsity: 0.141158 sec.
+Time to compute coloring: 0.061591 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -978,11 +1032,11 @@ Memory to compute coloring: 0.000000 MB.
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    0.2090
-       User Objective Time :       0.0193
-       User Sensitivity Time :     0.0830
-       Interface Time :            0.0463
-       Opt Solver Time:            0.0604
+    Total Time:                    0.2434
+       User Objective Time :       0.0265
+       User Sensitivity Time :     0.0983
+       Interface Time :            0.0522
+       Opt Solver Time:            0.0664
     Calls to Objective Function :      16
     Calls to Sens Function :           14
 
@@ -1205,6 +1259,10 @@ Memory to compute coloring: 0.000000 MB.
 --------------------------------------------------------------------------------
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/visualization/opt_report/opt_report.py:666: UserWarning: Attempting to set identical bottom == top == 0.0 results in singular transformations; automatically expanding.
+  ax.set_ylim([ymin_plot, ymax_plot])
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==================================================
           Grid Refinement - Iteration 1           
 --------------------------------------------------
@@ -1225,9 +1283,9 @@ Memory to compute coloring: 0.000000 MB.
             Segment Ends = [-1.0, -0.8, -0.6, -0.4, -0.2, 0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
             Segment Order = [6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
         Refined: True
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- Constraint Report [traj] ---
+
+
+--- Constraint Report [traj] ---
     --- phase0 ---
         [final]   1.0000e+00 == x [None]
 
@@ -1235,7 +1293,7 @@ Model viewer data has already been recorded for Driver.
 Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.211421 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.260348 seconds.
 Total jacobian shape: (140, 198) 
 
 
@@ -1244,8 +1302,8 @@ FWD solves: 0   REV solves: 15
 Total colors vs. total size: 15 vs 140  (89.3% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.211421 sec.
-Time to compute coloring: 0.102713 sec.
+Time to compute sparsity: 0.260348 sec.
+Time to compute coloring: 0.115108 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1255,11 +1313,11 @@ Memory to compute coloring: 0.000000 MB.
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    0.3560
-       User Objective Time :       0.0123
-       User Sensitivity Time :     0.0815
-       Interface Time :            0.0440
-       Opt Solver Time:            0.2182
+    Total Time:                    0.3908
+       User Objective Time :       0.0153
+       User Sensitivity Time :     0.0968
+       Interface Time :            0.0468
+       Opt Solver Time:            0.2319
     Calls to Objective Function :       9
     Calls to Sens Function :            8
 
@@ -1654,19 +1712,17 @@ Memory to compute coloring: 0.000000 MB.
             Segment Ends = [-1.0, -0.9, -0.8, -0.7, -0.6, -0.4, -0.2, 0.0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
             Segment Order = [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
         Refined: True
-
-
---- Constraint Report [traj] ---
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- Constraint Report [traj] ---
     --- phase0 ---
         [final]   1.0000e+00 == x [None]
 
 Model viewer data has already been recorded for Driver.
+Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.359937 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.442115 seconds.
 Total jacobian shape: (224, 318) 
 
 
@@ -1675,8 +1731,8 @@ FWD solves: 0   REV solves: 15
 Total colors vs. total size: 15 vs 224  (93.3% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.359937 sec.
-Time to compute coloring: 0.163478 sec.
+Time to compute sparsity: 0.442115 sec.
+Time to compute coloring: 0.182420 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1686,11 +1742,11 @@ Memory to compute coloring: 0.000000 MB.
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    1.2915
-       User Objective Time :       0.0132
-       User Sensitivity Time :     0.1021
-       Interface Time :            0.0768
-       Opt Solver Time:            1.0994
+    Total Time:                    1.3978
+       User Objective Time :       0.0164
+       User Sensitivity Time :     0.1218
+       Interface Time :            0.0892
+       Opt Solver Time:            1.1704
     Calls to Objective Function :       9
     Calls to Sens Function :            9
 
@@ -2311,7 +2367,7 @@ Model viewer data has already been recorded for Driver.
 Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.488636 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.601267 seconds.
 Total jacobian shape: (284, 405) 
 </pre></div>
 </div>
@@ -2320,8 +2376,8 @@ FWD solves: 0   REV solves: 27
 Total colors vs. total size: 27 vs 284  (90.5% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.488636 sec.
-Time to compute coloring: 0.215071 sec.
+Time to compute sparsity: 0.601267 sec.
+Time to compute coloring: 0.240137 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -2331,11 +2387,11 @@ Memory to compute coloring: 0.000000 MB.
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    1.6757
-       User Objective Time :       0.0090
-       User Sensitivity Time :     0.1135
-       Interface Time :            0.0681
-       Opt Solver Time:            1.4850
+    Total Time:                    1.8663
+       User Objective Time :       0.0115
+       User Sensitivity Time :     0.1382
+       Interface Time :            0.0789
+       Opt Solver Time:            1.6377
     Calls to Objective Function :       6
     Calls to Sens Function :            6
 
@@ -3115,7 +3171,7 @@ Model viewer data has already been recorded for Driver.
 Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.598597 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.731920 seconds.
 Total jacobian shape: (332, 474) 
 </pre></div>
 </div>
@@ -3124,8 +3180,8 @@ FWD solves: 0   REV solves: 27
 Total colors vs. total size: 27 vs 332  (91.9% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.598597 sec.
-Time to compute coloring: 0.253383 sec.
+Time to compute sparsity: 0.731920 sec.
+Time to compute coloring: 0.284232 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -3135,11 +3191,11 @@ Memory to compute coloring: 0.000000 MB.
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    0.8094
-       User Objective Time :       0.0045
-       User Sensitivity Time :     0.0412
-       Interface Time :            0.0279
-       Opt Solver Time:            0.7359
+    Total Time:                    0.9725
+       User Objective Time :       0.0066
+       User Sensitivity Time :     0.0537
+       Interface Time :            0.0346
+       Opt Solver Time:            0.8776
     Calls to Objective Function :       3
     Calls to Sens Function :            2
 
@@ -4036,7 +4092,7 @@ Model viewer data has already been recorded for Driver.
 Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.779550 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.953699 seconds.
 Total jacobian shape: (406, 581) 
 </pre></div>
 </div>
@@ -4045,8 +4101,8 @@ FWD solves: 0   REV solves: 27
 Total colors vs. total size: 27 vs 406  (93.3% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.779550 sec.
-Time to compute coloring: 0.313282 sec.
+Time to compute sparsity: 0.953699 sec.
+Time to compute coloring: 0.350662 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -4056,11 +4112,11 @@ Memory to compute coloring: 0.000000 MB.
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    0.7531
-       User Objective Time :       0.0030
-       User Sensitivity Time :     0.0246
-       Interface Time :            0.0191
-       Opt Solver Time:            0.7065
+    Total Time:                    0.8214
+       User Objective Time :       0.0041
+       User Sensitivity Time :     0.0295
+       Interface Time :            0.0233
+       Opt Solver Time:            0.7645
     Calls to Objective Function :       2
     Calls to Sens Function :            1
 
@@ -5141,7 +5197,6 @@ Successfully completed grid refinement.
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>False
 </pre></div>
 </div>
-<img alt="../../_images/hypersensitive_5_54.png" src="../../_images/hypersensitive_5_54.png" />
 </div>
 </div>
 <div class="cell docutils container">

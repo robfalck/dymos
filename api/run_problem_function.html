@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>The Dymos run_problem function &#8212; Dymos</title>
+    <title>The run_problem function &#8212; Dymos</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -21,7 +21,7 @@
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -38,7 +38,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
@@ -384,12 +384,12 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="../faq/upstream_analysis.html">
-     How do connect the outputs of an upstream analysis as inputs to Dymos?
+     How do I connect the outputs of an upstream analysis as inputs to Dymos?
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="../faq/downstream_analysis.html">
-     How do connect the outputs of Dymos to a downstream analysis?
+     How do I connect the outputs of Dymos to a downstream analysis?
     </a>
    </li>
    <li class="toctree-l2">
@@ -428,7 +428,7 @@ const thebe_selector_output = ".output, .cell_output"
   <ul class="current">
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
-     The Dymos run_problem function
+     The run_problem function
     </a>
    </li>
    <li class="toctree-l2">
@@ -519,7 +519,7 @@ title="Toggle navigation"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="https://mybinder.org/v2/gh/OpenMDAO/dymos/master?urlpath=tree/docs/api/run_problem.ipynb"
+        <a href="https://mybinder.org/v2/gh/OpenMDAO/dymos/master?urlpath=tree/docs/api/run_problem_function.ipynb"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -537,7 +537,7 @@ title="Launch on Binder"
       </li>
       
       <li>
-        <a href="https://colab.research.google.com/github/OpenMDAO/dymos/blob/master/docs/api/run_problem.ipynb"
+        <a href="https://colab.research.google.com/github/OpenMDAO/dymos/blob/master/docs/api/run_problem_function.ipynb"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -597,7 +597,7 @@ title="Source repository"
       </li>
       
       <li>
-        <a href="https://github.com/OpenMDAO/dymos/issues/new?title=Issue%20on%20page%20%2Fapi/run_problem.html&body=Your%20issue%20content%20here."
+        <a href="https://github.com/OpenMDAO/dymos/issues/new?title=Issue%20on%20page%20%2Fapi/run_problem_function.html&body=Your%20issue%20content%20here."
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -625,7 +625,7 @@ title="Open an issue"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="../_sources/api/run_problem.ipynb"
+        <a href="../_sources/api/run_problem_function.ipynb"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -674,7 +674,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>The Dymos run_problem function</h1>
+                <h1>The run_problem function</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -688,28 +688,71 @@ title="Print to PDF"
                 
   <div class="cell tag_active-ipynb tag_remove-input tag_remove-output docutils container">
 </div>
-<section class="tex2jax_ignore mathjax_ignore" id="the-dymos-run-problem-function">
-<h1>The Dymos run_problem function<a class="headerlink" href="#the-dymos-run-problem-function" title="Permalink to this headline">#</a></h1>
+<section class="tex2jax_ignore mathjax_ignore" id="the-run-problem-function">
+<h1>The run_problem function<a class="headerlink" href="#the-run-problem-function" title="Permalink to this headline">#</a></h1>
 <p>In the Brachistochrone example we used two methods on the OpenMDAO Problem class to execute the model.</p>
-<p><strong>run_model</strong> Takes the current model design variables and runs a single execution of the Problem’s model.<br />
+<p><code class="docutils literal notranslate"><span class="pre">run_model</span></code> Takes the current model design variables and runs a single execution of the Problem’s model.<br />
 Any iterative systems are converged, but no optimization is performed.
-When using Dymos with an optimizer-driven implicit transcription, <code class="docutils literal notranslate"><span class="pre">run_model</span></code> will <strong>not</strong> produce a physically valid trajectory on output.
+When using dymos with an optimizer-driven implicit transcription, <code class="docutils literal notranslate"><span class="pre">run_model</span></code> will <strong>not</strong> produce a physically valid trajectory on output.
 If using a solver-driven transcription, the collocation defects will be satisfied (if possible) and the resulting outputs will provide a physically valid trajectory (to the extent possible given the collocation grid).</p>
-<p><strong>run_driver</strong> Runs a driver wrapped around the model (typically done for optimization) and repeatedly executes <code class="docutils literal notranslate"><span class="pre">run_model</span></code> until the associated optimization problem is satisfied.
-This approach will provide a physically valid trajectory, to the extent that the grid is sufficient to accurately model the dynamics.
-But what happens if the grid is not dense enough to accurately capture the physics of the problem.
-This is the purpose of <em>grid refinement</em>.
-There have been numerous methods of grid refinment posed for implcit optimal control techniques.
-In general, they follow the following procedure:</p>
-<ol class="simple">
-<li><p>Optimize the trajectory</p></li>
-<li><p>Assess errors in the solution</p></li>
-<li><p>Propose a new grid to reduce these errors to an acceptable level.</p></li>
-<li><p>Repeat until the errors are within some acceptable tolerance.</p></li>
-</ol>
-<p>This requires another layer of iteration outside of the OpenMDAO <code class="docutils literal notranslate"><span class="pre">run_driver</span></code> method.
-This is the original motivation for Dymos’ <code class="docutils literal notranslate"><span class="pre">run_problem</span></code> function.</p>
-<p>dymos.run_problem.run_problem</p>
+<p><code class="docutils literal notranslate"><span class="pre">run_driver</span></code> runs a driver wrapped around the model (typically done for optimization) and repeatedly executes <code class="docutils literal notranslate"><span class="pre">run_model</span></code> until the associated optimization problem is satisfied.
+This approach will provide a physically valid trajectory, to the extent that the grid is sufficient to accurately model the dynamics.</p>
+<p>But commonly, we want to do the following when we run dymos</p>
+<ul class="simple">
+<li><p>Automatically record states, controls, and parameters at the arrived-upon “final” solution.</p></li>
+<li><p>Automatically provide explicit simulation of the solution to verify the accuracy of the collocation.</p></li>
+<li><p>Automatically load in the results from a previous case as the initial guess for an optimization.</p></li>
+<li><p>Iteratively re-optimize the problem with different grid settings to attempt to minimize grid error (i.e. grid refinement).</p></li>
+</ul>
+<p>To remove the need to repeatedly setup the code to do this, dymos provides a function called <code class="docutils literal notranslate"><span class="pre">run_problem</span></code>.</p>
+<blockquote>
+<div><dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">dymos.</span></span><span class="sig-name descname"><span class="pre">run_problem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">problem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refine_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hp'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refine_iteration_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_driver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solution_record_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dymos_solution.db'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_record_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dymos_simulation.db'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">make_plots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'plots'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_iter_counts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulate_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dymos/run_problem.html#run_problem"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>A Dymos-specific interface to execute an OpenMDAO problem containing Dymos Trajectories or
+Phases.  This function can iteratively call run_driver to perform grid refinement, and
+automatically call simulate following a run to check the validity of a result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>problem</strong><span class="classifier">om.Problem</span></dt><dd><p>The OpenMDAO problem object to be run, presumed to contain one or more dymos phases.</p>
+</dd>
+<dt><strong>refine_method</strong><span class="classifier">String</span></dt><dd><p>The choice of refinement algorithm to use for grid refinement. Current options are ‘hp’ for h-then-p adaptive
+or ‘ph’ for ‘p-then-h’ adaptive.</p>
+</dd>
+<dt><strong>refine_iteration_limit</strong><span class="classifier">int</span></dt><dd><p>The maximum number of passes through the grid refinement algorithm to be made.</p>
+</dd>
+<dt><strong>run_driver</strong><span class="classifier">bool</span></dt><dd><p>If True, run the driver attached to the problem, otherwise just run the model one time.</p>
+</dd>
+<dt><strong>simulate</strong><span class="classifier">bool</span></dt><dd><p>If True, perform a simulation of any Trajectories found in the Problem model after the driver
+has been run and grid refinement is complete.</p>
+</dd>
+<dt><strong>restart</strong><span class="classifier">str, Case, or None</span></dt><dd><p>If given as a dict returned by om.CaseReader.get_case, automatically load the states, controls, and
+parameters as given in the provided case as the initial guess for the next run.
+If given as a string, assume the user is providing the path to a CaseRecorder file that contains a case named
+“final” that the user wants to use as the guess for the case.</p>
+</dd>
+<dt><strong>make_plots</strong><span class="classifier">bool</span></dt><dd><p>If True, automatically generate plots of all timeseries outputs.
+These are stored in the reports subdirectory generated by OpenMDAO.</p>
+</dd>
+<dt><strong>solution_record_file</strong><span class="classifier">str</span></dt><dd><p>Path to case recorder file use to store results from solution.</p>
+</dd>
+<dt><strong>simulation_record_file</strong><span class="classifier">str</span></dt><dd><p>Path to case recorder file use to store results from simulation.</p>
+</dd>
+<dt><strong>plot_dir</strong><span class="classifier">str</span></dt><dd><p>Name of the plot directory to be created.</p>
+</dd>
+<dt><strong>simulate_kwargs</strong><span class="classifier">dict</span></dt><dd><p>A dictionary of argument: value pairs to be passed to simulate. These are ignored when simulate=False.</p>
+</dd>
+<dt><strong>case_prefix</strong><span class="classifier">str or None</span></dt><dd><p>Prefix to prepend to coordinates when recording.</p>
+</dd>
+<dt><strong>reset_iter_counts</strong><span class="classifier">bool</span></dt><dd><p>If True and model has been run previously, reset all iteration counters.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div></blockquote>
 </section>
 
     <script type="text/x-thebe-config">
