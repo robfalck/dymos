@@ -291,6 +291,11 @@ const thebe_selector_output = ".output, .cell_output"
      Water Rocket
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../cart_pole/cart_pole.html">
+     Cart-Pole Optimal Control
+    </a>
+   </li>
   </ul>
  </li>
 </ul>
@@ -803,24 +808,24 @@ the system at an event in the trajectory. Here, we have the first phase
 (ascent) terminate when the flight path angle reaches zero (apogee). The
 descent phase follows until the cannonball impacts the ground.</p>
 <p>The dynamics are given by</p>
-<div class="amsmath math notranslate nohighlight" id="equation-de1424f3-6d63-4139-8a9a-936e0c180941">
-<span class="eqno">(65)<a class="headerlink" href="#equation-de1424f3-6d63-4139-8a9a-936e0c180941" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-bbecca21-abac-43cc-8d57-a1db238d425a">
+<span class="eqno">(65)<a class="headerlink" href="#equation-bbecca21-abac-43cc-8d57-a1db238d425a" title="Permalink to this equation">#</a></span>\[\begin{align}
   \frac{dv}{dt} &amp;= \frac{D}{m} - g \sin \gamma \\
   \frac{d\gamma}{dt} &amp;= - \frac{g \cos \gamma}{v} \\
   \frac{dh}{dt} &amp;= v \sin \gamma \\
   \frac{dr}{dt} &amp;= v \cos \gamma \\
 \end{align}\]</div>
 <p>The initial conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-402b73c3-45ee-4230-9dde-101414fafabc">
-<span class="eqno">(66)<a class="headerlink" href="#equation-402b73c3-45ee-4230-9dde-101414fafabc" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-05bf31ab-ec4b-4b0c-b00a-ed988bf0a966">
+<span class="eqno">(66)<a class="headerlink" href="#equation-05bf31ab-ec4b-4b0c-b00a-ed988bf0a966" title="Permalink to this equation">#</a></span>\[\begin{align}
   r_0 &amp;= 0 \rm{\,m} \\
   h_0 &amp;= 100 \rm{\,m} \\
   v_0 &amp;= \rm{free} \\
   \gamma_0 &amp;= \rm{free}
 \end{align}\]</div>
 <p>and the final conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-12ae5fcd-59f7-4fbe-a370-109e12776105">
-<span class="eqno">(67)<a class="headerlink" href="#equation-12ae5fcd-59f7-4fbe-a370-109e12776105" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-a00f4655-f067-4cd9-b4ad-6a495ecefd6a">
+<span class="eqno">(67)<a class="headerlink" href="#equation-a00f4655-f067-4cd9-b4ad-6a495ecefd6a" title="Permalink to this equation">#</a></span>\[\begin{align}
   h_f &amp;= 0 \rm{\,m}
 \end{align}\]</div>
 </section>
@@ -833,8 +838,8 @@ energy and that our cannonball is made of solid iron. The volume (and
 mass) of the cannonball is proportional to its radius cubed, while the
 cross-sectional area is proportional to its radius squared. If we
 increase the size of the cannonball, the ballistic coefficient</p>
-<div class="amsmath math notranslate nohighlight" id="equation-059929b3-3c98-4a6d-993c-e1a812b2da70">
-<span class="eqno">(68)<a class="headerlink" href="#equation-059929b3-3c98-4a6d-993c-e1a812b2da70" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-d673b305-810c-4814-a299-ffbba99c1946">
+<span class="eqno">(68)<a class="headerlink" href="#equation-d673b305-810c-4814-a299-ffbba99c1946" title="Permalink to this equation">#</a></span>\[\begin{align}
   BC &amp;= \frac{m}{C_D A}
 \end{align}\]</div>
 <p>will increase, meaning the cannonball overcome air resistance more
@@ -1126,21 +1131,21 @@ account.</p>
         [initial] 0.0000e+00 &lt;= ke &lt;= 4.0000e+05  [J]
     --- descent ---
         None
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
+
 Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Coloring for &#39;traj.phases.ascent.rhs_all&#39; (class CannonballODE)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
+
+Coloring for &#39;traj.phases.ascent.rhs_all&#39; (class CannonballODE)
 
 Jacobian shape: (100, 63)  ( 4.44% nonzero)
 FWD solves: 6   REV solves: 0
 Total colors vs. total size: 6 vs 63  (90.5% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.031617 sec.
-Time to compute coloring: 0.014377 sec.
+Time to compute sparsity: 0.027756 sec.
+Time to compute coloring: 0.010854 sec.
 Memory to compute coloring: 0.000000 MB.
 
 Coloring for &#39;traj.phases.descent.rhs_disc&#39; (class CannonballODE)
@@ -1150,8 +1155,8 @@ FWD solves: 6   REV solves: 0
 Total colors vs. total size: 6 vs 33  (81.8% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.023411 sec.
-Time to compute coloring: 0.006411 sec.
+Time to compute sparsity: 0.014158 sec.
+Time to compute coloring: 0.005732 sec.
 Memory to compute coloring: 0.000000 MB.
 
 Coloring for &#39;traj.phases.descent.rhs_col&#39; (class CannonballODE)
@@ -1161,10 +1166,10 @@ FWD solves: 6   REV solves: 0
 Total colors vs. total size: 6 vs 18  (66.7% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.011502 sec.
-Time to compute coloring: 0.003672 sec.
+Time to compute sparsity: 0.007994 sec.
+Time to compute coloring: 0.003261 sec.
 Memory to compute coloring: 0.000000 MB.
-Full total jacobian was computed 3 times, taking 0.186569 seconds.
+Full total jacobian was computed 3 times, taking 0.150726 seconds.
 Total jacobian shape: (87, 88) 
 </pre></div>
 </div>
@@ -1173,9 +1178,9 @@ FWD solves: 30   REV solves: 0
 Total colors vs. total size: 30 vs 88  (65.9% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.186569 sec.
-Time to compute coloring: 0.091898 sec.
-Memory to compute coloring: 0.574219 MB.
+Time to compute sparsity: 0.150726 sec.
+Time to compute coloring: 0.082663 sec.
+Memory to compute coloring: 0.515625 MB.
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/pyoptsparse/pyOpt_optimization.py:234: UserWarning: The argument `type=` is deprecated. Use `varType` in the future.
@@ -1188,11 +1193,11 @@ Memory to compute coloring: 0.574219 MB.
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    2.5457
-       User Objective Time :       0.3651
-       User Sensitivity Time :     1.5706
-       Interface Time :            0.3598
-       Opt Solver Time:            0.2502
+    Total Time:                    2.2411
+       User Objective Time :       0.3222
+       User Sensitivity Time :     1.3553
+       Interface Time :            0.3314
+       Opt Solver Time:            0.2323
     Calls to Objective Function :     118
     Calls to Sens Function :           89
 

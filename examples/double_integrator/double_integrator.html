@@ -291,6 +291,11 @@ const thebe_selector_output = ".output, .cell_output"
      Water Rocket
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../cart_pole/cart_pole.html">
+     Cart-Pole Optimal Control
+    </a>
+   </li>
   </ul>
  </li>
 </ul>
@@ -744,20 +749,20 @@ traveled by a block (that starts and ends at rest) sliding without
 friction along a horizontal surface, with acceleration as the control.</p>
 <p>We minimize the final time, <span class="math notranslate nohighlight">\(t_f\)</span>, by varying the dynamic control,
 <span class="math notranslate nohighlight">\(u\)</span>, subject to the dynamics:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9d125e88-eef1-4f8b-a116-5175141a7c3a">
-<span class="eqno">(45)<a class="headerlink" href="#equation-9d125e88-eef1-4f8b-a116-5175141a7c3a" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-93e733cc-974e-41ec-9811-641669a90458">
+<span class="eqno">(45)<a class="headerlink" href="#equation-93e733cc-974e-41ec-9811-641669a90458" title="Permalink to this equation">#</a></span>\[\begin{align}
   \frac{dx}{dt} &amp;= v \\
   \frac{dv}{dt} &amp;= u
 \end{align}\]</div>
 <p>The initial conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-b4b75c4d-8462-4fed-8419-b70842aaa171">
-<span class="eqno">(46)<a class="headerlink" href="#equation-b4b75c4d-8462-4fed-8419-b70842aaa171" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-14f7a0bc-1e9b-4929-8a5d-38b9ea8480b6">
+<span class="eqno">(46)<a class="headerlink" href="#equation-14f7a0bc-1e9b-4929-8a5d-38b9ea8480b6" title="Permalink to this equation">#</a></span>\[\begin{align}
   x_0 &amp;= 0 \\
   v_0 &amp;= 0
 \end{align}\]</div>
 <p>and the final conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-1c3a868e-2374-42ba-b8ef-6642fa4cc32b">
-<span class="eqno">(47)<a class="headerlink" href="#equation-1c3a868e-2374-42ba-b8ef-6642fa4cc32b" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-6e850952-b677-4668-8ce9-c5b9ef7a95d6">
+<span class="eqno">(47)<a class="headerlink" href="#equation-6e850952-b677-4668-8ce9-c5b9ef7a95d6" title="Permalink to this equation">#</a></span>\[\begin{align}
   x_f &amp;= \rm{free} \\
   v_f &amp;= 0
 \end{align}\]</div>
@@ -1083,7 +1088,7 @@ INFO: checking out_of_order
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:check_config:checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.124550 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.101686 seconds.
 Total jacobian shape: (181, 327) 
 </pre></div>
 </div>
@@ -1092,8 +1097,8 @@ FWD solves: 0   REV solves: 6
 Total colors vs. total size: 6 vs 181  (96.7% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.124550 sec.
-Time to compute coloring: 0.161896 sec.
+Time to compute sparsity: 0.101686 sec.
+Time to compute coloring: 0.133952 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1107,11 +1112,11 @@ Memory to compute coloring: 0.000000 MB.
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    3.2179
-       User Objective Time :       0.0342
-       User Sensitivity Time :     0.1062
-       Interface Time :            0.1725
-       Opt Solver Time:            2.9051
+    Total Time:                    2.9022
+       User Objective Time :       0.0270
+       User Sensitivity Time :     0.0867
+       Interface Time :            0.1492
+       Opt Solver Time:            2.6393
     Calls to Objective Function :      19
     Calls to Sens Function :           19
 

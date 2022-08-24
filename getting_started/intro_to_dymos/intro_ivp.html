@@ -291,6 +291,11 @@ const thebe_selector_output = ".output, .cell_output"
      Water Rocket
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../examples/cart_pole/cart_pole.html">
+     Cart-Pole Optimal Control
+    </a>
+   </li>
   </ul>
  </li>
 </ul>
@@ -802,13 +807,13 @@ Dynamic systems are typically defined by some set of ordinary
 differential equations (the ODE) which governs their behavior.</p>
 <p>Consider a simple damped harmonic oscillator.</p>
 <p><img alt="Damped harmonic oscillator free-body diagram" src="../../_images/spring_mass_damper.png" /></p>
-<div class="amsmath math notranslate nohighlight" id="equation-db2716a0-8ab3-4110-b7c0-7927f0b31347">
-<span class="eqno">(11)<a class="headerlink" href="#equation-db2716a0-8ab3-4110-b7c0-7927f0b31347" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-bf0980a2-6715-4294-ac2a-241f962a96c8">
+<span class="eqno">(11)<a class="headerlink" href="#equation-bf0980a2-6715-4294-ac2a-241f962a96c8" title="Permalink to this equation">#</a></span>\[\begin{align}
     \ddot{x} &amp;= -\frac{kx}{m} - \frac{c \dot{x}}{m}
 \end{align}\]</div>
 <p>Converting this to a first order system results in an ODE system with two states:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-e5e845d4-e981-48f8-9e5a-72979c884cba">
-<span class="eqno">(12)<a class="headerlink" href="#equation-e5e845d4-e981-48f8-9e5a-72979c884cba" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-9b8da3ac-f2f0-4d22-b0e8-c89962656335">
+<span class="eqno">(12)<a class="headerlink" href="#equation-9b8da3ac-f2f0-4d22-b0e8-c89962656335" title="Permalink to this equation">#</a></span>\[\begin{align}
     \dot{x} &amp;= v \\
     \dot{v} &amp;= -\frac{kx}{m} - \frac{c \dot{x}}{m}
 \end{align}\]</div>
@@ -957,12 +962,10 @@ Some elements of this code will be explained later, but we’ll hit the highligh
 
 
 Simulating trajectory traj
+Done simulating trajectory traj
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Done simulating trajectory traj
-</pre></div>
-</div>
-<img alt="../../_images/intro_ivp_5_2.png" src="../../_images/intro_ivp_5_2.png" />
+<img alt="../../_images/intro_ivp_5_1.png" src="../../_images/intro_ivp_5_1.png" />
 </div>
 </div>
 </section>
@@ -1105,10 +1108,11 @@ NL: Newton 0 ; 64.9519053 1
 NL: Newton 1 ; 5.02960276e-08 7.74358002e-10
 NL: Newton 2 ; 6.67418801e-15 1.02755846e-16
 NL: Newton Converged
+
+Simulating trajectory traj
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
-Done simulating trajectory traj
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Done simulating trajectory traj
 </pre></div>
 </div>
 </div>
