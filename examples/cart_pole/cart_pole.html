@@ -808,16 +808,16 @@ Friction force is ignored to simplify the problem.</p>
 <section id="trajectory-optimization-problem">
 <h2>Trajectory Optimization Problem<a class="headerlink" href="#trajectory-optimization-problem" title="Permalink to this headline">#</a></h2>
 <p>We use the following quadratic objective function to approximately minimize the total control effort:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-4ae77185-903f-4fbc-b9bd-131645b85544">
-<span class="eqno">(81)<a class="headerlink" href="#equation-4ae77185-903f-4fbc-b9bd-131645b85544" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-ebda1aeb-f713-4ee8-8876-ae0bbfd24498">
+<span class="eqno">(81)<a class="headerlink" href="#equation-ebda1aeb-f713-4ee8-8876-ae0bbfd24498" title="Permalink to this equation">#</a></span>\[\begin{equation}
     J = \int_{t_0}^{t_f} F(t)^2 dt ~~ \rightarrow ~ \min
 \end{equation}\]</div>
 <p>where <span class="math notranslate nohighlight">\(F(t)\)</span> is the external force, <span class="math notranslate nohighlight">\(t_0\)</span> is the initial time, and <span class="math notranslate nohighlight">\(t_f\)</span> is the final time.</p>
 <section id="dynamics">
 <h3>Dynamics<a class="headerlink" href="#dynamics" title="Permalink to this headline">#</a></h3>
 <p>The equations of motion of the cart-pole system are given by</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8bd825f6-ecbd-45f2-ba4a-ee796dbd45b0">
-<span class="eqno">(82)<a class="headerlink" href="#equation-8bd825f6-ecbd-45f2-ba4a-ee796dbd45b0" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-882fa50b-53b4-4426-a8cf-248389601675">
+<span class="eqno">(82)<a class="headerlink" href="#equation-882fa50b-53b4-4426-a8cf-248389601675" title="Permalink to this equation">#</a></span>\[\begin{equation}
     \begin{bmatrix}
         \ddot{x} \\ \ddot{\theta}
     \end{bmatrix} =
@@ -834,13 +834,13 @@ Friction force is ignored to simplify the problem.</p>
 To do so, we define our state vector to be <span class="math notranslate nohighlight">\(X = [x, \dot{x}, \theta, \dot{\theta}]^T\)</span>.
 We also add an “energy” state <span class="math notranslate nohighlight">\(e\)</span> and set <span class="math notranslate nohighlight">\(\dot{e} = F^2\)</span> to keep track of the accumulated control input.
 By setting setting <span class="math notranslate nohighlight">\(e_0 = 0\)</span>, the objective function is equal to the final value of the state <span class="math notranslate nohighlight">\(e\)</span>:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-4590d063-9534-4e70-85ce-56e56a8a19c0">
-<span class="eqno">(83)<a class="headerlink" href="#equation-4590d063-9534-4e70-85ce-56e56a8a19c0" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-a3486963-5d54-4b12-9d4c-ef838b0bb8b3">
+<span class="eqno">(83)<a class="headerlink" href="#equation-a3486963-5d54-4b12-9d4c-ef838b0bb8b3" title="Permalink to this equation">#</a></span>\[\begin{equation}
     J = \int_{t_0}^{t_f} \dot{e} ~dt = e_f
 \end{equation}\]</div>
 <p>To summarize, the ODE for the cart-pole system is given by</p>
-<div class="amsmath math notranslate nohighlight" id="equation-7819f9f4-15ec-4d45-89c8-211a7461774c">
-<span class="eqno">(84)<a class="headerlink" href="#equation-7819f9f4-15ec-4d45-89c8-211a7461774c" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-b8c622c4-9b22-491f-ab26-5f0b6f0f6138">
+<span class="eqno">(84)<a class="headerlink" href="#equation-b8c622c4-9b22-491f-ab26-5f0b6f0f6138" title="Permalink to this equation">#</a></span>\[\begin{equation}
     \begin{bmatrix}
         \dot{x} \\ \dot{\theta} \\ \ddot{x} \\ \ddot{\theta} \\ \dot{e} 
     \end{bmatrix} =
@@ -861,8 +861,8 @@ By setting setting <span class="math notranslate nohighlight">\(e_0 = 0\)</span>
 <section id="initial-and-terminal-conditions">
 <h3>Initial and terminal conditions<a class="headerlink" href="#initial-and-terminal-conditions" title="Permalink to this headline">#</a></h3>
 <p>The initial state variables are all zero at <span class="math notranslate nohighlight">\(t_0 = 0\)</span>, and the final conditions at time <span class="math notranslate nohighlight">\(t_f\)</span> are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9f74a04a-2055-485a-9355-9696ef9f54b2">
-<span class="eqno">(85)<a class="headerlink" href="#equation-9f74a04a-2055-485a-9355-9696ef9f54b2" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-00113bbc-c954-4dbc-9ee1-d5dac27e923f">
+<span class="eqno">(85)<a class="headerlink" href="#equation-00113bbc-c954-4dbc-9ee1-d5dac27e923f" title="Permalink to this equation">#</a></span>\[\begin{align}
     x_f &amp;= d \\
     \dot{x}_f &amp;= 0 \\
     \theta_f &amp;= \pi \\
@@ -915,7 +915,8 @@ By setting setting <span class="math notranslate nohighlight">\(e_0 = 0\)</span>
 <p>We first implement the cart-pole ODE as an <code class="docutils literal notranslate"><span class="pre">ExplicitComponent</span></code> as follows:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">om</span><span class="o">.</span><span class="n">display_source</span><span class="p">(</span><span class="s2">&quot;dymos.examples.cart_pole.cartpole_dynamics&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">openmdao.api</span> <span class="k">as</span> <span class="nn">om</span>
+<span class="n">om</span><span class="o">.</span><span class="n">display_source</span><span class="p">(</span><span class="s2">&quot;dymos.examples.cart_pole.cartpole_dynamics&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1065,7 +1066,6 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
         <span class="c1"># partials of outputs w.r.t. cart-pole parameters. We will use complex-step, but still declare the sparsity structure.</span>
         <span class="c1"># NOTE: since the cart-pole parameters are fixed during optimization, these partials are not necessary to declare.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">declare_partials</span><span class="p">(</span><span class="n">of</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">],</span> <span class="n">wrt</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;m_cart&quot;</span><span class="p">,</span> <span class="s2">&quot;m_pole&quot;</span><span class="p">,</span> <span class="s2">&quot;l_pole&quot;</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cs&quot;</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nn</span><span class="p">),</span> <span class="n">cols</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nn</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">declare_coloring</span><span class="p">(</span><span class="n">wrt</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;m_cart&quot;</span><span class="p">,</span> <span class="s2">&quot;m_pole&quot;</span><span class="p">,</span> <span class="s2">&quot;l_pole&quot;</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;cs&quot;</span><span class="p">,</span> <span class="n">show_summary</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_check_partial_options</span><span class="p">(</span><span class="n">wrt</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;m_cart&quot;</span><span class="p">,</span> <span class="s2">&quot;m_pole&quot;</span><span class="p">,</span> <span class="s2">&quot;l_pole&quot;</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;fd&quot;</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">):</span>
@@ -1169,7 +1169,7 @@ First, we instantiate the OpenMDAO problem and set up the Dymos trajectory, phas
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;dymos.phase.phase.Phase at 0x7fbf4b98dae0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;dymos.phase.phase.Phase at 0x7f4734145c60&gt;
 </pre></div>
 </div>
 </div>
@@ -1187,7 +1187,7 @@ First, we instantiate the OpenMDAO problem and set up the Dymos trajectory, phas
 <span class="n">phase</span><span class="o">.</span><span class="n">add_state</span><span class="p">(</span><span class="s1">&#39;energy&#39;</span><span class="p">,</span> <span class="n">fix_initial</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rate_source</span><span class="o">=</span><span class="s1">&#39;e_dot&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ref</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">defect_ref</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;N**2*s&#39;</span><span class="p">)</span>  <span class="c1"># integration of force**2. This does not have the energy unit, but I call it &quot;energy&quot; anyway.</span>
 
 <span class="c1"># declare control inputs</span>
-<span class="n">phase</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">fix_initial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rate_continuity</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lower</span><span class="o">=-</span><span class="mi">20</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ref</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
+<span class="n">phase</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">fix_initial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rate_continuity</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lower</span><span class="o">=-</span><span class="mi">20</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">ref</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
 
 <span class="c1"># add cart-pole parameters (set static_target=True because these params are not time-depencent)</span>
 <span class="n">phase</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s1">&#39;m_cart&#39;</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;kg&#39;</span><span class="p">,</span> <span class="n">static_target</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1252,7 +1252,7 @@ We then call the <code class="docutils literal notranslate"><span class="pre">se
         [final]   0.0000e+00 == f [N]
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;openmdao.core.problem.Problem at 0x7fbf9f122c50&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;openmdao.core.problem.Problem at 0x7f47878bee00&gt;
 </pre></div>
 </div>
 </div>
@@ -1278,16 +1278,10 @@ We then call the <code class="docutils literal notranslate"><span class="pre">se
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
+Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/system.py:1272: DerivativesWarning:&#39;traj.phases.phase.rhs_disc&#39; &lt;class CartPoleDynamics&gt;: Coloring was deactivated.  Improvement of 0.0% was less than min allowed (5.0%).
-/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/system.py:1272: DerivativesWarning:&#39;traj.phases.phase.rhs_col&#39; &lt;class CartPoleDynamics&gt;: Coloring was deactivated.  Improvement of 0.0% was less than min allowed (5.0%).
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.809438 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 1.051290 seconds.
 Total jacobian shape: (206, 281) 
 
 
@@ -1296,8 +1290,8 @@ FWD solves: 10   REV solves: 0
 Total colors vs. total size: 10 vs 281  (96.4% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.809438 sec.
-Time to compute coloring: 0.141728 sec.
+Time to compute sparsity: 1.051290 sec.
+Time to compute coloring: 0.160964 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1311,7 +1305,7 @@ Memory to compute coloring: 0.000000 MB.
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Done simulating trajectory traj
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>False
 </pre></div>
 </div>
 </div>
@@ -1348,7 +1342,7 @@ Memory to compute coloring: 0.000000 MB.
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>objective value: [-117.78175624]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>objective value: [58.83924859]
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(&lt;Figure size 1000x800 with 5 Axes&gt;,
