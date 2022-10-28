@@ -296,6 +296,11 @@ const thebe_selector_output = ".output, .cell_output"
      Cart-Pole Optimal Control
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../brachistochrone/brachistochrone_tandem_phases.html">
+     Brachistochrone with tandem phases
+    </a>
+   </li>
   </ul>
  </li>
 </ul>
@@ -318,6 +323,11 @@ const thebe_selector_output = ".output, .cell_output"
    <li class="toctree-l2">
     <a class="reference internal" href="../../features/phases/phases.html">
      Phases of a Trajectory
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../features/phases/analytic_phases.html">
+     Analytic Phases in Dymos
     </a>
    </li>
    <li class="toctree-l2">
@@ -748,15 +758,15 @@ title="Print to PDF"
 <section id="the-ode-system">
 <h2>The ODE system<a class="headerlink" href="#the-ode-system" title="Permalink to this headline">#</a></h2>
 <p>The ODE of the Robertson Problem is</p>
-<div class="amsmath math notranslate nohighlight" id="equation-0d0e07af-e8d8-4fd9-b3ce-12ff4f050ec6">
-<span class="eqno">(77)<a class="headerlink" href="#equation-0d0e07af-e8d8-4fd9-b3ce-12ff4f050ec6" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-56ee057c-bc69-41f9-bc18-757b5d649c77">
+<span class="eqno">(77)<a class="headerlink" href="#equation-56ee057c-bc69-41f9-bc18-757b5d649c77" title="Permalink to this equation">#</a></span>\[\begin{align}
     \dot x = &amp;        - 0.04 x + 10^4 y \cdot z &amp;                          \\
     \dot y = &amp; \;\;\;\: 0.04 x - 10^4 y \cdot z &amp;        - 3\cdot 10^7 y^2 \\
     \dot z = &amp;                                  &amp; \;\;\;\: 3\cdot 10^7 y^2 \\
 \end{align}\]</div>
 <p>where <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(z\)</span> are arbitrary states. The initial conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-fa74fcbc-5948-4a00-9655-63edef0f21b5">
-<span class="eqno">(78)<a class="headerlink" href="#equation-fa74fcbc-5948-4a00-9655-63edef0f21b5" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-e2121cec-59e3-49f9-aef7-85faff2bc744">
+<span class="eqno">(78)<a class="headerlink" href="#equation-e2121cec-59e3-49f9-aef7-85faff2bc744" title="Permalink to this equation">#</a></span>\[\begin{align}
     x_0 &amp;= 1 \\
     y_0 &amp;= z_0 = 0.
 \end{align}\]</div>
