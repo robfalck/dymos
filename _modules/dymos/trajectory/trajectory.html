@@ -1240,7 +1240,7 @@ title="Open an issue"
                                                     <span class="n">sign_b</span><span class="o">=</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;sign_b&#39;</span><span class="p">])</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_linkages</span><span class="p">[</span><span class="n">phase_pair</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">var_pair</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_is_valid_linkage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase_name_a</span><span class="p">,</span> <span class="n">phase_name_b</span><span class="p">,</span> <span class="n">loc_a</span><span class="p">,</span> <span class="n">loc_b</span><span class="p">,</span> <span class="n">var_a</span><span class="p">,</span> <span class="n">var_b</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_is_valid_linkage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase_name_a</span><span class="p">,</span> <span class="n">phase_name_b</span><span class="p">,</span> <span class="n">loc_a</span><span class="p">,</span> <span class="n">loc_b</span><span class="p">,</span> <span class="n">var_a</span><span class="p">,</span> <span class="n">var_b</span><span class="p">,</span> <span class="n">fixed_a</span><span class="p">,</span> <span class="n">fixed_b</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validates linkage constraints.</span>
 
@@ -1263,6 +1263,10 @@ title="Open an issue"
 <span class="sd">            The variable name of the first side of the linkage.</span>
 <span class="sd">        var_b : str</span>
 <span class="sd">            The variable name of the second side of the linkage.</span>
+<span class="sd">        fixed_a : bool</span>
+<span class="sd">            True if variable a is fixed at the linkage location.</span>
+<span class="sd">        fixed_b : bool</span>
+<span class="sd">            True if variable b is fixed at the linkage location</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1367,10 +1371,12 @@ title="Open an issue"
                     <span class="n">fixed_a</span> <span class="o">=</span> <span class="n">phase_a</span><span class="o">.</span><span class="n">is_control_fixed</span><span class="p">(</span><span class="n">var_a</span><span class="p">,</span> <span class="n">loc_a</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">class_a</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;input_polynomial_control&#39;</span><span class="p">,</span> <span class="s1">&#39;indep_polynomial_control&#39;</span><span class="p">}:</span>
                     <span class="n">fixed_a</span> <span class="o">=</span> <span class="n">phase_a</span><span class="o">.</span><span class="n">is_polynomial_control_fixed</span><span class="p">(</span><span class="n">var_a</span><span class="p">,</span> <span class="n">loc_a</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">class_a</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;control_rate&#39;</span><span class="p">,</span> <span class="s1">&#39;control_rate2&#39;</span><span class="p">}:</span>
+                    <span class="n">fixed_a</span> <span class="o">=</span> <span class="n">phase_a</span><span class="o">.</span><span class="n">is_control_rate_fixed</span><span class="p">(</span><span class="n">var_a</span><span class="p">,</span> <span class="n">loc_a</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">class_a</span> <span class="o">==</span> <span class="s1">&#39;parameter&#39;</span><span class="p">:</span>
                     <span class="n">fixed_a</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">phase_a</span><span class="o">.</span><span class="n">parameter_options</span><span class="p">[</span><span class="n">var_a</span><span class="p">][</span><span class="s1">&#39;opt&#39;</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">fixed_a</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">fixed_a</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># No way to know so we allow these to go through</span>
 
                 <span class="k">if</span> <span class="n">class_b</span> <span class="o">==</span> <span class="s1">&#39;time&#39;</span><span class="p">:</span>
                     <span class="n">fixed_b</span> <span class="o">=</span> <span class="n">phase_b</span><span class="o">.</span><span class="n">is_time_fixed</span><span class="p">(</span><span class="n">loc_b</span><span class="p">)</span>
@@ -1380,10 +1386,12 @@ title="Open an issue"
                     <span class="n">fixed_b</span> <span class="o">=</span> <span class="n">phase_b</span><span class="o">.</span><span class="n">is_control_fixed</span><span class="p">(</span><span class="n">var_b</span><span class="p">,</span> <span class="n">loc_b</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">class_b</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;input_polynomial_control&#39;</span><span class="p">,</span> <span class="s1">&#39;indep_polynomial_control&#39;</span><span class="p">}:</span>
                     <span class="n">fixed_b</span> <span class="o">=</span> <span class="n">phase_b</span><span class="o">.</span><span class="n">is_polynomial_control_fixed</span><span class="p">(</span><span class="n">var_b</span><span class="p">,</span> <span class="n">loc_b</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">class_a</span> <span class="o">==</span> <span class="s1">&#39;parameter&#39;</span><span class="p">:</span>
-                    <span class="n">fixed_a</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">phase_b</span><span class="o">.</span><span class="n">parameter_options</span><span class="p">[</span><span class="n">var_a</span><span class="p">][</span><span class="s1">&#39;opt&#39;</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">class_b</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;control_rate&#39;</span><span class="p">,</span> <span class="s1">&#39;control_rate2&#39;</span><span class="p">}:</span>
+                    <span class="n">fixed_b</span> <span class="o">=</span> <span class="n">phase_b</span><span class="o">.</span><span class="n">is_control_rate_fixed</span><span class="p">(</span><span class="n">var_b</span><span class="p">,</span> <span class="n">loc_b</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">class_b</span> <span class="o">==</span> <span class="s1">&#39;parameter&#39;</span><span class="p">:</span>
+                    <span class="n">fixed_b</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">phase_b</span><span class="o">.</span><span class="n">parameter_options</span><span class="p">[</span><span class="n">var_b</span><span class="p">][</span><span class="s1">&#39;opt&#39;</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">fixed_b</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">fixed_b</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># No way to know so we allow these to go through</span>
 
                 <span class="n">prefixed_a</span> <span class="o">=</span> <span class="n">_get_prefixed_var</span><span class="p">(</span><span class="n">var_a</span><span class="p">,</span> <span class="n">phase_a</span><span class="p">)</span>
                 <span class="n">prefixed_b</span> <span class="o">=</span> <span class="n">_get_prefixed_var</span><span class="p">(</span><span class="n">var_b</span><span class="p">,</span> <span class="n">phase_b</span><span class="p">)</span>
@@ -1416,10 +1424,13 @@ title="Open an issue"
                     <span class="n">_print_on_rank</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">indent</span> <span class="o">*</span> <span class="mi">2</span><span class="si">}{</span><span class="n">prefixed_a</span><span class="si">:</span><span class="s1">&lt;</span><span class="si">{</span><span class="n">padding_a</span><span class="si">}</span><span class="s1">s</span><span class="si">}</span><span class="s1"> [</span><span class="si">{</span><span class="n">loc_a</span><span class="si">}{</span><span class="n">str_fixed_a</span><span class="si">}</span><span class="s1">] -&gt;  &#39;</span>
                                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">prefixed_b</span><span class="si">:</span><span class="s1">&lt;</span><span class="si">{</span><span class="n">padding_b</span><span class="si">}</span><span class="s1">s</span><span class="si">}</span><span class="s1"> [</span><span class="si">{</span><span class="n">loc_b</span><span class="si">}{</span><span class="n">str_fixed_b</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">is_valid</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid_linkage</span><span class="p">(</span><span class="n">phase_name_a</span><span class="p">,</span> <span class="n">phase_name_b</span><span class="p">,</span>
-                                                           <span class="n">loc_a</span><span class="p">,</span> <span class="n">loc_b</span><span class="p">,</span> <span class="n">var_a</span><span class="p">,</span> <span class="n">var_b</span><span class="p">)</span>
 
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">fixed_a</span> <span class="ow">and</span> <span class="n">fixed_b</span><span class="p">:</span>
+                        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Cannot link </span><span class="si">{</span><span class="n">loc_a</span><span class="si">}</span><span class="s1"> value of &quot;</span><span class="si">{</span><span class="n">var_a</span><span class="si">}</span><span class="s1">&quot; in </span><span class="si">{</span><span class="n">phase_name_a</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">loc_b</span><span class="si">}</span><span class="s1"> &#39;</span> \
+                              <span class="sa">f</span><span class="s1">&#39;value of &quot;</span><span class="si">{</span><span class="n">var_b</span><span class="si">}</span><span class="s1">&quot; in </span><span class="si">{</span><span class="n">phase_name_b</span><span class="si">}</span><span class="s1">. Values on both sides of the linkage are fixed &#39;</span> \
+                              <span class="s1">&#39;and the linkage is enforced via constraint. Either link the variables via connection &#39;</span> \
+                              <span class="s1">&#39;or make the variables design variables on at least one side of the connection.&#39;</span>
+
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid linkage in Trajectory </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pathname</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
                     <span class="n">linkage_comp</span><span class="o">.</span><span class="n">add_linkage_configure</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
@@ -1532,8 +1543,8 @@ title="Open an issue"
 <span class="sd">        sign_b : float</span>
 <span class="sd">            The sign applied to the variable from the second phase in the linkage constraint.</span>
 <span class="sd">        units : str or None or _unspecified</span>
-<span class="sd">            Units of the linkage.  If _unspecified, dymos will use the units from the variable</span>
-<span class="sd">            in the first phase of the linkage.  Units of the two specified variables must be</span>
+<span class="sd">            Units of the linkage. If _unspecified, dymos will use the units from the variable</span>
+<span class="sd">            in the first phase of the linkage. Units of the two specified variables must be</span>
 <span class="sd">            compatible.</span>
 <span class="sd">        lower : float or array or None</span>
 <span class="sd">            The lower bound applied as a constraint on the linkage equation.</span>
@@ -1550,16 +1561,16 @@ title="Open an issue"
 <span class="sd">        ref : float or array or None</span>
 <span class="sd">            The unit-reference value of the linkage constraint.</span>
 <span class="sd">        linear : bool</span>
-<span class="sd">            If True, treat this variable as a linear constraint, otherwise False.  Linear</span>
+<span class="sd">            If True, treat this variable as a linear constraint, otherwise False. Linear</span>
 <span class="sd">            constraints should only be applied if the variable on each end of the linkage is a</span>
 <span class="sd">            design variable or a linear function of one.</span>
 <span class="sd">        connected : bool</span>
 <span class="sd">            If True, this constraint is enforced by direct connection rather than a constraint</span>
-<span class="sd">            for the optimizer.  This is only valid for states and time.</span>
+<span class="sd">            for the optimizer. This is only valid for states and time.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">connected</span><span class="p">:</span>
             <span class="n">invalid_options</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="s1">&#39;upper&#39;</span><span class="p">,</span> <span class="s1">&#39;equals&#39;</span><span class="p">,</span> <span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="s1">&#39;adder&#39;</span><span class="p">,</span> <span class="s1">&#39;ref0&#39;</span><span class="p">,</span> <span class="s1">&#39;ref&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="s1">&#39;upper&#39;</span><span class="p">,</span> <span class="s1">&#39;equals&#39;</span><span class="p">,</span> <span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="s1">&#39;adder&#39;</span><span class="p">,</span> <span class="s1">&#39;ref0&#39;</span><span class="p">,</span> <span class="s1">&#39;ref&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="nb">locals</span><span class="p">()[</span><span class="n">arg</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">invalid_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">locals</span><span class="p">()[</span><span class="s1">&#39;linear&#39;</span><span class="p">]:</span>
@@ -1569,7 +1580,7 @@ title="Open an issue"
                       <span class="sa">f</span><span class="s1">&#39;in trajectory </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pathname</span><span class="si">}</span><span class="s1">. The following options for &#39;</span> \
                       <span class="sa">f</span><span class="s1">&#39;add_linkage_constraint were specified but not valid when &#39;</span> \
                       <span class="sa">f</span><span class="s1">&#39;option </span><span class="se">\&#39;</span><span class="s1">connected</span><span class="se">\&#39;</span><span class="s1"> is True: &#39;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">invalid_options</span><span class="p">)</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">om</span><span class="o">.</span><span class="n">issue_warning</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">om</span><span class="o">.</span><span class="n">UnusedOptionWarning</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="n">phase_a</span><span class="p">,</span> <span class="n">phase_b</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkages</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_linkages</span><span class="p">[</span><span class="n">phase_a</span><span class="p">,</span> <span class="n">phase_b</span><span class="p">]</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
@@ -1594,7 +1605,8 @@ title="Open an issue"
         <span class="n">d</span><span class="p">[</span><span class="s1">&#39;linear&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">linear</span>
         <span class="n">d</span><span class="p">[</span><span class="s1">&#39;connected&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">connected</span></div>
 
-<div class="viewcode-block" id="Trajectory.link_phases"><a class="viewcode-back" href="../../../features/trajectories/trajectories.html#dymos.Trajectory.link_phases">[docs]</a>    <span class="k">def</span> <span class="nf">link_phases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span> <span class="nb">vars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">locs</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;final&#39;</span><span class="p">,</span> <span class="s1">&#39;initial&#39;</span><span class="p">),</span> <span class="n">connected</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Trajectory.link_phases"><a class="viewcode-back" href="../../../features/trajectories/trajectories.html#dymos.Trajectory.link_phases">[docs]</a>    <span class="k">def</span> <span class="nf">link_phases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phases</span><span class="p">,</span> <span class="nb">vars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">locs</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;final&#39;</span><span class="p">,</span> <span class="s1">&#39;initial&#39;</span><span class="p">),</span> <span class="n">connected</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">units</span><span class="o">=</span><span class="n">_unspecified</span><span class="p">,</span> <span class="n">scaler</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">adder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ref0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Specify that phases in the given sequence are to be assume continuity of the given variables.</span>
 
@@ -1623,6 +1635,22 @@ title="Open an issue"
 <span class="sd">        connected : bool</span>
 <span class="sd">            Set to True to directly connect the phases being linked. Otherwise, create constraints</span>
 <span class="sd">            for the optimizer to solve.</span>
+<span class="sd">        units : str or None or _unspecified</span>
+<span class="sd">            Units of the linkage.  If _unspecified, dymos will use the units from the variable</span>
+<span class="sd">            in the first phase of the linkage.  Units of the two specified variables must be</span>
+<span class="sd">            compatible.</span>
+<span class="sd">        scaler : float or array or None</span>
+<span class="sd">            The scaler of the linkage constraint.</span>
+<span class="sd">        adder : float or array or None</span>
+<span class="sd">            The adder of the linkage constraint.</span>
+<span class="sd">        ref0 : float or array or None</span>
+<span class="sd">            The zero-reference value of the linkage constraint.</span>
+<span class="sd">        ref : float or array or None</span>
+<span class="sd">            The unit-reference value of the linkage constraint.</span>
+<span class="sd">        linear : bool</span>
+<span class="sd">            If True, treat this variable as a linear constraint, otherwise False.  Linear</span>
+<span class="sd">            constraints should only be applied if the variable on each end of the linkage is a</span>
+<span class="sd">            design variable or a linear function of one.</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -1658,7 +1686,8 @@ title="Open an issue"
             <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">_vars</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_linkage_constraint</span><span class="p">(</span><span class="n">phase_a</span><span class="o">=</span><span class="n">phase_name_a</span><span class="p">,</span> <span class="n">phase_b</span><span class="o">=</span><span class="n">phase_name_b</span><span class="p">,</span>
                                             <span class="n">var_a</span><span class="o">=</span><span class="n">var</span><span class="p">,</span> <span class="n">var_b</span><span class="o">=</span><span class="n">var</span><span class="p">,</span> <span class="n">loc_a</span><span class="o">=</span><span class="n">loc_a</span><span class="p">,</span> <span class="n">loc_b</span><span class="o">=</span><span class="n">loc_b</span><span class="p">,</span>
-                                            <span class="n">connected</span><span class="o">=</span><span class="n">connected</span><span class="p">)</span></div>
+                                            <span class="n">connected</span><span class="o">=</span><span class="n">connected</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span>
+                                            <span class="n">scaler</span><span class="o">=</span><span class="n">scaler</span><span class="p">,</span> <span class="n">adder</span><span class="o">=</span><span class="n">adder</span><span class="p">,</span> <span class="n">ref0</span><span class="o">=</span><span class="n">ref0</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">ref</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="n">linear</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_constraint_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outstream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;sim_mode&#39;</span><span class="p">]:</span>
