@@ -222,6 +222,11 @@ const thebe_selector_output = ".output, .cell_output"
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="../../examples/hull/hull_problem.html">
+     The Hull Problem
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../../examples/hypersensitive/hypersensitive.html">
      Hyper-Sensitive Problem
     </a>
@@ -712,6 +717,11 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#constraining-expressions">
+   Constraining Expressions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#implementation-detail-constraint-aliasing">
    Implementation Detail - Constraint Aliasing
   </a>
@@ -751,6 +761,11 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#constraining-expressions">
+   Constraining Expressions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#implementation-detail-constraint-aliasing">
    Implementation Detail - Constraint Aliasing
   </a>
@@ -785,8 +800,8 @@ are a few different ways to impose these in Dymos, each with slightly different 
 <p>Let’s consider that we want to solve for the elevation angle that results in the maximum possible
 range flown by a cannonball.  In this situation we have some set of initial conditions that are
 fixed.</p>
-<div class="amsmath math notranslate nohighlight" id="equation-363f26f9-bf3d-46f2-8d9e-1efab3471a85">
-<span class="eqno">(93)<a class="headerlink" href="#equation-363f26f9-bf3d-46f2-8d9e-1efab3471a85" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-e37d6ab1-5534-4021-99eb-d112c139a6cd">
+<span class="eqno">(98)<a class="headerlink" href="#equation-e37d6ab1-5534-4021-99eb-d112c139a6cd" title="Permalink to this equation">#</a></span>\[\begin{align}
     t_0 &amp;= 0 \, \mathrm{s} \\
     x_0 &amp;= 0 \, \mathrm{m} \\
     y_0 &amp;= 0 \, \mathrm{m} \\
@@ -844,6 +859,19 @@ Therefore, the bounds will have no impact on these interpolated values which the
 <p>Phases also support the <code class="docutils literal notranslate"><span class="pre">add_path_constraint</span></code> method, which imposes path constraints as constraints in the NLP problem.
 As with <code class="docutils literal notranslate"><span class="pre">add_boundary_constraint</span></code>, the <code class="docutils literal notranslate"><span class="pre">add_path_constraint</span></code> method is the only option for path constraining an output of the ODE.</p>
 <p>The downside of path constraints is that they add a considerable number of constraints to the NLP problem and thus may negatively impact performance, although this is generally minor for many problems.</p>
+</section>
+<section id="constraining-expressions">
+<h2>Constraining Expressions<a class="headerlink" href="#constraining-expressions" title="Permalink to this headline">#</a></h2>
+<p>Constraints may be defined using mathematical expressions of the form <code class="docutils literal notranslate"><span class="pre">y=f(x)</span></code> to be evaluated. Here <code class="docutils literal notranslate"><span class="pre">x</span></code> may be vector combination of time, states, controls, parameters, or any outputs of the ODE. The variable <code class="docutils literal notranslate"><span class="pre">y</span></code> is added to the timeseries outputs of the phase and the desired constraint is applied to it.</p>
+<p>Consider, again, the example of maximizing the range flown by a cannonball. But now, rather than a constraint on the initial velocity, we wish to apply a constraint to the initial normalized kinetic energy.</p>
+<div class="amsmath math notranslate nohighlight" id="equation-a8c4ab80-c427-46ec-8a70-21699e87133d">
+<span class="eqno">(99)<a class="headerlink" href="#equation-a8c4ab80-c427-46ec-8a70-21699e87133d" title="Permalink to this equation">#</a></span>\[\begin{align}
+    ke &amp;= 0.5 * v^2 \\
+    ke_0 &amp;= 5000 \, \frac{\mathrm{m^2}}{\mathrm{s^2}}
+\end{align}\]</div>
+<p>The first way to achieve this is to add kinetic energy as a state in the model. This state may then be constrained either using <code class="docutils literal notranslate"><span class="pre">fix_initial=True</span></code> or <code class="docutils literal notranslate"><span class="pre">add_boundary_constraint(‘ke’,</span> <span class="pre">loc=’initial’</span> <span class="pre">,</span> <span class="pre">equals=5000)</span></code>.</p>
+<p>The second method to add this constraint is to add the constraint using an expression. This may be done as <code class="docutils literal notranslate"><span class="pre">add_boundary_constraint(‘ke=0.5*v**2,</span> <span class="pre">loc=’initial’,</span> <span class="pre">equals=5000)</span></code>.</p>
+<p>The advantage to the latter method is that no changes are required to the previous model, simply modifying the <code class="docutils literal notranslate"><span class="pre">add_boundary_constraint</span></code> statement is sufficient. The disadvantage is that the derivatives of the constraints are evaluated using complex step rather than analytical expressions. This may negatively impact performance, but the effect should be minor for most problems.</p>
 </section>
 <section id="implementation-detail-constraint-aliasing">
 <h2>Implementation Detail - Constraint Aliasing<a class="headerlink" href="#implementation-detail-constraint-aliasing" title="Permalink to this headline">#</a></h2>

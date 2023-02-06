@@ -222,6 +222,11 @@ const thebe_selector_output = ".output, .cell_output"
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="../hull/hull_problem.html">
+     The Hull Problem
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../hypersensitive/hypersensitive.html">
      Hyper-Sensitive Problem
     </a>
@@ -770,8 +775,8 @@ It finds the pitch profile for a single-stage-to-orbit launch vehicle that minim
 required to reach orbit insertion under constant thrust.</p>
 <p><img alt="The free-body-diagram of the single-stage-to-orbit problem." src="../../_images/ssto_fbd.png" /></p>
 <p>The vehicle dynamics are given by</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8f870be8-4e2c-47fe-aea5-90aaa4d1b613">
-<span class="eqno">(74)<a class="headerlink" href="#equation-8f870be8-4e2c-47fe-aea5-90aaa4d1b613" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-6dee3735-4003-4eea-87b4-8a7a69f1bb1e">
+<span class="eqno">(79)<a class="headerlink" href="#equation-6dee3735-4003-4eea-87b4-8a7a69f1bb1e" title="Permalink to this equation">#</a></span>\[\begin{align}
   \frac{dx}{dt} &amp;= v_x \\
   \frac{dy}{dt} &amp;= v_y \\
   \frac{dv_x}{dt} &amp;= \frac{1}{m} (T \cos \theta - D \cos \gamma) \\
@@ -779,8 +784,8 @@ required to reach orbit insertion under constant thrust.</p>
   \frac{dm}{dt} &amp;= \frac{T}{g I_{sp}}
 \end{align}\]</div>
 <p>The initial conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-36b8bd98-938c-419d-a5c4-b808717c90e3">
-<span class="eqno">(75)<a class="headerlink" href="#equation-36b8bd98-938c-419d-a5c4-b808717c90e3" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-b9b52bfd-662f-490f-bad7-934fd0326b1d">
+<span class="eqno">(80)<a class="headerlink" href="#equation-b9b52bfd-662f-490f-bad7-934fd0326b1d" title="Permalink to this equation">#</a></span>\[\begin{align}
   x_0 &amp;= 0 \\
   y_0 &amp;= 0 \\
   v_{x0} &amp;= 0 \\
@@ -788,8 +793,8 @@ required to reach orbit insertion under constant thrust.</p>
   m_0 &amp;= 117000 \rm{\,kg}
 \end{align}\]</div>
 <p>and the final conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-994a4e1f-bca8-4d96-b53c-12f88ac7fcd9">
-<span class="eqno">(76)<a class="headerlink" href="#equation-994a4e1f-bca8-4d96-b53c-12f88ac7fcd9" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-88e6131a-ed6c-4dac-913d-cf840ffbe7c6">
+<span class="eqno">(81)<a class="headerlink" href="#equation-88e6131a-ed6c-4dac-913d-cf840ffbe7c6" title="Permalink to this equation">#</a></span>\[\begin{align}
   x_f &amp;= \rm{free} \\
   y_f &amp;= 185 \rm{\,km} \\
   v_{xf} &amp;= V_{circ} \\
@@ -1233,10 +1238,7 @@ f...............................................f.......................f.......
 ..........................................................................................................................f.......................f..................... 98  mdot
 ...........................................................................................................................f.......................f.................... 99  mdot
 ............................................................................................................................f.......................f................... 100  mdot
-.............................................................................................
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>................................f.......................f.................. 101  mdot
+.............................................................................................................................f.......................f.................. 101  mdot
 ..............................................................................................................................f.......................f................. 102  mdot
 ...............................................................................................................................f.......................f................ 103  mdot
 ................................................................................................................................f.......................f............... 104  mdot
@@ -1247,16 +1249,16 @@ f...............................................f.......................f.......
 .....................................................................................................................................f.......................f.......... 109  mdot
 ......................................................................................................................................f.......................f......... 110  mdot
 .......................................................................................................................................f.......................f........ 111  mdot
-........................................................................................................................................f.......................f....... 112  mdot
+........................................................................................................................................f............
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>...........f....... 112  mdot
 .........................................................................................................................................f.......................f...... 113  mdot
 ..........................................................................................................................................f.......................f..... 114  mdot
 ...........................................................................................................................................f.......................f.... 115  mdot
 ............................................................................................................................................f.......................f... 116  mdot
 .............................................................................................................................................f.......................f.. 117  mdot
-..............................................................................................................................................f.....................
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>..f. 118  mdot
+..............................................................................................................................................f.......................f. 118  mdot
 ...............................................................................................................................................f.......................f 119  mdot
 f....................................................................................................................................................................... 120  rho
 .f...................................................................................................................................................................... 121  rho
@@ -1268,7 +1270,10 @@ f...............................................................................
 .......f................................................................................................................................................................ 127  rho
 ........f............................................................................................................................................................... 128  rho
 .........f.............................................................................................................................................................. 129  rho
-..........f............................................................................................................................................................. 130  rho
+..........f.....................................................................................
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>........................................................................ 130  rho
 ...........f............................................................................................................................................................ 131  rho
 ............f........................................................................................................................................................... 132  rho
 .............f.......................................................................................................................................................... 133  rho
@@ -1277,7 +1282,10 @@ f...............................................................................
 ................f....................................................................................................................................................... 136  rho
 .................f...................................................................................................................................................... 137  rho
 ..................f..................................................................................................................................................... 138  rho
-...................f.................................................................................................................................................... 139  rho
+...................f..............................................
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>...................................................................................................... 139  rho
 ....................f................................................................................................................................................... 140  rho
 .....................f.................................................................................................................................................. 141  rho
 ......................f................................................................................................................................................. 142  rho
@@ -1295,8 +1303,8 @@ FWD solves: 5   REV solves: 0
 Total colors vs. total size: 5 vs 168  (97.0% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.044563 sec.
-Time to compute coloring: 0.019289 sec.
+Time to compute sparsity: 0.034650 sec.
+Time to compute coloring: 0.019298 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1386,12 +1394,12 @@ FWD solves: 5   REV solves: 0
 Total colors vs. total size: 5 vs 84  (94.0% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.020541 sec.
-Time to compute coloring: 0.010020 sec.
+Time to compute sparsity: 0.016987 sec.
+Time to compute coloring: 0.010087 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.338384 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian was computed 3 times, taking 0.326676 seconds.
 Total jacobian shape: (74, 152) 
 </pre></div>
 </div>
@@ -1400,8 +1408,8 @@ FWD solves: 12   REV solves: 0
 Total colors vs. total size: 12 vs 152  (92.1% improvement)
 
 Sparsity computed using tolerance: 1e-12
-Time to compute sparsity: 0.338384 sec.
-Time to compute coloring: 0.081564 sec.
+Time to compute sparsity: 0.326676 sec.
+Time to compute coloring: 0.082718 sec.
 Memory to compute coloring: 0.000000 MB.
 </pre></div>
 </div>
@@ -1411,18 +1419,18 @@ Memory to compute coloring: 0.000000 MB.
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    2.0146
-       User Objective Time :       0.1095
-       User Sensitivity Time :     0.8566
-       Interface Time :            0.3530
-       Opt Solver Time:            0.6956
+    Total Time:                    1.9736
+       User Objective Time :       0.0940
+       User Sensitivity Time :     0.8316
+       Interface Time :            0.3549
+       Opt Solver Time:            0.6931
     Calls to Objective Function :      51
     Calls to Sens Function :           48
 
 
    Objectives
-      Index  Name                                    Value
-          0  traj.phases.phase0.time.time     1.431612E+00
+      Index  Name                                 Value
+          0  traj.phases.phase0.time.t     1.431612E+00
 
    Variables (c - continuous, i - integer, d - discrete)
       Index  Name                                                                Type      Lower Bound            Value      Upper Bound     Status
@@ -1699,37 +1707,33 @@ Memory to compute coloring: 0.000000 MB.
         115  traj.phases.phase0.continuity_comp.defect_states:m                    e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
         116  traj.phases.phase0.continuity_comp.defect_states:m                    e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
         117  traj.phases.phase0.continuity_comp.defect_states:m                    e  -8.952838E-13    0.000000E+00   -8.952838E-13              9.00000E+100
-        118  traj.phases.phase0.continuity_comp.defect_controls:theta              e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
-        119  traj.phases.phase0.continuity_comp.defect_controls:theta              e  -1.084202E-17    0.000000E+00   -1.084202E-17              9.00000E+100
-        120  traj.phases.phase0.continuity_comp.defect_controls:theta              e   3.252607E-17    0.000000E+00    3.252607E-17              9.00000E+100
-        121  traj.phases.phase0.continuity_comp.defect_controls:theta              e  -6.614963E-17   -1.145955E-16   -6.614963E-17              9.00000E+100
-        122  traj.phases.phase0.continuity_comp.defect_controls:theta              e  -2.446836E-17    4.612403E-17   -2.446836E-17              9.00000E+100
-        123  traj.phases.phase0.continuity_comp.defect_controls:theta              e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
-        124  traj.phases.phase0.continuity_comp.defect_controls:theta              e   9.424687E-19   -7.799589E-17    9.424687E-19              9.00000E+100
-        125  traj.phases.phase0.continuity_comp.defect_controls:theta              e  -4.013244E-18   -4.023448E-17   -4.013244E-18              9.00000E+100
-        126  traj.phases.phase0.continuity_comp.defect_controls:theta              e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
-        127  traj.phases.phase0.continuity_comp.defect_controls:theta              e  -3.718373E-17   -1.208696E-16   -3.718373E-17              9.00000E+100
-        128  traj.phases.phase0.continuity_comp.defect_controls:theta              e  -1.734723E-16   -1.734723E-16   -1.734723E-16              9.00000E+100
-        129  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00   -5.339418E-15    0.000000E+00              9.00000E+100
-        130  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00   -1.173430E-14    0.000000E+00              9.00000E+100
-        131  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00   -1.288290E-15    0.000000E+00              9.00000E+100
-        132  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00    6.643229E-15    0.000000E+00              9.00000E+100
-        133  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00    5.463590E-15    0.000000E+00              9.00000E+100
-        134  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00   -1.396941E-16    0.000000E+00              9.00000E+100
-        135  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00   -7.388264E-15    0.000000E+00              9.00000E+100
-        136  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00   -5.339418E-15    0.000000E+00              9.00000E+100
-        137  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00   -4.470210E-15    0.000000E+00              9.00000E+100
-        138  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00   -1.490070E-15    0.000000E+00              9.00000E+100
-        139  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
+        118  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00   -5.339418E-15    0.000000E+00              9.00000E+100
+        119  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00   -1.173430E-14    0.000000E+00              9.00000E+100
+        120  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00   -1.288290E-15    0.000000E+00              9.00000E+100
+        121  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00    6.643229E-15    0.000000E+00              9.00000E+100
+        122  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00    5.463590E-15    0.000000E+00              9.00000E+100
+        123  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00   -1.396941E-16    0.000000E+00              9.00000E+100
+        124  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00   -7.388264E-15    0.000000E+00              9.00000E+100
+        125  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00   -5.339418E-15    0.000000E+00              9.00000E+100
+        126  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00   -4.470210E-15    0.000000E+00              9.00000E+100
+        127  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00   -1.490070E-15    0.000000E+00              9.00000E+100
+        128  traj.phases.phase0.continuity_comp.defect_control_rates:theta_rate    e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
+        129  traj.phases.phase0.continuity_comp.defect_controls:theta              e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
+        130  traj.phases.phase0.continuity_comp.defect_controls:theta              e  -1.084202E-17    0.000000E+00   -1.084202E-17              9.00000E+100
+        131  traj.phases.phase0.continuity_comp.defect_controls:theta              e   3.252607E-17    0.000000E+00    3.252607E-17              9.00000E+100
+        132  traj.phases.phase0.continuity_comp.defect_controls:theta              e  -6.614963E-17   -1.145955E-16   -6.614963E-17              9.00000E+100
+        133  traj.phases.phase0.continuity_comp.defect_controls:theta              e  -2.446836E-17    4.612403E-17   -2.446836E-17              9.00000E+100
+        134  traj.phases.phase0.continuity_comp.defect_controls:theta              e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
+        135  traj.phases.phase0.continuity_comp.defect_controls:theta              e   9.424687E-19   -7.799589E-17    9.424687E-19              9.00000E+100
+        136  traj.phases.phase0.continuity_comp.defect_controls:theta              e  -4.013244E-18   -4.023448E-17   -4.013244E-18              9.00000E+100
+        137  traj.phases.phase0.continuity_comp.defect_controls:theta              e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
+        138  traj.phases.phase0.continuity_comp.defect_controls:theta              e  -3.718373E-17   -1.208696E-16   -3.718373E-17              9.00000E+100
+        139  traj.phases.phase0.continuity_comp.defect_controls:theta              e  -1.734723E-16   -1.734723E-16   -1.734723E-16              9.00000E+100
 
 --------------------------------------------------------------------------------
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/tabulate/__init__.py:108: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
-  or (len(row) &gt;= 2 and row[1] == SEPARATING_LINE)
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/visualization/opt_report/opt_report.py:666: UserWarning: Attempting to set identical low and high ylims makes transformation singular; automatically expanding.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/visualization/opt_report/opt_report.py:639: UserWarning: Attempting to set identical low and high ylims makes transformation singular; automatically expanding.
   ax.set_ylim([ymin_plot, ymax_plot])
 </pre></div>
 </div>

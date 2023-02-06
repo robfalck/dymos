@@ -222,6 +222,11 @@ const thebe_selector_output = ".output, .cell_output"
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="../hull/hull_problem.html">
+     The Hull Problem
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../hypersensitive/hypersensitive.html">
      Hyper-Sensitive Problem
     </a>
@@ -818,24 +823,24 @@ the system at an event in the trajectory. Here, we have the first phase
 (ascent) terminate when the flight path angle reaches zero (apogee). The
 descent phase follows until the cannonball impacts the ground.</p>
 <p>The dynamics are given by</p>
-<div class="amsmath math notranslate nohighlight" id="equation-a47da6a7-0bc6-4020-9228-8a6779f95661">
-<span class="eqno">(65)<a class="headerlink" href="#equation-a47da6a7-0bc6-4020-9228-8a6779f95661" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-43621a2b-5592-409e-a8c4-2901c1ba8402">
+<span class="eqno">(70)<a class="headerlink" href="#equation-43621a2b-5592-409e-a8c4-2901c1ba8402" title="Permalink to this equation">#</a></span>\[\begin{align}
   \frac{dv}{dt} &amp;= \frac{D}{m} - g \sin \gamma \\
   \frac{d\gamma}{dt} &amp;= - \frac{g \cos \gamma}{v} \\
   \frac{dh}{dt} &amp;= v \sin \gamma \\
   \frac{dr}{dt} &amp;= v \cos \gamma \\
 \end{align}\]</div>
 <p>The initial conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-3b1202e8-e0f2-4684-80e3-43ec462c574c">
-<span class="eqno">(66)<a class="headerlink" href="#equation-3b1202e8-e0f2-4684-80e3-43ec462c574c" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-fdf3bf69-0114-40ef-902d-bb73612bf6af">
+<span class="eqno">(71)<a class="headerlink" href="#equation-fdf3bf69-0114-40ef-902d-bb73612bf6af" title="Permalink to this equation">#</a></span>\[\begin{align}
   r_0 &amp;= 0 \rm{\,m} \\
   h_0 &amp;= 100 \rm{\,m} \\
   v_0 &amp;= \rm{free} \\
   \gamma_0 &amp;= \rm{free}
 \end{align}\]</div>
 <p>and the final conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-be314379-0911-49d8-b425-cd9ae2201055">
-<span class="eqno">(67)<a class="headerlink" href="#equation-be314379-0911-49d8-b425-cd9ae2201055" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-c2b5988e-88ba-4312-bbad-5f671e59af3a">
+<span class="eqno">(72)<a class="headerlink" href="#equation-c2b5988e-88ba-4312-bbad-5f671e59af3a" title="Permalink to this equation">#</a></span>\[\begin{align}
   h_f &amp;= 0 \rm{\,m}
 \end{align}\]</div>
 </section>
@@ -848,8 +853,8 @@ energy and that our cannonball is made of solid iron. The volume (and
 mass) of the cannonball is proportional to its radius cubed, while the
 cross-sectional area is proportional to its radius squared. If we
 increase the size of the cannonball, the ballistic coefficient</p>
-<div class="amsmath math notranslate nohighlight" id="equation-b1716c5f-fe8d-4b7f-8b92-7fbc51a6ab54">
-<span class="eqno">(68)<a class="headerlink" href="#equation-b1716c5f-fe8d-4b7f-8b92-7fbc51a6ab54" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-62997fb7-e970-4e2c-b255-6745d203c7bc">
+<span class="eqno">(73)<a class="headerlink" href="#equation-62997fb7-e970-4e2c-b255-6745d203c7bc" title="Permalink to this equation">#</a></span>\[\begin{align}
   BC &amp;= \frac{m}{C_D A}
 \end{align}\]</div>
 <p>will increase, meaning the cannonball overcome air resistance more
@@ -883,7 +888,7 @@ that provides the maximum range cannonball.</p>
 <span class="c1"># Component for the design part of the model</span>
 <span class="c1">#############################################</span>
 <span class="k">class</span> <span class="nc">CannonballSizeComp</span><span class="p">(</span><span class="n">om</span><span class="o">.</span><span class="n">ExplicitComponent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the area and mass of a cannonball with a given radius and density.</span>
 
 <span class="sd">    Notes</span>
@@ -933,7 +938,7 @@ By calling the <code class="docutils literal notranslate"><span class="pre">decl
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CannonballODE</span><span class="p">(</span><span class="n">om</span><span class="o">.</span><span class="n">ExplicitComponent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cannonball ODE assuming flat earth and accounting for air resistance</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1145,17 +1150,18 @@ account.</p>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
 Model viewer data has already been recorded for Driver.
-
-Coloring for &#39;traj.phases.ascent.rhs_all&#39; (class CannonballODE)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Coloring for &#39;traj.phases.ascent.rhs_all&#39; (class CannonballODE)
 
 Jacobian shape: (100, 63)  ( 4.44% nonzero)
 FWD solves: 6   REV solves: 0
 Total colors vs. total size: 6 vs 63  (90.5% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.027047 sec.
-Time to compute coloring: 0.010980 sec.
-Memory to compute coloring: 0.000000 MB.
+Time to compute sparsity: 0.024691 sec.
+Time to compute coloring: 0.010548 sec.
+Memory to compute coloring: 0.250000 MB.
 
 Coloring for &#39;traj.phases.descent.rhs_disc&#39; (class CannonballODE)
 
@@ -1164,22 +1170,21 @@ FWD solves: 6   REV solves: 0
 Total colors vs. total size: 6 vs 33  (81.8% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.014130 sec.
-Time to compute coloring: 0.005700 sec.
+Time to compute sparsity: 0.012617 sec.
+Time to compute coloring: 0.005631 sec.
 Memory to compute coloring: 0.000000 MB.
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Coloring for &#39;traj.phases.descent.rhs_col&#39; (class CannonballODE)
+
+Coloring for &#39;traj.phases.descent.rhs_col&#39; (class CannonballODE)
 
 Jacobian shape: (25, 18)  (15.56% nonzero)
 FWD solves: 6   REV solves: 0
 Total colors vs. total size: 6 vs 18  (66.7% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.008792 sec.
-Time to compute coloring: 0.003287 sec.
+Time to compute sparsity: 0.007123 sec.
+Time to compute coloring: 0.003202 sec.
 Memory to compute coloring: 0.000000 MB.
-Full total jacobian was computed 3 times, taking 0.151475 seconds.
+Full total jacobian was computed 3 times, taking 0.144888 seconds.
 Total jacobian shape: (87, 88) 
 
 
@@ -1188,9 +1193,9 @@ FWD solves: 30   REV solves: 0
 Total colors vs. total size: 30 vs 88  (65.9% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity: 0.151475 sec.
-Time to compute coloring: 0.080036 sec.
-Memory to compute coloring: 0.574219 MB.
+Time to compute sparsity: 0.144888 sec.
+Time to compute coloring: 0.078489 sec.
+Memory to compute coloring: 0.890625 MB.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Optimization Problem -- Optimization using pyOpt_sparse
@@ -1199,11 +1204,11 @@ Memory to compute coloring: 0.574219 MB.
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    2.2180
-       User Objective Time :       0.3093
-       User Sensitivity Time :     1.3527
-       Interface Time :            0.3250
-       Opt Solver Time:            0.2309
+    Total Time:                    2.0716
+       User Objective Time :       0.2727
+       User Sensitivity Time :     1.2524
+       Interface Time :            0.3175
+       Opt Solver Time:            0.2289
     Calls to Objective Function :     118
     Calls to Sens Function :           89
 
@@ -1395,8 +1400,12 @@ Memory to compute coloring: 0.574219 MB.
 --------------------------------------------------------------------------------
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/tabulate/__init__.py:108: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
-  or (len(row) &gt;= 2 and row[1] == SEPARATING_LINE)
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/group.py:2185: UnusedOptionWarning:&#39;ode_eval&#39; &lt;class ODEEvaluationGroup&gt;: ignored flat_src_indices and/or src_shape because src_indices was not specified.
+/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/group.py:2185: UnusedOptionWarning:&#39;ode_eval&#39; &lt;class ODEEvaluationGroup&gt;: ignored flat_src_indices and/or src_shape because src_indices was not specified.
+/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/group.py:2185: UnusedOptionWarning:&#39;ode_eval&#39; &lt;class ODEEvaluationGroup&gt;: ignored flat_src_indices and/or src_shape because src_indices was not specified.
+/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/group.py:2185: UnusedOptionWarning:&#39;ode_eval&#39; &lt;class ODEEvaluationGroup&gt;: ignored flat_src_indices and/or src_shape because src_indices was not specified.
+/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/group.py:2185: UnusedOptionWarning:&#39;ode_eval&#39; &lt;class ODEEvaluationGroup&gt;: ignored flat_src_indices and/or src_shape because src_indices was not specified.
+/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/group.py:2185: UnusedOptionWarning:&#39;ode_eval&#39; &lt;class ODEEvaluationGroup&gt;: ignored flat_src_indices and/or src_shape because src_indices was not specified.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
