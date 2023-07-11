@@ -319,6 +319,14 @@ class TranscriptionBase(object):
         All such inputs are made into fixed parameters of the phase, available for connection
         from external systems.
 
+        This method has to do a bit of the work of add_parameter, configure_parameters_introspection,
+        and configure parameters all in one method.
+
+        Caveats to automatic parameters:
+        - If the parameter is to be a design variable, it must be added manually.
+        - Any name collisions must be resolved manually by adding one of the parameters manually
+          with a different name.
+
         Parameters
         ----------
         phase : Phase
@@ -345,19 +353,26 @@ class TranscriptionBase(object):
         # All connections from the phase
         conns_from_phase = set(phase._ode_connections.keys())
 
+        # The paths of all unconnected inputs
         unconnected_inputs = set(all_inputs) - internal_connections - conns_from_phase
 
         # If there are any unconnected inputs, make them parameters
         param_comp = phase._get_subsystem('param_comp')
-        for name in unconnected_inputs:
-            meta = all_inputs[name]
-            param_comp.add_parameter(name, val=meta['val'], shape=meta['shape'], units=meta['units'])
 
-            # if not 'dymos.static_target' in meta['tags']:
-            #     phase._connect_to_ode(f'parameter_vals:{name}', name, src_indices=src_idxs,
-            #                           flat_src_indices=True)
-            # else:
-            #     phase._connect_to_ode(f'parameter_vals:{name}', name)
+        for path in unconnected_inputs:
+            name = path.split('.')[-1]
+            meta = all_inputs[path]
+            val = meta['val']
+            shape = meta['shape']
+            units = meta['units']
+            phase.add_parameter(name=name, val=val, shape=shape, units=units, targets=path)
+            param_comp.add_parameter(name, val=val, shape=shape, units=units)
+            for tgts, src_idxs in self.get_parameter_connections(name, phase):
+                if 'dymos.static_target' not in all_inputs[path]['tags']:
+                    phase._connect_to_ode(f'parameter_vals:{name}', tgts, src_indices=src_idxs,
+                                          flat_src_indices=True)
+                else:
+                    phase._connect_to_ode(f'parameter_vals:{name}', tgts)
 
     def setup_states(self, phase):
         """
