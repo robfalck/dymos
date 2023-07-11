@@ -25,7 +25,7 @@ class Analytic(TranscriptionBase):
     """
     def __init__(self, **kwargs):
         super(Analytic, self).__init__(**kwargs)
-        self._rhs_source = 'rhs'
+        self._ode_paths = ['rhs']
 
     def init_grid(self):
         """
@@ -75,7 +75,7 @@ class Analytic(TranscriptionBase):
         phase.time.configure_io()
 
         options = phase.time_options
-        ode = phase._get_subsystem(self._rhs_source)
+        ode = phase._get_subsystem(self._ode_paths[0])
         ode_inputs = get_promoted_vars(ode, iotypes='input')
 
         # The tuples here are (name, user_specified_targets, dynamic)
@@ -511,20 +511,20 @@ class Analytic(TranscriptionBase):
         var_type = phase.classify_var(var)
 
         if ode_outputs is None:
-            ode_outputs = get_promoted_vars(phase._get_subsystem(self._rhs_source), 'output')
+            ode_outputs = get_promoted_vars(phase._get_subsystem(self._ode_paths[0]), 'output')
 
         if var_type == 't':
             shape = (1,)
             units = time_units
             linear = True
-            constraint_path = 't'
+            obj_path = 't'
         elif var_type == 't_phase':
             shape = (1,)
             units = time_units
             linear = True
-            constraint_path = 't_phase'
+            obj_path = 't_phase'
         elif var_type == 'state':
-            constraint_path = f'{self._rhs_source}.{var}'
+            obj_path = f'{self._ode_paths[0]}.{var}'
             src_path = phase.state_options[var]['source']
             meta = get_source_metadata(ode_outputs, var, user_units=None, user_shape=None)
             shape = meta['shape']
@@ -534,13 +534,13 @@ class Analytic(TranscriptionBase):
             shape = phase.parameter_options[var]['shape']
             units = phase.parameter_options[var]['units']
             linear = True
-            constraint_path = f'parameter_vals:{var}'
+            obj_path = f'parameter_vals:{var}'
         else:
             # Failed to find variable, assume it is in the ODE. This requires introspection.
-            constraint_path = f'{self._rhs_source}.{var}'
+            obj_path = f'{self._ode_paths[0]}.{var}'
             meta = get_source_metadata(ode_outputs, var, user_units=None, user_shape=None)
             shape = meta['shape']
             units = meta['units']
             linear = False
 
-        return constraint_path, shape, units, linear
+        return obj_path, shape, units, linear

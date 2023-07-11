@@ -38,7 +38,7 @@ class SolveIVP(TranscriptionBase):
                          category=om.OMDeprecationWarning)
         super(SolveIVP, self).__init__(**kwargs)
         self.grid_data = grid_data
-        self._rhs_source = 'ode'
+        self._ode_paths = ['ode']
 
     def initialize(self):
         """

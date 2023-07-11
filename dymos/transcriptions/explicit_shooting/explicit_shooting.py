@@ -42,7 +42,7 @@ class ExplicitShooting(TranscriptionBase):
     """  # nopep8: E501, W605
     def __init__(self, **kwargs):
         super(ExplicitShooting, self).__init__(**kwargs)
-        self._rhs_source = 'ode'
+        self._ode_paths = {'ode': self._output_grid_data.subset_node_indices['all']}
 
     def initialize(self):
         """
@@ -143,8 +143,7 @@ class ExplicitShooting(TranscriptionBase):
             if t_phase_name not in ts_options['outputs'] and phase.timeseries_options['include_t_phase']:
                 phase.add_timeseries_output(t_phase_name, timeseries=ts_name)
 
-        # if times_per_seg is None:
-        # Case 1:  Compute times at 'all' node set.
+       # Case 1:  Compute times at 'all' node set.
         num_nodes = self._output_grid_data.num_nodes
         node_ptau = self._output_grid_data.node_ptau
         node_dptau_dstau = self._output_grid_data.node_dptau_dstau
@@ -543,6 +542,9 @@ class ExplicitShooting(TranscriptionBase):
         """
         super().configure_parameters(phase)
 
+        for param_name, options in phase.parameter_options.items():
+            phase.connect(f'parameter_vals:{param_name}', f'integrator.parameters:{param_name}')
+
         integrator_comp = phase._get_subsystem('integrator')
         integrator_comp._configure_parameters()
 
@@ -718,8 +720,8 @@ class ExplicitShooting(TranscriptionBase):
                 src_idxs = get_src_indices_by_row(src_idxs_raw, options['shape'])
                 src_idxs = np.squeeze(src_idxs, axis=0)
 
-            connection_info.append(([f'integrator.parameters:{name}'], None))
-            connection_info.append(([f'ode.{tgt}' for tgt in options['targets']], (src_idxs,)))
+            # connection_info.append(([f'integrator.parameters:{name}'], None))
+            connection_info.append((options['targets'], {'ode': src_idxs}))
 
         return connection_info
 
@@ -817,7 +819,7 @@ class ExplicitShooting(TranscriptionBase):
             linear = False
         else:
             # Failed to find variable, assume it is in the ODE. This requires introspection.
-            obj_path = f'{self._rhs_source}.{var}'
+            obj_path = f'{self._ode_paths[0]}.{var}'
             if ode_outputs is None:
                 ode = self._get_ode(phase)
             else:

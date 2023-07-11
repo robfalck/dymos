@@ -47,8 +47,8 @@ class TranscriptionBase(object):
         self.options.update(kwargs)
         self.init_grid()
 
-        # Where to query var info.
-        self._rhs_source = None
+        # ODE-relative paths to the ODEs used by the transcription.
+        self._ode_paths = {}
 
     def _declare_options(self):
         pass
@@ -113,7 +113,7 @@ class TranscriptionBase(object):
         # Determine the time unit.
         if time_options['units'] in {None, _unspecified}:
             if time_options['targets']:
-                ode = phase._get_subsystem(self._rhs_source)
+                ode = phase._get_subsystem(self._ode_paths.keys()[0])
 
                 _, time_options['units'] = get_target_metadata(ode, name='time',
                                                                user_targets=time_options['targets'],
@@ -265,9 +265,9 @@ class TranscriptionBase(object):
         param_prefix = 'parameters:' if phase.timeseries_options['use_prefix'] else ''
         include_params = phase.timeseries_options['include_parameters']
 
-        if phase.parameter_options:
-            param_comp = ParameterComp()
-            phase.add_subsystem('param_comp', subsys=param_comp, promotes_inputs=['*'], promotes_outputs=['*'])
+        # if phase.parameter_options:
+        param_comp = ParameterComp()
+        phase.add_subsystem('param_comp', subsys=param_comp, promotes_inputs=['*'], promotes_outputs=['*'])
 
         for name, options in phase.parameter_options.items():
             if (options['include_timeseries'] is None and include_params) or options['include_timeseries']:
@@ -307,10 +307,57 @@ class TranscriptionBase(object):
 
                 for tgts, src_idxs in self.get_parameter_connections(name, phase):
                     if not options['static_target']:
-                        phase.connect(f'parameter_vals:{name}', tgts, src_indices=src_idxs,
-                                      flat_src_indices=True)
+                        phase._connect_to_ode(f'parameter_vals:{name}', tgts, src_indices=src_idxs,
+                                              flat_src_indices=True)
                     else:
-                        phase.connect(f'parameter_vals:{name}', tgts)
+                        phase._connect_to_ode(f'parameter_vals:{name}', tgts)
+
+    def configure_automatic_parameters(self, phase):
+        """
+        Determine which ODE inputs, if any, have not been explicitly connected to a source.
+
+        All such inputs are made into fixed parameters of the phase, available for connection
+        from external systems.
+
+        Parameters
+        ----------
+        phase : Phase
+            The phase associated with this transcription.
+        """
+        ode = self._get_ode(phase)
+
+        # All inputs within ODE
+        input_meta = ode.get_io_metadata(iotypes='input',
+                                         metadata_keys=['val', 'shape', 'units', 'tags'], get_remote=True)
+
+        # Get the promoted name in the ODE namespace here.
+        # This should handle inputs that are connected via promotion.
+        all_inputs = {meta['prom_name']: meta for _, meta in input_meta.items()}
+
+        # Connections internal to the ODE
+        if isinstance(ode, om.ExplicitComponent) or isinstance((ode, om.ImplicitComponent)):
+            internal_connections = set()
+        elif ode._static_mode:
+            internal_connections = set(ode._static_manual_connections.keys())
+        else:
+            internal_connections = set(ode._manual_connections.keys())
+
+        # All connections from the phase
+        conns_from_phase = set(phase._ode_connections.keys())
+
+        unconnected_inputs = set(all_inputs) - internal_connections - conns_from_phase
+
+        # If there are any unconnected inputs, make them parameters
+        param_comp = phase._get_subsystem('param_comp')
+        for name in unconnected_inputs:
+            meta = all_inputs[name]
+            param_comp.add_parameter(name, val=meta['val'], shape=meta['shape'], units=meta['units'])
+
+            # if not 'dymos.static_target' in meta['tags']:
+            #     phase._connect_to_ode(f'parameter_vals:{name}', name, src_indices=src_idxs,
+            #                           flat_src_indices=True)
+            # else:
+            #     phase._connect_to_ode(f'parameter_vals:{name}', name)
 
     def setup_states(self, phase):
         """
@@ -690,7 +737,7 @@ class TranscriptionBase(object):
             The OpenMDAO system which serves as the ODE for the given Phase.
 
         """
-        return phase._get_subsystem(self._rhs_source)
+        return phase._get_subsystem(list(self._ode_paths.keys())[0])
 
     def get_parameter_connections(self, name, phase):
         """

@@ -580,7 +580,7 @@ class PseudospectralBase(TranscriptionBase):
         var_type = phase.classify_var(var)
 
         if ode_outputs is None:
-            ode_outputs = get_promoted_vars(phase._get_subsystem(self._rhs_source), 'output')
+            ode_outputs = get_promoted_vars(self._get_ode(phase), 'output')
 
         if var_type == 't':
             shape = (1,)
@@ -656,7 +656,7 @@ class PseudospectralBase(TranscriptionBase):
             linear = False
         else:
             # Failed to find variable, assume it is in the ODE. This requires introspection.
-            constraint_path = f'{self._rhs_source}.{var}'
+            constraint_path = f'{self._ode_paths[0]}.{var}'
             meta = get_source_metadata(ode_outputs, var, user_units=None, user_shape=None)
             shape = meta['shape']
             units = meta['units']
