@@ -363,21 +363,23 @@ def configure_controls_introspection(control_options, ode, time_units='s'):
                              f"because one or more targets are tagged with 'dymos.static_target'.")
 
 
-def configure_parameters_introspection(parameter_options, ode):
+def configure_parameters_introspection(parameter_options, ode, only_param=None):
     """
     Modify parameter options in-place using introspection of the user-provided ODE.
 
     Parameters
     ----------
-    parameter_options : dict of {str: ParameterOptionsDictionary
+    parameter_options : dict of {str: ParameterOptionsDictionary}
         A dictionary keyed by parameter name containing the options for all parameters to be applied
         to the ODE. Options for 'targets', 'units', 'shape', and 'static_target' are modified in-place.
     ode : om.System
         An instantiated System that serves as the ODE to which the parameters should be applied.
+    only_param : str or None
+        If provided, only update the parameter options dictionary for the specified parameter name.
     """
     ode_inputs = get_promoted_vars(ode, iotypes='input')
 
-    for name, options in parameter_options.items():
+    def _introspect_param(name, options):
         try:
             targets, shape, units, static_target = _get_targets_metadata(ode_inputs, name=name,
                                                                          user_targets=options['targets'],
@@ -390,6 +392,13 @@ def configure_parameters_introspection(parameter_options, ode):
         options['units'] = units
         options['shape'] = shape
         options['static_target'] = static_target
+
+    if only_param is not None:
+        _introspect_param(only_param, parameter_options[only_param])
+    else:
+        for name, options in parameter_options.items():
+            _introspect_param(name, options)
+
 
 
 def configure_time_introspection(time_options, ode):

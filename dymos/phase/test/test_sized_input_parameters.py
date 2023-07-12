@@ -55,7 +55,8 @@ class TestParameterConnections(unittest.TestCase):
         phase.set_time_options(initial_bounds=(0.0, 100.0), duration_bounds=(0., 100.), units='s')
 
         phase.add_state('h', fix_initial=True, fix_final=True, lower=0.0, units='m', rate_source='eom.h_dot')
-        phase.add_state('v', fix_initial=True, fix_final=False, units='m/s', rate_source='eom.v_dot')
+        phase.add_state('v', fix_initial=True, fix_final=False, units='m/s',
+                        targets=['eom.v'], rate_source='eom.v_dot')
 
         phase.add_parameter('m', val=[[1, 2], [3, 4]], units='kg', targets='sum.m')
 
@@ -117,7 +118,8 @@ class TestParameterConnections(unittest.TestCase):
         phase.set_time_options(initial_bounds=(0.0, 100.0), duration_bounds=(0., 100.))
 
         phase.add_state('h', fix_initial=True, fix_final=True, lower=0.0, units='m', rate_source='eom.h_dot')
-        phase.add_state('v', fix_initial=True, fix_final=False, units='m/s', rate_source='eom.v_dot')
+        phase.add_state('v', fix_initial=True, fix_final=False, units='m/s',
+                        targets=['eom.v'], rate_source='eom.v_dot')
 
         phase.add_parameter('m', val=[[1, 2], [3, 4]], units='kg', targets='sum.m', static_target=True)
 
@@ -178,7 +180,8 @@ class TestParameterConnections(unittest.TestCase):
         phase.set_time_options(initial_bounds=(0.0, 100.0), duration_bounds=(0., 100.), units='s')
 
         phase.add_state('h', fix_initial=True, fix_final=True, lower=0.0, units='m', rate_source='eom.h_dot')
-        phase.add_state('v', fix_initial=True, fix_final=False, units='m/s', rate_source='eom.v_dot')
+        phase.add_state('v', fix_initial=True, fix_final=False, units='m/s',
+                        targets=['eom.v'], rate_source='eom.v_dot')
 
         phase.add_parameter('m', val=[[1, 2], [3, 4]], units='kg', targets='sum.m')
 
@@ -246,7 +249,8 @@ class TestParameterConnections(unittest.TestCase):
         phase.set_time_options(initial_bounds=(0.0, 100.0), duration_bounds=(0., 100.), units='s')
 
         phase.add_state('h', fix_initial=True, fix_final=True, lower=0.0, units='m', rate_source='eom.h_dot')
-        phase.add_state('v', fix_initial=True, fix_final=False, units='m/s', rate_source='eom.v_dot')
+        phase.add_state('v', fix_initial=True, fix_final=False, units='m/s',
+                        targets=['eom.v'], rate_source='eom.v_dot')
 
         phase.add_parameter('m', val=[[1, 2], [3, 4]], units='kg', targets='sum.m', static_target=True)
 

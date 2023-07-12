@@ -9,7 +9,7 @@ from ..utils.constants import INF_BOUND
 from ..utils.indexing import get_constraint_flat_idxs
 from ..utils.misc import _unspecified
 from ..utils.introspection import configure_states_introspection, get_promoted_vars, get_target_metadata, \
-    configure_states_discovery
+    configure_states_discovery, configure_parameters_introspection
 from .._options import options as dymos_options
 
 
@@ -333,17 +333,21 @@ class TranscriptionBase(object):
             The phase associated with this transcription.
         """
         ode = self._get_ode(phase)
+        ode_inputs = get_promoted_vars(ode,
+                                       metadata_keys=['val', 'shape', 'units', 'tags'],
+                                       iotypes='input')
+
 
         # All inputs within ODE
-        input_meta = ode.get_io_metadata(iotypes='input',
-                                         metadata_keys=['val', 'shape', 'units', 'tags'], get_remote=True)
+        # input_meta = ode.get_io_metadata(iotypes='input',
+        #                                  metadata_keys=['val', 'shape', 'units', 'tags'], get_remote=True)
 
         # Get the promoted name in the ODE namespace here.
         # This should handle inputs that are connected via promotion.
-        all_inputs = {meta['prom_name']: meta for _, meta in input_meta.items()}
+        # all_inputs = {meta['prom_name']: meta for _, meta in input_meta.items()}
 
         # Connections internal to the ODE
-        if isinstance(ode, om.ExplicitComponent) or isinstance((ode, om.ImplicitComponent)):
+        if isinstance(ode, om.ExplicitComponent) or isinstance(ode, om.ImplicitComponent):
             internal_connections = set()
         elif ode._static_mode:
             internal_connections = set(ode._static_manual_connections.keys())
@@ -354,21 +358,19 @@ class TranscriptionBase(object):
         conns_from_phase = set(phase._ode_connections.keys())
 
         # The paths of all unconnected inputs
-        unconnected_inputs = set(all_inputs) - internal_connections - conns_from_phase
+        unconnected_inputs = set(ode_inputs.keys()) - internal_connections - conns_from_phase
 
         # If there are any unconnected inputs, make them parameters
         param_comp = phase._get_subsystem('param_comp')
 
         for path in unconnected_inputs:
             name = path.split('.')[-1]
-            meta = all_inputs[path]
-            val = meta['val']
-            shape = meta['shape']
-            units = meta['units']
-            phase.add_parameter(name=name, val=val, shape=shape, units=units, targets=path)
-            param_comp.add_parameter(name, val=val, shape=shape, units=units)
+            phase.add_parameter(name=name, targets=path)
+            configure_parameters_introspection(phase.parameter_options, ode, only_param=name)
+            options = phase.parameter_options[name]
+            param_comp.add_parameter(name, val=options['val'], shape=options['shape'], units=options['units'])
             for tgts, src_idxs in self.get_parameter_connections(name, phase):
-                if 'dymos.static_target' not in all_inputs[path]['tags']:
+                if 'dymos.static_target' not in ode_inputs[path]['tags']:
                     phase._connect_to_ode(f'parameter_vals:{name}', tgts, src_indices=src_idxs,
                                           flat_src_indices=True)
                 else:

@@ -628,21 +628,16 @@ class GaussLobatto(PseudospectralBase):
             if not static:
                 disc_rows = np.zeros(self.grid_data.subset_num_nodes['state_disc'], dtype=int)
                 col_rows = np.zeros(self.grid_data.subset_num_nodes['col'], dtype=int)
-                disc_src_idxs = get_src_indices_by_row(disc_rows, shape)
-                col_src_idxs = get_src_indices_by_row(col_rows, shape)
-                if shape == (1,):
-                    disc_src_idxs = disc_src_idxs.ravel()
-                    col_src_idxs = col_src_idxs.ravel()
+                disc_src_idxs = get_src_indices_by_row(disc_rows, shape).ravel()
+                col_src_idxs = get_src_indices_by_row(col_rows, shape).ravel()
             else:
                 inds = np.squeeze(get_src_indices_by_row([0], shape), axis=0)
                 disc_src_idxs = inds
                 col_src_idxs = inds
 
-            # enclose indices in tuple to ensure shaping of indices works
-            disc_src_idxs = (disc_src_idxs,)
-            col_src_idxs = (col_src_idxs,)
             connection_info.append((targets,
-                                    {'rhs_disc': disc_src_idxs, 'rhs_col': col_src_idxs}))
+                                    {'rhs_disc': disc_src_idxs,
+                                     'rhs_col': col_src_idxs}))
         return connection_info
 
     def _requires_continuity_constraints(self, phase):
