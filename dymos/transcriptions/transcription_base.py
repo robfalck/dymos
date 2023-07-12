@@ -361,7 +361,7 @@ class TranscriptionBase(object):
             options = phase.parameter_options[name]
             param_comp.add_parameter(name, val=options['val'], shape=options['shape'], units=options['units'])
             for tgts, src_idxs in self.get_parameter_connections(name, phase):
-                if options['static_target']:
+                if not options['static_target']:
                     phase._connect_to_ode(f'parameter_vals:{name}', tgts, src_indices=src_idxs,
                                           flat_src_indices=True)
                 else:
