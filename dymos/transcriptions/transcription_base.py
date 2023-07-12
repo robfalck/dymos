@@ -306,7 +306,7 @@ class TranscriptionBase(object):
                                          ref=options['ref'])
 
                 for tgts, src_idxs in self.get_parameter_connections(name, phase):
-                    if not options['static_target']:
+                    if not (options['static_target'] or options['shape'] == (1,)):
                         phase._connect_to_ode(f'parameter_vals:{name}', tgts, src_indices=src_idxs,
                                               flat_src_indices=True)
                     else:
@@ -337,15 +337,6 @@ class TranscriptionBase(object):
                                        metadata_keys=['val', 'shape', 'units', 'tags'],
                                        iotypes='input')
 
-
-        # All inputs within ODE
-        # input_meta = ode.get_io_metadata(iotypes='input',
-        #                                  metadata_keys=['val', 'shape', 'units', 'tags'], get_remote=True)
-
-        # Get the promoted name in the ODE namespace here.
-        # This should handle inputs that are connected via promotion.
-        # all_inputs = {meta['prom_name']: meta for _, meta in input_meta.items()}
-
         # Connections internal to the ODE
         if isinstance(ode, om.ExplicitComponent) or isinstance(ode, om.ImplicitComponent):
             internal_connections = set()
@@ -370,7 +361,7 @@ class TranscriptionBase(object):
             options = phase.parameter_options[name]
             param_comp.add_parameter(name, val=options['val'], shape=options['shape'], units=options['units'])
             for tgts, src_idxs in self.get_parameter_connections(name, phase):
-                if 'dymos.static_target' not in ode_inputs[path]['tags']:
+                if not (options['static_target'] or options['shape'] == (1,)):
                     phase._connect_to_ode(f'parameter_vals:{name}', tgts, src_indices=src_idxs,
                                           flat_src_indices=True)
                 else:

@@ -380,6 +380,14 @@ def configure_parameters_introspection(parameter_options, ode, only_param=None):
     ode_inputs = get_promoted_vars(ode, iotypes='input')
 
     def _introspect_param(name, options):
+        """
+        Perform introspection of a single parameter given its name and corresponding options dict.
+
+        Parameters
+        ----------
+        name : str
+        options : ParameterOptionsDictionary
+        """
         try:
             targets, shape, units, static_target = _get_targets_metadata(ode_inputs, name=name,
                                                                          user_targets=options['targets'],
@@ -398,7 +406,6 @@ def configure_parameters_introspection(parameter_options, ode, only_param=None):
     else:
         for name, options in parameter_options.items():
             _introspect_param(name, options)
-
 
 
 def configure_time_introspection(time_options, ode):

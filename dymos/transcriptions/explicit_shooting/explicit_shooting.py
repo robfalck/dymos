@@ -143,7 +143,7 @@ class ExplicitShooting(TranscriptionBase):
             if t_phase_name not in ts_options['outputs'] and phase.timeseries_options['include_t_phase']:
                 phase.add_timeseries_output(t_phase_name, timeseries=ts_name)
 
-       # Case 1:  Compute times at 'all' node set.
+        # Case 1:  Compute times at 'all' node set.
         num_nodes = self._output_grid_data.num_nodes
         node_ptau = self._output_grid_data.node_ptau
         node_dptau_dstau = self._output_grid_data.node_dptau_dstau
@@ -212,8 +212,8 @@ class ExplicitShooting(TranscriptionBase):
                                        (tphase_name, time_options['time_phase_targets'], True)]:
             if targets:
                 src_idxs = self._output_grid_data.subset_node_indices['all'] if dynamic else None
-                phase.connect(f'integrator.{name}', [f'ode.{t}' for t in targets], src_indices=src_idxs,
-                              flat_src_indices=True if dynamic else None)
+                phase._connect_to_ode(f'integrator.{name}', targets, src_indices={'ode': src_idxs},
+                                      flat_src_indices=True)
 
         for name, targets in [('t_initial', time_options['t_initial_targets']),
                               ('t_duration', time_options['t_duration_targets'])]:
@@ -223,18 +223,12 @@ class ExplicitShooting(TranscriptionBase):
                 if shape == (1,):
                     src_idxs = None
                     flat_src_idxs = None
-                    src_shape = None
                 else:
                     src_idxs = np.zeros(self._output_grid_data.subset_num_nodes['all'])
                     flat_src_idxs = True
-                    src_shape = (1,)
 
-                phase.promotes('ode', inputs=[(t, name)], src_indices=src_idxs,
-                               flat_src_indices=flat_src_idxs, src_shape=src_shape)
-            if targets:
-                phase.set_input_defaults(name=name,
-                                         val=np.ones((1,)),
-                                         units=t_units)
+                phase._connect_to_ode(name, t, src_indices={'ode': src_idxs},
+                                      flat_src_indices=flat_src_idxs)
 
     def setup_states(self, phase):
         """
@@ -333,11 +327,9 @@ class ExplicitShooting(TranscriptionBase):
         ode_inputs = get_promoted_vars(ode, 'input')
 
         for name, options in phase.state_options.items():
-
             targets = get_targets(ode_inputs, name=name, user_targets=options['targets'])
             if targets:
-                phase.connect(f'integrator.states_out:{name}',
-                              [f'ode.{tgt}' for tgt in targets])
+                phase._connect_to_ode(f'integrator.states_out:{name}', targets)
 
     def setup_controls(self, phase):
         """
@@ -420,22 +412,19 @@ class ExplicitShooting(TranscriptionBase):
             targets = get_targets(ode_inputs, control_name, options['targets'])
 
             if targets:
-                phase.connect(f'control_values:{control_name}',
-                              [f'ode.{t}' for t in targets])
+                phase._connect_to_ode(f'control_values:{control_name}', targets)
 
             # Rate targets
             rate_targets = get_targets(ode_inputs, control_name, options['rate_targets'], control_rates=1)
 
             if rate_targets:
-                phase.connect(f'control_rates:{control_name}_rate',
-                              [f'ode.{t}' for t in rate_targets])
+                phase._connect_to_ode(f'control_rates:{control_name}_rate', rate_targets)
 
             # Second time derivative targets must be specified explicitly
             rate2_targets = get_targets(ode_inputs, control_name, options['rate2_targets'], control_rates=2)
 
             if rate2_targets:
-                phase.connect(f'control_rates:{control_name}_rate2',
-                              [f'ode.{t}' for t in targets])
+                phase._connect_to_ode(f'control_rates:{control_name}_rate2', rate2_targets)
 
     def setup_polynomial_controls(self, phase):
         """
@@ -514,22 +503,22 @@ class ExplicitShooting(TranscriptionBase):
             targets = get_targets(ode_inputs, control_name, options['targets'])
 
             if targets:
-                phase.connect(f'polynomial_control_values:{control_name}',
-                              [f'ode.{t}' for t in targets])
+                phase._connect_to_ode(f'polynomial_control_values:{control_name}',
+                                      targets)
 
             # Rate targets
             rate_targets = get_targets(ode_inputs, control_name, options['rate_targets'], control_rates=1)
 
             if rate_targets:
-                phase.connect(f'polynomial_control_rates:{control_name}_rate',
-                              [f'ode.{t}' for t in rate_targets])
+                phase._connect_to_ode(f'polynomial_control_rates:{control_name}_rate',
+                                      rate_targets)
 
             # Second time derivative targets must be specified explicitly
             rate2_targets = get_targets(ode_inputs, control_name, options['rate2_targets'], control_rates=2)
 
             if rate2_targets:
-                phase.connect(f'polynomial_control_rates:{control_name}_rate2',
-                              [f'ode.{t}' for t in targets])
+                phase._connect_to_ode(f'polynomial_control_rates:{control_name}_rate2',
+                                      rate2_targets)
 
     def configure_parameters(self, phase):
         """
@@ -819,7 +808,7 @@ class ExplicitShooting(TranscriptionBase):
             linear = False
         else:
             # Failed to find variable, assume it is in the ODE. This requires introspection.
-            obj_path = f'{self._ode_paths[0]}.{var}'
+            obj_path = f'{list(self._ode_paths)[0]}.{var}'
             if ode_outputs is None:
                 ode = self._get_ode(phase)
             else:

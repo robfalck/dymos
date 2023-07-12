@@ -459,20 +459,6 @@ class Radau(PseudospectralBase):
         """
         connection_info = []
 
-        # if name in phase.parameter_options:
-        #     options = phase.parameter_options[name]
-        #     if not options['static_target']:
-        #         src_idxs_raw = np.zeros(self.grid_data.subset_num_nodes['all'], dtype=int)
-        #         src_idxs = get_src_indices_by_row(src_idxs_raw, options['shape'])
-        #         if options['shape'] == (1,):
-        #             src_idxs = src_idxs.ravel()
-        #     else:
-        #         src_idxs_raw = np.zeros(1, dtype=int)
-        #         src_idxs = get_src_indices_by_row(src_idxs_raw, options['shape'])
-        #         src_idxs = np.squeeze(src_idxs, axis=0)
-        #
-        #     connection_info.append((options['targets'], {'rhs_all': src_idxs}))
-
         if name in phase.parameter_options:
             options = phase.parameter_options[name]
             if not options['static_target']:
@@ -484,7 +470,6 @@ class Radau(PseudospectralBase):
                 src_idxs = np.squeeze(src_idxs, axis=0)
 
             connection_info.append((options['targets'], {'rhs_all': src_idxs}))
-
 
         return connection_info
 

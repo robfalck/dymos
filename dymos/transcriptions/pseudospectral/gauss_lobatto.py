@@ -207,7 +207,7 @@ class GaussLobatto(PseudospectralBase):
                                       flat_src_indices=True)
 
             targets = get_targets(ode=ode_inputs, name=name, user_targets=options['rate_targets'])
-            if targets:#
+            if targets:
                 phase._connect_to_ode(f'polynomial_control_rates:{name}_rate', targets,
                                       src_indices={'rhs_disc': disc_src_idxs,
                                                    'rhs_col': col_src_idxs},
