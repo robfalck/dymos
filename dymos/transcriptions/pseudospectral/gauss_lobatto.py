@@ -625,6 +625,8 @@ class GaussLobatto(PseudospectralBase):
             static = options['static_target']
             shape = options['shape']
 
+            print(name, static)
+
             if not static:
                 disc_rows = np.zeros(self.grid_data.subset_num_nodes['state_disc'], dtype=int)
                 col_rows = np.zeros(self.grid_data.subset_num_nodes['col'], dtype=int)

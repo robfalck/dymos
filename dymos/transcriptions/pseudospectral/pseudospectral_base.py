@@ -656,7 +656,7 @@ class PseudospectralBase(TranscriptionBase):
             linear = False
         else:
             # Failed to find variable, assume it is in the ODE. This requires introspection.
-            constraint_path = f'{self._ode_paths[0]}.{var}'
+            constraint_path = f'{list(self._ode_paths.keys())[0]}.{var}'
             meta = get_source_metadata(ode_outputs, var, user_units=None, user_shape=None)
             shape = meta['shape']
             units = meta['units']
