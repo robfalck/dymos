@@ -9,7 +9,7 @@ from ..utils.constants import INF_BOUND
 from ..utils.indexing import get_constraint_flat_idxs
 from ..utils.misc import _unspecified
 from ..utils.introspection import configure_states_introspection, get_promoted_vars, get_target_metadata, \
-    configure_states_discovery, configure_parameters_introspection
+    configure_states_discovery, configure_parameters_introspection, get_unconnected_inputs
 from .._options import options as dymos_options
 
 
@@ -333,23 +333,15 @@ class TranscriptionBase(object):
             The phase associated with this transcription.
         """
         ode = self._get_ode(phase)
-        ode_inputs = get_promoted_vars(ode,
-                                       metadata_keys=['val', 'shape', 'units', 'tags'],
-                                       iotypes='input')
 
-        # Connections internal to the ODE
-        if isinstance(ode, om.ExplicitComponent) or isinstance(ode, om.ImplicitComponent):
-            internal_connections = set()
-        elif ode._static_mode:
-            internal_connections = set(ode._static_manual_connections.keys())
-        else:
-            internal_connections = set(ode._manual_connections.keys())
+        unconnected_inputs = get_unconnected_inputs(phase.options['ode_class'],
+                                                    phase.options['ode_init_kwargs'])
 
         # All connections from the phase
         conns_from_phase = set(phase._ode_connections.keys())
 
         # The paths of all unconnected inputs
-        unconnected_inputs = set(ode_inputs.keys()) - internal_connections - conns_from_phase
+        unconnected_inputs -= conns_from_phase
 
         # If there are any unconnected inputs, make them parameters
         param_comp = phase._get_subsystem('param_comp')

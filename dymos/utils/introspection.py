@@ -115,6 +115,26 @@ def get_promoted_vars(ode, iotypes, metadata_keys=None, get_remote=True):
                                                                     metadata_keys=metadata_keys).values()}
 
 
+def get_unconnected_inputs(ode_class, ode_init_kwargs):
+    """
+    Return the promoted names of all inputs in the ODE that are not connected.
+
+    Parameters
+    ----------
+    ode_class : callable
+        The instantiator for the ODE system.
+    ode_init_kwargs : dict
+        Keyword arguments used to instantiate the ODE.
+    """
+    p = om.Problem(model=ode_class(num_nodes=1, **ode_init_kwargs))
+    p.setup()
+    abs_auto_ivcs = {k for k, v in p.model._conn_global_abs_in2out.items()
+                     if v.startswith('_auto_ivc.v')}
+    abs2prom = p.model._var_allprocs_abs2prom['input']
+    del p
+    return {abs2prom[abs_auto_ivc] for abs_auto_ivc in abs_auto_ivcs}
+
+
 def get_targets(ode, name, user_targets, control_rates=False):
     """
     Return the targets of a variable in a given ODE system.
