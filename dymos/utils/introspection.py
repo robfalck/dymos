@@ -126,7 +126,10 @@ def get_unconnected_inputs(ode_class, ode_init_kwargs):
     ode_init_kwargs : dict
         Keyword arguments used to instantiate the ODE.
     """
-    p = om.Problem(model=ode_class(num_nodes=1, **ode_init_kwargs))
+    model = om.Group()
+    model.add_subsystem('ode', ode_class(num_nodes=1, **ode_init_kwargs),
+                        promotes_inputs=['*'], promotes_outputs=['*'])
+    p = om.Problem(model=model)
     p.setup()
     abs_auto_ivcs = {k for k, v in p.model._conn_global_abs_in2out.items()
                      if v.startswith('_auto_ivc.v')}
