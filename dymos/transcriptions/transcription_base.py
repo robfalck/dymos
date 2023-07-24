@@ -9,7 +9,7 @@ from ..utils.constants import INF_BOUND
 from ..utils.indexing import get_constraint_flat_idxs
 from ..utils.misc import _unspecified
 from ..utils.introspection import configure_states_introspection, get_promoted_vars, get_target_metadata, \
-    configure_states_discovery
+    configure_states_discovery, configure_parameters_introspection, get_unconnected_inputs
 from .._options import options as dymos_options
 
 
@@ -47,8 +47,8 @@ class TranscriptionBase(object):
         self.options.update(kwargs)
         self.init_grid()
 
-        # Where to query var info.
-        self._rhs_source = None
+        # ODE-relative paths to the ODEs used by the transcription.
+        self._ode_paths = {}
 
     def _declare_options(self):
         pass
@@ -84,13 +84,8 @@ class TranscriptionBase(object):
         if phase.time_options['t_duration_balance_options']:
             self._implicit_duration = True
 
-        if not time_options['input_initial']:
-            phase.add_subsystem('time_extents', om.IndepVarComp(),
-                                promotes_outputs=['*'])
-        else:
-            if not time_options['input_duration'] and not self._implicit_duration:
-                phase.add_subsystem('time_extents', om.IndepVarComp(),
-                                    promotes_outputs=['*'])
+        phase.add_subsystem('param_comp', subsys=ParameterComp(time_options=time_options),
+                            promotes_inputs=['*'], promotes_outputs=['*'])
 
         for ts_name, ts_options in phase._timeseries.items():
             if t_name not in ts_options['outputs']:
@@ -113,26 +108,12 @@ class TranscriptionBase(object):
         # Determine the time unit.
         if time_options['units'] in {None, _unspecified}:
             if time_options['targets']:
-                ode = phase._get_subsystem(self._rhs_source)
+                ode = phase._get_subsystem(self._ode_paths.keys()[0])
 
                 _, time_options['units'] = get_target_metadata(ode, name='time',
                                                                user_targets=time_options['targets'],
                                                                user_units=time_options['units'],
                                                                user_shape='')
-
-        time_units = time_options['units']
-        indeps = []
-        default_vals = {'t_initial': phase.time_options['initial_val'],
-                        't_duration': phase.time_options['duration_val']}
-
-        if not time_options['input_initial']:
-            indeps.append('t_initial')
-
-        if not time_options['input_duration'] and not self._implicit_duration:
-            indeps.append('t_duration')
-
-        for var in indeps:
-            phase.time_extents.add_output(var, val=default_vals[var], units=time_units)
 
         if not (time_options['input_initial'] or time_options['fix_initial']):
             lb, ub = time_options['initial_bounds']
@@ -221,7 +202,11 @@ class TranscriptionBase(object):
                                          polynomial_control_options=phase.polynomial_control_options,
                                          time_units=phase.time_options['units'])
             phase.add_subsystem('polynomial_control_group', subsys=sys,
-                                promotes_inputs=['*'], promotes_outputs=['*'])
+                                promotes_inputs=['polynomial_controls:*'],
+                                promotes_outputs=['polynomial_control_values:*',
+                                                  'polynomial_control_rates:*'])
+
+            phase.connect('t_duration_val', 'polynomial_control_group.t_duration')
 
             prefix = 'polynomial_controls:' if phase.timeseries_options['use_prefix'] else ''
             rate_prefix = 'polynomial_control_rates:' if phase.timeseries_options['use_prefix'] else ''
@@ -265,10 +250,6 @@ class TranscriptionBase(object):
         param_prefix = 'parameters:' if phase.timeseries_options['use_prefix'] else ''
         include_params = phase.timeseries_options['include_parameters']
 
-        if phase.parameter_options:
-            param_comp = ParameterComp()
-            phase.add_subsystem('param_comp', subsys=param_comp, promotes_inputs=['*'], promotes_outputs=['*'])
-
         for name, options in phase.parameter_options.items():
             if (options['include_timeseries'] is None and include_params) or options['include_timeseries']:
                 for ts_name, ts_options in phase._timeseries.items():
@@ -307,10 +288,57 @@ class TranscriptionBase(object):
 
                 for tgts, src_idxs in self.get_parameter_connections(name, phase):
                     if not options['static_target']:
-                        phase.connect(f'parameter_vals:{name}', tgts, src_indices=src_idxs,
-                                      flat_src_indices=True)
+                        phase._connect_to_ode(f'parameter_vals:{name}', tgts, src_indices=src_idxs,
+                                              flat_src_indices=True)
                     else:
-                        phase.connect(f'parameter_vals:{name}', tgts)
+                        phase._connect_to_ode(f'parameter_vals:{name}', tgts)
+
+    def configure_automatic_parameters(self, phase):
+        """
+        Determine which ODE inputs, if any, have not been explicitly connected to a source.
+
+        All such inputs are made into fixed parameters of the phase, available for connection
+        from external systems.
+
+        This method has to do a bit of the work of add_parameter, configure_parameters_introspection,
+        and configure parameters all in one method.
+
+        Caveats to automatic parameters:
+        - If the parameter is to be a design variable, it must be added manually.
+        - Any name collisions must be resolved manually by adding one of the parameters manually
+          with a different name.
+
+        Parameters
+        ----------
+        phase : Phase
+            The phase associated with this transcription.
+        """
+        ode = self._get_ode(phase)
+
+        unconnected_inputs = get_unconnected_inputs(phase.options['ode_class'],
+                                                    phase.options['ode_init_kwargs'])
+
+        # All connections from the phase
+        conns_from_phase = set(phase._ode_connections.keys())
+
+        # The paths of all unconnected inputs
+        unconnected_inputs -= conns_from_phase
+
+        # If there are any unconnected inputs, make them parameters
+        param_comp = phase._get_subsystem('param_comp')
+
+        for path in unconnected_inputs:
+            name = path.split('.')[-1]
+            phase.add_parameter(name=name, targets=path)
+            configure_parameters_introspection(phase.parameter_options, ode, only_param=name)
+            options = phase.parameter_options[name]
+            param_comp.add_parameter(name, val=options['val'], shape=options['shape'], units=options['units'])
+            for tgts, src_idxs in self.get_parameter_connections(name, phase):
+                if not options['static_target']:
+                    phase._connect_to_ode(f'parameter_vals:{name}', tgts, src_indices=src_idxs,
+                                          flat_src_indices=True)
+                else:
+                    phase._connect_to_ode(f'parameter_vals:{name}', tgts)
 
     def setup_states(self, phase):
         """
@@ -690,7 +718,7 @@ class TranscriptionBase(object):
             The OpenMDAO system which serves as the ODE for the given Phase.
 
         """
-        return phase._get_subsystem(self._rhs_source)
+        return phase._get_subsystem(list(self._ode_paths.keys())[0])
 
     def get_parameter_connections(self, name, phase):
         """

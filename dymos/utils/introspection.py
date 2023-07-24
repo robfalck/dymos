@@ -115,6 +115,29 @@ def get_promoted_vars(ode, iotypes, metadata_keys=None, get_remote=True):
                                                                     metadata_keys=metadata_keys).values()}
 
 
+def get_unconnected_inputs(ode_class, ode_init_kwargs):
+    """
+    Return the promoted names of all inputs in the ODE that are not connected.
+
+    Parameters
+    ----------
+    ode_class : callable
+        The instantiator for the ODE system.
+    ode_init_kwargs : dict
+        Keyword arguments used to instantiate the ODE.
+    """
+    model = om.Group()
+    model.add_subsystem('ode', ode_class(num_nodes=1, **ode_init_kwargs),
+                        promotes_inputs=['*'], promotes_outputs=['*'])
+    p = om.Problem(model=model)
+    p.setup()
+    abs_auto_ivcs = {k for k, v in p.model._conn_global_abs_in2out.items()
+                     if v.startswith('_auto_ivc.v')}
+    abs2prom = p.model._var_allprocs_abs2prom['input']
+    del p
+    return {abs2prom[abs_auto_ivc] for abs_auto_ivc in abs_auto_ivcs}
+
+
 def get_targets(ode, name, user_targets, control_rates=False):
     """
     Return the targets of a variable in a given ODE system.
@@ -363,21 +386,31 @@ def configure_controls_introspection(control_options, ode, time_units='s'):
                              f"because one or more targets are tagged with 'dymos.static_target'.")
 
 
-def configure_parameters_introspection(parameter_options, ode):
+def configure_parameters_introspection(parameter_options, ode, only_param=None):
     """
     Modify parameter options in-place using introspection of the user-provided ODE.
 
     Parameters
     ----------
-    parameter_options : dict of {str: ParameterOptionsDictionary
+    parameter_options : dict of {str: ParameterOptionsDictionary}
         A dictionary keyed by parameter name containing the options for all parameters to be applied
         to the ODE. Options for 'targets', 'units', 'shape', and 'static_target' are modified in-place.
     ode : om.System
         An instantiated System that serves as the ODE to which the parameters should be applied.
+    only_param : str or None
+        If provided, only update the parameter options dictionary for the specified parameter name.
     """
     ode_inputs = get_promoted_vars(ode, iotypes='input')
 
-    for name, options in parameter_options.items():
+    def _introspect_param(name, options):
+        """
+        Perform introspection of a single parameter given its name and corresponding options dict.
+
+        Parameters
+        ----------
+        name : str
+        options : ParameterOptionsDictionary
+        """
         try:
             targets, shape, units, static_target = _get_targets_metadata(ode_inputs, name=name,
                                                                          user_targets=options['targets'],
@@ -390,6 +423,12 @@ def configure_parameters_introspection(parameter_options, ode):
         options['units'] = units
         options['shape'] = shape
         options['static_target'] = static_target
+
+    if only_param is not None:
+        _introspect_param(only_param, parameter_options[only_param])
+    else:
+        for name, options in parameter_options.items():
+            _introspect_param(name, options)
 
 
 def configure_time_introspection(time_options, ode):

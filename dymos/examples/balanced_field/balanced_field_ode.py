@@ -22,17 +22,28 @@ class BalancedFieldODEComp(om.ExplicitComponent):
         nn = self.options['num_nodes']
 
         # Scalar (constant) inputs
-        self.add_input('rho', val=1.225, desc='atmospheric density at runway', units='kg/m**3')
-        self.add_input('S', val=124.7, desc='aerodynamic reference area', units='m**2')
-        self.add_input('CD0', val=0.03, desc='zero-lift drag coefficient', units=None)
-        self.add_input('CL0', val=0.5, desc='zero-alpha lift coefficient', units=None)
-        self.add_input('CL_max', val=2.0, desc='maximum lift coefficient for linear fit', units=None)
-        self.add_input('alpha_max', val=np.radians(10), desc='angle of attack at CL_max', units='rad')
-        self.add_input('h_w', val=1.0, desc='height of the wing above the CG', units='m')
-        self.add_input('AR', val=9.45, desc='wing aspect ratio', units=None)
-        self.add_input('e', val=0.801, desc='Oswald span efficiency factor', units=None)
-        self.add_input('span', val=35.7, desc='Wingspan', units='m')
-        self.add_input('T', val=1.0, desc='thrust', units='N')
+        self.add_input('rho', val=1.225, desc='atmospheric density at runway', units='kg/m**3',
+                       tags=['dymos.static_target'])
+        self.add_input('S', val=124.7, desc='aerodynamic reference area', units='m**2',
+                       tags=['dymos.static_target'])
+        self.add_input('CD0', val=0.03, desc='zero-lift drag coefficient', units=None,
+                       tags=['dymos.static_target'])
+        self.add_input('CL0', val=0.5, desc='zero-alpha lift coefficient', units=None,
+                       tags=['dymos.static_target'])
+        self.add_input('CL_max', val=2.0, desc='maximum lift coefficient for linear fit', units=None,
+                       tags=['dymos.static_target'])
+        self.add_input('alpha_max', val=np.radians(10), desc='angle of attack at CL_max', units='rad',
+                       tags=['dymos.static_target'])
+        self.add_input('h_w', val=1.0, desc='height of the wing above the CG', units='m',
+                       tags=['dymos.static_target'])
+        self.add_input('AR', val=9.45, desc='wing aspect ratio', units=None,
+                       tags=['dymos.static_target'])
+        self.add_input('e', val=0.801, desc='Oswald span efficiency factor', units=None,
+                       tags=['dymos.static_target'])
+        self.add_input('span', val=35.7, desc='Wingspan', units='m',
+                       tags=['dymos.static_target'])
+        self.add_input('T', val=1.0, desc='thrust', units='N',
+                       tags=['dymos.static_target'])
 
         # Dynamic inputs (can assume a different value at every node)
         self.add_input('m', shape=(nn,), desc='aircraft mass', units='kg')

@@ -22,7 +22,8 @@ class crtbp_ode(om.ExplicitComponent):
         nn = self.options['num_nodes']
         mu_val = 123.0
 
-        self.add_input('mu', val=mu_val, desc='gravitational parameter for the specified CRTBP system')
+        self.add_input('mu', val=mu_val, desc='gravitational parameter for the specified CRTBP system',
+                       tags=['dymos.static_target'])
         self.add_input('x', val=np.ones(nn), desc='x-position in rotating frame')
         self.add_input('y', val=np.ones(nn), desc='y-position in rotating frame')
         self.add_input('z', val=np.ones(nn), desc='z-position in rotating frame')

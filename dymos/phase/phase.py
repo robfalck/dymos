@@ -70,6 +70,9 @@ class Phase(om.Group):
         self.timeseries_ec_vars = {}
         self.timeseries_options = PhaseTimeseriesOptionsDictionary()
 
+        # A dictionary that keeps track of all targets to which we've connected in the ODE.
+        self._ode_connections = {}
+
         # Dictionaries of variable options that are set by the user via the API
         # These will be applied over any defaults specified by decorators on the ODE
         if from_phase is None:
@@ -1839,8 +1842,7 @@ class Phase(om.Group):
         if self.polynomial_control_options:
             transcription.setup_polynomial_controls(self)
 
-        if self.parameter_options:
-            transcription.setup_parameters(self)
+        transcription.setup_parameters(self)
 
         transcription.setup_states(self)
         self._check_ode()
@@ -1888,6 +1890,8 @@ class Phase(om.Group):
         transcription.configure_states(self)
 
         transcription.configure_ode(self)
+
+        transcription.configure_automatic_parameters(self)
 
         transcription.configure_defects(self)
 
@@ -2023,6 +2027,37 @@ class Phase(om.Group):
                     warnings.warn(f"Invalid options for non-optimal parameter '{name}' in "
                                   f"phase '{self.name}': {', '.join(invalid_options)}",
                                   RuntimeWarning)
+
+    def _connect_to_ode(self, src_name, ode_tgt_name,
+                        src_indices=None, flat_src_indices=None):
+        """
+        Connect source src_name to target tgt_name in the ODE and cache the name of the ODE target.
+
+        Parameters
+        ----------
+        src_name : str
+            Name of the source variable to connect.
+        ode_tgt_name : str or [str, ... ] or (str, ...)
+            Name of the target variable(s) to connect relative to the ODE system.
+        src_indices : int or list of ints or tuple of ints or int ndarray or Iterable or None
+            The global indices of the source variable to transfer data from.
+            The shapes of the target and src_indices must match, and form of the
+            entries within is determined by the value of 'flat_src_indices'.
+        flat_src_indices : bool
+            If True, each entry of src_indices is assumed to be an index into the
+            flattened source.  Otherwise it must be a tuple or list of size equal
+            to the number of dimensions of the source.
+        """
+        ode_paths = self.options['transcription']._ode_paths
+
+        for ode_path, default_src_idxs in ode_paths.items():
+            if isinstance(ode_tgt_name, str):
+                ode_tgt_name = [ode_tgt_name]
+            for tgt in ode_tgt_name:
+                src_idxs = None if src_indices is None else src_indices[ode_path]
+                super().connect(src_name=src_name, tgt_name=f'{ode_path}.{tgt}',
+                                src_indices=src_idxs, flat_src_indices=flat_src_indices)
+                self._ode_connections[tgt] = src_name
 
     def interpolate(self, xs=None, ys=None, nodes='all', kind='linear', axis=0):
         """
