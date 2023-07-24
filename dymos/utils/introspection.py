@@ -194,6 +194,117 @@ def get_targets(ode, name, user_targets, control_rates=False):
     return []
 
 
+def _introspect_units(name, targets):
+    """
+    Assign units to the given variable by introspection.
+
+    Parameters
+    ----------
+    name : str
+        The name of the variable undergoing introspection.
+    targets : dict
+        A dictionary mapping targets to the target metadata.
+
+    Returns
+    -------
+    str or _unspecified
+        The units as determined by the targets, or _unspecified if no units could be inferred.
+
+    Raises
+    ------
+    ValueError
+        Exception raised if the targets given don't all have the same units.
+
+    """
+    if not targets:
+        return _unspecified
+    target_units = {key: meta['units'] for key, meta in targets.items()}
+    if len(target_units) == 1:
+        return list(target_units.values())[0]
+    else:
+        raise ValueError(f'Unable to automatically assign units to {name}. '
+                         f'Targets have multiple units: {target_units_set}. '
+                         f'Either promote targets and use set_input_defaults to assign common '
+                         f'units, or explicitly provide them to {name}.')
+
+
+def _introspect_shape(name, targets, num_nodes, allow_static=True):
+    """
+    Assign shape to the given variable by introspection.
+
+    Parameters
+    ----------
+    name : str
+        The name of the variable undergoing introspection.
+    targets : dict
+        A dictionary mapping targets to the target metadata.
+    num_nodes : int
+        The number of nodes in the ODE.
+    allow_static : bool
+        A flag that specifies whether the variable is allowed to connect to static targets.
+        This is only true of parameters, t_initial, and t_duration.
+
+    Returns
+    -------
+    tuple of int or _unspecified
+        The shape as determined by the targets, or _unspecified if no shape could be inferred.
+
+    Raises
+    ------
+    ValueError
+        Exception raised if the targets given don't all have the same shape.
+
+    """
+    if not targets:
+        return _unspecified
+    target_shapes = {key: tuple(meta['shape']) for key, meta in targets.items()}
+    if len(target_shapes) == 1:
+        tgt_shape = list(target_shapes.values())[0]
+        if tgt_shape[0] == num_nodes:
+            if len(tgt_shape) == 0:
+                return (1,)
+            else:
+                return tgt_shape[1:]
+        else:
+            
+
+
+
+        return list(target_shapes.values())[0]
+    else:
+        raise ValueError(f'Unable to automatically assign shape to {name}. '
+                         f'Targets have multiple shapes: {target_shapes}. '
+                         f'Either promote targets and use set_input_defaults to assign common '
+                         f'shape, or explicitly provide them to {name}.')
+
+
+def _check_targets_not_static(name, targets, var_type):
+    """
+    Check that the targets of a variable are not static.
+
+    Parameters
+    ----------
+    name : str
+        The name of the variable being checked.
+    targets : dict
+        A dictionary mapping targets to the target metadata.
+    var_type : str
+        The type of variable being checked, used to make the error more descriptive.
+
+    Raises
+    ------
+    ValueError
+        Exception raised if the targets given don't all have the same units.
+
+    """
+    if not targets:
+        return
+    static_targets = [tgt for tgt, meta in targets.items() if meta['static_target']]
+    if static_targets:
+        raise ValueError(f"The {var_type} {time_name} cannot be connected "
+                         f"to its targets because one or more targets are tagged "
+                         f"with 'dymos.static_target'.\n{static_targets}")
+
 def _configure_constraint_introspection(phase):
     """
     Modify constraint options in-place using introspection of the phase and its ODE.
@@ -340,51 +451,51 @@ def configure_controls_introspection(control_options, ode, time_units='s'):
     ode_inputs = get_promoted_vars(ode, iotypes='input')
     for name, options in control_options.items():
 
-        targets, shape, units, static_target = _get_targets_metadata(ode_inputs,
-                                                                     name=name,
-                                                                     user_targets=options['targets'],
-                                                                     user_units=options['units'],
-                                                                     user_shape=options['shape'],
-                                                                     control_rate=False)
-        options['targets'] = targets
-        if targets:
-            options['units'] = units
-            options['shape'] = shape
+        options['targets'] = _get_targets_metadata(ode_inputs,
+                                                   name=name,
+                                                   num_nodes=ode.options['num_nodes'],
+                                                   user_targets=options['targets'],
+                                                   user_units=options['units'],
+                                                   user_shape=options['shape'],
+                                                   control_rate=False)
 
-        if static_target:
-            raise ValueError(f"Control '{name}' cannot be connected to its targets because one "
-                             f"or more targets are tagged with 'dymos.static_target'.")
+        if options['units'] is not _unspecified:
+            options['units'] = _introspect_units(name, options['targets'])
+
+        if options['shape'] is not _unspecified:
+            options['shape'] = _introspect_shape(name, options['targets'], ode.options['num_nodes'])
+
+        _check_targets_not_static(name, options['targets'], var_type='control')
 
         # Now check rate targets
-        rate_targets, shape, units, static_target = _get_targets_metadata(ode_inputs,
-                                                                          name=name,
-                                                                          user_targets=options['rate_targets'],
-                                                                          user_units=options['units'],
-                                                                          user_shape=options['shape'],
-                                                                          control_rate=1)
-        options['rate_targets'] = rate_targets
-        if options['units'] is _unspecified:
-            options['units'] = time_units if units is None else f'{units}*{time_units}'
-        options['shape'] = shape
-        if static_target:
-            raise ValueError(f"Control rate of '{name}' cannot be connected to its targets "
-                             f"because one or more targets are tagged with 'dymos.static_target'.")
+        if options['rate_targets']:
+            options['rate_targets'] = _get_targets_metadata(ode_inputs,
+                                                            name=name,
+                                                            num_nodes=ode.options['num_nodes'],
+                                                            user_targets=options['rate_targets'],
+                                                            user_units=options['units'],
+                                                            user_shape=options['shape'],
+                                                            control_rate=1)
+            if options['units'] is _unspecified:
+                units = targets
+                options['units'] = time_units if units is None else f'{units}*{time_units}'
+            if options['shape'] is _unspecified:
+                options['units'] = time_units if units is None else f'{units}*{time_units}'
 
-        # Now check rate2 targets
-        rate2_targets, shape, units, static_target = _get_targets_metadata(ode_inputs,
-                                                                           name=name,
-                                                                           user_targets=options['rate2_targets'],
-                                                                           user_units=options['units'],
-                                                                           user_shape=options['shape'],
-                                                                           control_rate=2)
-        options['rate2_targets'] = rate2_targets
-        if options['units'] is _unspecified:
-            options['units'] = time_units if units is None else f'{units}*{time_units}**2'
-        options['shape'] = shape
-        if static_target:
-            raise ValueError(f"Control rate2 of '{name}' cannot be connected to its targets "
-                             f"because one or more targets are tagged with 'dymos.static_target'.")
+            _check_targets_not_static(f'{name}_rate', options['rate_targets'], var_type='control rate')
 
+        if options['rate2_targets']:
+            options['rate2_targets'] = _get_targets_metadata(ode_inputs,
+                                                             name=name,
+                                                             num_nodes=ode.options['num_nodes'],
+                                                             user_targets=options['rate2_targets'],
+                                                             user_units=options['units'],
+                                                             user_shape=options['shape'],
+                                                             control_rate=2)
+            if options['units'] is _unspecified:
+                options['units'] = time_units if units is None else f'{units}*{time_units}'
+
+            _check_targets_not_static(f'{name}_rate2', options['rate2_targets'], var_type='control rate')
 
 def configure_parameters_introspection(parameter_options, ode, only_param=None):
     """
@@ -412,17 +523,21 @@ def configure_parameters_introspection(parameter_options, ode, only_param=None):
         options : ParameterOptionsDictionary
         """
         try:
-            targets, shape, units, static_target = _get_targets_metadata(ode_inputs, name=name,
-                                                                         user_targets=options['targets'],
-                                                                         user_units=options['units'],
-                                                                         user_shape=options['shape'],
-                                                                         user_static_target=options['static_target'])
+            targets = _get_targets_metadata(ode_inputs, name=name,
+                                            num_nodes=ode.options['num_nodes'],
+                                            user_targets=options['targets'],
+                                            user_units=options['units'],
+                                            user_shape=options['shape'],
+                                            user_static_target=options['static_target'])
         except ValueError as e:
             raise ValueError(f'Parameter `{name}` has invalid target(s).\n{str(e)}') from e
         options['targets'] = targets
-        options['units'] = units
-        options['shape'] = shape
-        options['static_target'] = static_target
+
+        if options['units'] is _unspecified:
+            _introspect_units(name, targets)
+
+        if options['shape'] is _unspecified:
+            _introspect_shape(name, targets)
 
     if only_param is not None:
         _introspect_param(only_param, parameter_options[only_param])
@@ -453,31 +568,31 @@ def configure_time_introspection(time_options, ode):
     time_name = time_options['name']
     t_phase_name = f'{time_name}_phase'
 
-    targets, shape, units, static_target = _get_targets_metadata(ode_inputs,
-                                                                 name=time_name,
-                                                                 user_targets=time_options['targets'],
-                                                                 user_units=time_options['units'],
-                                                                 user_shape=(1,))
+    time_options['targets'] = _get_targets_metadata(ode_inputs,
+                                                    name=time_name,
+                                                    num_nodes=ode.options['num_nodes'],
+                                                    user_targets=time_options['targets'],
+                                                    user_units=time_options['units'],
+                                                    user_shape=(1,))
 
-    time_options['targets'] = targets
-    time_options['units'] = units
+    if time_options['units'] is _unspecified:
+        time_options['units'] = _introspect_units(name=time_name, targets=time_options['targets'])
 
-    if static_target:
-        raise ValueError(f"The integration variable {time_name} cannot be connected to its targets because one "
-                         f"or more targets are tagged with 'dymos.static_target'.")
+    _check_targets_not_static(name=time_name, targets=time_options['targets'],
+                              var_type='integration variable')
 
-    # t_phase
-    targets, shape, units, static_target = _get_targets_metadata(ode_inputs,
-                                                                 name=t_phase_name,
-                                                                 user_targets=time_options['time_phase_targets'],
-                                                                 user_units=time_options['units'],
-                                                                 user_shape=(1,))
+    time_options['time_phase_targets'] = _get_targets_metadata(ode_inputs,
+                                                               name=t_phase_name,
+                                                               num_nodes=ode.options['num_nodes'],
+                                                               user_targets=time_options['time_phase_targets'],
+                                                               user_units=time_options['units'],
+                                                               user_shape=(1,))
 
-    time_options['time_phase_targets'] = targets
+    if time_options['units'] is _unspecified:
+        time_options['units'] = _introspect_units(name=t_phase_name, targets=time_options['time_phase_targets'])
 
-    if static_target:
-        raise ValueError(f"'t_phase' cannot be connected to its targets because one "
-                         f"or more targets are tagged with 'dymos.static_target'.")
+    _check_targets_not_static(name=t_phase_name, targets=time_options['time_phase_targets'],
+                              var_type='elapsped phase time')
 
 
 def configure_states_introspection(state_options, time_options, control_options, parameter_options,
@@ -514,16 +629,18 @@ def configure_states_introspection(state_options, time_options, control_options,
 
     for state_name, options in state_options.items():
         # Automatically determine targets of state if left _unspecified
-        targets, tgt_shape, tgt_units, static_target = _get_targets_metadata(ode_inputs,
-                                                                             state_name,
-                                                                             user_targets=options['targets'],
-                                                                             user_units=options['units'],
-                                                                             user_shape=options['shape'])
+        options['targets'] = _get_targets_metadata(ode_inputs,
+                                                   state_name,
+                                                   num_nodes=ode.options['num_nodes'],
+                                                   user_targets=options['targets'],
+                                                   user_units=options['units'],
+                                                   user_shape=options['shape'])
 
-        options['targets'] = targets
-        if targets:
-            options['shape'] = tgt_shape
-            options['units'] = tgt_units
+        if options['units'] is _unspecified:
+            options['units'] = _introspect_units(state_name, options['targets'])
+
+        if options['shape'] is _unspecified:
+            options['shape'] = _introspect_shape(state_name, options['targets'])
 
         # 3. Attempt rate-source introspection
         rate_src = options['rate_source']
@@ -1216,7 +1333,7 @@ def configure_duration_balance_introspection(phase):
                          f' has no index specified. The balance may only have shape (1,) or a single index')
 
 
-def _get_targets_metadata(ode, name, user_targets=_unspecified, user_units=_unspecified,
+def _get_targets_metadata(ode_inputs, name, num_nodes, user_targets=_unspecified, user_units=_unspecified,
                           user_shape=_unspecified, control_rate=False, user_static_target=_unspecified):
     """
     Return the targets of a variable in a given ODE system and their metadata.
@@ -1230,12 +1347,14 @@ def _get_targets_metadata(ode, name, user_targets=_unspecified, user_units=_unsp
 
     Parameters
     ----------
-    ode : om.System or dict
+    ode_inputs : dict
         The OpenMDAO system which serves as the ODE for dymos, or a dictionary of the ODE inputs and their metadata
         from a previous call to _get_targets_metadata. If given as the ODE system, it should already have had its setup
         and configure methods called.
     name : str
         The name of the variable whose targets are desired.
+    num_nodes : int
+        The number of nodes associated with the ODE.
     user_targets : str or None or Sequence or _unspecified
         Targets for the variable as given by the user.
     user_units : str or None or _unspecified
@@ -1267,66 +1386,74 @@ def _get_targets_metadata(ode, name, user_targets=_unspecified, user_units=_unsp
     this method should be called from configure of some parent Group, and the ODE should
     be a system within that Group.
     """
-    ode_inputs = ode if isinstance(ode, dict) else get_promoted_vars(ode, iotypes='input')
+    targets = {tgt: {} for tgt in get_targets(ode_inputs, name,
+                                              user_targets=user_targets,
+                                              control_rates=control_rate)}
 
-    targets = get_targets(ode_inputs, name, user_targets=user_targets, control_rates=control_rate)
+    # if not targets:
+    #     return targets, user_shape, user_units, False
+    #
+    # for tgt in targets:
+    #     if tgt not in ode_inputs:
+    #         raise ValueError(f"No such ODE input: '{tgt}'.")
 
-    if not targets:
-        return targets, user_shape, user_units, False
+    for tgt, meta in targets.items():
+        meta['units'] = ode_inputs[tgt]['units']
+        meta['shape'] = np.asarray(ode_inputs[tgt]['shape'])
+        meta['static_target'] = ('dymos.static_target' in ode_inputs[tgt]['tags'] or
+                                 len(meta['shape']) == 0 or
+                                 meta['shape'][0] != num_nodes)
 
-    for tgt in targets:
-        if tgt not in ode_inputs:
-            raise ValueError(f"No such ODE input: '{tgt}'.")
 
-    if user_units is _unspecified:
-        target_units_set = {ode_inputs[tgt]['units'] for tgt in targets}
-        if len(target_units_set) == 1:
-            units = next(iter(target_units_set))
-        else:
-            raise ValueError(f'Unable to automatically assign units to {name}. '
-                             f'Targets have multiple units: {target_units_set}. '
-                             f'Either promote targets and use set_input_defaults to assign common '
-                             f'units, or explicitly provide them to {name}.')
-    else:
-        units = user_units
+    # if user_units is _unspecified:
+    #     target_units_set = {ode_inputs[tgt]['units'] for tgt in targets}
+    #     if len(target_units_set) == 1:
+    #         units = next(iter(target_units_set))
+    #     else:
+    #         raise ValueError(f'Unable to automatically assign units to {name}. '
+    #                          f'Targets have multiple units: {target_units_set}. '
+    #                          f'Either promote targets and use set_input_defaults to assign common '
+    #                          f'units, or explicitly provide them to {name}.')
+    # else:
+    #     units = user_units
 
-    # Resolve whether the targets is static or dynamic
-    static_target_tags = [tgt for tgt in targets if 'dymos.static_target' in ode_inputs[tgt]['tags']]
-    if static_target_tags:
-        static_target = True
-        if not user_static_target:
-            raise ValueError(f"User has specified 'static_target = False' for parameter {name},"
-                             f"but one or more targets is tagged with "
-                             f"'dymos.static_target': {' '.join(static_target_tags)}")
-    else:
-        if user_static_target is _unspecified:
-            static_target = False
-        else:
-            static_target = user_static_target
+    # # Resolve whether the targets is static or dynamic
+    # static_target_tags = [tgt for tgt in targets if 'dymos.static_target' in ode_inputs[tgt]['tags']]
+    # if static_target_tags:
+    #     static_target = True
+    #     if not user_static_target:
+    #         raise ValueError(f"User has specified 'static_target = False' for parameter {name},"
+    #                          f"but one or more targets is tagged with "
+    #                          f"'dymos.static_target': {' '.join(static_target_tags)}")
+    # else:
+    #     if user_static_target is _unspecified:
+    #         static_target = False
+    #     else:
+    #         static_target = user_static_target
+    #
+    # if user_shape in {None, _unspecified}:
+    #     # Resolve target shape
+    #     target_shape_set = {ode_inputs[tgt]['shape'] for tgt in targets}
+    #     if len(target_shape_set) == 1:
+    #         shape = next(iter(target_shape_set))
+    #         if not static_target:
+    #             if len(shape) == 1:
+    #                 shape = (1,)
+    #             else:
+    #                 shape = shape[1:]
+    #     elif len(target_shape_set) == 0:
+    #         raise ValueError(f'Unable to automatically assign a shape to {name}.\n'
+    #                          'Targets for this variable either do not exist or have no shape set.\n'
+    #                          'The shape for this variable must be set explicitly via the '
+    #                          '`shape=<tuple>` argument.')
+    #     else:
+    #         raise ValueError(f'Unable to automatically assign a shape to {name} based on targets. '
+    #                          f'Targets have multiple shapes assigned: {target_shape_set}. '
+    #                          f'Change targets such that all have common shapes.')
+    # else:
+    #     shape = user_shape
 
-    if user_shape in {None, _unspecified}:
-        # Resolve target shape
-        target_shape_set = {ode_inputs[tgt]['shape'] for tgt in targets}
-        if len(target_shape_set) == 1:
-            shape = next(iter(target_shape_set))
-            if not static_target:
-                if len(shape) == 1:
-                    shape = (1,)
-                else:
-                    shape = shape[1:]
-        elif len(target_shape_set) == 0:
-            raise ValueError(f'Unable to automatically assign a shape to {name}.\n'
-                             'Targets for this variable either do not exist or have no shape set.\n'
-                             'The shape for this variable must be set explicitly via the '
-                             '`shape=<tuple>` argument.')
-        else:
-            raise ValueError(f'Unable to automatically assign a shape to {name} based on targets. '
-                             f'Targets have multiple shapes assigned: {target_shape_set}. '
-                             f'Change targets such that all have common shapes.')
-    else:
-        shape = user_shape
-
-    return targets, shape, units, static_target
+    return targets
 
 
 def get_source_metadata(ode, src, user_units=_unspecified, user_shape=_unspecified):
