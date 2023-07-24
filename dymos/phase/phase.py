@@ -2054,9 +2054,10 @@ class Phase(om.Group):
             if isinstance(ode_tgt_name, str):
                 ode_tgt_name = [ode_tgt_name]
             for tgt in ode_tgt_name:
-                src_idxs = None if src_indices is None else src_indices[ode_path]
+                print(src_name, tgt, src_indices)
+                # src_idxs = None if src_indices is None else src_indices[ode_path]
                 super().connect(src_name=src_name, tgt_name=f'{ode_path}.{tgt}',
-                                src_indices=src_idxs, flat_src_indices=flat_src_indices)
+                                src_indices=src_indices, flat_src_indices=flat_src_indices)
                 self._ode_connections[tgt] = src_name
 
     def interpolate(self, xs=None, ys=None, nodes='all', kind='linear', axis=0):

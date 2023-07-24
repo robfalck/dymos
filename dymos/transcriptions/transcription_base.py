@@ -286,12 +286,20 @@ class TranscriptionBase(object):
                                          ref0=options['ref0'],
                                          ref=options['ref'])
 
-                for tgts, src_idxs in self.get_parameter_connections(name, phase):
-                    if not options['static_target']:
-                        phase._connect_to_ode(f'parameter_vals:{name}', tgts, src_indices=src_idxs,
-                                              flat_src_indices=True)
+                for tgt, meta in options['targets'].items():
+                    if meta['static_target']:
+                        phase._connect_to_ode(f'parameter_vals:{name}', tgt)
                     else:
-                        phase._connect_to_ode(f'parameter_vals:{name}', tgts)
+                        idxs = np.zeros(meta['shape'][0], dtype=int)
+                        phase._connect_to_ode(f'parameter_vals:{name}', tgt,
+                                              src_indices=om.slicer[idxs, ...])
+
+                # for tgts, src_idxs in self.get_parameter_connections(name, phase):
+                #     if not options['static_target']:
+                #         phase._connect_to_ode(f'parameter_vals:{name}', tgts, src_indices=src_idxs,
+                #                               flat_src_indices=True)
+                #     else:
+                #         phase._connect_to_ode(f'parameter_vals:{name}', tgts)
 
     def configure_automatic_parameters(self, phase):
         """

@@ -261,16 +261,19 @@ def _introspect_shape(name, targets, num_nodes, allow_static=True):
     if len(target_shapes) == 1:
         tgt_shape = list(target_shapes.values())[0]
         if tgt_shape[0] == num_nodes:
-            if len(tgt_shape) == 0:
+            if len(tgt_shape) == 1:
                 return (1,)
             else:
                 return tgt_shape[1:]
         else:
-            
+            if allow_static:
+                return tgt_shape
+            else:
+                raise ValueError(f'Invalid target for {name}. First dimension of target shape\n'
+                                 f'does not match the number of nodes in the ODE but connection\n'
+                                 f'to static targets is not allowed.\n'
+                                 f'{target_shapes}')
 
-
-
-        return list(target_shapes.values())[0]
     else:
         raise ValueError(f'Unable to automatically assign shape to {name}. '
                          f'Targets have multiple shapes: {target_shapes}. '
@@ -463,7 +466,9 @@ def configure_controls_introspection(control_options, ode, time_units='s'):
             options['units'] = _introspect_units(name, options['targets'])
 
         if options['shape'] is not _unspecified:
-            options['shape'] = _introspect_shape(name, options['targets'], ode.options['num_nodes'])
+            options['shape'] = _introspect_shape(name, options['targets'],
+                                                 ode.options['num_nodes'],
+                                                 allow_static=False)
 
         _check_targets_not_static(name, options['targets'], var_type='control')
 
@@ -537,7 +542,7 @@ def configure_parameters_introspection(parameter_options, ode, only_param=None):
             _introspect_units(name, targets)
 
         if options['shape'] is _unspecified:
-            _introspect_shape(name, targets)
+            _introspect_shape(name, targets, ode.options['num_nodes'], allow_static=True)
 
     if only_param is not None:
         _introspect_param(only_param, parameter_options[only_param])
@@ -1390,68 +1395,12 @@ def _get_targets_metadata(ode_inputs, name, num_nodes, user_targets=_unspecified
                                               user_targets=user_targets,
                                               control_rates=control_rate)}
 
-    # if not targets:
-    #     return targets, user_shape, user_units, False
-    #
-    # for tgt in targets:
-    #     if tgt not in ode_inputs:
-    #         raise ValueError(f"No such ODE input: '{tgt}'.")
-
     for tgt, meta in targets.items():
         meta['units'] = ode_inputs[tgt]['units']
-        meta['shape'] = np.asarray(ode_inputs[tgt]['shape'])
+        meta['shape'] = ode_inputs[tgt]['shape']
         meta['static_target'] = ('dymos.static_target' in ode_inputs[tgt]['tags'] or
                                  len(meta['shape']) == 0 or
                                  meta['shape'][0] != num_nodes)
-
-
-    # if user_units is _unspecified:
-    #     target_units_set = {ode_inputs[tgt]['units'] for tgt in targets}
-    #     if len(target_units_set) == 1:
-    #         units = next(iter(target_units_set))
-    #     else:
-    #         raise ValueError(f'Unable to automatically assign units to {name}. '
-    #                          f'Targets have multiple units: {target_units_set}. '
-    #                          f'Either promote targets and use set_input_defaults to assign common '
-    #                          f'units, or explicitly provide them to {name}.')
-    # else:
-    #     units = user_units
-
-    # # Resolve whether the targets is static or dynamic
-    # static_target_tags = [tgt for tgt in targets if 'dymos.static_target' in ode_inputs[tgt]['tags']]
-    # if static_target_tags:
-    #     static_target = True
-    #     if not user_static_target:
-    #         raise ValueError(f"User has specified 'static_target = False' for parameter {name},"
-    #                          f"but one or more targets is tagged with "
-    #                          f"'dymos.static_target': {' '.join(static_target_tags)}")
-    # else:
-    #     if user_static_target is _unspecified:
-    #         static_target = False
-    #     else:
-    #         static_target = user_static_target
-    #
-    # if user_shape in {None, _unspecified}:
-    #     # Resolve target shape
-    #     target_shape_set = {ode_inputs[tgt]['shape'] for tgt in targets}
-    #     if len(target_shape_set) == 1:
-    #         shape = next(iter(target_shape_set))
-    #         if not static_target:
-    #             if len(shape) == 1:
-    #                 shape = (1,)
-    #             else:
-    #                 shape = shape[1:]
-    #     elif len(target_shape_set) == 0:
-    #         raise ValueError(f'Unable to automatically assign a shape to {name}.\n'
-    #                          'Targets for this variable either do not exist or have no shape set.\n'
-    #                          'The shape for this variable must be set explicitly via the '
-    #                          '`shape=<tuple>` argument.')
-    #     else:
-    #         raise ValueError(f'Unable to automatically assign a shape to {name} based on targets. '
-    #                          f'Targets have multiple shapes assigned: {target_shape_set}. '
-    #                          f'Change targets such that all have common shapes.')
-    # else:
-    #     shape = user_shape
 
     return targets
 
