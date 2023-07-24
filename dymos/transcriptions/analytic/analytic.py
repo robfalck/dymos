@@ -2,13 +2,11 @@ import numpy as np
 import openmdao.api as om
 
 from ..transcription_base import TranscriptionBase
-from ...utils.introspection import configure_analytic_states_introspection, get_promoted_vars, get_targets, \
-    get_source_metadata, configure_analytic_states_discovery
+from ...utils.introspection import configure_analytic_states_introspection, get_promoted_vars, get_source_metadata, configure_analytic_states_discovery
 from ...utils.indexing import get_src_indices_by_row
 from ..grid_data import GridData
 from .analytic_timeseries_output_comp import AnalyticTimeseriesOutputComp
 from ..common import TimeComp, TimeseriesOutputGroup
-from ..._options import options as dymos_options
 
 
 class Analytic(TranscriptionBase):
@@ -25,7 +23,7 @@ class Analytic(TranscriptionBase):
     """
     def __init__(self, **kwargs):
         super(Analytic, self).__init__(**kwargs)
-        self._ode_paths = ['rhs']
+        self._ode_paths = {'rhs': self.grid_data.subset_node_indices['all']}
 
     def init_grid(self):
         """
@@ -56,7 +54,10 @@ class Analytic(TranscriptionBase):
                              initial_val=phase.time_options['initial_val'],
                              duration_val=phase.time_options['duration_val'])
 
-        phase.add_subsystem('time', time_comp, promotes_inputs=['*'], promotes_outputs=['*'])
+        phase.add_subsystem('time', time_comp)
+
+        phase.connect('t_initial_val', 'time.t_initial')
+        phase.connect('t_duration_val', 'time.t_duration')
 
     def configure_time(self, phase):
         """
@@ -75,16 +76,16 @@ class Analytic(TranscriptionBase):
         phase.time.configure_io()
 
         options = phase.time_options
-        ode = phase._get_subsystem(self._ode_paths[0])
+        ode = phase._get_subsystem(list(self._ode_paths.keys())[0])
         ode_inputs = get_promoted_vars(ode, iotypes='input')
 
         # The tuples here are (name, user_specified_targets, dynamic)
-        for name, targets, dynamic in [('t', options['targets'], True),
-                                       ('t_phase', options['time_phase_targets'], True)]:
+        for name, targets, dynamic in [('time.t', options['targets'], True),
+                                       ('time.t_phase', options['time_phase_targets'], True)]:
             if targets:
                 src_idxs = self.grid_data.subset_node_indices['all'] if dynamic else None
-                phase.connect(name, [f'rhs.{t}' for t in targets], src_indices=src_idxs,
-                              flat_src_indices=True if dynamic else None)
+                phase._connect_to_ode(name, targets, src_indices={'rhs': src_idxs},
+                                      flat_src_indices=True if dynamic else None)
 
         for name, targets in [('t_initial', options['t_initial_targets']),
                               ('t_duration', options['t_duration_targets'])]:
@@ -94,18 +95,12 @@ class Analytic(TranscriptionBase):
                 if shape == (1,):
                     src_idxs = None
                     flat_src_idxs = None
-                    src_shape = None
                 else:
                     src_idxs = np.zeros(self.grid_data.subset_num_nodes['all'])
                     flat_src_idxs = True
-                    src_shape = (1,)
 
-                phase.promotes('rhs', inputs=[(t, name)], src_indices=src_idxs,
-                               flat_src_indices=flat_src_idxs, src_shape=src_shape)
-            if targets:
-                phase.set_input_defaults(name=name,
-                                         val=np.ones((1,)),
-                                         units=options['units'])
+                phase._connect_to_ode(name, t, src_indices={'rhs': src_idxs},
+                                      flat_src_indices=flat_src_idxs)
 
     def setup_controls(self, phase):
         """
@@ -323,7 +318,7 @@ class Analytic(TranscriptionBase):
             timeseries_group = TimeseriesOutputGroup(has_expr=has_expr, timeseries_output_comp=timeseries_comp)
             phase.add_subsystem(name, subsys=timeseries_group)
 
-            phase.connect('dt_dstau', f'{name}.dt_dstau', flat_src_indices=True)
+            phase.connect('time.dt_dstau', f'{name}.dt_dstau', flat_src_indices=True)
 
     def configure_defects(self, phase):
         """
@@ -372,11 +367,11 @@ class Analytic(TranscriptionBase):
 
         # Determine the path to the variable
         if var_type == 't':
-            path = 't'
+            path = 'time.t'
             src_units = time_units
             src_shape = (1,)
         elif var_type == 't_phase':
-            path = 't_phase'
+            path = 'time.t_phase'
             src_units = time_units
             src_shape = (1,)
         elif var_type == 'parameter':
@@ -435,8 +430,7 @@ class Analytic(TranscriptionBase):
                 src_idxs = get_src_indices_by_row(src_idxs_raw, options['shape'])
                 src_idxs = np.squeeze(src_idxs, axis=0)
 
-            rhs_tgts = [f'rhs.{t}' for t in options['targets']]
-            connection_info.append((rhs_tgts, (src_idxs,)))
+            connection_info.append((options['targets'], {'rhs': src_idxs}))
 
         return connection_info
 
@@ -511,7 +505,7 @@ class Analytic(TranscriptionBase):
         var_type = phase.classify_var(var)
 
         if ode_outputs is None:
-            ode_outputs = get_promoted_vars(phase._get_subsystem(self._ode_paths[0]), 'output')
+            ode_outputs = get_promoted_vars(phase._get_subsystem(list(self._ode_paths.keys())[0]), 'output')
 
         if var_type == 't':
             shape = (1,)
@@ -524,8 +518,7 @@ class Analytic(TranscriptionBase):
             linear = True
             obj_path = 't_phase'
         elif var_type == 'state':
-            obj_path = f'{self._ode_paths[0]}.{var}'
-            src_path = phase.state_options[var]['source']
+            obj_path = f'rhs.{var}'
             meta = get_source_metadata(ode_outputs, var, user_units=None, user_shape=None)
             shape = meta['shape']
             units = meta['units']
