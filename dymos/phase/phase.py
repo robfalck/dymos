@@ -9,10 +9,7 @@ from scipy import interpolate
 import openmdao
 import openmdao.api as om
 from openmdao.utils.mpi import MPI
-from openmdao.utils.om_warnings import issue_warning
 from openmdao.core.system import System
-from openmdao.recorders.case import Case
-
 import dymos as dm
 
 from .options import ControlOptionsDictionary, ParameterOptionsDictionary, \
@@ -72,6 +69,9 @@ class Phase(om.Group):
         self.simulate_options = SimulateOptionsDictionary()
         self.timeseries_ec_vars = {}
         self.timeseries_options = PhaseTimeseriesOptionsDictionary()
+
+        # A dictionary that keeps track of all targets to which we've connected in the ODE.
+        self._ode_connections = {}
 
         # Dictionaries of variable options that are set by the user via the API
         # These will be applied over any defaults specified by decorators on the ODE
@@ -407,13 +407,21 @@ class Phase(om.Group):
             raise ValueError(f'The name {name} is reserved for the independent variable of integration'
                              ' in Dymos and may not be used as a state, control, or parameter name')
         elif name in self.state_options:
-            raise ValueError(f'{name} has already been added as a state.')
+            targets = '\n'.join(['  ' + s for s in self.state_options[name]['targets']])
+            raise ValueError(f'{name} has already been added as a state with the following targets:\n'
+                             f'{targets}')
         elif name in self.control_options:
-            raise ValueError(f'{name} has already been added as a control.')
+            targets = '\n'.join(['  ' + s for s in self.control_options[name]['targets']])
+            raise ValueError(f'{name} has already been added as a control with the following targets:\n'
+                             f'{targets}')
         elif name in self.parameter_options:
-            raise ValueError(f'{name} has already been added as a parameter.')
+            targets = '\n'.join(['  ' + s for s in self.parameter_options[name]['targets']])
+            raise ValueError(f'{name} has already been added as a parameter with the following targets:\n'
+                             f'{targets}')
         elif name in self.polynomial_control_options:
-            raise ValueError(f'{name} has already been added as a polynomial control.')
+            targets = '\n'.join(['  ' + s for s in self.polynomial_control_options[name]['targets']])
+            raise ValueError(f'{name} has already been added as a polynomial control with the following targets:\n'
+                             f'{targets}')
 
     def add_control(self, name, units=_unspecified, desc=_unspecified, opt=_unspecified,
                     fix_initial=_unspecified, fix_final=_unspecified, targets=_unspecified,
@@ -1842,8 +1850,7 @@ class Phase(om.Group):
         if self.polynomial_control_options:
             transcription.setup_polynomial_controls(self)
 
-        if self.parameter_options:
-            transcription.setup_parameters(self)
+        transcription.setup_parameters(self)
 
         transcription.setup_states(self)
         self._check_ode()
@@ -1891,6 +1898,8 @@ class Phase(om.Group):
         transcription.configure_states(self)
 
         transcription.configure_ode(self)
+
+        transcription.configure_automatic_parameters(self)
 
         transcription.configure_defects(self)
 
@@ -2026,6 +2035,37 @@ class Phase(om.Group):
                     warnings.warn(f"Invalid options for non-optimal parameter '{name}' in "
                                   f"phase '{self.name}': {', '.join(invalid_options)}",
                                   RuntimeWarning)
+
+    def _connect_to_ode(self, src_name, ode_tgt_name,
+                        src_indices=None, flat_src_indices=None):
+        """
+        Connect source src_name to target tgt_name in the ODE and cache the name of the ODE target.
+
+        Parameters
+        ----------
+        src_name : str
+            Name of the source variable to connect.
+        ode_tgt_name : str or [str, ... ] or (str, ...)
+            Name of the target variable(s) to connect relative to the ODE system.
+        src_indices : int or list of ints or tuple of ints or int ndarray or Iterable or None
+            The global indices of the source variable to transfer data from.
+            The shapes of the target and src_indices must match, and form of the
+            entries within is determined by the value of 'flat_src_indices'.
+        flat_src_indices : bool
+            If True, each entry of src_indices is assumed to be an index into the
+            flattened source.  Otherwise it must be a tuple or list of size equal
+            to the number of dimensions of the source.
+        """
+        ode_paths = self.options['transcription']._ode_paths
+
+        for ode_path, default_src_idxs in ode_paths.items():
+            if isinstance(ode_tgt_name, str):
+                ode_tgt_name = [ode_tgt_name]
+            for tgt in ode_tgt_name:
+                src_idxs = None if src_indices is None else src_indices[ode_path]
+                super().connect(src_name=src_name, tgt_name=f'{ode_path}.{tgt}',
+                                src_indices=src_idxs, flat_src_indices=flat_src_indices)
+                self._ode_connections[tgt] = src_name
 
     def interpolate(self, xs=None, ys=None, nodes='all', kind='linear', axis=0):
         """
@@ -2646,171 +2686,3 @@ class Phase(om.Group):
             return not self.parameter_options[var_name]['opt']
 
         return False  # No way to know so we allow these to go through
-
-    def load_case(self, case):
-        """
-        Pull all input and output variables from a case into the Phase.
-
-        Parameters
-        ----------
-        case : Case or dict
-            A Case from a CaseReader, or a dictionary with key 'inputs' mapped to the
-            output of problem.model.list_inputs and key 'outputs' mapped to the output
-            of prob.model.list_outputs. Both list_inputs and list_outputs should be called
-            with `units=True`, `prom_names=True` and `return_format='dict'`.
-        """
-        # allow old style arguments using a Case or OpenMDAO problem instead of dictionary
-        assert (isinstance(case, Case) or isinstance(case, dict))
-        if isinstance(case, Case):
-            previous_solution = {
-                'inputs': case.list_inputs(out_stream=None, return_format='dict',
-                                           units=True, prom_name=True),
-                'outputs': case.list_outputs(out_stream=None, return_format='dict',
-                                             units=True, prom_name=True)
-            }
-        else:
-            previous_solution = case
-
-        prev_vars_abs2prom = {}
-        prev_vars_abs2prom.update({k: v['prom_name'] for k, v in previous_solution['inputs'].items()})
-        prev_vars_abs2prom.update({k: v['prom_name'] for k, v in previous_solution['outputs'].items()})
-        prev_vars_prom2abs = {v: k for k, v in prev_vars_abs2prom.items()}
-
-        prev_vars = {}
-        prev_vars.update({v['prom_name']: {'val': v['val'], 'units': v['units'], 'abs_name': k}
-                          for k, v in previous_solution['inputs'].items()})
-        prev_vars.update({v['prom_name']: {'val': v['val'], 'units': v['units'], 'abs_name': k}
-                          for k, v in previous_solution['outputs'].items()})
-
-        phase_io = {'inputs': self.list_inputs(units=True, prom_name=True, out_stream=None),
-                    'outputs': self.list_outputs(units=True, prom_name=True, out_stream=None)}
-
-        phase_vars = {}
-        phase_vars.update({f"{self.pathname}.{v['prom_name']}": {'val': v['val'], 'units': v['units'], 'abs_name': k}
-                           for k, v in phase_io['inputs']})
-        phase_vars.update({f"{self.pathname}.{v['prom_name']}": {'val': v['val'], 'units': v['units'], 'abs_name': k}
-                           for k, v in phase_io['outputs']})
-
-        phase_name = self.name
-
-        # Get the initial time and duration from the previous result and set them into the new phase.
-        integration_name = self.time_options['name']
-
-        try:
-            prev_time_path = prev_vars_abs2prom[f'{self.pathname}.timeseries.timeseries_comp.{integration_name}']
-        except KeyError:
-            om.issue_warning(f'load_case for phase {self.name} failed - phase not found in case data.')
-            return
-
-        prev_timeseries_prom_path, _, _ = prev_time_path.rpartition(f'.{integration_name}')
-        prev_phase_prom_path, _, _ = prev_timeseries_prom_path.rpartition('.timeseries')
-
-        prev_time_val = prev_vars[prev_time_path]['val']
-        prev_time_val, unique_idxs = np.unique(prev_time_val, return_index=True)
-        prev_time_units = prev_vars[prev_time_path]['units']
-
-        print("\n".join(prev_vars.keys()))
-
-        t_initial = prev_time_val[0]
-        t_duration = prev_time_val[-1] - prev_time_val[0]
-
-        self.set_val('t_initial', t_initial, units=prev_time_units)
-        self.set_val('t_duration', t_duration, units=prev_time_units)
-
-        # Interpolate the timeseries state outputs from the previous solution onto the new grid.
-        if not isinstance(self, dm.AnalyticPhase):
-            for state_name, options in self.state_options.items():
-                if f'{prev_timeseries_prom_path}.states:{state_name}' in prev_vars_prom2abs:
-                    prev_state_path = f'{prev_timeseries_prom_path}.states:{state_name}'
-                elif f'{prev_timeseries_prom_path}.{state_name}' in prev_vars_prom2abs:
-                    prev_state_path = f'{prev_timeseries_prom_path}.{state_name}'
-                else:
-                    issue_warning(f'Unable to find state {state_name} in timeseries data from case being loaded.',
-                                  om.OpenMDAOWarning)
-                    continue
-
-                prev_state_val = prev_vars[prev_state_path]['val']
-                prev_state_units = prev_vars[prev_state_path]['units']
-                interp_vals = self.interp(name=state_name,
-                                          xs=prev_time_val,
-                                          ys=prev_state_val[unique_idxs],
-                                          kind='slinear')
-                if options['lower'] is not None or options['upper'] is not None:
-                    interp_vals = interp_vals.clip(options['lower'], options['upper'])
-                self.set_val(f'states:{state_name}',
-                             interp_vals,
-                             units=prev_state_units)
-                try:
-                    self.set_val(f'initial_states:{state_name}', prev_state_val[0, ...], units=prev_state_units)
-                except KeyError:
-                    pass
-
-                if options['fix_final']:
-                    warning_message = f"{phase_name}.states:{state_name} specifies 'fix_final=True'. " \
-                                      f"If the given restart file has a" \
-                                      f" different final value this will overwrite the user-specified value"
-                    issue_warning(warning_message)
-
-            # Interpolate the timeseries control outputs from the previous solution onto the new grid.
-            for control_name, options in self.control_options.items():
-                if f'{prev_timeseries_prom_path}.controls:{control_name}' in prev_vars_prom2abs:
-                    prev_control_path = f'{prev_timeseries_prom_path}.controls:{control_name}'
-                elif f'{prev_timeseries_prom_path}.{control_name}' in prev_vars_prom2abs:
-                    prev_control_path = f'{prev_timeseries_prom_path}.{control_name}'
-                else:
-                    issue_warning(f'Unable to find control {control_name} in timeseries data from case being loaded.',
-                                  om.OpenMDAOWarning)
-                    continue
-
-                prev_control_val = prev_vars[prev_control_path]['val']
-                prev_control_units = prev_vars[prev_control_path]['units']
-                interp_vals = self.interp(name=control_name,
-                                          xs=prev_time_val,
-                                          ys=prev_control_val[unique_idxs],
-                                          kind='slinear')
-                if options['lower'] is not None or options['upper'] is not None:
-                    interp_vals = interp_vals.clip(options['lower'], options['upper'])
-                self.set_val(f'controls:{control_name}', interp_vals, units=prev_control_units)
-                if options['fix_final']:
-                    warning_message = f"{phase_name}.controls:{control_name} specifies 'fix_final=True'. " \
-                                      f"If the given restart file has a" \
-                                      f" different final value this will overwrite the user-specified value"
-                    issue_warning(warning_message)
-
-            # Set the output polynomial control outputs from the previous solution as the value
-            for pc_name, options in self.polynomial_control_options.items():
-                if f'{prev_timeseries_prom_path}.polynomial_controls:{pc_name}' in prev_vars_prom2abs:
-                    prev_pc_path = f'{prev_timeseries_prom_path}.polynomial_controls:{pc_name}'
-                elif f'{prev_timeseries_prom_path}.{pc_name}' in prev_vars_prom2abs:
-                    prev_pc_path = f'{prev_timeseries_prom_path}.{pc_name}'
-                else:
-                    issue_warning(f'Unable to find polynomial control {pc_name} in timeseries data from case being '
-                                  f'loaded.', om.OpenMDAOWarning)
-                    continue
-
-                prev_pc_val = prev_vars[prev_pc_path]['val']
-                prev_pc_units = prev_vars[prev_pc_path]['units']
-                interp_vals = self.interp(name=pc_name,
-                                          xs=prev_time_val,
-                                          ys=prev_pc_val[unique_idxs],
-                                          kind='slinear')
-                if options['lower'] is not None or options['upper'] is not None:
-                    interp_vals = interp_vals.clip(options['lower'], options['upper'])
-                self.set_val(f'polynomial_controls:{pc_name}',
-                             interp_vals,
-                             units=prev_pc_units)
-                if options['fix_final']:
-                    warning_message = f"{phase_name}.polynomial_controls:{pc_name} specifies 'fix_final=True'. " \
-                                      f"If the given restart file has a" \
-                                      f" different final value this will overwrite the user-specified value"
-                    issue_warning(warning_message)
-
-        # Set the timeseries parameter outputs from the previous solution as the parameter value
-        for param_name in self.parameter_options:
-            if f'{prev_phase_prom_path}.parameter_vals:{param_name}' in prev_vars:
-                prev_param_val = prev_vars[f'{prev_phase_prom_path}.parameter_vals:{param_name}']['val']
-                prev_param_units = prev_vars[f'{prev_phase_prom_path}.parameter_vals:{param_name}']['units']
-                self.set_val(f'parameters:{param_name}', prev_param_val[0, ...], units=prev_param_units)
-            else:
-                issue_warning(f'Unable to find "{prev_phase_prom_path}.parameter_vals:{param_name}" '
-                              f'in data from case being loaded.')
