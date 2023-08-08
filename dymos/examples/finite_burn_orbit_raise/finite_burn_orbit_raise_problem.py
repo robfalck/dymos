@@ -1,6 +1,7 @@
 import numpy as np
 
 import openmdao.api as om
+from openmdao.utils.mpi import MPI
 
 import dymos as dm
 from dymos.examples.finite_burn_orbit_raise.finite_burn_eom import FiniteBurnODE
@@ -149,18 +150,16 @@ def make_traj(transcription='gauss-lobatto', transcription_order=3, compressed=F
         traj.link_phases(phases=['burn1', 'burn2'], vars=['accel'],
                          locs=('final', 'final'))
 
-    else:
-        traj.link_phases(phases=['burn1', 'coast', 'burn2'],
-                         vars=['time', 'r', 'theta', 'vr', 'vt', 'deltav'])
-
-        traj.link_phases(phases=['burn1', 'burn2'], vars=['accel'])
-
-    if connected:
         # If running connected and under MPI the phases subsystem requires a Nonlinear Block Jacobi solver.
         # This is not the most efficient way to actually solve this problem but it demonstrates access
         # to the traj.phases subsystem before setup.
         traj.phases.nonlinear_solver = om.NonlinearBlockJac(iprint=0)
         traj.phases.linear_solver = om.PETScKrylov()
+    else:
+        traj.link_phases(phases=['burn1', 'coast', 'burn2'],
+                         vars=['time', 'r', 'theta', 'vr', 'vt', 'deltav'])
+
+        traj.link_phases(phases=['burn1', 'burn2'], vars=['accel'])
 
     return traj
 

@@ -237,7 +237,7 @@ class PseudospectralBase(TranscriptionBase):
         if isinstance(indep, StateIndependentsComp):
             indep.configure_io(self.state_idx_map)
 
-        if self.any_solved_segs or self.any_connected_opt_segs:
+        if self.any_solved_segs:
             for name, options in phase.state_options.items():
                 if options['solve_segments']:
                     phase.connect(f'collocation_constraint.defects:{name}',
@@ -514,7 +514,6 @@ class PseudospectralBase(TranscriptionBase):
                 newton.linesearch = om.BoundsEnforceLS()
 
         # even though you don't need a nl_solver for connections, you still ln_solver since its implicit
-        if self.any_solved_segs or self.any_connected_opt_segs or self._implicit_duration:
             if isinstance(phase.linear_solver, om.LinearRunOnce):
                 phase.linear_solver = om.DirectSolver()
 
