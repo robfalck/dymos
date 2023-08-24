@@ -70,11 +70,11 @@ def brachistochrone_min_time(transcription='gauss-lobatto', num_segments=8, tran
 
     phase.add_parameter('g', targets=['g'], units='m/s**2')
 
-    phase.add_timeseries('timeseries2',
-                         transcription=dm.Radau(num_segments=num_segments*5,
-                                                order=transcription_order,
-                                                compressed=compressed),
-                         subset='control_input')
+    # phase.add_timeseries('timeseries2',
+    #                      transcription=dm.Radau(num_segments=num_segments*5,
+    #                                             order=transcription_order,
+    #                                             compressed=compressed),
+    #                      subset='control_input')
 
     phase.add_boundary_constraint('x', loc='final', equals=10)
     phase.add_boundary_constraint('y', loc='final', equals=5)
@@ -121,5 +121,6 @@ if __name__ == '__main__':
                                      transcription_order=9, compressed=False, optimizer='SNOPT',
                                      solve_segments=False, force_alloc_complex=True)
 
-        with np.printoptions(linewidth=1024):
-            p.check_partials(method='cs', compact_print=False)
+        # with np.printoptions(linewidth=1024):
+        #     p.check_partials(method='cs', compact_print=False)
+

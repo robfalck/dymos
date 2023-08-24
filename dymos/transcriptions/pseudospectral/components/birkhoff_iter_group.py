@@ -3,6 +3,7 @@ import openmdao.api as om
 
 from .birkhoff_collocation_comp import BirkhoffCollocationComp
 from .birkhoff_state_resid_comp import BirkhoffStateResidComp
+from .birkhoff_states_comp import BirkhoffStatesComp
 
 from ...grid_data import GridData
 from ....phase.options import TimeOptionsDictionary
@@ -54,6 +55,10 @@ class BirkhoffIterGroup(om.Group):
                                                           time_units=time_options['units']),
                            promotes_inputs=['*'], promotes_outputs=['*'])
 
+        self.add_subsystem('states_comp',
+                           subsys=BirkhoffStatesComp(state_options=state_options, grid_data=gd),
+                           promotes_inputs=['*'], promotes_outputs=['*'])
+
         if any([opts['solve_segments'] in ('forward', 'backward') for opts in state_options.values()]):
             self.add_subsystem('states_balance_comp', subsys=BirkhoffStateResidComp(),
                                promotes_inputs=['*'], promotes_outputs=['*'])
@@ -67,8 +72,8 @@ class BirkhoffIterGroup(om.Group):
         solve_segs = options['solve_segments']
         opt = options['opt']
 
-        ib = options['initial_bounds']
-        fb = options['final_bounds']
+        ib = (None, None) if options['initial_bounds'] is None else options['initial_bounds']
+        fb = (None, None) if options['final_bounds'] is None else options['final_bounds']
         lower = options['lower']
         upper = options['upper']
         scaler = options['scaler']
@@ -140,12 +145,13 @@ class BirkhoffIterGroup(om.Group):
         collocation_comp = self._get_subsystem('collocation_comp')
         collocation_comp.configure_io()
 
+        states_comp = self._get_subsystem('states_comp')
+        states_comp.configure_io()
+
         gd = self.options['grid_data']
         nn = gd.subset_num_nodes['all']
 
         state_options = self.options['state_options']
-        time_options = self.options['time_options']
-        time_units = time_options['units']
         states_balance_comp = self._get_subsystem('states_balance_comp')
 
         for name, options in state_options.items():

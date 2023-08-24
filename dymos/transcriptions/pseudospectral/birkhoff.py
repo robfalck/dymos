@@ -4,7 +4,8 @@ import openmdao.api as om
 
 from ..transcription_base import TranscriptionBase
 from ..common import TimeComp, TimeseriesOutputGroup
-from .components import StateIndependentsComp, PseudospectralTimeseriesOutputComp, BirkhoffCollocationComp
+from .components import StateIndependentsComp, PseudospectralTimeseriesOutputComp, BirkhoffCollocationComp, \
+    BirkhoffIterGroup
 
 from ..grid_data import BirkhoffRadauGrid, BirkhoffGaussLobattoGrid
 from dymos.utils.misc import get_rate_units, reshape_val
@@ -15,7 +16,7 @@ from dymos.utils.indexing import get_src_indices_by_row
 class Birkhoff(TranscriptionBase):
     def __init__(self, **kwargs):
         super(Birkhoff, self).__init__(**kwargs)
-        self._rhs_source = 'rhs_all'
+        self._rhs_source = 'state_iter_group.ode'
 
     def initialize(self):
         """
@@ -88,7 +89,7 @@ class Birkhoff(TranscriptionBase):
                                        ('t_phase', options['time_phase_targets'], True)]:
             if targets:
                 src_idxs = self.grid_data.subset_node_indices['all'] if dynamic else None
-                phase.connect(name, [f'rhs_all.{t}' for t in targets], src_indices=src_idxs,
+                phase.connect(name, [f'ode.{t}' for t in targets], src_indices=src_idxs,
                               flat_src_indices=True if dynamic else None)
 
         for name, targets in [('t_initial', options['t_initial_targets']),
@@ -105,7 +106,7 @@ class Birkhoff(TranscriptionBase):
                     flat_src_idxs = True
                     src_shape = (1,)
 
-                phase.promotes('rhs_all', inputs=[(t, name)], src_indices=src_idxs,
+                phase.promotes('state_iter_group.ode', inputs=[(t, name)], src_indices=src_idxs,
                                flat_src_indices=flat_src_idxs, src_shape=src_shape)
             if targets:
                 phase.set_input_defaults(name=name,
@@ -123,26 +124,26 @@ class Birkhoff(TranscriptionBase):
         """
         grid_data = self.grid_data
 
-        self.any_solved_segs = False
-        self.any_connected_opt_segs = False
-        for options in phase.state_options.values():
-            if options['input_initial']:
-                self.any_connected_opt_segs = True
-
-        if self.any_connected_opt_segs:
-            indep = StateIndependentsComp(grid_data=grid_data, state_options=phase.state_options)
-        else:
-            indep = om.IndepVarComp()
-
-        num_connected = len([s for (s, opts) in phase.state_options.items() if opts['input_initial']])
-        prom_inputs = ['initial_states:*'] if num_connected > 0 else None
-        phase.add_subsystem('indep_states', indep, promotes_inputs=prom_inputs,
-                            promotes_outputs=['*'])
-
-        indep_state_rates = om.IndepVarComp()
-
-        phase.add_subsystem('indep_state_rates', indep_state_rates,
-                            promotes_outputs=['*'])
+        # self.any_solved_segs = False
+        # self.any_connected_opt_segs = False
+        # for options in phase.state_options.values():
+        #     if options['input_initial']:
+        #         self.any_connected_opt_segs = True
+        #
+        # if self.any_connected_opt_segs:
+        #     indep = StateIndependentsComp(grid_data=grid_data, state_options=phase.state_options)
+        # else:
+        #     indep = om.IndepVarComp()
+        #
+        # num_connected = len([s for (s, opts) in phase.state_options.items() if opts['input_initial']])
+        # prom_inputs = ['initial_states:*'] if num_connected > 0 else None
+        # phase.add_subsystem('indep_states', indep, promotes_inputs=prom_inputs,
+        #                     promotes_outputs=['*'])
+        #
+        # indep_state_rates = om.IndepVarComp()
+        #
+        # phase.add_subsystem('indep_state_rates', indep_state_rates,
+        #                     promotes_outputs=['*'])
 
     def configure_states(self, phase):
         """
@@ -153,101 +154,102 @@ class Birkhoff(TranscriptionBase):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-
         super().configure_states(phase)
-        grid_data = self.grid_data
-        num_state_input_nodes = grid_data.subset_num_nodes['state_input']
-        indep = phase.indep_states
-        indep_state_rates = phase.indep_state_rates
 
-        # state_idx_map holds the node indices provided by the solver (solver) and those
-        # that are independent variables (indep)
-        self.state_idx_map = {}
-
-        time_units = phase.time_options['units']
-
-        # add all the des-vars (either from the IndepVarComp or from the indep-var-like
-        # outputs of the collocation comp)
-        for name, options in phase.state_options.items():
-            shape = options['shape']
-            units = options['units']
-            # In certain cases, we put an output on the IVC.
-            if isinstance(indep, om.IndepVarComp):
-                default_val = reshape_val(options['val'], shape, num_state_input_nodes)
-                indep.add_output(name=f'states:{name}',
-                                 shape=(num_state_input_nodes,) + shape,
-                                 val=default_val,
-                                 units=units)
-
-                indep_state_rates.add_output(name=f'state_rates:{name}',
-                                             shape=(num_state_input_nodes,) + shape,
-                                             val=default_val,
-                                             units=units)
-
-                phase.add_design_var(name=f'state_rates:{name}')
-
-            if options['opt']:
-                # Add the states as design variables.
-                #
-                # In the case of optimizer-driven collocation, this includes the values at all
-                # nodes (excluding initial and/or final if fix_initial and/or fix_final is specified).
-                #
-                desvar_node_idxs = np.asarray(np.arange(num_state_input_nodes), dtype=int)
-
-                # This matrix will contain 1's for every index that is to be a design variable,
-                # otherwise the value will be zero
-                state_input_shape = (num_state_input_nodes,) + options['shape']
-                idx_mask = np.zeros(state_input_shape, dtype=int)
-                idx_mask[desvar_node_idxs, ...] = 1
-
-                if not (options['fix_initial'] or options['input_initial']):
-                    ilb = options['lower']
-                    iub = options['upper']
-
-                    if options['initial_bounds'] is not None:
-                        ilb = options['initial_bounds'][0]
-                        iub = options['initial_bounds'][1]
-
-                    phase.add_design_var(name=f'initial_states:{name}',
-                                         lower=ilb,
-                                         upper=iub,
-                                         scaler=options['scaler'],
-                                         adder=options['adder'],
-                                         ref0=options['ref0'],
-                                         ref=options['ref'])
-
-                if not (options['fix_final'] or options['input_final']):
-                    flb = options['lower']
-                    fub = options['upper']
-
-                    if options['final_bounds'] is not None:
-                        flb = options['final_bounds'][0]
-                        fub = options['final_bounds'][1]
-
-                    phase.add_design_var(name=f'final_states:{name}',
-                                         lower=flb,
-                                         upper=fub,
-                                         scaler=options['scaler'],
-                                         adder=options['adder'],
-                                         ref0=options['ref0'],
-                                         ref=options['ref'])
-
-                phase.add_design_var(name=f'states:{name}',
-                                     lower=options['lower'],
-                                     upper=options['upper'],
-                                     scaler=options['scaler'],
-                                     adder=options['adder'],
-                                     ref0=options['ref0'],
-                                     ref=options['ref'])
-
-        if isinstance(indep, StateIndependentsComp):
-            indep.configure_io(self.state_idx_map)
-
-        if self.any_connected_opt_segs:
-            for name, options in phase.state_options.items():
-                if options['solve_segments']:
-                    phase.connect(f'collocation_constraint.defects:{name}',
-                                  f'indep_states.defects:{name}')
+        phase._get_subsystem('state_iter_group').configure_io()
+        # grid_data = self.grid_data
+        # num_state_input_nodes = grid_data.subset_num_nodes['state_input']
+        # indep = phase.indep_states
+        # indep_state_rates = phase.indep_state_rates
+        #
+        # # state_idx_map holds the node indices provided by the solver (solver) and those
+        # # that are independent variables (indep)
+        # self.state_idx_map = {}
+        #
+        # time_units = phase.time_options['units']
+        #
+        # # add all the des-vars (either from the IndepVarComp or from the indep-var-like
+        # # outputs of the collocation comp)
+        # for name, options in phase.state_options.items():
+        #     shape = options['shape']
+        #     units = options['units']
+        #     # In certain cases, we put an output on the IVC.
+        #     if isinstance(indep, om.IndepVarComp):
+        #         default_val = reshape_val(options['val'], shape, num_state_input_nodes)
+        #         indep.add_output(name=f'states:{name}',
+        #                          shape=(num_state_input_nodes,) + shape,
+        #                          val=default_val,
+        #                          units=units)
+        #
+        #         indep_state_rates.add_output(name=f'state_rates:{name}',
+        #                                      shape=(num_state_input_nodes,) + shape,
+        #                                      val=default_val,
+        #                                      units=units)
+        #
+        #         phase.add_design_var(name=f'state_rates:{name}')
+        #
+        #     if options['opt']:
+        #         # Add the states as design variables.
+        #         #
+        #         # In the case of optimizer-driven collocation, this includes the values at all
+        #         # nodes (excluding initial and/or final if fix_initial and/or fix_final is specified).
+        #         #
+        #         desvar_node_idxs = np.asarray(np.arange(num_state_input_nodes), dtype=int)
+        #
+        #         # This matrix will contain 1's for every index that is to be a design variable,
+        #         # otherwise the value will be zero
+        #         state_input_shape = (num_state_input_nodes,) + options['shape']
+        #         idx_mask = np.zeros(state_input_shape, dtype=int)
+        #         idx_mask[desvar_node_idxs, ...] = 1
+        #
+        #         if not (options['fix_initial'] or options['input_initial']):
+        #             ilb = options['lower']
+        #             iub = options['upper']
+        #
+        #             if options['initial_bounds'] is not None:
+        #                 ilb = options['initial_bounds'][0]
+        #                 iub = options['initial_bounds'][1]
+        #
+        #             phase.add_design_var(name=f'initial_states:{name}',
+        #                                  lower=ilb,
+        #                                  upper=iub,
+        #                                  scaler=options['scaler'],
+        #                                  adder=options['adder'],
+        #                                  ref0=options['ref0'],
+        #                                  ref=options['ref'])
+        #
+        #         if not (options['fix_final'] or options['input_final']):
+        #             flb = options['lower']
+        #             fub = options['upper']
+        #
+        #             if options['final_bounds'] is not None:
+        #                 flb = options['final_bounds'][0]
+        #                 fub = options['final_bounds'][1]
+        #
+        #             phase.add_design_var(name=f'final_states:{name}',
+        #                                  lower=flb,
+        #                                  upper=fub,
+        #                                  scaler=options['scaler'],
+        #                                  adder=options['adder'],
+        #                                  ref0=options['ref0'],
+        #                                  ref=options['ref'])
+        #
+        #         phase.add_design_var(name=f'states:{name}',
+        #                              lower=options['lower'],
+        #                              upper=options['upper'],
+        #                              scaler=options['scaler'],
+        #                              adder=options['adder'],
+        #                              ref0=options['ref0'],
+        #                              ref=options['ref'])
+        #
+        # if isinstance(indep, StateIndependentsComp):
+        #     indep.configure_io(self.state_idx_map)
+        #
+        # if self.any_connected_opt_segs:
+        #     for name, options in phase.state_options.items():
+        #         if options['solve_segments']:
+        #             phase.connect(f'collocation_constraint.defects:{name}',
+        #                           f'indep_states.defects:{name}')
 
     def configure_controls(self, phase):
         """
@@ -269,15 +271,15 @@ class Birkhoff(TranscriptionBase):
 
         for name, options in phase.control_options.items():
             if options['targets']:
-                phase.connect(f'control_values:{name}', [f'rhs_all.{t}' for t in options['targets']])
+                phase.connect(f'control_values:{name}', [f'ode.{t}' for t in options['targets']])
 
             if options['rate_targets']:
                 phase.connect(f'control_rates:{name}_rate',
-                              [f'rhs_all.{t}' for t in options['rate_targets']])
+                              [f'ode.{t}' for t in options['rate_targets']])
 
             if options['rate2_targets']:
                 phase.connect(f'control_rates:{name}_rate2',
-                              [f'rhs_all.{t}' for t in options['rate2_targets']])
+                              [f'ode.{t}' for t in options['rate2_targets']])
 
     def configure_polynomial_controls(self, phase):
         """
@@ -296,19 +298,19 @@ class Birkhoff(TranscriptionBase):
             targets = get_targets(ode=ode_inputs, name=name, user_targets=options['targets'])
             if targets:
                 phase.connect(f'polynomial_control_values:{name}',
-                              [f'rhs_all.{t}' for t in targets])
+                              [f'ode.{t}' for t in targets])
 
-            targets = get_targets(ode=phase.rhs_all, name=f'{name}_rate',
+            targets = get_targets(ode=ode_inputs, name=f'{name}_rate',
                                   user_targets=options['rate_targets'])
             if targets:
                 phase.connect(f'polynomial_control_rates:{name}_rate',
-                              [f'rhs_all.{t}' for t in targets])
+                              [f'ode.{t}' for t in targets])
 
-            targets = get_targets(ode=phase.rhs_all, name=f'{name}_rate2',
+            targets = get_targets(ode=ode_inputs, name=f'{name}_rate2',
                                   user_targets=options['rate2_targets'])
             if targets:
                 phase.connect(f'polynomial_control_rates:{name}_rate2',
-                              [f'rhs_all.{t}' for t in targets])
+                              [f'ode.{t}' for t in targets])
 
     def setup_ode(self, phase):
         """
@@ -319,14 +321,20 @@ class Birkhoff(TranscriptionBase):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
+        ode_class = phase.options['ode_class']
+        ode_init_kwargs = phase.options['ode_init_kwargs']
 
-        ODEClass = phase.options['ode_class']
-        grid_data = self.grid_data
-
-        kwargs = phase.options['ode_init_kwargs']
-        phase.add_subsystem('rhs_all',
-                            subsys=ODEClass(num_nodes=grid_data.subset_num_nodes['all'],
-                                            **kwargs))
+        phase.add_subsystem('state_iter_group',
+                            BirkhoffIterGroup(state_options=phase.state_options,
+                                              time_options=phase.time_options,
+                                              grid_data=self.grid_data,
+                                              ode_class=ode_class,
+                                              ode_init_kwargs=ode_init_kwargs),
+                            promotes_inputs=['*'], promotes_outputs=['*'])
+        #
+        # phase.add_subsystem('rhs_all',
+        #                     subsys=ODEClass(num_nodes=grid_data.subset_num_nodes['all'],
+        #                                     **kwargs))
 
     def configure_ode(self, phase):
         """
@@ -339,15 +347,16 @@ class Birkhoff(TranscriptionBase):
         """
         grid_data = self.grid_data
         map_input_indices_to_disc = grid_data.input_maps['state_input_to_disc']
-        ode_inputs = get_promoted_vars(phase.rhs_all, 'input')
+        ode = phase._get_subsystem(self._rhs_source)
+        ode_inputs = get_promoted_vars(ode, 'input')
 
-        for name, options in phase.state_options.items():
-
-            targets = get_targets(ode_inputs, name=name, user_targets=options['targets'])
-            if targets:
-                phase.connect(f'states:{name}',
-                              [f'rhs_all.{tgt}' for tgt in targets],
-                              src_indices=om.slicer[map_input_indices_to_disc, ...])
+        # for name, options in phase.state_options.items():
+        #
+        #     targets = get_targets(ode_inputs, name=name, user_targets=options['targets'])
+        #     if targets:
+        #         phase.connect(f'states:{name}',
+        #                       [f'ode.{tgt}' for tgt in targets],
+        #                       src_indices=om.slicer[map_input_indices_to_disc, ...])
 
     def setup_defects(self, phase):
         """
@@ -358,12 +367,13 @@ class Birkhoff(TranscriptionBase):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-        phase.add_subsystem('collocation_constraint',
-                            BirkhoffCollocationComp(grid_data=self.grid_data,
-                                                    state_options=phase.state_options,
-                                                    time_units=phase.time_options['units']),
-                            promotes_inputs=['states:*', 'state_rates:*', 'initial_states:*',
-                                             'final_states:*'])
+        pass
+        # phase.add_subsystem('collocation_constraint',
+        #                     BirkhoffCollocationComp(grid_data=self.grid_data,
+        #                                             state_options=phase.state_options,
+        #                                             time_units=phase.time_options['units']),
+        #                     promotes_inputs=['states:*', 'state_rates:*', 'initial_states:*',
+        #                                      'final_states:*'])
 
     def configure_defects(self, phase):
         """
@@ -376,10 +386,10 @@ class Birkhoff(TranscriptionBase):
         """
         grid_data = self.grid_data
 
-        phase.connect('dt_dstau', ('collocation_constraint.dt_dstau'),
-                      src_indices=grid_data.subset_node_indices['col'], flat_src_indices=True)
+        # phase.connect('dt_dstau', ('collocation_constraint.dt_dstau'),
+        #               src_indices=grid_data.subset_node_indices['col'], flat_src_indices=True)
 
-        phase.collocation_constraint.configure_io()
+        # phase.collocation_constraint.configure_io()
 
         for name in phase.state_options:
             rate_src_path, src_idxs = self._get_rate_source_path(name, 'col', phase)
@@ -390,8 +400,8 @@ class Birkhoff(TranscriptionBase):
             # phase.connect(f'state_rates:{name}',
             #               f'collocation_constraint.state_rates:{name}')
 
-            phase.connect(rate_src_path,
-                          f'collocation_constraint.f_computed:{name}')
+            # phase.connect(rate_src_path,
+            #               f'collocation_constraint.f_computed:{name}')
 
     def setup_duration_balance(self, phase):
         """
@@ -468,6 +478,14 @@ class Birkhoff(TranscriptionBase):
             phase.add_subsystem(name, subsys=timeseries_group)
 
             phase.connect('dt_dstau', f'{name}.dt_dstau', flat_src_indices=True)
+
+    def configure_timeseries_outputs(self, phase):
+        super().configure_timeseries_outputs(phase)
+
+        # input_names = [f'input_values:{state_name}' for state_name in phase.state_options]
+        # for timeseries_name, timeseries_options in phase._timeseries.items():
+        #     phase.promotes(timeseries_name, inputs=input_names)
+
 
     def _get_objective_src(self, var, loc, phase, ode_outputs=None):
         """
@@ -679,14 +697,14 @@ class Birkhoff(TranscriptionBase):
             node_idxs = gd.subset_node_indices[nodes]
         elif var_type == 'parameter':
             rate_path = f'parameter_vals:{var}'
-            dynamic = not phase.parameter_options[var]['static_target']
-            if dynamic:
-                node_idxs = np.zeros(gd.subset_num_nodes[nodes], dtype=int)
-            else:
+            static = phase.parameter_options[var]['static_target']
+            if static:
                 node_idxs = np.zeros(1, dtype=int)
+            else:
+                node_idxs = np.zeros(gd.subset_num_nodes[nodes], dtype=int)
         else:
             # Failed to find variable, assume it is in the ODE
-            rate_path = f'rhs_all.{var}'
+            rate_path = f'ode.{var}'
             node_idxs = gd.subset_node_indices[nodes]
 
         src_idxs = om.slicer[node_idxs, ...]
@@ -737,7 +755,7 @@ class Birkhoff(TranscriptionBase):
             src_units = time_units
             src_shape = (1,)
         elif var_type == 'state':
-            path = f'states:{var}'
+            path = f'state_vals:{var}'
             src_units = phase.state_options[var]['units']
             src_shape = phase.state_options[var]['shape']
 
@@ -797,7 +815,7 @@ class Birkhoff(TranscriptionBase):
             src_shape = phase.parameter_options[var]['shape']
         else:
             # Failed to find variable, assume it is in the ODE
-            path = f'rhs_all.{var}'
+            path = f'ode.{var}'
             meta = get_source_metadata(ode_outputs, src=var)
             src_shape = meta['shape']
             src_units = meta['units']
@@ -845,7 +863,7 @@ class Birkhoff(TranscriptionBase):
                     if options['shape'] == (1,):
                         src_idxs = src_idxs.ravel()
 
-                connection_info.append((f'rhs_all.{tgt}', (src_idxs,)))
+                connection_info.append((f'ode.{tgt}', (src_idxs,)))
 
         return connection_info
 
