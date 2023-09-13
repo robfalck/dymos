@@ -329,6 +329,9 @@ class BarycentricInterpComp(om.ExplicitComponent):
             for j in range(i):
                 self._del_dg_idxs.append((i, j))
 
+        # All indices in the lower triangular part of d2el_dg2[i, ...]
+        # that are nonzero.
+        temp = []
         for i in range(n):
             for j in range(n):
                 if j == i:
@@ -336,15 +339,23 @@ class BarycentricInterpComp(om.ExplicitComponent):
                 for k in range(j):
                     if k == i:
                         continue
-                    self._d2el_dg2_idxs.append((i, j, k))
+                    temp.append((i, j, k))
+
+        # For each of these indices in temp, we need to omit i, j, and k from g,
+        # get the product of the remaining values, and assign that to any
+        # combination of [i, j, k] found in d2el_dg2
+        self._d2el_dg2_idxs = {tuple(sorted(indices)) : [[], None] for indices in temp}
+
+        range_n = range(n)
+
+        for i, j, k in self._d2el_dg2_idxs:
+            sorted_ijk = tuple(sorted((i, j, k)))
+            self._d2el_dg2_idxs[sorted_ijk][0].append((i, j, k))
+            if self._d2el_dg2_idxs[sorted_ijk][1] is None:
+                self._d2el_dg2_idxs[sorted_ijk][1] = [i for i in range_n if i not in (i, j, k)]
 
         self._interpolants = {}
 
-    def initialize(self):
-        self.options.declare('time_units', types=(str,), default='s',
-                             desc='Units of time for the interpolated rates.')
-
-    def setup(self):
         self._w_b = np.ones(self._num_nodes)
         """ Barycentric weights for nodes in the interpolated polynomial."""
 
@@ -354,6 +365,11 @@ class BarycentricInterpComp(om.ExplicitComponent):
                 if k != j:
                     self._w_b[j] /= (self._tau_i[j] - self._tau_i[k])
 
+    def initialize(self):
+        self.options.declare('time_units', types=(str,), default='s',
+                             desc='Units of time for the interpolated rates.')
+
+    def setup(self):
         self.add_input('t', units=self.options['time_units'],
                        desc='Value of time at which interpolation should be performed.')
         self.add_input('t0', units=self.options['time_units'],
@@ -388,21 +404,10 @@ class BarycentricInterpComp(om.ExplicitComponent):
 
     def compute(self, inputs, outputs, discrete_inputs=None, discrete_outputs=None):
         t = inputs['t']
-
-        # First, a memory intensive way
-        # Build a matrix G that contains the difference between
-        # the given time and time and all of the nodes (columns), then
-        # repeated over every row.
-        # We will then set the diagonal of this matrix to be equal to one.
         tau = -1 + (t - inputs['t0']) / inputs['dt_dtau']
         g = tau - self._tau_i
-        # G = np.repeat(g, 5).reshape((5, 5))
-        # np.fill_diagonal(G, 1.0)
 
         el = np.prod(g[self._l_idxs], axis=1)
-        # print(el)
-        # exit(0)
-        # el = np.prod(G, axis=0)
 
         for interp_options in self._interpolants.values():
             iname = interp_options['input_name']
@@ -418,12 +423,6 @@ class BarycentricInterpComp(om.ExplicitComponent):
     def compute_partials(self, inputs, partials, discrete_inputs=None):
         n = self._num_nodes
         t = inputs['t']
-
-        # First, a memory intensive way
-        # Build a matrix G that contains the difference between
-        # the given time and time and all of the nodes (columns), then
-        # repeated over every row.
-        # We will then set the diagonal of this matrix to be equal to one.
         tau = -1 + (t - inputs['t0']) / inputs['dt_dtau']
         g = tau - self._tau_i
         el = np.prod(g[self._l_idxs], axis=1)
@@ -432,49 +431,22 @@ class BarycentricInterpComp(om.ExplicitComponent):
         dtau_dt0 = -dtau_dt
         dtau_ddt_dtau = -(t - inputs['t0']) * dtau_dt ** 2
 
+
         del_dg = np.zeros((n, n))
         d2el_dg2 = np.zeros((n, n, n))
 
         for i, j in self._del_dg_idxs:
             del_dg[i, j] = del_dg[j, i] = np.prod(np.delete(g, [i, j]))
 
-        for i, j, k in self._d2el_dg2_idxs:
-            d2el_dg2[i, j, k] = d2el_dg2[i, k, j] = np.prod(np.delete(g, [i, j, k]))
+        # d2el_dg2_vals = {sorted_ijk: np.prod(np.delete(g, sorted_ijk)) for sorted_ijk in self._d2el_dg2_idxs.keys()}
 
-
-        print('number of iterations for d2el_dg2', len(self._d2el_dg2_idxs))
-        print('total size of d2el_dg2', d2el_dg2.size)
-        print('nonzeros in d2el_dg2', np.count_nonzero(d2el_dg2))
-        print('density of d2el_dg2', np.count_nonzero(d2el_dg2)/d2el_dg2.size)
-        print('unique values in d2el_dg2', len(set(d2el_dg2.ravel())))
-        print(tuple([tuple(sorted(idxs)) for idxs in self._d2el_dg2_idxs]))
-        print(len(set(tuple([tuple(sorted(idxs)) for idxs in self._d2el_dg2_idxs]))))
-
-        # for i in range(n):
-        #     for j in range(n):
-        #         if j == i:
-        #             continue
-        #         for k in range(j):
-        #             if k == i:
-        #                 continue
-        #             del_dg2[i, j, k] = np.prod(np.delete(g, [i, j, k]))
-        #             del_dg2[i, k, j] = del_dg2[i, j, k]
-
-        # # The nonzero (off-diagonal) elements of del_dg.
-        # del_dg_nz = np.prod(g[self._del_dg_idxs], axis=2)
-        #
-        # for i in range(n):
-        #     # Get a view of the ith row of del_dg with the diagonal omitted
-        #     del_dg_row_i = np.delete(del_dg[i, ...], i, axis=0)
-        #     # Assign our nonzero data to that row (except for the diagonal)
-        #     del_dg_row_i[:] = del_dg_nz[i, :]
-        #     print(del_dg_row_i)
-        #
-        # print(del_dg)
-
-        # with np.printoptions(linewidth=1024, edgeitems=1024):
-        #     print(d2el_dg2)
-        exit(0)
+        # For this code, using np.delete to delete the indices in idx_tuples
+        # showed to be about twice as slow as saving all of the _other_ indices
+        # and then running the product across those.
+        for sorted_ijk, (idx_tuples, g_idxs) in self._d2el_dg2_idxs.items():
+            d2el_dg2_val = np.prod(g[[g_idxs]])
+            for i, j, k in idx_tuples:
+                d2el_dg2[i, j, k] = d2el_dg2[i, k, j] = d2el_dg2_val
 
         d_wbfj_dfj = self._w_b
 
@@ -486,20 +458,8 @@ class BarycentricInterpComp(om.ExplicitComponent):
             # Multiply w_b and f_j along the first axis of f_j
             wbfj = np.swapaxes(np.swapaxes(f_j, 0, -1) * self._w_b, -1, 0)
 
-            # Multiply el and wbfj along the first axis of wbfj
-            # outputs[interp_options['output_name']] = np.einsum('i,ij->j', el, wbfj)
-
             d_interp_result_d_el = wbfj.T
             d_interp_result_d_wbfj = el
-
-            # print('d_interp_result_d_el')
-            # print(d_interp_result_d_el)
-            #
-            # print('d_interp_result_d_wbfj')
-            # print(d_interp_result_d_wbfj)
-
-            # partials[oname, 't'] = d_interp_result_d_el * del_dg * dg_dtau * dtau_dt
-            #                            (1, 5)            (5, 5)   (5, 1)    (1, 1)
 
             # Since dg_dtau is an array of 1's where we'd typically do a dot product
             # below with something like
@@ -518,9 +478,9 @@ class BarycentricInterpComp(om.ExplicitComponent):
 if __name__ == '__main__':
     from dymos.utils.lgl import lgl
 
-    tau, w = lgl(7)
+    tau, w = lgl(100)
 
-    p = om.Problem()
+    p = om.Problem(reports=False)
     interp_comp = BarycentricInterpComp(nodes=tau)
     p.model.add_subsystem('interp_comp', interp_comp, promotes=['*'])
 
@@ -546,6 +506,3 @@ if __name__ == '__main__':
 
     with np.printoptions(linewidth=1024):
         p.check_partials(method='cs')
-
-
-
