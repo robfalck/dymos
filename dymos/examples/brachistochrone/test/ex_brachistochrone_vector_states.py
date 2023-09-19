@@ -2,6 +2,8 @@ import openmdao.api as om
 import dymos as dm
 from dymos.examples.brachistochrone.brachistochrone_vector_states_ode \
     import BrachistochroneVectorStatesODE
+from dymos.transcriptions import Birkhoff
+from dymos.transcriptions.grid_data import BirkhoffGrid
 
 
 def brachistochrone_min_time(transcription='gauss-lobatto', num_segments=8, transcription_order=3,
@@ -32,6 +34,12 @@ def brachistochrone_min_time(transcription='gauss-lobatto', num_segments=8, tran
         transcription = dm.Radau(num_segments=num_segments,
                                  order=transcription_order,
                                  compressed=compressed)
+        fix_final = not solve_segments
+    elif transcription == 'birkhoff':
+        grid = dm.BirkhoffGrid(num_segments=num_segments,
+                               nodes_per_seg=transcription_order + 1,
+                               compressed=compressed, grid_type='cgl')
+        transcription = dm.Birkhoff(grid=grid)
         fix_final = not solve_segments
 
     traj = dm.Trajectory()
@@ -83,6 +91,6 @@ def brachistochrone_min_time(transcription='gauss-lobatto', num_segments=8, tran
 
 
 if __name__ == '__main__':
-    p = brachistochrone_min_time(transcription='radau-ps', num_segments=5, run_driver=True,
-                                 transcription_order=5, compressed=False, optimizer='SLSQP',
+    p = brachistochrone_min_time(transcription='birkhoff', num_segments=1, run_driver=True,
+                                 transcription_order=12, compressed=False, optimizer='SLSQP',
                                  solve_segments=False, force_alloc_complex=True, dynamic_simul_derivs=True)

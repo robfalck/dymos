@@ -278,18 +278,19 @@ class Birkhoff(TranscriptionBase):
         ode_inputs = get_promoted_vars(ode, 'input')
 
         phase._get_subsystem('ode_iter_group').configure_io(phase)
+        phase._get_subsystem('boundary_vals').configure_io(phase)
 
-        for name, options in phase.state_options.items():
-            shape = options['shape']
-            size = np.prod(shape)
-            idxs = [i for i in range(size)]
-            idxs += [j for j in range((nn-1)*size, nn*size)]
-
-            for tgt in options['targets']:
-                phase.promotes('boundary_vals', inputs=[(tgt, f'states:{name}')],
-                               src_indices=idxs,
-                               src_shape=(nn,) + shape,
-                               flat_src_indices=True)
+        # for name, options in phase.state_options.items():
+        #     shape = options['shape']
+        #     size = np.prod(shape)
+        #     idxs = [i for i in range(size)]
+        #     idxs += [j for j in range((nn-1)*size, nn*size)]
+        #
+        #     for tgt in options['targets']:
+        #         phase.promotes('boundary_vals', inputs=[(tgt, f'states:{name}')],
+        #                        src_indices=idxs,
+        #                        src_shape=(nn,) + shape,
+        #                        flat_src_indices=True)
 
 
     def setup_defects(self, phase):
@@ -465,7 +466,6 @@ class Birkhoff(TranscriptionBase):
 
     def _get_constraint_kwargs(self, constraint_type, options, phase):
         """
-        Given the constraint options provide the keyword arguments for the OpenMDAO add_constraint method.
 
         Parameters
         ----------
@@ -484,6 +484,7 @@ class Birkhoff(TranscriptionBase):
             Keyword arguments for the OpenMDAO add_constraint method.
         """
         num_nodes = self._get_num_timeseries_nodes()
+        num_seg = phase.options['transcription'].grid_data.num_segments
 
         constraint_kwargs = {key: options for key, options in options.items()}
         con_name = constraint_kwargs.pop('constraint_name')
@@ -512,11 +513,18 @@ class Birkhoff(TranscriptionBase):
                                    f'or path constraints.\nParameters are single values that do not change in '
                                    f'time, and may only be used in a single boundary or path constraint.')
             constraint_kwargs['indices'] = flat_idxs
+        elif var_type == 'state' and constraint_type in ('initial', 'final'):
+            #TODO: should be able to do away with this entire method once
+            # Birkhoff timeseries replaces boundary values.
+            if constraint_type == 'initial':
+                constraint_kwargs['indices'] = flat_idxs
+            elif constraint_type == 'final':
+                constraint_kwargs['indices'] = constraint_kwargs['indices'] = size * (num_seg - 1) + flat_idxs
         else:
             if constraint_type == 'initial':
                 constraint_kwargs['indices'] = flat_idxs
             elif constraint_type == 'final':
-                constraint_kwargs['indices'] = flat_idxs
+                constraint_kwargs['indices'] = constraint_kwargs['indices'] = size * (num_nodes - 1) + flat_idxs
             else:
                 # This is a path constraint.
                 # Remove any flat indices involved in an initial constraint from the path constraint

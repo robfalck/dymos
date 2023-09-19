@@ -59,6 +59,7 @@ class BirkhoffIterGroup(om.Group):
                                promotes_inputs=['*'], promotes_outputs=['*'])
 
     def _configure_desvars(self, name, options):
+        num_segs = self.options['grid_data'].num_segments
         state_name = f'states:{name}'
         initial_state_name = f'initial_states:{name}'
         final_state_name = f'final_states:{name}'
@@ -80,19 +81,19 @@ class BirkhoffIterGroup(om.Group):
 
         free_vars = {state_name, state_rate_name, initial_state_name, final_state_name}
 
-        if solve_segs == 'forward':
-            implicit_outputs = {state_name, state_rate_name, final_state_name}
-        elif solve_segs == 'backward':
-            implicit_outputs = {state_name, state_rate_name, initial_state_name}
-        else:
-            implicit_outputs = set()
+        # if solve_segs == 'forward':
+        #     implicit_outputs = {state_name, state_rate_name, final_state_name}
+        # elif solve_segs == 'backward':
+        #     implicit_outputs = {state_name, state_rate_name, initial_state_name}
+        # else:
+        #     implicit_outputs = set()
 
-        free_vars = free_vars - implicit_outputs
+        # free_vars = free_vars - implicit_outputs
 
-        if fix_initial:
-            free_vars = free_vars - {initial_state_name}
-        if fix_final:
-            free_vars = free_vars - {final_state_name}
+        # if fix_initial:
+        #     free_vars = free_vars - {initial_state_name}
+        # if fix_final:
+        #     free_vars = free_vars - {final_state_name}
 
         if opt:
             # Add design variables for the remaining free variables
@@ -113,24 +114,50 @@ class BirkhoffIterGroup(om.Group):
                                     ref=ref)
 
             if initial_state_name in free_vars:
-                self.add_design_var(name=initial_state_name,
-                                    lower=ib[0],
-                                    upper=ib[1],
-                                    scaler=scaler,
-                                    adder=adder,
-                                    ref0=ref0,
-                                    ref=ref)
+                # have to add design var if
+                # - num_segs == 1 and fix_initial is False
+                # - num_segs > 1
+                add_desvar = False
+                if num_segs == 1 and not fix_initial:
+                    idxs = None
+                    add_desvar = True
+                elif num_segs > 1:
+                    idxs = om.slicer[1:, ...] if fix_initial else None
+                    add_desvar = True
+
+                if add_desvar:
+                    self.add_design_var(name=initial_state_name,
+                                        lower=lower,
+                                        upper=upper,
+                                        scaler=scaler,
+                                        adder=adder,
+                                        ref0=ref0,
+                                        ref=ref,
+                                        indices=idxs)
 
             if final_state_name in free_vars:
-                self.add_design_var(name=final_state_name,
-                                    lower=fb[0],
-                                    upper=fb[1],
-                                    scaler=scaler,
-                                    adder=adder,
-                                    ref0=ref0,
-                                    ref=ref)
+                # have to add design var if
+                # - num_segs == 1 and fix_final is False
+                # - num_segs > 1
+                add_desvar = False
+                if num_segs == 1 and not fix_final:
+                    idxs = None
+                    add_desvar = True
+                elif num_segs > 1:
+                    idxs = om.slicer[:-1, ...] if fix_final else None
+                    add_desvar = True
 
-        return implicit_outputs
+                if add_desvar:
+                    self.add_design_var(name=final_state_name,
+                                        lower=lower,
+                                        upper=upper,
+                                        scaler=scaler,
+                                        adder=adder,
+                                        ref0=ref0,
+                                        ref=ref,
+                                        indices=idxs)
+
+        # return implicit_outputs
 
     def configure_io(self, phase):
         """
@@ -158,22 +185,22 @@ class BirkhoffIterGroup(om.Group):
                 self.set_input_defaults(f'states:{name}', val=1.0, units=units, src_shape=(nn,) + shape)
 
             implicit_outputs = self._configure_desvars(name, options)
-
-            if f'states:{name}' in implicit_outputs:
-                states_balance_comp.add_implicit_output(f'states:{name}', shape=(nn,) + shape, units=units,
-                                                        resid_input=f'state_defects:{name}')
-
-            if f'initial_states:{name}' in implicit_outputs:
-                states_balance_comp.add_implicit_output(f'initial_states:{name}', shape=shape, units=units,
-                                                        resid_input=f'final_state_defects:{name}')
-
-            if f'final_states:{name}' in implicit_outputs:
-                states_balance_comp.add_implicit_output(f'final_states:{name}', shape=shape, units=units,
-                                                        resid_input=f'final_state_defects:{name}')
-
-            if f'state_rates:{name}' in implicit_outputs:
-                states_balance_comp.add_implicit_output(f'state_rates:{name}', shape=(nn,) + shape, units=units,
-                                                        resid_input=f'state_rate_defects:{name}')
+            #
+            # if f'states:{name}' in implicit_outputs:
+            #     states_balance_comp.add_implicit_output(f'states:{name}', shape=(nn,) + shape, units=units,
+            #                                             resid_input=f'state_defects:{name}')
+            #
+            # if f'initial_states:{name}' in implicit_outputs:
+            #     states_balance_comp.add_implicit_output(f'initial_states:{name}', shape=shape, units=units,
+            #                                             resid_input=f'final_state_defects:{name}')
+            #
+            # if f'final_states:{name}' in implicit_outputs:
+            #     states_balance_comp.add_implicit_output(f'final_states:{name}', shape=shape, units=units,
+            #                                             resid_input=f'final_state_defects:{name}')
+            #
+            # if f'state_rates:{name}' in implicit_outputs:
+            #     states_balance_comp.add_implicit_output(f'state_rates:{name}', shape=(nn,) + shape, units=units,
+            #                                             resid_input=f'state_rate_defects:{name}')
 
             try:
                 rate_source_var = options['rate_source']

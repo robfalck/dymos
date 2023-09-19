@@ -45,6 +45,8 @@ class TestHyperSensitive(unittest.TestCase):
             p.driver.opt_settings['mu_strategy'] = 'adaptive'
             p.driver.opt_settings['bound_mult_init_method'] = 'mu-based'
             p.driver.opt_settings['mu_init'] = 0.01
+            p.driver.opt_settings['tol'] = 1.0E-6
+            p.driver.opt_settings['acceptable_tol'] = 1.0E-3
             p.driver.opt_settings['alpha_for_y'] = 'safer-min-dual-infeas'
             p.driver.opt_settings['nlp_scaling_method'] = 'gradient-based'
             p.driver.declare_coloring()
@@ -120,7 +122,7 @@ class TestHyperSensitive(unittest.TestCase):
 
     @require_pyoptsparse(optimizer='IPOPT')
     def test_hyper_sensitive_birkhoff(self):
-        tx = Birkhoff(grid=dm.BirkhoffGrid(num_segments=1, nodes_per_seg=101, grid_type='lgl'))
+        tx = Birkhoff(grid=dm.BirkhoffGrid(num_segments=3, nodes_per_seg=50, grid_type='lgl'))
         p = self.make_problem(transcription=tx, optimizer='SNOPT')
         dm.run_problem(p, make_plots=True)
         ui, uf, J = self.solution()

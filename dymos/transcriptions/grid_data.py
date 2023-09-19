@@ -111,7 +111,7 @@ def radau_pseudospectral_subsets_and_nodes(n, seg_idx, compressed=False):
     return subsets, lgr(n, include_endpoint=True)[0]
 
 
-def birkhoff_subsets_and_nodes(n, grid, *args, **kwargs):
+def birkhoff_subsets_and_nodes(n, seg_idx, compressed, grid, *args, **kwargs):
     """
     Provides node information and the location of the nodes for n Radau nodes on the range [-1, 1].
 
@@ -144,27 +144,24 @@ def birkhoff_subsets_and_nodes(n, grid, *args, **kwargs):
     `first_seg == True`.  For Radau-Pseudospectral transcription, subset 'control_input' is always
     the same as subset 'control_disc'.
     """
-    acceptable_grids = {'lgl', 'lgr', 'cgl'}
+    acceptable_grids = {'lgl', 'cgl'}
 
     subsets = {
         'state_disc': np.arange(n, dtype=int),
-        'state_input': np.arange(n, dtype=int),
+        'state_input': np.arange(n, dtype=int) if not compressed or seg_idx == 0
+        else np.arange(1, n, dtype=int),
         'control_disc': np.arange(n, dtype=int),
         'control_input': np.arange(n, dtype=int),
         'segment_ends': np.array([0, n], dtype=int),
         'col': np.arange(n, dtype=int),
+        'all': np.arange(n, dtype=int),
         'solution': np.arange(n, dtype=int),
     }
 
     if grid == 'lgl':
-        nodes = lgl(n)[0]
-        subsets['all'] = np.arange(n, dtype=int)
-    elif grid == 'lgr':
-        nodes = lgr(n, include_endpoint=False)[0]
-        subsets['all'] = np.arange(n, dtype=int)
+        nodes, _ = lgl(n)
     elif grid == 'cgl':
-        nodes = cgl(n)[0]
-        subsets['all'] = np.arange(n, dtype=int)
+        nodes, _ = cgl(n)
     else:
         raise ValueError(f'Unrecognized grid. Acceptable values are one of {acceptable_grids}')
 

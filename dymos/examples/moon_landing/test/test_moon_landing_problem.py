@@ -7,7 +7,7 @@ from openmdao.utils.testing_utils import use_tempdirs, require_pyoptsparse
 from dymos.examples.moon_landing import MoonLandingProblemODE
 
 
-@use_tempdirs
+# @use_tempdirs
 class TestMoonLandingProblem(unittest.TestCase):
 
     @require_pyoptsparse(optimizer='IPOPT')
@@ -21,7 +21,7 @@ class TestMoonLandingProblem(unittest.TestCase):
         self.p.driver.opt_settings['linear_solver'] = 'mumps'
         self.p.driver.declare_coloring()
 
-        t = dm.Birkhoff(grid=dm.BirkhoffGrid(num_segments=1, nodes_per_seg=20, grid_type=grid_type))
+        t = dm.Birkhoff(grid=dm.BirkhoffGrid(num_segments=5, nodes_per_seg=20, grid_type=grid_type))
 
         traj = self.p.model.add_subsystem('traj', dm.Trajectory())
         phase = dm.Phase(ode_class=MoonLandingProblemODE,
