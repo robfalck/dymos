@@ -60,12 +60,6 @@ def brachistochrone_min_time(transcription='gauss-lobatto', num_segments=8, tran
 
     phase.add_parameter('g', targets=['g'], units='m/s**2')
 
-    phase.add_timeseries('timeseries2',
-                         transcription=dm.Radau(num_segments=num_segments*5,
-                                                order=transcription_order,
-                                                compressed=compressed),
-                         subset='control_input')
-
     phase.add_boundary_constraint('x', loc='final', equals=10)
     phase.add_boundary_constraint('y', loc='final', equals=5)
     # Minimize time at the end of the phase
@@ -96,6 +90,8 @@ def brachistochrone_min_time(transcription='gauss-lobatto', num_segments=8, tran
 
 
 if __name__ == '__main__':
-    p = brachistochrone_min_time(transcription='gauss-lobatto', num_segments=5, run_driver=True,
-                                 transcription_order=5, compressed=False, optimizer='IPOPT',
+    p = brachistochrone_min_time(transcription='gauss-lobatto', num_segments=2, run_driver=True,
+                                 transcription_order=[3, 5], compressed=False, optimizer='IPOPT',
                                  solve_segments=False, force_alloc_complex=True)
+
+    print(p.get_val('traj0.phase0.controls:theta').T)

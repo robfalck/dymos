@@ -206,3 +206,25 @@ def GroupWrapperConfig(comp_class):
             self.configure_io()
 
     return WrappedClass
+
+
+def multiply_along_axis(A, B, axis=0):
+    """
+    Multiply n-dimensional arrays A and B along the given axis.
+
+    Parameters
+    ----------
+    A : np.array
+        The first nd array to be multiplied.
+    B : np.array
+        The second nd array to be multiplied.
+    axis : int
+        The axis along which the product should be computed.
+
+    Returns
+    -------
+    np.array
+        The product A * B along the given axis.
+
+    """
+    return np.swapaxes(np.swapaxes(A, axis, -1) * B, -1, axis)

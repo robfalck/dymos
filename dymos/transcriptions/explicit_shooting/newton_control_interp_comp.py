@@ -22,11 +22,16 @@ def _newton_coefs(x, y):
     """
     n = x.size
     coef = np.zeros((n, n))
+    # coef2 = np.zeros((n, n))
     coef[:, 0] = y
+    # coef2[:, 0] = y
 
     for j in range(1, n):
-        for i in range(n - j):
-            coef[i, j] = (coef[i+1, j-1] - coef[i, j-1]) / (x[i + j] - x[i])
+        # for i in range(n - j):
+        #     # print( (coef[i+1, j-1] - coef[i, j-1]))
+        #     # print(i + j, i)
+        #     coef[i, j] = (coef[i+1, j-1] - coef[i, j-1]) / (x[i + j] - x[i])
+        coef[:n-j, j] = np.diff(coef[:n-j+1, j-1]) / (x[j:] - x[:-j])
 
     return coef[0, :]
 
@@ -63,12 +68,12 @@ def newton_interp(a, x_data, x):
                        [el[1]        , el[0]        ,             0],
                        [el[1] * el[2], el[0] * el[1], el[1] * el[2]]])
 
-    print(g)
+    # print(g)
     from itertools import combinations
-    print(list(combinations(range(3), 2)))
+    # print(list(combinations(range(3), 2)))
     dp_da = np.concatenate([[1], g])
 
-    print(dp_da)
+    # print(dp_da)
 
     return p
 
@@ -465,11 +470,23 @@ class NewtonControlInterpComp(om.ExplicitComponent):
 
 
 if __name__ == '__main__':
-    x = np.array([-5, -1, 0, 2])
-    y = np.array([-2, 6, 1, 3])
+    from dymos.utils.lgl import lgl
+    from scipy.interpolate import barycentric_interpolate
+    np.set_printoptions(linewidth=100_000, edgeitems=100_000)
+    x = lgl(500)[0] * np.pi
+    y = np.sin(x)
+    # x = np.array([-5, -1, 0, 2])
+    # y = np.array([-2, 6, 1, 3])
     # get the divided difference a
     a_s = _newton_coefs(x, y)
 
+    print(a_s)
+
+
     x_out = -1
 
+    print(np.sin(-1))
+
     print(newton_interp(a_s, x, x_out))
+
+    print(barycentric_interpolate(x, y, -1.0))

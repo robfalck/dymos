@@ -1,3 +1,5 @@
+import itertools
+
 import numpy as np
 import openmdao.api as om
 
@@ -34,6 +36,8 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
 
         self._w_b_i = {}
         self._tau_i = {}
+        self._l_idxs_from_g = {}
+        self._dl_dg_idxs_from_g = {}
 
         for seg_idx in range(self._grid_data.num_segments):
             n = grid_data.subset_num_nodes_per_segment['all'][seg_idx]
@@ -46,6 +50,13 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
                 for k in range(n):
                     if k != j:
                         w_b_i[j] /= (tau_i[j] - tau_i[k])
+
+            self._l_idxs_from_g[seg_idx] = list(itertools.combinations(range(n)[::-1], n - 1))
+
+            # These indices pertain to the upper triangular matrix (excluding the diagonal)
+            self._dl_dg_idxs_from_g[seg_idx] = []
+            for i, tup in enumerate(self._l_idxs_from_g[seg_idx]):
+                self._dl_dg_idxs_from_g[seg_idx].extend(list(itertools.combinations(tup, n - 2))[i:])
 
         super().__init__(**kwargs)
 
@@ -131,19 +142,24 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
         w_b_i = self._w_b_i[self._segment_index]
         tau_i = self._tau_i[self._segment_index]
         seg_node_idxs = self._grid_data.subset_node_indices['all'][i1:i2]
-        n = len(seg_node_idxs)
 
         tau = inputs['stau']
-
         g = tau - tau_i
 
-        l = np.ones_like(g, dtype=complex if self.under_complex_step else float)
+        # l_idxs_from_g = list(itertools.combinations(range(n)[::-1], n - 1))
 
-        for i in range(n):
-            for j in range(n):
-                if j != i:
-                    l[i] *= g[j]
-            # l[i] = np.prod([g[j] for j in range(n) if j != i])  # This is no faster than the j-loop
+        # This code block is replaced by precomputing the combinations of g that are multiplied to
+        # form elements in l (l_idxs_from_g).
+        # These indices are precomputed at setup and cached.
+        # This makes evaluation about 3x faster when n=200.
+
+        # n = len(seg_node_idxs)
+        # for i in range(n):
+        #     for j in range(n):
+        #         if j != i:
+        #             l[i] *= g[j]
+
+        l = np.prod(g[self._l_idxs_from_g[self._segment_index]], axis=1)
 
         for interp_name, options in self._interpolants.items():
             u_hat = inputs[options['input_name']][seg_node_idxs, ...]
@@ -162,17 +178,20 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
         g = tau - tau_i
         dg_dtau = np.ones_like(tau_i)
         dl_dg = np.zeros((n, n))
+        # As above, we replace these nested loops to improve performance as n becomes large.
+        # l = np.ones_like(g, dtype=float)
+        # for i in range(n):
+        #     for j in range(n):
+        #         if j != i:
+        #             l[i] *= g[j]
+        #             dl_dg[i, j] = 1.0
+        #             for k in range(n):
+        #                 if k != j and k != i:
+        #                     dl_dg[i, j] *= g[k]
 
-        l = np.ones_like(g, dtype=float)
-
-        for i in range(n):
-            for j in range(n):
-                if j != i:
-                    l[i] *= g[j]
-                    dl_dg[i, j] = 1.0
-                    for k in range(n):
-                        if k != j and k != i:
-                            dl_dg[i, j] *= g[k]
+        dl_dg[np.triu_indices_from(dl_dg, k=1)] = np.prod(g[self._dl_dg_idxs_from_g[self._segment_index]], axis=1)
+        dl_dg = dl_dg + dl_dg.T
+        l = np.prod(g[self._l_idxs_from_g[self._segment_index]], axis=1)
 
         for interp_name, options in self._interpolants.items():
             u_hat = inputs[options['input_name']][seg_node_idxs, ...]

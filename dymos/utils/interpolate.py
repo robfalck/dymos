@@ -2,8 +2,10 @@ import itertools
 
 import numpy as np
 
+from dymos.utils.misc import multiply_along_axis
 
-class LagrangeBarycentricInterpolant(object):
+
+class LagrangeBarycentricInterpolant():
     """
     Class definition for LagrangeBarycentricInterpolant.
 
@@ -54,7 +56,7 @@ class LagrangeBarycentricInterpolant(object):
         l(x) = (x-x_0)(x-x_1)(x-x_2)...
 
     The singularity in the denominator of p(x) at x = x_n is cancelled
-    by the the term (x-x_n) in l(x).
+    by the term (x-x_n) in l(x).
 
     References
     ----------
@@ -106,6 +108,19 @@ class LagrangeBarycentricInterpolant(object):
 
         self._is_setup = False
 
+    def set_f(self, f):
+        """
+        Set the values at the nodes to be interpolated.
+
+        Parameters
+        ----------
+        f : np.array
+            The value of some quantity at the given set of nodes which is to
+            be interpolated.
+        """
+        self.f_j[...] = f
+        self.wbfj = multiply_along_axis(self.w_b, self.f_j)
+
     def x_to_tau(self, x):
         """
         Converts the independent variable x to its corresponding value of $\tau$.
@@ -128,6 +143,21 @@ class LagrangeBarycentricInterpolant(object):
             The equivalent value of $\tau$ given x.
         """
         return -1.0 + (x - self.x0) / self.dx_dtau
+
+    def add_interp(self, name, shape, units):
+        """
+        Add a variable to be interpolated on this basis.
+
+        Parameters
+        ----------
+        name
+        shape
+        units
+
+        Returns
+        -------
+
+        """
 
     def setup(self, x0, xf, f_j):
         """
@@ -161,34 +191,36 @@ class LagrangeBarycentricInterpolant(object):
         self.wbfj[...] = (self.w_b * fjT).T
         self._is_setup = True
 
-    def eval(self, x):
+    def eval(self, tau):
         """
-        Interpolate the polynomial at x.
+        Interpolate the polynomial at nondimensional time tau.
 
         Parameters
         ----------
-        x : float
+        tau : float
             The independent variable value at which interpolation
             is requested.
 
         Returns
         -------
         float
-            The interpolated value of the polynomial at x.
+            The interpolated value of the polynomial at tau.
         """
         if not self._is_setup:
             raise RuntimeError('LagrangeBarycentricInterpolant has not been setup')
-        tau = self.x_to_tau(x)
 
         g = tau - self.tau_i
         l = np.ones_like(g)
 
         for i in range(self.num_nodes):
-            for j in range(self.num_nodes):
-                if j != i:
-                    l[i] *= g[j]
+            # for j in range(self.num_nodes):
+            #     if j != i:
+            #         l[i] *= g[j]
+            l[i] = np.prod(g[j] for j in range(self.num_nodes) if j != i)
 
-        result = np.reshape(np.dot(l, self.wbfj_flat), newshape=self.wbfj.shape[1:])
+        result = np.einsum('i,ij...->j...', l, self.wbfj)
+        # result = np.reshape(np.dot(l, self.wbfj_flat), newshape=self.wbfj.shape[1:])
+        # result = np.dot(l, self.wbfj)
 
         return result
 

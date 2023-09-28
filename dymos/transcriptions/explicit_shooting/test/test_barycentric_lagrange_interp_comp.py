@@ -200,8 +200,15 @@ class TestBarycentricLagrangeInterpComp(unittest.TestCase):
         assert_check_partials(cpd)
 
 
-
-
+    def test_temp(self):
+        n = 4
+        print(np.prod([0.]))
+        import itertools
+        idxs = list(itertools.combinations(range(n)[::-1], n - 1))
+        print(idxs)
+        for tup in idxs:
+            idxs2 = list(itertools.combinations(tup, n - 2))
+            print(idxs2)
 #
 #         interp_comp.options['segment_index'] = 1
 #
