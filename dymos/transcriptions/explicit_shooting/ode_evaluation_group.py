@@ -3,6 +3,7 @@ import numpy as np
 import openmdao.api as om
 
 from .vandermonde_control_interp_comp import VandermondeControlInterpComp
+from .barycentric_lagrange_interp_comp import BarycentricLagrangeInterpComp
 from .state_rate_collector_comp import StateRateCollectorComp
 from .tau_comp import TauComp
 
