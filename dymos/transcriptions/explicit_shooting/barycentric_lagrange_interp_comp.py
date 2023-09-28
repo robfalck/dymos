@@ -45,7 +45,6 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
             seg_node_idxs = self._grid_data.subset_node_indices['all'][i1:i2]
             w_b_i = self._w_b_i[seg_idx] = np.ones(n)
             tau_i = self._tau_i[seg_idx] = grid_data.node_stau[seg_node_idxs]
-            # print(n, seg_node_idxs, tau_i, w_b_i)
             for j in range(n):
                 for k in range(n):
                     if k != j:
@@ -201,6 +200,8 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
             d_output_dl = wbfj.T
             partials[options['output_name'], 'stau'] = d_output_dl @ dl_dg @ dg_dtau
 
-            d_output_d_wbfj = np.repeat(l, size).reshape((n,) + shape).T
+            d_output_d_wbfj = l
             d_wbfj_d_fj = w_b_i
-            partials[options['output_name'], options['input_name']][..., seg_node_idxs] = d_output_d_wbfj * d_wbfj_d_fj
+            deriv = np.kron(d_output_d_wbfj * d_wbfj_d_fj, np.eye(size))
+            deriv_cols = i1 * size + np.arange(n * size, dtype=int)
+            partials[options['output_name'], options['input_name']][..., deriv_cols] = deriv
