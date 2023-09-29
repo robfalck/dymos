@@ -204,4 +204,6 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
             d_wbfj_d_fj = w_b_i
             deriv = np.kron(d_output_d_wbfj * d_wbfj_d_fj, np.eye(size))
             deriv_cols = i1 * size + np.arange(n * size, dtype=int)
+            # First fill the partials with zeros so that stale values from previous calls are not present.
+            partials[options['output_name'], options['input_name']][...] = 0.0
             partials[options['output_name'], options['input_name']][..., deriv_cols] = deriv

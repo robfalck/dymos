@@ -73,10 +73,9 @@ class ODEEvaluationGroup(om.Group):
             The index of the current segment.
         """
         self._get_subsystem('tau_comp').options['segment_index'] = seg_idx
-
         control_interp_comp = self._get_subsystem('control_interp')
         if control_interp_comp:
-            control_interp_comp.options['segment_index'] = seg_idx
+            control_interp_comp.set_segment_index(seg_idx)
 
     def setup(self):
         """
@@ -101,14 +100,19 @@ class ODEEvaluationGroup(om.Group):
             c_options = self._control_options
             pc_options = self._polynomial_control_options
 
+            # # Add control interpolant
+            # self._control_comp = self.add_subsystem('control_interp',
+            #                                         VandermondeControlInterpComp(grid_data=igd,
+            #                                                                      vec_size=self._vec_size,
+            #                                                                      control_options=c_options,
+            #                                                                      polynomial_control_options=pc_options,
+            #                                                                      time_units=t_units),
+            #                                         promotes_inputs=['ptau', 'stau', 't_duration', 'dstau_dt'])
+
             # Add control interpolant
             self._control_comp = self.add_subsystem('control_interp',
-                                                    VandermondeControlInterpComp(grid_data=igd,
-                                                                                 vec_size=self._vec_size,
-                                                                                 control_options=c_options,
-                                                                                 polynomial_control_options=pc_options,
-                                                                                 time_units=t_units),
-                                                    promotes_inputs=['ptau', 'stau', 't_duration', 'dstau_dt'])
+                                                    BarycentricLagrangeInterpComp(grid_data=igd),
+                                                    promotes_inputs=['stau'])
 
         self.add_subsystem('ode', self._ode_class(num_nodes=self._vec_size, **self._ode_init_kwargs))
 
@@ -267,19 +271,34 @@ class ODEEvaluationGroup(om.Group):
                 u_name = f'control_values:{name}'
                 u_rate_name = f'control_rates:{name}_rate'
                 u_rate2_name = f'control_rates:{name}_rate2'
+                interp_u_name = f'interp_control_values:{name}'
+                interp_u_rate_name = f'interp_control_rates:{name}_rate'
+                interp_u_rate2_name = f'interp_control_rates:{name}_rate2'
 
-                self._ivc.add_output(uhat_name, shape=(num_control_input_nodes,) + shape, units=units)
-                self.add_design_var(uhat_name)
-                self.add_constraint(u_name)
-                self.add_constraint(u_rate_name)
-                self.add_constraint(u_rate2_name)
+                self._control_comp.add_interp(name=name, input_name=u_name,
+                                              output_name=interp_u_name,
+                                              shape=shape, units=units)
 
-                self.promotes('control_interp', inputs=[uhat_name],
-                              outputs=[u_name, u_rate_name, u_rate2_name])
+                self._control_comp.add_interp(name=name + '_rate', input_name=u_rate_name,
+                                              output_name=interp_u_rate_name,
+                                              shape=shape, units=units)
+
+                self._control_comp.add_interp(name=name + '_rate2', input_name=u_rate2_name,
+                                              output_name=interp_u_rate2_name,
+                                              shape=shape, units=units)
+
+                self._ivc.add_output(u_name, shape=(igd.subset_num_nodes['all'],) + shape, units=units)
+                self.add_design_var(u_name)
+                self.add_constraint(interp_u_name)
+                self.add_constraint(interp_u_rate_name)
+                self.add_constraint(interp_u_rate2_name)
+
+                self.promotes('control_interp', inputs=[u_name, u_rate_name, u_rate2_name],
+                              outputs=[interp_u_name, interp_u_rate_name, interp_u_rate2_name])
 
                 # Promote targets from the ODE
                 for tgt in targets:
-                    self.promotes('ode', inputs=[(tgt, u_name)])
+                    self.promotes('ode', inputs=[(tgt, interp_u_name)])
                 if targets:
                     self.set_input_defaults(name=u_name,
                                             val=np.ones(shape),
@@ -300,6 +319,7 @@ class ODEEvaluationGroup(om.Group):
                     self.set_input_defaults(name=u_rate2_name,
                                             val=np.ones(shape),
                                             units=rate2_units)
+
 
     def _configure_polynomial_controls(self):
         configure_controls_introspection(self._polynomial_control_options, self.ode)

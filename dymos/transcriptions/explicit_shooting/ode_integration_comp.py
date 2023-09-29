@@ -712,7 +712,7 @@ class ODEIntegrationComp(om.ExplicitComponent):
                     f_theta[idxs, idxs_wrt] = px_pp.ravel()
 
                 for control_name_wrt in self.control_options:
-                    idxs_wrt = self._control_idxs_in_theta[control_name_wrt]
+                    idxs_wrt = self._control_value_idxs_in_theta[control_name_wrt]
                     px_pu = totals[of_name, self._control_value_input_names[control_name_wrt]]
                     f_theta[idxs, idxs_wrt] = px_pu.ravel()
 
@@ -725,7 +725,7 @@ class ODEIntegrationComp(om.ExplicitComponent):
                     f_theta[idxs, idxs_wrt] = px_pu.ravel()
 
                 for pc_name_wrt in self.polynomial_control_options:
-                    idxs_wrt = self._polynomial_control_idxs_in_theta[pc_name_wrt]
+                    idxs_wrt = self._polynomial_control_value_idxs_in_theta[pc_name_wrt]
                     px_ppc = totals[of_name, self._polynomial_control_input_names[pc_name_wrt]]
                     f_theta[idxs, idxs_wrt] = px_ppc.ravel()
 
@@ -733,7 +733,7 @@ class ODEIntegrationComp(om.ExplicitComponent):
                     px_pu = totals[of_name, self._polynomial_control_rate_input_names[pc_name_wrt]]
                     f_theta[idxs, idxs_wrt] = px_pu.ravel()
 
-                    idxs_wrt = self._control_rate2_idxs_in_theta[pc_name_wrt]
+                    idxs_wrt = self._polynomial_control_rate2_idxs_in_theta[pc_name_wrt]
                     px_pu = totals[of_name, self._polynomial_control_rate2_input_names[pc_name_wrt]]
                     f_theta[idxs, idxs_wrt] = px_pu.ravel()
 
