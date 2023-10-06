@@ -403,9 +403,7 @@ class ExplicitShooting(TranscriptionBase):
         ncin = self.options['grid'].subset_num_nodes['control_input']
         for control_name, options in phase.control_options.items():
 
-            phase.promotes('integrator', inputs=[f'control_values:{control_name}'])
-            phase.promotes('integrator', inputs=[f'control_rates:{control_name}_rate'])
-            phase.promotes('integrator', inputs=[f'control_rates:{control_name}_rate2'])
+            phase.promotes('integrator', inputs=[f'controls:{control_name}'])
 
             if options['opt']:
                 coerce_desvar_option = CoerceDesvar(num_input_nodes=ncin, options=options)

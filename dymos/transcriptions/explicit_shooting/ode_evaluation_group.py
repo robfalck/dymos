@@ -111,8 +111,8 @@ class ODEEvaluationGroup(om.Group):
 
             # Add control interpolant
             self._control_comp = self.add_subsystem('control_interp',
-                                                    BarycentricLagrangeInterpComp(grid_data=igd),
-                                                    promotes_inputs=['stau'])
+                                                    BarycentricLagrangeInterpComp(grid_data=igd, time_units=t_units),
+                                                    promotes_inputs=['stau', 'controls:*'])
 
         self.add_subsystem('ode', self._ode_class(num_nodes=self._vec_size, **self._ode_init_kwargs))
 
@@ -271,34 +271,21 @@ class ODEEvaluationGroup(om.Group):
                 u_name = f'control_values:{name}'
                 u_rate_name = f'control_rates:{name}_rate'
                 u_rate2_name = f'control_rates:{name}_rate2'
-                interp_u_name = f'interp_control_values:{name}'
-                interp_u_rate_name = f'interp_control_rates:{name}_rate'
-                interp_u_rate2_name = f'interp_control_rates:{name}_rate2'
 
-                self._control_comp.add_interp(name=name, input_name=u_name,
-                                              output_name=interp_u_name,
-                                              shape=shape, units=units)
+                self._control_comp.add_control_interp(control_name=name, shape=shape, units=units)
 
-                self._control_comp.add_interp(name=name + '_rate', input_name=u_rate_name,
-                                              output_name=interp_u_rate_name,
-                                              shape=shape, units=units)
+                self._ivc.add_output(uhat_name, shape=(igd.subset_num_nodes['control_input'],) + shape, units=units)
+                self.add_design_var(uhat_name)
+                self.add_constraint(u_name)
+                self.add_constraint(u_rate_name)
+                self.add_constraint(u_rate2_name)
 
-                self._control_comp.add_interp(name=name + '_rate2', input_name=u_rate2_name,
-                                              output_name=interp_u_rate2_name,
-                                              shape=shape, units=units)
-
-                self._ivc.add_output(u_name, shape=(igd.subset_num_nodes['all'],) + shape, units=units)
-                self.add_design_var(u_name)
-                self.add_constraint(interp_u_name)
-                self.add_constraint(interp_u_rate_name)
-                self.add_constraint(interp_u_rate2_name)
-
-                self.promotes('control_interp', inputs=[u_name, u_rate_name, u_rate2_name],
-                              outputs=[interp_u_name, interp_u_rate_name, interp_u_rate2_name])
+                self.promotes('control_interp', inputs=[uhat_name],
+                              outputs=[u_name, u_rate_name, u_rate2_name])
 
                 # Promote targets from the ODE
                 for tgt in targets:
-                    self.promotes('ode', inputs=[(tgt, interp_u_name)])
+                    self.promotes('ode', inputs=[(tgt, u_name)])
                 if targets:
                     self.set_input_defaults(name=u_name,
                                             val=np.ones(shape),

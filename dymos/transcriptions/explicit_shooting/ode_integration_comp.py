@@ -3,7 +3,6 @@ import openmdao.api as om
 from scipy.integrate import solve_ivp
 
 from ..._options import options as dymos_options
-from ...utils.misc import get_rate_units
 
 from .ode_evaluation_group import ODEEvaluationGroup
 
@@ -76,7 +75,6 @@ class ODEIntegrationComp(om.ExplicitComponent):
 
         self._no_check_partials = not dymos_options['include_check_partials']
         self._num_control_input_nodes = input_grid_data.subset_num_nodes['control_input']
-        self._num_input_grid_nodes = input_grid_data.subset_num_nodes['all']
 
     def initialize(self):
         """
@@ -208,19 +206,11 @@ class ODEIntegrationComp(om.ExplicitComponent):
 
             for control_name_wrt in self.control_options:
                 self.declare_partials(of=self._state_output_names[state_name],
-                                      wrt=f'control_values:{control_name_wrt}')
-                self.declare_partials(of=self._state_output_names[state_name],
-                                      wrt=f'control_rates:{control_name_wrt}_rate')
-                self.declare_partials(of=self._state_output_names[state_name],
-                                      wrt=f'control_rates:{control_name_wrt}_rate2')
+                                      wrt=f'controls:{control_name_wrt}')
 
             for control_name_wrt in self.polynomial_control_options:
                 self.declare_partials(of=self._state_output_names[state_name],
                                       wrt=f'polynomial_controls:{control_name_wrt}')
-                self.declare_partials(of=self._state_output_names[state_name],
-                                      wrt=f'polynomial_control_rates:{control_name_wrt}_rate')
-                self.declare_partials(of=self._state_output_names[state_name],
-                                      wrt=f'polynomial_control_rates:{control_name_wrt}_rate2')
 
     def _setup_parameters(self):
         if self._standalone_mode:
@@ -264,58 +254,23 @@ class ODEIntegrationComp(om.ExplicitComponent):
         configure time in the parent ExplicitShooting transcription object.
         """
         self.u_size = 0
-        self._control_value_idxs_in_theta = {}
-        self._control_value_idxs_in_z = {}
-        self._control_rate_idxs_in_theta = {}
-        self._control_rate_idxs_in_z = {}
-        self._control_rate2_idxs_in_theta = {}
-        self._control_rate2_idxs_in_z = {}
+        self._control_idxs_in_theta = {}
+        self._control_idxs_in_z = {}
         self._control_input_names = {}
-        self._control_value_input_names = {}
-        self._control_rate_input_names = {}
-        self._control_rate2_input_names = {}
 
         for control_name, options in self.control_options.items():
-            control_param_shape = (self._num_input_grid_nodes,) + options['shape']
+            control_param_shape = (self._num_control_input_nodes,) + options['shape']
             control_param_size = np.prod(control_param_shape, dtype=int)
-            self._control_value_input_names[control_name] = f'control_values:{control_name}'
-            self._control_rate_input_names[control_name] = f'control_rates:{control_name}_rate'
-            self._control_rate2_input_names[control_name] = f'control_rates:{control_name}_rate2'
+            self._control_input_names[control_name] = f'controls:{control_name}'
 
-            self._totals_wrt_names.append(self._control_value_input_names[control_name])
-            self._totals_wrt_names.append(self._control_rate_input_names[control_name])
-            self._totals_wrt_names.append(self._control_rate2_input_names[control_name])
+            self._totals_wrt_names.append(self._control_input_names[control_name])
 
-            self.add_input(self._control_value_input_names[control_name],
+            self.add_input(self._control_input_names[control_name],
                            shape=control_param_shape,
                            units=options['units'],
-                           desc=f'values for control {control_name} at all nodes of the input grid')
+                           desc=f'values for control {control_name} at input nodes')
 
-            self.add_input(self._control_rate_input_names[control_name],
-                           shape=control_param_shape,
-                           units=get_rate_units(options['units'], self.time_options['units'], deriv=1),
-                           desc=f'values for control {control_name} rate at all nodes of the input grid')
-
-            self.add_input(self._control_rate2_input_names[control_name],
-                           shape=control_param_shape,
-                           units=get_rate_units(options['units'], self.time_options['units'], deriv=2),
-                           desc=f'values for control {control_name} second derivative at all nodes of the input grid')
-
-            self.u_size += control_param_size * 3  # values, rates, rate2
-
-
-            # control_param_shape = (self._num_control_input_nodes,) + options['shape']
-            # control_param_size = np.prod(control_param_shape, dtype=int)
-            # self._control_input_names[control_name] = f'controls:{control_name}'
-            #
-            # self._totals_wrt_names.append(self._control_input_names[control_name])
-            #
-            # self.add_input(self._control_input_names[control_name],
-            #                shape=control_param_shape,
-            #                units=options['units'],
-            #                desc=f'values for control {control_name} at input nodes')
-            #
-            # self.u_size += control_param_size
+            self.u_size += control_param_size
 
     def _setup_polynomial_controls(self):
         if self._standalone_mode:
@@ -328,46 +283,25 @@ class ODEIntegrationComp(om.ExplicitComponent):
         configure time in the parent ExplicitShooting transcription object.
         """
         self.up_size = 0
-        self._polynomial_control_value_idxs_in_theta = {}
-        self._polynomial_control_value_idxs_in_z = {}
-        self._polynomial_control_rate_idxs_in_theta = {}
-        self._polynomial_control_rate_idxs_in_z = {}
-        self._polynomial_control_rate2_idxs_in_theta = {}
-        self._polynomial_control_rate2_idxs_in_z = {}
+        self._polynomial_control_idxs_in_theta = {}
+        self._polynomial_control_idxs_in_z = {}
         self._polynomial_control_input_names = {}
-        self._polynomial_control_value_input_names = {}
-        self._polynomial_control_rate_input_names = {}
-        self._polynomial_control_rate2_input_names = {}
 
         for name, options in self.polynomial_control_options.items():
-            control_param_shape = (self._num_input_grid_nodes,) + options['shape']
+            num_input_nodes = options['order'] + 1
+            control_param_shape = (num_input_nodes,) + options['shape']
             control_param_size = np.prod(control_param_shape, dtype=int)
 
             self._polynomial_control_input_names[name] = f'polynomial_controls:{name}'
-            self._polynomial_control_value_input_names[name] = f'polynomial_control_values:{name}'
-            self._polynomial_control_rate_input_names[name] = f'polynomial_control_rates:{name}_rate'
-            self._polynomial_control_rate2_input_names[name] = f'polynomial_control_rates:{name}_rate2'
 
-            self._totals_wrt_names.append(self._polynomial_control_value_input_names[name])
-            self._totals_wrt_names.append(self._polynomial_control_rate_input_names[name])
-            self._totals_wrt_names.append(self._polynomial_control_rate2_input_names[name])
+            self._totals_wrt_names.append(self._polynomial_control_input_names[name])
 
-            self.add_input(self._polynomial_control_value_input_names[name],
+            self.add_input(self._polynomial_control_input_names[name],
                            shape=control_param_shape,
                            units=options['units'],
-                           desc=f'values for control {name} at all nodes of the input grid')
+                           desc=f'values for control {name} at input nodes')
 
-            self.add_input(self._polynomial_control_rate_input_names[name],
-                           shape=control_param_shape,
-                           units=options['units'],
-                           desc=f'values for control {name} rate at all nodes of the input grid')
-
-            self.add_input(self._polynomial_control_rate2_input_names[name],
-                           shape=control_param_shape,
-                           units=options['units'],
-                           desc=f'values for control {name} second derivative at all nodes of the input grid')
-
-            self.up_size += control_param_size * 3
+            self.up_size += control_param_size
 
     def _build_dx_dz_idxs(self):
         self._partial_dx_dz_idxs = {}
@@ -400,36 +334,16 @@ class ODEIntegrationComp(om.ExplicitComponent):
 
             # Column indices wrt the controls
             for control, control_options in self.control_options.items():
-                input_name = self._control_value_input_names[control]
-                input_size = np.prod(control_options['shape']) * self._num_input_grid_nodes
-                idxs = np.s_[:, dx_dz_idx: dx_dz_idx + output_state_size * input_size]
-                self._partial_dx_dz_idxs[output_name, input_name] = idxs
-                dx_dz_idx += output_state_size * input_size
-
-                input_name = self._control_rate_input_names[control]
-                idxs = np.s_[:, dx_dz_idx: dx_dz_idx + output_state_size * input_size]
-                self._partial_dx_dz_idxs[output_name, input_name] = idxs
-                dx_dz_idx += output_state_size * input_size
-
-                input_name = self._control_rate2_input_names[control]
+                input_name = self._control_input_names[control]
+                input_size = np.prod(control_options['shape']) * self._input_grid_data.subset_num_nodes['control_input']
                 idxs = np.s_[:, dx_dz_idx: dx_dz_idx + output_state_size * input_size]
                 self._partial_dx_dz_idxs[output_name, input_name] = idxs
                 dx_dz_idx += output_state_size * input_size
 
             # Column indices wrt the polynomial controls
             for pc, pc_options in self.polynomial_control_options.items():
-                input_name = self._polynomial_control_value_input_names[pc]
-                input_size = np.prod(pc_options['shape']) * self._num_input_grid_nodes
-                idxs = np.s_[:, dx_dz_idx: dx_dz_idx + output_state_size * input_size]
-                self._partial_dx_dz_idxs[output_name, input_name] = idxs
-                dx_dz_idx += output_state_size * input_size
-
-                input_name = self._polynomial_control_rate_input_names[pc]
-                idxs = np.s_[:, dx_dz_idx: dx_dz_idx + output_state_size * input_size]
-                self._partial_dx_dz_idxs[output_name, input_name] = idxs
-                dx_dz_idx += output_state_size * input_size
-
-                input_name = self._polynomial_control_rate2_input_names[pc]
+                input_name = self._polynomial_control_input_names[pc]
+                input_size = np.prod(pc_options['shape']) * (pc_options['order'] + 1)
                 idxs = np.s_[:, dx_dz_idx: dx_dz_idx + output_state_size * input_size]
                 self._partial_dx_dz_idxs[output_name, input_name] = idxs
                 dx_dz_idx += output_state_size * input_size
@@ -441,6 +355,7 @@ class ODEIntegrationComp(om.ExplicitComponent):
     def _configure_storage(self):
         igd = self._input_grid_data
         ogd = self._output_grid_data
+        control_input_node_ptau = igd.node_ptau[igd.subset_node_indices['control_input']]
 
         # allocate the ODE parameter vector
         self.theta_size = 2 + self.p_size + self.u_size + self.up_size
@@ -474,43 +389,21 @@ class ODEIntegrationComp(om.ExplicitComponent):
             start_theta += param_size
 
         for control_name, options in self.control_options.items():
-            control_param_shape = (self._num_input_grid_nodes,) + options['shape']
+            control_param_shape = (len(control_input_node_ptau),) + options['shape']
             control_param_size = np.prod(control_param_shape, dtype=int)
-
-            self._control_value_idxs_in_z[control_name] = np.s_[start_z:start_z + control_param_size]
-            self._control_value_idxs_in_theta[control_name] = np.s_[start_theta:start_theta+control_param_size]
-            z_input_names.extend([self._control_value_input_names[control_name]] * control_param_size)
-            start_z += control_param_size
-            start_theta += control_param_size
-
-            self._control_rate_idxs_in_z[control_name] = np.s_[start_z:start_z + control_param_size]
-            self._control_rate_idxs_in_theta[control_name] = np.s_[start_theta:start_theta+control_param_size]
-            z_input_names.extend([self._control_rate_input_names[control_name]] * control_param_size)
-            start_z += control_param_size
-            start_theta += control_param_size
-
-            self._control_rate2_idxs_in_z[control_name] = np.s_[start_z:start_z + control_param_size]
-            self._control_rate2_idxs_in_theta[control_name] = np.s_[start_theta:start_theta+control_param_size]
-            z_input_names.extend([self._control_rate2_input_names[control_name]] * control_param_size)
+            self._control_idxs_in_z[control_name] = np.s_[start_z:start_z + control_param_size]
+            self._control_idxs_in_theta[control_name] = np.s_[start_theta:start_theta+control_param_size]
+            z_input_names.extend([self._control_input_names[control_name]] * control_param_size)
             start_z += control_param_size
             start_theta += control_param_size
 
         for pc_name, options in self.polynomial_control_options.items():
-            num_input_nodes = self._num_input_grid_nodes
+            num_input_nodes = options['order'] + 1
             control_param_shape = (num_input_nodes,) + options['shape']
             control_param_size = np.prod(control_param_shape, dtype=int)
-
-            self._polynomial_control_value_idxs_in_z[pc_name] = np.s_[start_z:start_z + control_param_size]
-            self._polynomial_control_value_idxs_in_theta[pc_name] = np.s_[start_theta:start_theta+control_param_size]
-            z_input_names.extend([self._polynomial_control_value_input_names[pc_name]] * control_param_size)
-
-            self._polynomial_control_rate_idxs_in_z[pc_name] = np.s_[start_z:start_z + control_param_size]
-            self._polynomial_control_rate_idxs_in_theta[pc_name] = np.s_[start_theta:start_theta+control_param_size]
-            z_input_names.extend([self._polynomial_control_rate_input_names[pc_name]] * control_param_size)
-
-            self._polynomial_control_rate2_idxs_in_z[pc_name] = np.s_[start_z:start_z + control_param_size]
-            self._polynomial_control_rate2_idxs_in_theta[pc_name] = np.s_[start_theta:start_theta+control_param_size]
-            z_input_names.extend([self._polynomial_control_rate2_input_names[pc_name]] * control_param_size)
+            self._polynomial_control_idxs_in_z[pc_name] = np.s_[start_z:start_z + control_param_size]
+            self._polynomial_control_idxs_in_theta[pc_name] = np.s_[start_theta:start_theta+control_param_size]
+            z_input_names.extend([self._polynomial_control_input_names[pc_name]] * control_param_size)
 
             start_z += control_param_size
             start_theta += control_param_size
@@ -610,22 +503,12 @@ class ODEIntegrationComp(om.ExplicitComponent):
 
         # transcribe controls
         for name in self.control_options:
-            value_input_name = self._control_value_input_names[name]
-            rate_input_name = self._control_rate_input_names[name]
-            rate2_input_name = self._control_rate2_input_names[name]
-
-            subprob.set_val(value_input_name, theta[self._control_value_idxs_in_theta[name]])
-            subprob.set_val(rate_input_name, theta[self._control_rate_idxs_in_theta[name]])
-            subprob.set_val(rate2_input_name, theta[self._control_rate2_idxs_in_theta[name]])
+            input_name = self._control_input_names[name]
+            subprob.set_val(input_name, theta[self._control_idxs_in_theta[name]])
 
         for name in self.polynomial_control_options:
-            value_input_name = self._polynomial_control_value_input_names[name]
-            rate_input_name = self._polynomial_control_rate_input_names[name]
-            rate2_input_name = self._polynomial_control_rate2_input_names[name]
-
-            subprob.set_val(value_input_name, theta[self._polynomial_control_value_idxs_in_theta[name]])
-            subprob.set_val(rate_input_name, theta[self._polynomial_control_rate_idxs_in_theta[name]])
-            subprob.set_val(rate2_input_name, theta[self._polynomial_control_rate2_idxs_in_theta[name]])
+            input_name = self._polynomial_control_input_names[name]
+            subprob.set_val(input_name, theta[self._polynomial_control_idxs_in_theta[name]])
 
         # Re-run in case the inputs have changed.
         subprob.run_model()
@@ -712,30 +595,14 @@ class ODEIntegrationComp(om.ExplicitComponent):
                     f_theta[idxs, idxs_wrt] = px_pp.ravel()
 
                 for control_name_wrt in self.control_options:
-                    idxs_wrt = self._control_value_idxs_in_theta[control_name_wrt]
-                    px_pu = totals[of_name, self._control_value_input_names[control_name_wrt]]
-                    f_theta[idxs, idxs_wrt] = px_pu.ravel()
-
-                    idxs_wrt = self._control_rate_idxs_in_theta[control_name_wrt]
-                    px_pu = totals[of_name, self._control_rate_input_names[control_name_wrt]]
-                    f_theta[idxs, idxs_wrt] = px_pu.ravel()
-
-                    idxs_wrt = self._control_rate2_idxs_in_theta[control_name_wrt]
-                    px_pu = totals[of_name, self._control_rate2_input_names[control_name_wrt]]
+                    idxs_wrt = self._control_idxs_in_theta[control_name_wrt]
+                    px_pu = totals[of_name, self._control_input_names[control_name_wrt]]
                     f_theta[idxs, idxs_wrt] = px_pu.ravel()
 
                 for pc_name_wrt in self.polynomial_control_options:
-                    idxs_wrt = self._polynomial_control_value_idxs_in_theta[pc_name_wrt]
+                    idxs_wrt = self._polynomial_control_idxs_in_theta[pc_name_wrt]
                     px_ppc = totals[of_name, self._polynomial_control_input_names[pc_name_wrt]]
                     f_theta[idxs, idxs_wrt] = px_ppc.ravel()
-
-                    idxs_wrt = self._polynomial_control_rate_idxs_in_theta[pc_name_wrt]
-                    px_pu = totals[of_name, self._polynomial_control_rate_input_names[pc_name_wrt]]
-                    f_theta[idxs, idxs_wrt] = px_pu.ravel()
-
-                    idxs_wrt = self._polynomial_control_rate2_idxs_in_theta[pc_name_wrt]
-                    px_pu = totals[of_name, self._polynomial_control_rate2_input_names[pc_name_wrt]]
-                    f_theta[idxs, idxs_wrt] = px_pu.ravel()
 
         else:
             f_x = f_t = f_theta = None
@@ -891,24 +758,12 @@ class ODEIntegrationComp(om.ExplicitComponent):
             theta[self._parameter_idxs_in_theta[param_name]] = param_val.ravel()
 
         for control_name in self.control_options:
-            control_vals = inputs[self._control_value_input_names[control_name]]
-            theta[self._control_value_idxs_in_theta[control_name]] = control_vals.ravel()
-
-            control_rate_vals = inputs[self._control_rate_input_names[control_name]]
-            theta[self._control_rate_idxs_in_theta[control_name]] = control_rate_vals.ravel()
-
-            control_rate2_vals = inputs[self._control_rate2_input_names[control_name]]
-            theta[self._control_rate2_idxs_in_theta[control_name]] = control_rate2_vals.ravel()
+            control_vals = inputs[self._control_input_names[control_name]]
+            theta[self._control_idxs_in_theta[control_name]] = control_vals.ravel()
 
         for pc_name in self.polynomial_control_options:
-            pc_vals = inputs[self._polynomial_control_value_input_names[pc_name]]
-            theta[self._polynomial_control_value_idxs_in_theta[pc_name]] = pc_vals.ravel()
-
-            pc_rate_vals = inputs[self._polynomial_control_rate_input_names[pc_name]]
-            theta[self._polynomial_control_rate_idxs_in_theta[pc_name]] = pc_rate_vals.ravel()
-
-            pc_rate2_vals = inputs[self._polynomial_control_rate2_input_names[pc_name]]
-            theta[self._polynomial_control_rate2_idxs_in_theta[pc_name]] = pc_rate2_vals.ravel()
+            pc_vals = inputs[self._polynomial_control_input_names[pc_name]]
+            theta[self._polynomial_control_idxs_in_theta[pc_name]] = pc_vals.ravel()
 
         if _propagate_derivs:
             if dx_dz_out is None:
@@ -1027,21 +882,9 @@ class ODEIntegrationComp(om.ExplicitComponent):
                 partials[of, wrt] = dx_dz[self._partial_dx_dz_idxs[of, wrt]]
 
             for wrt_control_name in self.control_options:
-                wrt = self._control_value_input_names[wrt_control_name]
-                partials[of, wrt] = dx_dz[self._partial_dx_dz_idxs[of, wrt]]
-
-                wrt = self._control_rate_input_names[wrt_control_name]
-                partials[of, wrt] = dx_dz[self._partial_dx_dz_idxs[of, wrt]]
-
-                wrt = self._control_rate2_input_names[wrt_control_name]
+                wrt = self._control_input_names[wrt_control_name]
                 partials[of, wrt] = dx_dz[self._partial_dx_dz_idxs[of, wrt]]
 
             for wrt_pc_name in self.polynomial_control_options:
-                wrt = self._polynomial_control_value_input_names[wrt_pc_name]
-                partials[of, wrt] = dx_dz[self._partial_dx_dz_idxs[of, wrt]]
-
-                wrt = self._polynomial_control_rate_input_names[wrt_pc_name]
-                partials[of, wrt] = dx_dz[self._partial_dx_dz_idxs[of, wrt]]
-
-                wrt = self._polynomial_control_rate2_input_names[wrt_pc_name]
+                wrt = self._polynomial_control_input_names[wrt_pc_name]
                 partials[of, wrt] = dx_dz[self._partial_dx_dz_idxs[of, wrt]]
