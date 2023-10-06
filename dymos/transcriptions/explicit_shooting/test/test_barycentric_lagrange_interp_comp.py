@@ -116,85 +116,89 @@ class TestBarycentricLagrangeInterpComp(unittest.TestCase):
                     assert_check_partials(cpd)
 
     def test_scalar_interp_large_num_nodes(self):
-        grid_data = dm.transcriptions.grid_data.GridData(num_segments=2, transcription='gauss-lobatto',
-                                                         transcription_order=[3, 5], compressed=True)
+        for transcription in ['radau-ps', 'gauss-lobatto']:
+            for compressed in [True, False]:
+                with self.subTest(msg=f'tx={transcription}; compressed={compressed}'):
+                    grid_data = dm.transcriptions.grid_data.GridData(num_segments=2,
+                                                                     transcription=transcription,
+                                                                     transcription_order=[30, 50],
+                                                                     compressed=compressed)
 
-        time_options = dm.phase.options.TimeOptionsDictionary()
+                    time_options = dm.phase.options.TimeOptionsDictionary()
 
-        time_options['units'] = 's'
+                    time_options['units'] = 's'
 
-        control_options = {'u1': dm.phase.options.ControlOptionsDictionary()}
+                    control_options = {'u1': dm.phase.options.ControlOptionsDictionary()}
 
-        control_options['u1']['shape'] = (1,)
-        control_options['u1']['units'] = 'unitless'
+                    control_options['u1']['shape'] = (1,)
+                    control_options['u1']['units'] = 'unitless'
 
-        p = om.Problem()
+                    p = om.Problem()
 
-        g = p.model.add_subsystem('test_group',
-                                  TestGroup(grid_data=grid_data,
-                                            control_options=control_options,
-                                            time_units='s'))
+                    g = p.model.add_subsystem('test_group',
+                                              TestGroup(grid_data=grid_data,
+                                                        control_options=control_options,
+                                                        time_units='s'))
 
-        p.setup(force_alloc_complex=True)
+                    p.setup(force_alloc_complex=True)
 
-        t = 2 * np.pi * (grid_data.node_ptau + 1)
-        x = np.sin(t)
+                    t = 2 * np.pi * (grid_data.node_ptau + 1)
+                    x = np.sin(t)
 
-        p.set_val('test_group.t_duration', 2 * np.pi)
+                    p.set_val('test_group.t_duration', 2 * np.pi)
 
-        p.set_val('test_group.controls:u1',
-                  val=x[grid_data.subset_node_indices['control_input']],
-                  units='unitless')
+                    p.set_val('test_group.controls:u1',
+                              val=x[grid_data.subset_node_indices['control_input']],
+                              units='unitless')
 
-        interp_comp = g._get_subsystem('barycentric_interp_comp')
+                    interp_comp = g._get_subsystem('barycentric_interp_comp')
 
-        ptau_results = []
-        u1_results = []
-        u1_rate_results = []
-        u1_rate2_results = []
+                    ptau_results = []
+                    u1_results = []
+                    u1_rate_results = []
+                    u1_rate2_results = []
 
-        t0 = time.time_ns()
-        for seg_idx in range(2):
-            interp_comp.set_segment_index(seg_idx)
-            for stau in np.linspace(-1, 1, 100):
-                if seg_idx == 0:
-                    ptau_results.append((stau - 1.0) / 2.)
-                elif seg_idx == 1:
-                    ptau_results.append((stau + 1.0) / 2.)
-                p.set_val('test_group.stau', stau)
-                p.run_model()
-                u1_results.extend(p.get_val('test_group.control_values:u1')[0])
-                u1_rate_results.extend(p.get_val('test_group.control_rates:u1_rate')[0])
-                u1_rate2_results.extend(p.get_val('test_group.control_rates:u1_rate2')[0])
-        tf = time.time_ns()
-        print((tf - t0) / 1.0E9)
+                    t0 = time.time_ns()
+                    for seg_idx in range(2):
+                        interp_comp.set_segment_index(seg_idx)
+                        for stau in np.linspace(-1, 1, 100):
+                            if seg_idx == 0:
+                                ptau_results.append((stau - 1.0) / 2.)
+                            elif seg_idx == 1:
+                                ptau_results.append((stau + 1.0) / 2.)
+                            p.set_val('test_group.stau', stau)
+                            p.run_model()
+                            u1_results.extend(p.get_val('test_group.control_values:u1')[0])
+                            u1_rate_results.extend(p.get_val('test_group.control_rates:u1_rate')[0])
+                            u1_rate2_results.extend(p.get_val('test_group.control_rates:u1_rate2')[0])
+                    tf = time.time_ns()
+                    print((tf - t0) / 1.0E9)
 
-        # print(ptau_results)
-        # print(u1_results)
+                    # print(ptau_results)
+                    # print(u1_results)
 
-        # import matplotlib.pyplot as plt
-        # t_plot = (np.asarray(ptau_results) + 1) * 2 * np.pi
-        # plt.plot(t_plot, u1_results, '-', label='u1')
-        # plt.plot(t_plot, u1_rate_results, '-', label='u1_rate')
-        # plt.plot(t_plot, u1_rate2_results, '-', label='u1_rate2')
-        # plt.legend()
-        # plt.show()
-        #
-        p.set_val('test_group.stau', 0.5356)
-        p.run_model()
+                    # import matplotlib.pyplot as plt
+                    # t_plot = (np.asarray(ptau_results) + 1) * 2 * np.pi
+                    # plt.plot(t_plot, u1_results, '-', label='u1')
+                    # plt.plot(t_plot, u1_rate_results, '-', label='u1_rate')
+                    # plt.plot(t_plot, u1_rate2_results, '-', label='u1_rate2')
+                    # plt.legend()
+                    # plt.show()
+                    #
+                    p.set_val('test_group.stau', 0.5356)
+                    p.run_model()
 
-        # assert_near_equal(u1_results, np.sin(2 * np.pi * (np.asarray(ptau_results) + 1)), tolerance=1.0E-12)
-        # assert_near_equal(u1_rate_results, np.cos(2 * np.pi * (np.asarray(ptau_results) + 1)), tolerance=1.0E-9)
-        # assert_near_equal(u1_rate2_results, -np.sin(2 * np.pi * (np.asarray(ptau_results) + 1)), tolerance=1.0E-9)
+                    assert_near_equal(u1_results, np.sin(2 * np.pi * (np.asarray(ptau_results) + 1)), tolerance=1.0E-12)
+                    assert_near_equal(u1_rate_results, np.cos(2 * np.pi * (np.asarray(ptau_results) + 1)), tolerance=1.0E-9)
+                    assert_near_equal(u1_rate2_results, -np.sin(2 * np.pi * (np.asarray(ptau_results) + 1)), tolerance=1.0E-9)
 
-        t0 = time.time_ns()
-        with np.printoptions(linewidth=1024, edgeitems=1024):
-            cpd = p.check_partials(compact_print=False, method='cs')
-        tf = time.time_ns()
-        print((tf - t0) / 1.0E9)
+                    t0 = time.time_ns()
+                    with np.printoptions(linewidth=1024, edgeitems=1024):
+                        cpd = p.check_partials(compact_print=False, method='cs')
+                    tf = time.time_ns()
+                    print((tf - t0) / 1.0E9)
 
-        assert_check_partials(cpd)
-
+                    assert_check_partials(cpd)
 
     def test_vector_interp(self):
         grid_data = dm.transcriptions.grid_data.GridData(num_segments=2, transcription='gauss-lobatto',

@@ -57,9 +57,9 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
         # to values at the discretization nodes.
         num_disc_nodes = grid_data.subset_num_nodes['control_disc']
         num_input_nodes = grid_data.subset_num_nodes['control_input']
-        self._L_id = np.zeros((num_disc_nodes, num_input_nodes), dtype=float)
-        self._L_id[np.arange(num_disc_nodes, dtype=int),
-                   self._grid_data.input_maps['dynamic_control_input_to_disc']] = 1.0
+        # self._L_id = np.zeros((num_disc_nodes, num_input_nodes), dtype=float)
+        # self._L_id[np.arange(num_disc_nodes, dtype=int),
+        #            self._grid_data.input_maps['dynamic_control_input_to_disc']] = 1.0
 
         self._disc_node_idxs_by_segment = []
         self._input_node_idxs_by_segment = []
@@ -102,7 +102,8 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
                 self._dl_dg_idxs_from_g[seg_idx].extend(list(itertools.combinations(tup, n - 2))[i:])
 
             if n not in self._L_da:
-                tau_cd_idxs = seg_control_disc_idxs - seg_control_disc_idxs[0]
+                tau_cd_idxs = self._disc_node_idxs_by_segment[seg_idx]
+                tau_cd_idxs = tau_cd_idxs - tau_cd_idxs[0]
                 self._L_da[n], self._D_da[n] = lagrange_matrices(tau_i[tau_cd_idxs], tau_i)
 
                 _, self._D_aa[n] = lagrange_matrices(tau_i, tau_i)
@@ -129,18 +130,6 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
         gd = self._grid_data
         self._segment_index = segment_index
         self._dptau_dstau = 0.5 * (gd.segment_ends[segment_index + 1] - gd.segment_ends[segment_index])
-
-        ncin_ps = gd.subset_num_nodes_per_segment['control_input']
-        ncin_s = ncin_ps[self._segment_index]
-
-        # The indices of the control input pertaining to the given segment.
-        self._seg_ci_idxs = np.sum(ncin_ps[:self._segment_index], dtype=int) + \
-                                   np.arange(ncin_s, dtype=int)
-
-        disc_node_idxs = self._disc_node_idxs_by_segment[self._segment_index]
-        input_node_idxs = self._input_node_idxs_by_segment[self._segment_index]
-        self._L_id_seg = self._L_id[disc_node_idxs[0]:disc_node_idxs[0] + len(disc_node_idxs),
-                         input_node_idxs[0]:input_node_idxs[0] + len(input_node_idxs)]
 
     def add_control_interp(self, control_name, shape, units):
         """
@@ -196,7 +185,6 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
             self.declare_partials(of=output_name, wrt='stau', val=0.0)
             self.declare_partials(of=output_rate_name, wrt='stau', val=0.0)
             self.declare_partials(of=output_rate2_name, wrt='stau', val=0.0)
-            # self.declare_partials(of=output_name, wrt='t_duration', val=0.0)
             self.declare_partials(of=output_rate_name, wrt='t_duration', val=0.0)
             self.declare_partials(of=output_rate2_name, wrt='t_duration', val=0.0)
 
@@ -227,8 +215,6 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
         tau = inputs['stau']
         g = tau - tau_i
 
-        # l_idxs_from_g = list(itertools.combinations(range(n)[::-1], n - 1))
-
         # This code block is replaced by precomputing the combinations of g that are multiplied to
         # form elements in l (l_idxs_from_g).
         # These indices are precomputed at setup and cached.
@@ -246,13 +232,12 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
         u_idxs = self._input_node_idxs_by_segment[self._segment_index]
 
         for control, options in self._controls.items():
-            u_in = inputs[options['input_name']][u_idxs, ...]
-            # u_hat = np.dot(self._L_da[n] @ self._L_id_seg, u_in) # radau
-            u_hat = np.dot(self._L_id_seg, u_in) # gauss-lobatto
-            udot_hat = np.dot(self._D_aa[n], u_hat) / dt_dstau
-            udot2_hat = np.dot(self._D2_aa[n], u_hat) / dt_dstau ** 2
+            u_d = inputs[options['input_name']][u_idxs, ...]
+            u_a = self._L_da[n] @ u_d
+            udot_hat = np.dot(self._D_aa[n], u_a) / dt_dstau
+            udot2_hat = np.dot(self._D2_aa[n], u_a) / dt_dstau ** 2
 
-            wbu = np.swapaxes(w_b_i * np.swapaxes(u_hat, 0, -1), -1, 0)
+            wbu = np.swapaxes(w_b_i * np.swapaxes(u_a, 0, -1), -1, 0)
             outputs[options['output_name']] = np.einsum('i,ij...->j...', l, wbu)  # u
 
             wbu_dot_hat = np.swapaxes(w_b_i * np.swapaxes(udot_hat, 0, -1), -1, 0)
@@ -294,9 +279,8 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
         u_idxs = self._input_node_idxs_by_segment[self._segment_index]
 
         for control_name, options in self._controls.items():
-            u_in = inputs[options['input_name']][u_idxs, ...]
-            # u_hat = self._L_da[n] @ np.dot(self._L_id_seg, u_in) # radau-ps
-            u_hat = np.dot(self._L_id_seg, u_in) # gauss-lobatto
+            u_disc = inputs[options['input_name']][u_idxs, ...]
+            u_hat = self._L_da[n] @ u_disc
             udot_hat = np.dot(self._D_aa[n], u_hat) / dt_dstau
             udot2_hat = np.dot(self._D2_aa[n], u_hat) / dt_dstau ** 2
 
@@ -317,8 +301,7 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
 
             du_dwbu_hat = l
             d_wbuhat_d_uhat = w_b_i
-            # duhat_du_in = self._L_da[n] @ self._L_id_seg  # radau
-            duhat_du_in = self._L_id_seg  # gauss-lobatto
+            duhat_du_in = self._L_da[n]
 
             du_du_in = np.kron((du_dwbu_hat * d_wbuhat_d_uhat) @ duhat_du_in, np.eye(size))
             # First fill the partials with zeros so that stale values from previous calls are not present.
