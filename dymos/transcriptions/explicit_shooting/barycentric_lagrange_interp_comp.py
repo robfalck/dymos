@@ -53,14 +53,6 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
         self._D_aa = {}  # Differentiation matrices
         self._D2_aa = {}  # Second derivative differentiation matrices
 
-        # The Lagrange interpolation matrix L_id maps control values as given at the input nodes
-        # to values at the discretization nodes.
-        num_disc_nodes = grid_data.subset_num_nodes['control_disc']
-        num_input_nodes = grid_data.subset_num_nodes['control_input']
-        # self._L_id = np.zeros((num_disc_nodes, num_input_nodes), dtype=float)
-        # self._L_id[np.arange(num_disc_nodes, dtype=int),
-        #            self._grid_data.input_maps['dynamic_control_input_to_disc']] = 1.0
-
         self._disc_node_idxs_by_segment = []
         self._input_node_idxs_by_segment = []
 
@@ -234,16 +226,16 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
         for control, options in self._controls.items():
             u_d = inputs[options['input_name']][u_idxs, ...]
             u_a = self._L_da[n] @ u_d
-            udot_hat = np.dot(self._D_aa[n], u_a) / dt_dstau
-            udot2_hat = np.dot(self._D2_aa[n], u_a) / dt_dstau ** 2
+            udot_a = np.dot(self._D_aa[n], u_a) / dt_dstau
+            udot2_a = np.dot(self._D2_aa[n], u_a) / dt_dstau ** 2
 
             wbu = np.swapaxes(w_b_i * np.swapaxes(u_a, 0, -1), -1, 0)
             outputs[options['output_name']] = np.einsum('i,ij...->j...', l, wbu)  # u
 
-            wbu_dot_hat = np.swapaxes(w_b_i * np.swapaxes(udot_hat, 0, -1), -1, 0)
+            wbu_dot_hat = np.swapaxes(w_b_i * np.swapaxes(udot_a, 0, -1), -1, 0)
             outputs[options['output_rate_name']] = np.einsum('i,ij...->j...', l, wbu_dot_hat)  # u_dot
 
-            wbu_dot2_hat = np.swapaxes(w_b_i * np.swapaxes(udot2_hat, 0, -1), -1, 0)
+            wbu_dot2_hat = np.swapaxes(w_b_i * np.swapaxes(udot2_a, 0, -1), -1, 0)
             outputs[options['output_rate2_name']] = np.einsum('i,ij...->j...', l, wbu_dot2_hat)  # u_dot2
 
     def compute_partials(self, inputs, partials, discrete_inputs=None):
@@ -276,26 +268,27 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
         dt_dstau = inputs['t_duration'] * self._dptau_dstau
         ddt_dstau_dt_duration = self._dptau_dstau
 
-        u_idxs = self._input_node_idxs_by_segment[self._segment_index]
+        node_idxs = self._input_node_idxs_by_segment[self._segment_index]
 
         for control_name, options in self._controls.items():
-            u_disc = inputs[options['input_name']][u_idxs, ...]
-            u_hat = self._L_da[n] @ u_disc
-            udot_hat = np.dot(self._D_aa[n], u_hat) / dt_dstau
-            udot2_hat = np.dot(self._D2_aa[n], u_hat) / dt_dstau ** 2
+            u_disc = inputs[options['input_name']][node_idxs, ...]
+            u_a = self._L_da[n] @ u_disc
+            udot_a = np.dot(self._D_aa[n], u_a) / dt_dstau
+            udot2_a = np.dot(self._D2_aa[n], u_a) / dt_dstau ** 2
 
             shape = options['shape']
             size = np.prod(shape, dtype=int)
+            deriv_cols = node_idxs[0] * size + np.arange(node_idxs.size * size, dtype=int)
 
-            wbu_hat = np.swapaxes(w_b_i * np.swapaxes(u_hat, 0, -1), -1, 0)
+            wbu_hat = np.swapaxes(w_b_i * np.swapaxes(u_a, 0, -1), -1, 0)
             du_dl = wbu_hat.T
             partials[options['output_name'], 'stau'] = du_dl @ dl_dg @ dg_dtau
 
-            wbudot_hat = np.swapaxes(w_b_i * np.swapaxes(udot_hat, 0, -1), -1, 0)
+            wbudot_hat = np.swapaxes(w_b_i * np.swapaxes(udot_a, 0, -1), -1, 0)
             dudot_dl = wbudot_hat.T
             partials[options['output_rate_name'], 'stau'] = dudot_dl @ dl_dg @ dg_dtau
 
-            wbudot2_hat = np.swapaxes(w_b_i * np.swapaxes(udot2_hat, 0, -1), -1, 0)
+            wbudot2_hat = np.swapaxes(w_b_i * np.swapaxes(udot2_a, 0, -1), -1, 0)
             dudot2_dl = wbudot2_hat.T
             partials[options['output_rate2_name'], 'stau'] = dudot2_dl @ dl_dg @ dg_dtau
 
@@ -303,13 +296,13 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
             d_wbuhat_d_uhat = w_b_i
             duhat_du_in = self._L_da[n]
 
-            du_du_in = np.kron((du_dwbu_hat * d_wbuhat_d_uhat) @ duhat_du_in, np.eye(size))
+            du_a_du_disc = sp.kron((du_dwbu_hat * d_wbuhat_d_uhat) @ duhat_du_in, sp.eye(size))
             # First fill the partials with zeros so that stale values from previous calls are not present.
             partials[options['output_name'], options['input_name']][...] = 0.0
             partials[options['output_rate_name'], options['input_name']][...] = 0.0
             partials[options['output_rate2_name'], options['input_name']][...] = 0.0
 
-            partials[options['output_name'], options['input_name']][..., u_idxs] = du_du_in
+            partials[options['output_name'], options['input_name']][..., deriv_cols] = du_a_du_disc.todense()
 
             dudot_dwbudot_hat = l
             d_wbudot_hat_d_udot_hat = w_b_i
@@ -317,10 +310,11 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
 
             dudot_du_in = sp.kron((dudot_dwbudot_hat * d_wbudot_hat_d_udot_hat) @ dudot_hat_duhat @ duhat_du_in,
                                   sp.eye(size))
-            partials[options['output_rate_name'], options['input_name']][..., u_idxs] = dudot_du_in.todense()
+            partials[options['output_rate_name'], options['input_name']][..., deriv_cols] = dudot_du_in.todense()
 
-            dudot_hat_ddt_dstau = -udot_hat / dt_dstau
-            partials[options['output_rate_name'], 't_duration'] = (dudot_dwbudot_hat * d_wbudot_hat_d_udot_hat) @ dudot_hat_ddt_dstau * ddt_dstau_dt_duration
+            dudot_hat_ddt_dstau = -udot_a / dt_dstau
+            partials[options['output_rate_name'], 't_duration'] = (dudot_dwbudot_hat * d_wbudot_hat_d_udot_hat) @ \
+                                                                  dudot_hat_ddt_dstau * ddt_dstau_dt_duration
 
             dudot2_dwbudot2_hat = l
             d_wbudot2_hat_d_udot2_hat = w_b_i
@@ -328,7 +322,8 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
 
             dudot2_du_in = sp.kron((dudot2_dwbudot2_hat * d_wbudot2_hat_d_udot2_hat) @ dudot2_hat_duhat @ duhat_du_in,
                                    sp.eye(size))
-            partials[options['output_rate2_name'], options['input_name']][..., u_idxs] = dudot2_du_in.todense()
+            partials[options['output_rate2_name'], options['input_name']][..., deriv_cols] = dudot2_du_in.todense()
 
-            dudot2_hat_ddt_dstau = -2 * udot2_hat / dt_dstau
-            partials[options['output_rate2_name'], 't_duration'] = (dudot_dwbudot_hat * d_wbudot_hat_d_udot_hat) @ dudot2_hat_ddt_dstau * ddt_dstau_dt_duration
+            dudot2_hat_ddt_dstau = -2 * udot2_a / dt_dstau
+            partials[options['output_rate2_name'], 't_duration'] = (dudot_dwbudot_hat * d_wbudot_hat_d_udot_hat) @ \
+                                                                   dudot2_hat_ddt_dstau * ddt_dstau_dt_duration
