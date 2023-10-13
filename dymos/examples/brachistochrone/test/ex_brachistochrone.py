@@ -46,6 +46,7 @@ def brachistochrone_min_time(transcription='gauss-lobatto', num_segments=8, tran
     traj.add_phase('phase0', phase)
 
     phase.set_time_options(fix_initial=True, duration_bounds=(.5, 10))
+    phase.timeseries_options.set(include_control_rates=True)
 
     phase.add_state('x', fix_initial=True, fix_final=False, solve_segments=solve_segments)
     phase.add_state('y', fix_initial=True, fix_final=False, solve_segments=solve_segments)

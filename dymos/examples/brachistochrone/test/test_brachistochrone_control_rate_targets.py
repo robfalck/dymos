@@ -4,7 +4,9 @@ import numpy as np
 
 import openmdao.api as om
 from openmdao.utils.testing_utils import use_tempdirs
+from openmdao.utils.assert_utils import assert_near_equal
 
+import dymos as dm
 
 class BrachistochroneRateTargetODE(om.ExplicitComponent):
     #
@@ -107,16 +109,28 @@ class BrachistochroneRateTargetODE(om.ExplicitComponent):
         partials['check', 'theta_rate'] = -v * cos_theta / sin_theta ** 2
 
 
+def _assert_results(p, exp_out):
+    x_imp = p.get_val('phase0.timeseries.x')
+    y_imp = p.get_val('phase0.timeseries.y')
+
+    x_exp = exp_out.get_val('phase0.timeseries.x')
+    y_exp = exp_out.get_val('phase0.timeseries.y')
+
+    t_imp = p.get_val('phase0.timeseries.time')
+    theta_imp = p.get_val('phase0.timeseries.theta_rate')
+
+    t_exp = exp_out.get_val('phase0.timeseries.time')
+    theta_exp = exp_out.get_val('phase0.timeseries.theta_rate')
+
+    assert_near_equal(x_imp[-1], x_exp[-1], tolerance=1.0E-3)
+    assert_near_equal(y_imp[-1], y_exp[-1], tolerance=1.0E-3)
+    assert_near_equal(theta_imp[-1], theta_exp[-1], tolerance=1.0E-3)
+
+
 @use_tempdirs
 class TestBrachistochroneControlRateTargets(unittest.TestCase):
 
     def test_brachistochrone_control_rate_targets_gauss_lobatto(self):
-        import matplotlib.pyplot as plt
-        plt.switch_backend('Agg')
-        import openmdao.api as om
-        from openmdao.utils.assert_utils import assert_near_equal
-        import dymos as dm
-
         p = om.Problem(model=om.Group())
         p.driver = om.ScipyOptimizeDriver()
         p.driver.declare_coloring()
@@ -168,47 +182,11 @@ class TestBrachistochroneControlRateTargets(unittest.TestCase):
         # Generate the explicitly simulated trajectory
         exp_out = phase.simulate()
 
-        fig, ax = plt.subplots()
-        fig.suptitle('Brachistochrone Solution')
-
-        x_imp = p.get_val('phase0.timeseries.x')
-        y_imp = p.get_val('phase0.timeseries.y')
-
-        x_exp = exp_out.get_val('phase0.timeseries.x')
-        y_exp = exp_out.get_val('phase0.timeseries.y')
-
-        ax.plot(x_imp, y_imp, 'ro', label='solution')
-        ax.plot(x_exp, y_exp, 'b-', label='simulated')
-
-        ax.set_xlabel('x (m)')
-        ax.set_ylabel('y (m)')
-        ax.grid(True)
-        ax.legend(loc='upper right')
-
-        fig, ax = plt.subplots()
-
-        t_imp = p.get_val('phase0.timeseries.time')
-        theta_imp = p.get_val('phase0.timeseries.theta_rate')
-        t_exp = exp_out.get_val('phase0.timeseries.time')
-        theta_exp = exp_out.get_val('phase0.timeseries.theta_rate')
-
-        io_meta = p.model.phase0.timeseries.timeseries_comp.get_io_metadata(
-            iotypes=('input', 'output'), get_remote=True)
-        self.assertEqual(io_meta['theta']['units'], 'rad*s')
-
-        ax.plot(t_imp, theta_imp, 'ro', label='solution')
-        ax.plot(t_exp, theta_exp, 'b-', label='simulated')
-
-        ax.set_xlabel('time (s)')
-        ax.set_ylabel(r'$\theta$ (deg)')
-        ax.grid(True)
-        ax.legend(loc='upper right')
-
-        plt.show()
+        _assert_results(p, exp_out)
 
     def test_brachistochrone_control_rate_targets_radau(self):
         import matplotlib.pyplot as plt
-        plt.switch_backend('Agg')
+        # plt.switch_backend('Agg')
         import matplotlib.pyplot as plt
         import openmdao.api as om
         from openmdao.utils.assert_utils import assert_near_equal
@@ -265,47 +243,14 @@ class TestBrachistochroneControlRateTargets(unittest.TestCase):
         # Generate the explicitly simulated trajectory
         exp_out = phase.simulate()
 
-        fig, ax = plt.subplots()
-        fig.suptitle('Brachistochrone Solution')
-
-        x_imp = p.get_val('phase0.timeseries.x')
-        y_imp = p.get_val('phase0.timeseries.y')
-
-        x_exp = exp_out.get_val('phase0.timeseries.x')
-        y_exp = exp_out.get_val('phase0.timeseries.y')
-
-        ax.plot(x_imp, y_imp, 'ro', label='solution')
-        ax.plot(x_exp, y_exp, 'b-', label='simulated')
-
-        ax.set_xlabel('x (m)')
-        ax.set_ylabel('y (m)')
-        ax.grid(True)
-        ax.legend(loc='upper right')
-
-        fig, ax = plt.subplots()
-
-        t_imp = p.get_val('phase0.timeseries.time')
-        theta_imp = p.get_val('phase0.timeseries.theta_rate')
-        t_exp = exp_out.get_val('phase0.timeseries.time')
-        theta_exp = exp_out.get_val('phase0.timeseries.theta_rate')
-
-        ax.plot(t_imp, theta_imp, 'ro', label='solution')
-        ax.plot(t_exp, theta_exp, 'b-', label='simulated')
-
-        ax.set_xlabel('time (s)')
-        ax.set_ylabel(r'$\theta$ (deg)')
-        ax.grid(True)
-        ax.legend(loc='upper right')
-
-        plt.show()
-
+        _assert_results(p)
 
 @use_tempdirs
 class TestBrachistochroneExplicitControlRateTargets(unittest.TestCase):
 
     def test_brachistochrone_control_rate_targets_gauss_lobatto(self):
         import matplotlib.pyplot as plt
-        plt.switch_backend('Agg')
+        # plt.switch_backend('Agg')
         import openmdao.api as om
         from openmdao.utils.assert_utils import assert_near_equal
         import dymos as dm
@@ -362,6 +307,9 @@ class TestBrachistochroneExplicitControlRateTargets(unittest.TestCase):
         # Generate the explicitly simulated trajectory
         exp_out = phase.simulate()
 
+        _assert_results(p, exp_out)
+
+
         fig, ax = plt.subplots()
         fig.suptitle('Brachistochrone Solution')
 
@@ -398,7 +346,7 @@ class TestBrachistochroneExplicitControlRateTargets(unittest.TestCase):
 
     def test_brachistochrone_control_rate_targets_radau(self):
         import matplotlib.pyplot as plt
-        plt.switch_backend('Agg')
+        # plt.switch_backend('Agg')
         import matplotlib.pyplot as plt
         import openmdao.api as om
         from openmdao.utils.assert_utils import assert_near_equal
@@ -496,7 +444,7 @@ class TestBrachistochronePolynomialControlRateTargets(unittest.TestCase):
 
     def test_brachistochrone_polynomial_control_rate_targets_gauss_lobatto(self):
         import matplotlib.pyplot as plt
-        plt.switch_backend('Agg')
+        # plt.switch_backend('Agg')
         import openmdao.api as om
         from openmdao.utils.assert_utils import assert_near_equal
         import dymos as dm
@@ -589,7 +537,7 @@ class TestBrachistochronePolynomialControlRateTargets(unittest.TestCase):
 
     def test_brachistochrone_polynomial_control_rate_targets_radau(self):
         import matplotlib.pyplot as plt
-        plt.switch_backend('Agg')
+        # plt.switch_backend('Agg')
         import matplotlib.pyplot as plt
         import openmdao.api as om
         from openmdao.utils.assert_utils import assert_near_equal
@@ -687,7 +635,7 @@ class TestBrachistochronePolynomialControlExplicitRateTargets(unittest.TestCase)
 
     def test_brachistochrone_polynomial_control_rate_targets_gauss_lobatto(self):
         import matplotlib.pyplot as plt
-        plt.switch_backend('Agg')
+        # plt.switch_backend('Agg')
         import openmdao.api as om
         from openmdao.utils.assert_utils import assert_near_equal
         import dymos as dm
@@ -780,7 +728,7 @@ class TestBrachistochronePolynomialControlExplicitRateTargets(unittest.TestCase)
 
     def test_brachistochrone_polynomial_control_rate_targets_radau(self):
         import matplotlib.pyplot as plt
-        plt.switch_backend('Agg')
+        # plt.switch_backend('Agg')
         import matplotlib.pyplot as plt
         import openmdao.api as om
         from openmdao.utils.assert_utils import assert_near_equal
@@ -878,7 +826,7 @@ class TestBrachistochronePolynomialControlExplicitRate2Targets(unittest.TestCase
 
     def test_brachistochrone_polynomial_control_rate_targets_gauss_lobatto(self):
         import matplotlib.pyplot as plt
-        plt.switch_backend('Agg')
+        # plt.switch_backend('Agg')
         import openmdao.api as om
         from openmdao.utils.assert_utils import assert_near_equal
         import dymos as dm

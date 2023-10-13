@@ -112,7 +112,7 @@ class ODEEvaluationGroup(om.Group):
             # Add control interpolant
             self._control_comp = self.add_subsystem('control_interp',
                                                     BarycentricLagrangeInterpComp(grid_data=igd, time_units=t_units),
-                                                    promotes_inputs=['stau', 'controls:*'])
+                                                    promotes_inputs=['stau', 't_duration', 'controls:*'])
 
         self.add_subsystem('ode', self._ode_class(num_nodes=self._vec_size, **self._ode_init_kwargs))
 

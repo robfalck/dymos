@@ -5,6 +5,7 @@ import scipy.sparse as sp
 import openmdao.api as om
 
 from dymos.utils.lagrange import lagrange_matrices
+from dymos.utils.misc import get_rate_units
 
 
 class BarycentricLagrangeInterpComp(om.ExplicitComponent):
@@ -165,11 +166,13 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
             output_rate2_name = options['output_rate2_name']
             shape = options['shape']
             units = options['units']
+            rate_units = get_rate_units(units, self._time_units, deriv=1)
+            rate2_units = get_rate_units(units, self._time_units, deriv=2)
 
             self.add_input(input_name, shape=(ncin,) + shape, units=units)
             self.add_output(output_name, shape=(self._vec_size,) + shape, units=units)
-            self.add_output(output_rate_name, shape=(self._vec_size,) + shape, units=units)
-            self.add_output(output_rate2_name, shape=(self._vec_size,) + shape, units=units)
+            self.add_output(output_rate_name, shape=(self._vec_size,) + shape, units=rate_units)
+            self.add_output(output_rate2_name, shape=(self._vec_size,) + shape, units=rate2_units)
 
             self.declare_partials(of=output_name, wrt=input_name, val=0.0)
             self.declare_partials(of=output_rate_name, wrt=input_name, val=0.0)
@@ -220,7 +223,7 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
 
         l = np.prod(g[self._l_idxs_from_g[self._segment_index]], axis=1)
 
-        dt_dstau = inputs['t_duration'] * self._dptau_dstau
+        dt_dstau = 0.5 * inputs['t_duration'] * self._dptau_dstau
         u_idxs = self._input_node_idxs_by_segment[self._segment_index]
 
         for control, options in self._controls.items():
@@ -265,8 +268,8 @@ class BarycentricLagrangeInterpComp(om.ExplicitComponent):
         dl_dg = dl_dg + dl_dg.T
         l = np.prod(g[self._l_idxs_from_g[self._segment_index]], axis=1)
 
-        dt_dstau = inputs['t_duration'] * self._dptau_dstau
-        ddt_dstau_dt_duration = self._dptau_dstau
+        dt_dstau = 0.5 * inputs['t_duration'] * self._dptau_dstau
+        ddt_dstau_dt_duration = 0.5 * self._dptau_dstau
 
         node_idxs = self._input_node_idxs_by_segment[self._segment_index]
 
