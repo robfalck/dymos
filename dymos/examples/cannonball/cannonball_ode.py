@@ -8,7 +8,8 @@ from dymos.models.atmosphere.atmos_1976 import USatm1976Data
 english_to_metric_rho = om.unit_conversion('slug/ft**3', 'kg/m**3')[0]
 english_to_metric_h = om.unit_conversion('ft', 'm')[0]
 rho_interp = interp1d(np.array(USatm1976Data.alt*english_to_metric_h, dtype=complex),
-                      np.array(USatm1976Data.rho*english_to_metric_rho, dtype=complex), kind='linear')
+                      np.array(USatm1976Data.rho*english_to_metric_rho, dtype=complex), kind='linear',
+                      fill_value='extrapolate')
 
 
 class CannonballODE(om.ExplicitComponent):
@@ -18,6 +19,7 @@ class CannonballODE(om.ExplicitComponent):
 
     def initialize(self):
         self.options.declare('num_nodes', types=int)
+        self.options.declare('use_tags', types=bool, default=False, desc='Controls tagging of variables for dymos internal testing.')
 
     def setup(self):
         nn = self.options['num_nodes']
@@ -34,16 +36,23 @@ class CannonballODE(om.ExplicitComponent):
         self.add_input('gam', units='rad', shape=nn)
 
         # state rates
-        self.add_output('v_dot', shape=nn, units='m/s**2')
-        self.add_output('gam_dot', shape=nn, units='rad/s')
-        self.add_output('h_dot', shape=nn, units='m/s')
-        self.add_output('r_dot', shape=nn, units='m/s')
+        if self.options['use_tags']:
+            self.add_output('v_dot', shape=nn, units='m/s**2', tags=['dymos.state_rate_source:v'])
+            self.add_output('gam_dot', shape=nn, units='rad/s', tags=['dymos.state_rate_source:gam'])
+            self.add_output('h_dot', shape=nn, units='m/s', tags=['dymos.state_rate_source:h'])
+            self.add_output('r_dot', shape=nn, units='m/s', tags=['dymos.state_rate_source:r'])
+        else:
+            self.add_output('v_dot', shape=nn, units='m/s**2')
+            self.add_output('gam_dot', shape=nn, units='rad/s')
+            self.add_output('h_dot', shape=nn, units='m/s')
+            self.add_output('r_dot', shape=nn, units='m/s')
+
         self.add_output('ke', shape=nn, units='J')
 
         # Ask OpenMDAO to compute the partial derivatives using complex-step
         # with a partial coloring algorithm for improved performance, and use
         # coloring to determine the sparsity pattern.
-        self.declare_coloring(wrt='*', method='cs')
+        self.declare_coloring(wrt='*', method='cs', show_summary=False)
 
     def compute(self, inputs, outputs):
 

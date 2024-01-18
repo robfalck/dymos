@@ -20,10 +20,10 @@ def initial_guess(t_dur, gam0=np.pi/3):
 
 
 @use_tempdirs
-class TestTwoPhaseCannonballForDocs(unittest.TestCase):
+class TestCannonballImplicitDuration(unittest.TestCase):
 
     @require_pyoptsparse(optimizer='IPOPT')
-    def test_two_phase_cannonball_for_docs(self):
+    def test_cannonball_implicit_duration(self):
         from scipy.interpolate import interp1d
 
         import openmdao.api as om
