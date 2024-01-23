@@ -513,7 +513,7 @@ class GridData(object):
             (np.abs(self.segment_ends - other.segment_ends) <= tol).all()
 
     def phase_lagrange_matrices(self, given_set_name, eval_set_name, sparse=False):
-        """
+        r"""
         Compute the matrices mapping values at some nodes to values and derivatives at new nodes.
 
         Parameters
@@ -574,7 +574,7 @@ class GridData(object):
         return L, D
 
     def phase_hermite_matrices(self, given_set_name, eval_set_name, sparse=False):
-        """
+        r"""
         Compute the matrices mapping values at some nodes to values and derivatives at new nodes.
 
         Parameters

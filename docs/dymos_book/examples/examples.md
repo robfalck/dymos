@@ -1,4 +1,4 @@
-# Dymos by Example
+# Examples
 
 The goal of these examples is to walk users through the process of formulating an optimal control problem and solving it using Dymos.
 

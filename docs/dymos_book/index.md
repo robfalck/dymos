@@ -1,4 +1,4 @@
-# Multidisciplinary Optimal Control Library
+# Optimal Control in OpenMDAO
 
 The goal of Dymos is to enable the optimization of subsystem designs which are tightly connected with each other as well as the operation of the overall system.
 
