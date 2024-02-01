@@ -832,13 +832,13 @@ Dynamic systems are typically defined by some set of ordinary
 differential equations (the ODE) which governs their behavior.</p>
 <p>Consider a simple damped harmonic oscillator.</p>
 <p><img alt="Damped harmonic oscillator free-body diagram" src="../../_images/spring_mass_damper.png" /></p>
-<div class="amsmath math notranslate nohighlight" id="equation-1cfe85ad-1189-4240-ac47-b5e637f54279">
-<span class="eqno">(11)<a class="headerlink" href="#equation-1cfe85ad-1189-4240-ac47-b5e637f54279" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-3dd60b81-007c-43e8-8f0e-228737c7c2ae">
+<span class="eqno">(11)<a class="headerlink" href="#equation-3dd60b81-007c-43e8-8f0e-228737c7c2ae" title="Permalink to this equation">#</a></span>\[\begin{align}
     \ddot{x} &amp;= -\frac{kx}{m} - \frac{c \dot{x}}{m}
 \end{align}\]</div>
 <p>Converting this to a first order system results in an ODE system with two states:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-5fac2142-5742-4120-a83b-3a941d9e9ac1">
-<span class="eqno">(12)<a class="headerlink" href="#equation-5fac2142-5742-4120-a83b-3a941d9e9ac1" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-16145017-0e49-4159-8209-fe9b23a0070e">
+<span class="eqno">(12)<a class="headerlink" href="#equation-16145017-0e49-4159-8209-fe9b23a0070e" title="Permalink to this equation">#</a></span>\[\begin{align}
     \dot{x} &amp;= v \\
     \dot{v} &amp;= -\frac{kx}{m} - \frac{c \dot{x}}{m}
 \end{align}\]</div>
@@ -990,7 +990,7 @@ Some elements of this code will be explained later, but we’ll hit the highligh
 Done simulating trajectory traj
 </pre></div>
 </div>
-<img alt="../../_images/606cec73e445c6bdceac060d1cef036d6d18a73b23c54ce03dbb6e4d9c913dfb.png" src="../../_images/606cec73e445c6bdceac060d1cef036d6d18a73b23c54ce03dbb6e4d9c913dfb.png" />
+<img alt="../../_images/2de8f01af1ddffb87621e97440b225f8dc36682999b39c4fc63a683dfde69d88.png" src="../../_images/2de8f01af1ddffb87621e97440b225f8dc36682999b39c4fc63a683dfde69d88.png" />
 </div>
 </div>
 </section>
@@ -1121,25 +1121,28 @@ Otherwise, we can pass it only to certain states as an argument to <code class="
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/dymos/transcriptions/transcription_base.py:448: OpenMDAOWarning:&#39;traj.phases.phase0&#39; &lt;class Phase&gt;
+  Non-default solvers are required
+    implicit duration: False
+    solved segments: True
+    input initial: False
+  Setting `traj.phases.phase0.nonlinear_solver = om.NewtonSolver(iprint=0, solve_subsystems=True, maxiter=1000, stall_limit=3)`
+  Explicitly set traj.phases.phase0.nonlinear_solver to override.
+  Setting `traj.phases.phase0.linear_solver = om.DirectSolver(iprint=2)`
+  Explicitly set traj.phases.phase0.linear_solver to override.
+  Set `traj.phases.phase0.options[&quot;auto_solvers&quot;] = False` to disable this behavior.
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--- Constraint Report [traj] ---
     --- phase0 ---
         None
-
-
-==================
-traj.phases.phase0
-==================
-NL: Newton 0 ; 64.9519053 1
-NL: Newton 1 ; 5.0296006e-08 7.7435767e-10
-NL: Newton 2 ; 7.72308087e-15 1.18904609e-16
-NL: Newton Converged
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
 Done simulating trajectory traj
 </pre></div>
 </div>
-<img alt="../../_images/b707c17865f88446e42f0a4f0b2b6b91d6bd5b04b53dea9f0ad56491f38302e3.png" src="../../_images/b707c17865f88446e42f0a4f0b2b6b91d6bd5b04b53dea9f0ad56491f38302e3.png" />
+<img alt="../../_images/188a5105732b68fe35d191c8b560399269bca81f400b06a084f52c3cf14b500e.png" src="../../_images/188a5105732b68fe35d191c8b560399269bca81f400b06a084f52c3cf14b500e.png" />
 </div>
 </div>
 </section>
@@ -1243,14 +1246,14 @@ Optimization Complete
 -----------------------------------
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/total_jac.py:1782: DerivativesWarning:Constraints or objectives [(&#39;traj.phases.phase0.time.t&#39;, inds=[15])] cannot be impacted by the design variables of the problem.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/total_jac.py:1759: DerivativesWarning:Constraints or objectives [(&#39;traj.phases.phase0.time.t&#39;, inds=[15])] cannot be impacted by the design variables of the problem.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
 Done simulating trajectory traj
 </pre></div>
 </div>
-<img alt="../../_images/b707c17865f88446e42f0a4f0b2b6b91d6bd5b04b53dea9f0ad56491f38302e3.png" src="../../_images/b707c17865f88446e42f0a4f0b2b6b91d6bd5b04b53dea9f0ad56491f38302e3.png" />
+<img alt="../../_images/188a5105732b68fe35d191c8b560399269bca81f400b06a084f52c3cf14b500e.png" src="../../_images/188a5105732b68fe35d191c8b560399269bca81f400b06a084f52c3cf14b500e.png" />
 </div>
 </div>
 </section>
