@@ -16,6 +16,10 @@ def setup_problem(trans=dm.GaussLobatto(num_segments=10), polynomial_control=Fal
 
     p = om.Problem(model=om.Group())
     p.driver = om.ScipyOptimizeDriver()
+    # p.driver = om.pyOptSparseDriver(optimizer='IPOPT')
+    # p.driver.opt_settings['print_level'] = 5
+
+    # p.driver.declare_coloring()
 
     phase = dm.Phase(ode_class=BrachistochroneODE, transcription=trans)
 
@@ -79,6 +83,11 @@ class TestLoadCase(unittest.TestCase):
         # Load the solution
         case = om.CaseReader('dymos_solution.db').get_case('final')
 
+        with np.printoptions(linewidth=1_000_000_000):
+            print(case.get_val('phase0.controls:theta').T)
+            print(p.get_val('phase0.controls:theta').T)
+        print()
+
         # Initialize the system with values from the case.
         # We unnecessarily call setup again just to make sure we obliterate the previous solution
         p.setup()
@@ -88,8 +97,20 @@ class TestLoadCase(unittest.TestCase):
         # Load the values from the previous solution
         p.load_case(case)
 
+        with np.printoptions(linewidth=1_000_000_000):
+            print(case.get_val('phase0.controls:theta').T)
+            print(p.get_val('phase0.controls:theta').T)
+        print()
+
         # Run the model to ensure we find the same output values as those that we recorded
         p.run_model()
+
+        # [[  1.7812287    4.92152774   9.86034685  15.15478816  19.87955891  25.29286715  29.91457406  35.35423465  39.96532317  45.36561964  50.03200853  55.35814442  60.11391178  65.36169149  70.2085553   75.39982817  80.31136244  85.48659155  90.4157538   95.62511443 100.09782795]]
+        # [[  5.      9.775  14.55   19.325  24.1    28.875  33.65   38.425  43.2    47.975  52.75   57.525  62.3    67.075  71.85   76.625  81.4    86.175  90.95   95.725 100.5  ]]
+
+        with np.printoptions(linewidth=1_000_000_000):
+            print(case.get_val('phase0.controls:theta').T)
+            print(p.get_val('phase0.controls:theta').T)
 
         assert_near_equal(case.get_val('phase0.controls:theta'),
                           p.get_val('phase0.controls:theta'))
