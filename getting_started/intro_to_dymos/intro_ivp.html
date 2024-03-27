@@ -832,13 +832,13 @@ Dynamic systems are typically defined by some set of ordinary
 differential equations (the ODE) which governs their behavior.</p>
 <p>Consider a simple damped harmonic oscillator.</p>
 <p><img alt="Damped harmonic oscillator free-body diagram" src="../../_images/spring_mass_damper.png" /></p>
-<div class="amsmath math notranslate nohighlight" id="equation-3dd60b81-007c-43e8-8f0e-228737c7c2ae">
-<span class="eqno">(11)<a class="headerlink" href="#equation-3dd60b81-007c-43e8-8f0e-228737c7c2ae" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-91176d87-0435-4dc6-9257-52c15fc4153d">
+<span class="eqno">(11)<a class="headerlink" href="#equation-91176d87-0435-4dc6-9257-52c15fc4153d" title="Permalink to this equation">#</a></span>\[\begin{align}
     \ddot{x} &amp;= -\frac{kx}{m} - \frac{c \dot{x}}{m}
 \end{align}\]</div>
 <p>Converting this to a first order system results in an ODE system with two states:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-16145017-0e49-4159-8209-fe9b23a0070e">
-<span class="eqno">(12)<a class="headerlink" href="#equation-16145017-0e49-4159-8209-fe9b23a0070e" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-e01cebfd-6284-43db-9555-e33baa42d4d4">
+<span class="eqno">(12)<a class="headerlink" href="#equation-e01cebfd-6284-43db-9555-e33baa42d4d4" title="Permalink to this equation">#</a></span>\[\begin{align}
     \dot{x} &amp;= v \\
     \dot{v} &amp;= -\frac{kx}{m} - \frac{c \dot{x}}{m}
 \end{align}\]</div>
@@ -990,7 +990,7 @@ Some elements of this code will be explained later, but we’ll hit the highligh
 Done simulating trajectory traj
 </pre></div>
 </div>
-<img alt="../../_images/2de8f01af1ddffb87621e97440b225f8dc36682999b39c4fc63a683dfde69d88.png" src="../../_images/2de8f01af1ddffb87621e97440b225f8dc36682999b39c4fc63a683dfde69d88.png" />
+<img alt="../../_images/05e2d260c5ee024e6c4e24d957def6d24acfa759fd5a4f8b589e3c9c4b7c4e2e.png" src="../../_images/05e2d260c5ee024e6c4e24d957def6d24acfa759fd5a4f8b589e3c9c4b7c4e2e.png" />
 </div>
 </div>
 </section>
@@ -1142,7 +1142,7 @@ Otherwise, we can pass it only to certain states as an argument to <code class="
 Done simulating trajectory traj
 </pre></div>
 </div>
-<img alt="../../_images/188a5105732b68fe35d191c8b560399269bca81f400b06a084f52c3cf14b500e.png" src="../../_images/188a5105732b68fe35d191c8b560399269bca81f400b06a084f52c3cf14b500e.png" />
+<img alt="../../_images/3b2c8db308cc5576a97398e949a0b0fa1de871483215bba9794464876bcfd3b3.png" src="../../_images/3b2c8db308cc5576a97398e949a0b0fa1de871483215bba9794464876bcfd3b3.png" />
 </div>
 </div>
 </section>
@@ -1246,14 +1246,15 @@ Optimization Complete
 -----------------------------------
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/total_jac.py:1759: DerivativesWarning:Constraints or objectives [(&#39;traj.phases.phase0.time.t&#39;, inds=[15])] cannot be impacted by the design variables of the problem.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/driver.py:1007: DriverWarning:ScipyOptimizeDriver: objective(s) [&#39;t&#39;] do not depend on any design variables. Please check your problem formulation.
+/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/total_jac.py:1627: DerivativesWarning:Constraints or objectives [(&#39;traj.phase0.t&#39;, inds=[15])] cannot be impacted by the design variables of the problem.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
 Done simulating trajectory traj
 </pre></div>
 </div>
-<img alt="../../_images/188a5105732b68fe35d191c8b560399269bca81f400b06a084f52c3cf14b500e.png" src="../../_images/188a5105732b68fe35d191c8b560399269bca81f400b06a084f52c3cf14b500e.png" />
+<img alt="../../_images/3b2c8db308cc5576a97398e949a0b0fa1de871483215bba9794464876bcfd3b3.png" src="../../_images/3b2c8db308cc5576a97398e949a0b0fa1de871483215bba9794464876bcfd3b3.png" />
 </div>
 </div>
 </section>

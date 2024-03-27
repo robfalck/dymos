@@ -853,7 +853,7 @@ using the <code class="docutils literal notranslate"><span class="pre">add_times
 <code class="docutils literal notranslate"><span class="pre">&lt;phase</span> <span class="pre">path&gt;.timeseries.&lt;output</span> <span class="pre">name&gt;</span></code>.  A glob pattern can be used with <code class="docutils literal notranslate"><span class="pre">add_timeseries_output</span></code>
 to add multiple outputs to the timeseries simultaneously.  For instance, just passing ‘*’ as the variable
 name will add all dynamic outputs of the ODE to the timeseries.</p>
-<p>Dymos will ignore any ODE oututs that are not sized such that the first dimension is the same as the
+<p>Dymos will ignore any ODE outputs that are not sized such that the first dimension is the same as the
 number of nodes in the ODE.  That is, if the output variable doesn’t appear to be dynamic, it will not
 be included in the timeseries outputs.</p>
 <blockquote>
@@ -873,7 +873,7 @@ in the phase, the path to an output variable in the ODE, or a glob pattern match
 </dd>
 <dt><strong>output_name</strong><span class="classifier">str or None or list or dict</span></dt><dd><p>The name of the variable as listed in the phase timeseries outputs. By
 default this is the last element in <cite>name</cite> when split by dots.  The user may
-override the constraint name if splitting the path causes name collisions.</p>
+override the timeseries name if splitting the path causes name collisions.</p>
 </dd>
 <dt><strong>units</strong><span class="classifier">str or None or _unspecified</span></dt><dd><p>The units to express the timeseries output.  If None, use the
 units associated with the target.  If provided, must be compatible with
