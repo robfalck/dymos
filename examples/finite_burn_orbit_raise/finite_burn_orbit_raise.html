@@ -804,8 +804,8 @@ three-phase orbit raising maneuver with a burn-coast-burn phase
 sequence. This example is based on the problem provided in
 Enright <span id="id1">[<a class="reference internal" href="#id24" title="Paul J Enright and Brace A Conway. Optimal finite-thrust spacecraft trajectories using collocation and nonlinear programming. Journal of Guidance, Control, and Dynamics, 14(5):981–985, 1991.">EC91</a>]</span>.</p>
 <p>The dynamics are given by</p>
-<div class="amsmath math notranslate nohighlight" id="equation-ab95adab-0691-4476-95a2-2d185cfd2243">
-<span class="eqno">(58)<a class="headerlink" href="#equation-ab95adab-0691-4476-95a2-2d185cfd2243" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-0db74f30-ed43-4286-9a3a-75ee0a0526da">
+<span class="eqno">(58)<a class="headerlink" href="#equation-0db74f30-ed43-4286-9a3a-75ee0a0526da" title="Permalink to this equation">#</a></span>\[\begin{align}
   \frac{dr}{dt} &amp;= v_r \\
   \frac{d\theta}{dt} &amp;= \frac{v_\theta}{r} \\
   \frac{dv_r}{dt} &amp;= \frac{v^2_\theta}{r} - \frac{1}{r^2} + a_{thrust} \sin u_1 \\
@@ -814,8 +814,8 @@ Enright <span id="id1">[<a class="reference internal" href="#id24" title="Paul J
   \frac{d \Delta v}{dt} &amp;= a_{thrust}
 \end{align}\]</div>
 <p>The initial conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-467d8d36-6083-4375-bd04-49ea33f72102">
-<span class="eqno">(59)<a class="headerlink" href="#equation-467d8d36-6083-4375-bd04-49ea33f72102" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-728681b5-1da7-4959-ba3f-f320dcf32c3d">
+<span class="eqno">(59)<a class="headerlink" href="#equation-728681b5-1da7-4959-ba3f-f320dcf32c3d" title="Permalink to this equation">#</a></span>\[\begin{align}
   r &amp;= 1 \rm{\,DU} \\
   \theta &amp;= 0 \rm{\,rad} \\
   v_r &amp;= 0 \rm{\,DU/TU}\\
@@ -824,8 +824,8 @@ Enright <span id="id1">[<a class="reference internal" href="#id24" title="Paul J
   \Delta v &amp;= 0 \rm{\,DU/TU}
 \end{align}\]</div>
 <p>and the final conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-dbb20582-a4ef-4cc7-9503-6c5c2a3b0719">
-<span class="eqno">(60)<a class="headerlink" href="#equation-dbb20582-a4ef-4cc7-9503-6c5c2a3b0719" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-8600a6f3-866f-44e0-bc27-308a563bf796">
+<span class="eqno">(60)<a class="headerlink" href="#equation-8600a6f3-866f-44e0-bc27-308a563bf796" title="Permalink to this equation">#</a></span>\[\begin{align}
   r &amp;= 3 \rm{\,DU} \\
   \theta &amp;= \rm{free} \\
   v_r &amp;= 0 \rm{\,DU/TU}\\
@@ -1331,7 +1331,7 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian for problem &#39;problem&#39; was computed 3 times, taking 0.5120999959999608 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian for problem &#39;problem&#39; was computed 3 times, taking 0.5105881050000107 seconds.
 Total jacobian shape: (112, 204) 
 
 
@@ -1340,10 +1340,10 @@ FWD solves: 13   REV solves: 0
 Total colors vs. total size: 13 vs 204  (93.63% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity:   0.5121 sec
-Time to compute coloring:   0.0787 sec
+Time to compute sparsity:   0.5106 sec
+Time to compute coloring:   0.0754 sec
 Memory to compute coloring:   0.2500 MB
-Coloring created on: 2024-03-27 14:17:13
+Coloring created on: 2024-05-03 18:05:05
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Optimization Problem -- Optimization using pyOpt_sparse
@@ -1352,11 +1352,11 @@ Coloring created on: 2024-03-27 14:17:13
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    1.8889
-       User Objective Time :       0.0974
-       User Sensitivity Time :     1.5196
-       Interface Time :            0.1568
-       Opt Solver Time:            0.1150
+    Total Time:                    1.8644
+       User Objective Time :       0.0906
+       User Sensitivity Time :     1.5127
+       Interface Time :            0.1485
+       Opt Solver Time:            0.1126
     Calls to Objective Function :      28
     Calls to Sens Function :           28
 
@@ -1777,6 +1777,10 @@ Coloring created on: 2024-03-27 14:17:13
   ax.set_ylim([ymin_plot, ymax_plot])
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/group.py:1098: DerivativesWarning:Constraints or objectives [ode_eval.control_interp.control_rates:u1_rate2] cannot be impacted by the design variables of the problem because no partials were defined for them in their parent component(s).
+/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/group.py:1098: DerivativesWarning:Constraints or objectives [ode_eval.control_interp.control_rates:u1_rate2] cannot be impacted by the design variables of the problem because no partials were defined for them in their parent component(s).
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
 Model viewer data has already been recorded for Driver.
 </pre></div>
@@ -1872,7 +1876,7 @@ Model viewer data has already been recorded for Driver.
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/d69dce38189d8378a47b7c23b28b53ba0f71da2e99b4ba89efbe0ff8c62e3a53.png" src="../../_images/d69dce38189d8378a47b7c23b28b53ba0f71da2e99b4ba89efbe0ff8c62e3a53.png" />
+<img alt="../../_images/093812f6058a59518b53fd9cf3317206e883fab084356a500ca3500c812425bf.png" src="../../_images/093812f6058a59518b53fd9cf3317206e883fab084356a500ca3500c812425bf.png" />
 </div>
 </div>
 </section>

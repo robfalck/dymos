@@ -1006,7 +1006,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 Done simulating trajectory traj
 </pre></div>
 </div>
-<img alt="../../_images/05e2d260c5ee024e6c4e24d957def6d24acfa759fd5a4f8b589e3c9c4b7c4e2e.png" src="../../_images/05e2d260c5ee024e6c4e24d957def6d24acfa759fd5a4f8b589e3c9c4b7c4e2e.png" />
+<img alt="../../_images/6188c13f7c41856c92fb9f96e60b835b482d4cfce8baa84ee37acd3c1844700d.png" src="../../_images/6188c13f7c41856c92fb9f96e60b835b482d4cfce8baa84ee37acd3c1844700d.png" />
 </div>
 </div>
 <p>Why does this happen?
@@ -1113,14 +1113,14 @@ Optimization Complete
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/driver.py:1007: DriverWarning:ScipyOptimizeDriver: objective(s) [&#39;t&#39;] do not depend on any design variables. Please check your problem formulation.
-/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/total_jac.py:1627: DerivativesWarning:Constraints or objectives [(&#39;traj.phase0.t&#39;, inds=[39])] cannot be impacted by the design variables of the problem.
+/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/total_jac.py:1635: DerivativesWarning:Constraints or objectives [(&#39;traj.phase0.t&#39;, inds=[39])] cannot be impacted by the design variables of the problem.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
 Done simulating trajectory traj
 </pre></div>
 </div>
-<img alt="../../_images/505de27123e619078a7d15efd680101f338de252625f0f1f21b47ca258d1de69.png" src="../../_images/505de27123e619078a7d15efd680101f338de252625f0f1f21b47ca258d1de69.png" />
+<img alt="../../_images/90e3e2b9c8d1e92302610d0078e1e71ba66563e250058fc42e34ae5d2e3d592b.png" src="../../_images/90e3e2b9c8d1e92302610d0078e1e71ba66563e250058fc42e34ae5d2e3d592b.png" />
 </div>
 </div>
 <p>Alternatively, we could stick with 4 segments but give each a higher order (7 in this case).</p>
@@ -1217,14 +1217,14 @@ Optimization Complete
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/driver.py:1007: DriverWarning:ScipyOptimizeDriver: objective(s) [&#39;t&#39;] do not depend on any design variables. Please check your problem formulation.
-/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/total_jac.py:1627: DerivativesWarning:Constraints or objectives [(&#39;traj.phase0.t&#39;, inds=[31])] cannot be impacted by the design variables of the problem.
+/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/total_jac.py:1635: DerivativesWarning:Constraints or objectives [(&#39;traj.phase0.t&#39;, inds=[31])] cannot be impacted by the design variables of the problem.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
 Done simulating trajectory traj
 </pre></div>
 </div>
-<img alt="../../_images/28650280b77dfa7c1276c9d46242d23e44f5b10b42e129e2b47be1d56fbedbbf.png" src="../../_images/28650280b77dfa7c1276c9d46242d23e44f5b10b42e129e2b47be1d56fbedbbf.png" />
+<img alt="../../_images/9210de9de3547d3ceff1e50550e552fa34027f27988adf4a25e3e54473344873.png" src="../../_images/9210de9de3547d3ceff1e50550e552fa34027f27988adf4a25e3e54473344873.png" />
 </div>
 </div>
 <p>In both these cases, we obtained a better match of the dynamics using either more segments or higher-order segments. This gives the state interpolating polynomials enough freedom to more accurately match the true behavior of the system. Increasing the number of segments and increasing the segment orders both increase the number of discrete points, and thus slow down the solution a bit. Theres a balance to be found between using enough discretization points to get an accurate solution, and slowing down the analysis due to having an overabundance of points. In general, using a high number of low-order segments is preferable to using fewer high-order segments because it makes the constraint jacobian more sparse.</p>

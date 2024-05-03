@@ -850,7 +850,7 @@ A to B in the shortest possible time.</em></p>
 without friction along the wire moves from point A to point B in minimum time.</p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<img alt="../../_images/848546a6c63f13db0332a430969872623d8dd9ebc094838f08a838b54b470f36.png" src="../../_images/848546a6c63f13db0332a430969872623d8dd9ebc094838f08a838b54b470f36.png" />
+<img alt="../../_images/317a29b1df72a14218b2cca956453c787b49bd2704aa4b55d05cdf707b104656.png" src="../../_images/317a29b1df72a14218b2cca956453c787b49bd2704aa4b55d05cdf707b104656.png" />
 </div>
 </div>
 <section id="state-variables">
@@ -865,8 +865,8 @@ without friction along the wire moves from point A to point B in minimum time.</
 <section id="system-dynamics">
 <h2>System dynamics<a class="headerlink" href="#system-dynamics" title="Permalink to this heading">#</a></h2>
 <p>From the free-body diagram above, the evolution of the state variables is given by the following ordinary differential equations (ODE).</p>
-<div class="amsmath math notranslate nohighlight" id="equation-e45f29c5-08fe-4123-bce8-cbac83075585">
-<span class="eqno">(13)<a class="headerlink" href="#equation-e45f29c5-08fe-4123-bce8-cbac83075585" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-82368ef7-1c6f-40e8-ad04-e57554709bb4">
+<span class="eqno">(13)<a class="headerlink" href="#equation-82368ef7-1c6f-40e8-ad04-e57554709bb4" title="Permalink to this equation">#</a></span>\[\begin{align}
     \frac{d x}{d t} &amp;= v \sin(\theta) \\
     \frac{d y}{d t} &amp;= -v \cos(\theta) \\
     \frac{d v}{d t} &amp;= g \cos(\theta)
@@ -884,8 +884,8 @@ without friction along the wire moves from point A to point B in minimum time.</
 <p>In this case, starting point <strong>A</strong> is given as <em>(0, 10)</em>.
 The point moving along the curve will begin there with zero initial velocity.</p>
 <p>The initial conditions are:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-375edd17-9587-43eb-85fe-39d24c3da50a">
-<span class="eqno">(14)<a class="headerlink" href="#equation-375edd17-9587-43eb-85fe-39d24c3da50a" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-634995bc-c402-486e-9239-554a2e0950a9">
+<span class="eqno">(14)<a class="headerlink" href="#equation-634995bc-c402-486e-9239-554a2e0950a9" title="Permalink to this equation">#</a></span>\[\begin{align}
     x_0 &amp;= 0 \\
     y_0 &amp;= 10 \\
     v_0 &amp;= 0
@@ -893,8 +893,8 @@ The point moving along the curve will begin there with zero initial velocity.</p
 <p>The end point <strong>B</strong> is given as <em>(10, 5)</em>.
 The point will end there, but the velocity at that point is not constrained.</p>
 <p>The final conditions are:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-7d451599-7654-4e6b-bc3e-f1fc276586b2">
-<span class="eqno">(15)<a class="headerlink" href="#equation-7d451599-7654-4e6b-bc3e-f1fc276586b2" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-bd187823-aa7d-4b0f-b41b-f2f5762c23d7">
+<span class="eqno">(15)<a class="headerlink" href="#equation-bd187823-aa7d-4b0f-b41b-f2f5762c23d7" title="Permalink to this equation">#</a></span>\[\begin{align}
     x_f &amp;= 10 \\
     y_f &amp;= 5 \\
     v_f &amp;= \mathrm{free}
@@ -1060,27 +1060,27 @@ Component: BrachistochroneODE &#39;ode&#39;
 +=================+==================+=============+=============+=============+=============+============+
 | &#39;check&#39;         | &#39;g&#39;              |  0.0000e+00 |  0.0000e+00 |  0.0000e+00 |         nan |            |
 +-----------------+------------------+-------------+-------------+-------------+-------------+------------+
-| &#39;check&#39;         | &#39;theta&#39;          |  8.8780e+05 |  8.8780e+05 |  4.5475e-13 |  5.1222e-19 |            |
+| &#39;check&#39;         | &#39;theta&#39;          |  1.6600e+01 |  1.6600e+01 |  2.5121e-15 |  1.5133e-16 |            |
 +-----------------+------------------+-------------+-------------+-------------+-------------+------------+
-| &#39;check&#39;         | &#39;v&#39;              |  3.0944e+02 |  3.0944e+02 |  7.1054e-15 |  2.2962e-17 |            |
+| &#39;check&#39;         | &#39;v&#39;              |  2.7076e+00 |  2.7076e+00 |  2.2204e-16 |  8.2008e-17 |            |
 +-----------------+------------------+-------------+-------------+-------------+-------------+------------+
-| &#39;vdot&#39;          | &#39;g&#39;              |  1.6500e+00 |  1.6500e+00 |  1.2413e-16 |  7.5226e-17 |            |
+| &#39;vdot&#39;          | &#39;g&#39;              |  1.1668e+00 |  1.1668e+00 |  1.1102e-16 |  9.5149e-17 |            |
 +-----------------+------------------+-------------+-------------+-------------+-------------+------------+
-| &#39;vdot&#39;          | &#39;theta&#39;          |  1.4799e+01 |  1.4799e+01 |  5.5943e-17 |  3.7802e-18 |            |
+| &#39;vdot&#39;          | &#39;theta&#39;          |  1.8706e+01 |  1.8706e+01 |  1.9860e-15 |  1.0617e-16 |            |
 +-----------------+------------------+-------------+-------------+-------------+-------------+------------+
 | &#39;vdot&#39;          | &#39;v&#39;              |  0.0000e+00 |  0.0000e+00 |  0.0000e+00 |         nan |            |
 +-----------------+------------------+-------------+-------------+-------------+-------------+------------+
 | &#39;xdot&#39;          | &#39;g&#39;              |  0.0000e+00 |  0.0000e+00 |  0.0000e+00 |         nan |            |
 +-----------------+------------------+-------------+-------------+-------------+-------------+------------+
-| &#39;xdot&#39;          | &#39;theta&#39;          |  1.0158e+01 |  1.0158e+01 |  4.9651e-16 |  4.8880e-17 |            |
+| &#39;xdot&#39;          | &#39;theta&#39;          |  9.0677e+00 |  9.0677e+00 |  1.2561e-15 |  1.3852e-16 |            |
 +-----------------+------------------+-------------+-------------+-------------+-------------+------------+
-| &#39;xdot&#39;          | &#39;v&#39;              |  1.5091e+00 |  1.5091e+00 |  0.0000e+00 |  0.0000e+00 |            |
+| &#39;xdot&#39;          | &#39;v&#39;              |  1.9075e+00 |  1.9075e+00 |  1.5701e-16 |  8.2312e-17 |            |
 +-----------------+------------------+-------------+-------------+-------------+-------------+------------+
 | &#39;ydot&#39;          | &#39;g&#39;              |  0.0000e+00 |  0.0000e+00 |  0.0000e+00 |         nan |            |
 +-----------------+------------------+-------------+-------------+-------------+-------------+------------+
-| &#39;ydot&#39;          | &#39;theta&#39;          |  4.0167e+00 |  4.0167e+00 |  4.4431e-16 |  1.1061e-16 |            |
+| &#39;ydot&#39;          | &#39;theta&#39;          |  1.5022e+01 |  1.5022e+01 |  2.1756e-15 |  1.4483e-16 |            |
 +-----------------+------------------+-------------+-------------+-------------+-------------+------------+
-| &#39;ydot&#39;          | &#39;v&#39;              |  1.6500e+00 |  1.6500e+00 |  1.2413e-16 |  7.5226e-17 |            |
+| &#39;ydot&#39;          | &#39;v&#39;              |  1.1668e+00 |  1.1668e+00 |  1.1102e-16 |  9.5149e-17 |            |
 +-----------------+------------------+-------------+-------------+-------------+-------------+------------+
 
 ##################################################################
@@ -1089,7 +1089,7 @@ Sub Jacobian with Largest Relative Error: BrachistochroneODE &#39;ode&#39;
 +-----------------+------------------+-------------+-------------+-------------+-------------+
 | of &#39;&lt;variable&gt;&#39; | wrt &#39;&lt;variable&gt;&#39; |   calc mag. |  check mag. |  a(cal-chk) |  r(cal-chk) |
 +=================+==================+=============+=============+=============+=============+
-| &#39;ydot&#39;          | &#39;theta&#39;          |  4.0167e+00 |  4.0167e+00 |  4.4431e-16 |  1.1061e-16 |
+| &#39;check&#39;         | &#39;theta&#39;          |  1.6600e+01 |  1.6600e+01 |  2.5121e-15 |  1.5133e-16 |
 +-----------------+------------------+-------------+-------------+-------------+-------------+
 </pre></div>
 </div>
@@ -1180,19 +1180,19 @@ Sub Jacobian with Largest Relative Error: BrachistochroneODE &#39;ode&#39;
 Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian for problem &#39;problem2&#39; was computed 3 times, taking 0.02324295099998608 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian for problem &#39;problem2&#39; was computed 3 times, taking 0.02313427199999296 seconds.
 Total jacobian shape: (40, 50) 
-
-
-Jacobian shape: (40, 50)  (13.40% nonzero)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Jacobian shape: (40, 50)  (13.40% nonzero)
 FWD solves: 8   REV solves: 0
 Total colors vs. total size: 8 vs 50  (84.00% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity:   0.0232 sec
-Time to compute coloring:   0.0264 sec
+Time to compute sparsity:   0.0231 sec
+Time to compute coloring:   0.0277 sec
 Memory to compute coloring:   0.2500 MB
-Coloring created on: 2024-03-27 14:14:29
+Coloring created on: 2024-05-03 18:02:22
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Optimization terminated successfully    (Exit mode 0)
@@ -1230,7 +1230,10 @@ Optimization Complete
 Done simulating trajectory traj
 </pre></div>
 </div>
-<img alt="../../_images/98130deafae079fc665566989d92ed0aecdeeeed11ffcd86ceba22b59d88cda6.png" src="../../_images/98130deafae079fc665566989d92ed0aecdeeeed11ffcd86ceba22b59d88cda6.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/group.py:1098: DerivativesWarning:Constraints or objectives [ode_eval.control_interp.control_rates:theta_rate2] cannot be impacted by the design variables of the problem because no partials were defined for them in their parent component(s).
+</pre></div>
+</div>
+<img alt="../../_images/29cafd31495e69db13dd539fcee4de57e11b06a957c390e3e4c078180cb2a1d4.png" src="../../_images/29cafd31495e69db13dd539fcee4de57e11b06a957c390e3e4c078180cb2a1d4.png" />
 </div>
 </div>
 </section>
@@ -1342,7 +1345,7 @@ Model viewer data has already been recorded for Driver.
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/recorders/sqlite_recorder.py:226: UserWarning:The existing case recorder file, dymos_solution.db, is being overwritten.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian for problem &#39;problem5&#39; was computed 3 times, taking 0.015696032999983345 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian for problem &#39;problem5&#39; was computed 3 times, taking 0.015738204999991012 seconds.
 Total jacobian shape: (12, 51) 
 
 No coloring was computed successfully.
@@ -1361,11 +1364,11 @@ Optimization Complete
 -----------------------------------
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1.80185208]
-</pre></div>
-</div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/visualization/opt_report/opt_report.py:625: UserWarning: Attempting to set identical low and high ylims makes transformation singular; automatically expanding.
   ax.set_ylim([ymin_plot, ymax_plot])
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1.80185208]
 </pre></div>
 </div>
 </div>
@@ -1384,7 +1387,7 @@ Optimization Complete
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/f3aba9049ba8300b7068a0e63a3d4b845784fcdc7d421822c3bc4b5f36d9c409.png" src="../../_images/f3aba9049ba8300b7068a0e63a3d4b845784fcdc7d421822c3bc4b5f36d9c409.png" />
+<img alt="../../_images/10008f817d5ff919135fc2d4c88b60a9121e93e143445264c049f7639334e6db.png" src="../../_images/10008f817d5ff919135fc2d4c88b60a9121e93e143445264c049f7639334e6db.png" />
 </div>
 </div>
 </section>

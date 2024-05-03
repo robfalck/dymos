@@ -799,20 +799,20 @@ traveled by a block (that starts and ends at rest) sliding without
 friction along a horizontal surface, with acceleration as the control.</p>
 <p>We minimize the final time, <span class="math notranslate nohighlight">\(t_f\)</span>, by varying the dynamic control,
 <span class="math notranslate nohighlight">\(u\)</span>, subject to the dynamics:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-a0aefef7-c936-43ac-b6d3-ac793dc74dad">
-<span class="eqno">(45)<a class="headerlink" href="#equation-a0aefef7-c936-43ac-b6d3-ac793dc74dad" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-34c0970c-1d74-44c8-85f7-d09ad722231c">
+<span class="eqno">(45)<a class="headerlink" href="#equation-34c0970c-1d74-44c8-85f7-d09ad722231c" title="Permalink to this equation">#</a></span>\[\begin{align}
   \frac{dx}{dt} &amp;= v \\
   \frac{dv}{dt} &amp;= u
 \end{align}\]</div>
 <p>The initial conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-abc32344-72bb-4474-be32-2bf461da7432">
-<span class="eqno">(46)<a class="headerlink" href="#equation-abc32344-72bb-4474-be32-2bf461da7432" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-74c63bd1-8a05-4192-b62b-14769a549328">
+<span class="eqno">(46)<a class="headerlink" href="#equation-74c63bd1-8a05-4192-b62b-14769a549328" title="Permalink to this equation">#</a></span>\[\begin{align}
   x_0 &amp;= 0 \\
   v_0 &amp;= 0
 \end{align}\]</div>
 <p>and the final conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-fafcf40d-a06b-49a2-a726-b80b9c0a9b04">
-<span class="eqno">(47)<a class="headerlink" href="#equation-fafcf40d-a06b-49a2-a726-b80b9c0a9b04" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-eddae257-eafc-4ff6-8f52-62c2d333f69e">
+<span class="eqno">(47)<a class="headerlink" href="#equation-eddae257-eafc-4ff6-8f52-62c2d333f69e" title="Permalink to this equation">#</a></span>\[\begin{align}
   x_f &amp;= \rm{free} \\
   v_f &amp;= 0
 \end{align}\]</div>
@@ -1020,6 +1020,9 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     --- phase0 ---
         None
 
+
+&#39;rhs_checking&#39; is disabled for &#39;DirectSolver in &lt;model&gt; &lt;class Group&gt;&#39; but that solver has redundant adjoint solves. If it is expensive to compute derivatives for this solver, turning on &#39;rhs_checking&#39; may improve performance.
+
 INFO: checking out_of_order
 </pre></div>
 </div>
@@ -1083,7 +1086,7 @@ INFO: checking out_of_order
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian for problem &#39;problem&#39; was computed 3 times, taking 0.06211586699998861 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian for problem &#39;problem&#39; was computed 3 times, taking 0.06189261199995144 seconds.
 Total jacobian shape: (181, 327) 
 </pre></div>
 </div>
@@ -1092,10 +1095,10 @@ FWD solves: 0   REV solves: 6
 Total colors vs. total size: 6 vs 181  (96.69% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity:   0.0621 sec
-Time to compute coloring:   0.1051 sec
+Time to compute sparsity:   0.0619 sec
+Time to compute coloring:   0.1006 sec
 Memory to compute coloring:   0.5000 MB
-Coloring created on: 2024-03-27 14:17:05
+Coloring created on: 2024-05-03 18:04:57
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Optimization Problem -- Optimization using pyOpt_sparse
@@ -1104,11 +1107,11 @@ Coloring created on: 2024-03-27 14:17:05
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    1.9258
-       User Objective Time :       0.0212
-       User Sensitivity Time :     0.0629
-       Interface Time :            0.0872
-       Opt Solver Time:            1.7544
+    Total Time:                    1.8146
+       User Objective Time :       0.0165
+       User Sensitivity Time :     0.0580
+       Interface Time :            0.0858
+       Opt Solver Time:            1.6542
     Calls to Objective Function :      19
     Calls to Sens Function :           19
 
@@ -1699,6 +1702,9 @@ Coloring created on: 2024-03-27 14:17:05
   ax.set_ylim([ymin_plot, ymax_plot])
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/group.py:1098: DerivativesWarning:Constraints or objectives [ode_eval.control_interp.control_rates:u_rate2] cannot be impacted by the design variables of the problem because no partials were defined for them in their parent component(s).
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
 Model viewer data has already been recorded for Driver.
 </pre></div>
@@ -1730,7 +1736,7 @@ Model viewer data has already been recorded for Driver.
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/63beda5fe48dc293bb565d2f76818648dea37dec5c4683029132ed3ebb3e79cf.png" src="../../_images/63beda5fe48dc293bb565d2f76818648dea37dec5c4683029132ed3ebb3e79cf.png" />
+<img alt="../../_images/5c9e7b569600631ae5f9673cde39cd630fa305be9b528f5eb65bfe784744c9f1.png" src="../../_images/5c9e7b569600631ae5f9673cde39cd630fa305be9b528f5eb65bfe784744c9f1.png" />
 </div>
 </div>
 </section>

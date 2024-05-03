@@ -962,7 +962,7 @@ INFO: checking out_of_order
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/recorders/sqlite_recorder.py:226: UserWarning:The existing case recorder file, dymos_solution.db, is being overwritten.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian for problem &#39;problem&#39; was computed 3 times, taking 0.09567517899995437 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian for problem &#39;problem&#39; was computed 3 times, taking 0.09501256199996533 seconds.
 Total jacobian shape: (40, 50) 
 
 
@@ -971,10 +971,10 @@ FWD solves: 8   REV solves: 0
 Total colors vs. total size: 8 vs 50  (84.00% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity:   0.0957 sec
-Time to compute coloring:   0.0265 sec
+Time to compute sparsity:   0.0950 sec
+Time to compute coloring:   0.0264 sec
 Memory to compute coloring:   0.2500 MB
-Coloring created on: 2024-03-27 14:14:53
+Coloring created on: 2024-05-03 18:02:45
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Optimization terminated successfully    (Exit mode 0)
@@ -984,6 +984,9 @@ Coloring created on: 2024-03-27 14:14:53
             Gradient evaluations: 60
 Optimization Complete
 -----------------------------------
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/group.py:1098: DerivativesWarning:Constraints or objectives [ode_eval.control_interp.control_rates:theta_rate2] cannot be impacted by the design variables of the problem because no partials were defined for them in their parent component(s).
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
@@ -1033,7 +1036,7 @@ Done simulating trajectory traj
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/31ff1935fb955a96140ac6b3e9d6a8e36f6fca32b37fe719d99d9ea5f0ed5672.png" src="../../_images/31ff1935fb955a96140ac6b3e9d6a8e36f6fca32b37fe719d99d9ea5f0ed5672.png" />
+<img alt="../../_images/99820737fe3e4d733c398eed6459c086cd1edcd509fc540acaeae93ad4c1c592.png" src="../../_images/99820737fe3e4d733c398eed6459c086cd1edcd509fc540acaeae93ad4c1c592.png" />
 </div>
 </div>
 </section>

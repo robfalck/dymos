@@ -805,8 +805,8 @@ It finds the pitch profile for a single-stage-to-orbit launch vehicle that minim
 required to reach orbit insertion under constant thrust.</p>
 <p><img alt="The free-body-diagram of the single-stage-to-orbit problem." src="../../_images/ssto_fbd.png" /></p>
 <p>The vehicle dynamics are given by</p>
-<div class="amsmath math notranslate nohighlight" id="equation-703bdd4f-3c97-49bd-806f-5df6850dff88">
-<span class="eqno">(79)<a class="headerlink" href="#equation-703bdd4f-3c97-49bd-806f-5df6850dff88" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-b1fa5312-09ed-40b5-b19b-75156c945431">
+<span class="eqno">(79)<a class="headerlink" href="#equation-b1fa5312-09ed-40b5-b19b-75156c945431" title="Permalink to this equation">#</a></span>\[\begin{align}
   \frac{dx}{dt} &amp;= v_x \\
   \frac{dy}{dt} &amp;= v_y \\
   \frac{dv_x}{dt} &amp;= \frac{1}{m} (T \cos \theta - D \cos \gamma) \\
@@ -814,8 +814,8 @@ required to reach orbit insertion under constant thrust.</p>
   \frac{dm}{dt} &amp;= \frac{T}{g I_{sp}}
 \end{align}\]</div>
 <p>The initial conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-1503fc36-73ce-4dc5-b569-8e319cb954a5">
-<span class="eqno">(80)<a class="headerlink" href="#equation-1503fc36-73ce-4dc5-b569-8e319cb954a5" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-58abc677-cb39-4243-a363-be8e45837d62">
+<span class="eqno">(80)<a class="headerlink" href="#equation-58abc677-cb39-4243-a363-be8e45837d62" title="Permalink to this equation">#</a></span>\[\begin{align}
   x_0 &amp;= 0 \\
   y_0 &amp;= 0 \\
   v_{x0} &amp;= 0 \\
@@ -823,8 +823,8 @@ required to reach orbit insertion under constant thrust.</p>
   m_0 &amp;= 117000 \rm{\,kg}
 \end{align}\]</div>
 <p>and the final conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-a79850c0-4c41-4eef-affe-48b332fba8a1">
-<span class="eqno">(81)<a class="headerlink" href="#equation-a79850c0-4c41-4eef-affe-48b332fba8a1" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-043b27af-8414-48f9-a5a6-ac9c39f1975c">
+<span class="eqno">(81)<a class="headerlink" href="#equation-043b27af-8414-48f9-a5a6-ac9c39f1975c" title="Permalink to this equation">#</a></span>\[\begin{align}
   x_f &amp;= \rm{free} \\
   y_f &amp;= 185 \rm{\,km} \\
   v_{xf} &amp;= V_{circ} \\
@@ -1113,15 +1113,14 @@ INFO: checking out_of_order
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Coloring for &#39;traj.phases.phase0.rhs_disc&#39; (class LaunchVehicleODE)
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Jacobian shape: (144, 168)  (1.40% nonzero)
+
+Jacobian shape: (144, 168)  (1.40% nonzero)
 FWD solves: 5   REV solves: 0
 Total colors vs. total size: 5 vs 168  (97.02% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity:   0.0300 sec
-Time to compute coloring:   0.0157 sec
+Time to compute sparsity:   0.0290 sec
+Time to compute coloring:   0.0163 sec
 Memory to compute coloring:   0.1250 MB
 </pre></div>
 </div>
@@ -1132,12 +1131,12 @@ FWD solves: 5   REV solves: 0
 Total colors vs. total size: 5 vs 84  (94.05% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity:   0.0147 sec
-Time to compute coloring:   0.0082 sec
+Time to compute sparsity:   0.0145 sec
+Time to compute coloring:   0.0083 sec
 Memory to compute coloring:   0.0000 MB
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian for problem &#39;problem&#39; was computed 3 times, taking 0.08341990200005966 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian for problem &#39;problem&#39; was computed 3 times, taking 0.08240329900002052 seconds.
 Total jacobian shape: (74, 152) 
 
 
@@ -1146,10 +1145,10 @@ FWD solves: 12   REV solves: 0
 Total colors vs. total size: 12 vs 152  (92.11% improvement)
 
 Sparsity computed using tolerance: 1e-12
-Time to compute sparsity:   0.0834 sec
-Time to compute coloring:   0.0667 sec
+Time to compute sparsity:   0.0824 sec
+Time to compute coloring:   0.0642 sec
 Memory to compute coloring:   0.1250 MB
-Coloring created on: 2024-03-27 14:20:38
+Coloring created on: 2024-05-03 18:08:29
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Optimization Problem -- Optimization using pyOpt_sparse
@@ -1158,11 +1157,11 @@ Coloring created on: 2024-03-27 14:20:38
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    1.4099
-       User Objective Time :       0.0765
-       User Sensitivity Time :     0.7023
-       Interface Time :            0.1677
-       Opt Solver Time:            0.4633
+    Total Time:                    1.3711
+       User Objective Time :       0.0692
+       User Sensitivity Time :     0.6815
+       Interface Time :            0.1601
+       Opt Solver Time:            0.4604
     Calls to Objective Function :      51
     Calls to Sens Function :           48
 
@@ -1480,6 +1479,9 @@ Coloring created on: 2024-03-27 14:20:38
   ax.set_ylim([ymin_plot, ymax_plot])
 </pre></div>
 </div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/core/group.py:1098: DerivativesWarning:Constraints or objectives [ode_eval.control_interp.control_rates:theta_rate2] cannot be impacted by the design variables of the problem because no partials were defined for them in their parent component(s).
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
 Model viewer data has already been recorded for Driver.
 </pre></div>
@@ -1546,7 +1548,7 @@ Model viewer data has already been recorded for Driver.
 </div>
 </details>
 <div class="cell_output docutils container">
-<img alt="../../_images/c4de2df973984960b929c0880db31add501c2b2a4d91bdfd02ec1700c12c2edf.png" src="../../_images/c4de2df973984960b929c0880db31add501c2b2a4d91bdfd02ec1700c12c2edf.png" />
+<img alt="../../_images/a151eb5d1b0334fdddb2d4938417d60974cf40fc13e7cc7ac4cf4ba950749e09.png" src="../../_images/a151eb5d1b0334fdddb2d4938417d60974cf40fc13e7cc7ac4cf4ba950749e09.png" />
 </div>
 </div>
 </section>
