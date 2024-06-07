@@ -1397,7 +1397,7 @@ class Trajectory(om.Group):
 
     def simulate(self, times_per_seg=_unspecified, method=_unspecified, atol=_unspecified, rtol=_unspecified,
                  first_step=_unspecified, max_step=_unspecified, record_file=None, case_prefix=None,
-                 reset_iter_counts=True, reports=False):
+                 reset_iter_counts=True, reports=False, parent_problem=None):
         """
         Simulate the Trajectory using scipy.integrate.solve_ivp.
 
@@ -1449,7 +1449,8 @@ class Trajectory(om.Group):
 
         sim_traj.parameter_options.update(self.parameter_options)
 
-        sim_prob = om.Problem(model=om.Group(), reports=reports, comm=self.comm)
+        sim_prob = om.Problem(model=om.Group(), reports=reports, comm=self.comm,
+                              name=f'{self.pathname}_simulation')
 
         traj_name = self.name if self.name else 'sim_traj'
         sim_prob.model.add_subsystem(traj_name, sim_traj)
@@ -1466,7 +1467,7 @@ class Trajectory(om.Group):
             # fault of the user.
             warnings.filterwarnings(action='ignore', category=om.UnusedOptionWarning)
             warnings.filterwarnings(action='ignore', category=om.SetupWarning)
-            sim_prob.setup()
+            sim_prob.setup(parent=parent_problem)
             sim_prob.final_setup()
 
         # Assign trajectory parameter values
