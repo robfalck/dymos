@@ -95,7 +95,7 @@ class TestBirkhoffIterGroup(unittest.TestCase):
                     birkhoff.nonlinear_solver = om.NewtonSolver(solve_subsystems=True)
                     birkhoff.linear_solver = om.DirectSolver()
 
-                    p.setup(force_alloc_complex=True)
+                    p.setup(force_alloc_complex=True, check=True)
 
                     # Instead of using the TimeComp just transform the node segment taus onto [0, 2]
                     times = grid_data.node_stau + 1

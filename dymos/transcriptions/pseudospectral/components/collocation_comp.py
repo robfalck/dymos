@@ -41,11 +41,12 @@ class CollocationComp(om.ExplicitComponent):
             'time_units', default=None, allow_none=True, types=str,
             desc='Units of time')
 
-    def configure_io(self):
+    def configure_io(self, phase):
         """
         I/O creation is delayed until configure so we can determine shape and units.
         """
         gd = self.options['grid_data']
+        num_nodes = gd.subset_num_nodes['all']
         num_col_nodes = gd.subset_num_nodes['col']
         time_units = self.options['time_units']
         state_options = self.options['state_options']
@@ -57,7 +58,12 @@ class CollocationComp(om.ExplicitComponent):
             var_names[state_name] = {
                 'f_approx': f'f_approx:{state_name}',
                 'f_computed': f'f_computed:{state_name}',
+                'initial_val': f'initial_states:{state_name}',
+                'final_val': f'final_states:{state_name}',
+                'val': f'states:{state_name}',
                 'defect': f'defects:{state_name}',
+                'initial_defect': f'initial_state_defect:{state_name}',
+                'final_defect': f'final_state_defect:{state_name}'
             }
 
         for state_name, options in state_options.items():
@@ -67,6 +73,21 @@ class CollocationComp(om.ExplicitComponent):
             rate_units = get_rate_units(units, time_units)
 
             var_names = self.var_names[state_name]
+
+            self.add_input(name=var_names['initial_val'],
+                           shape=(1,) + shape,
+                           units=units,
+                           desc='Initial value of the state at the start of the phase.')
+
+            self.add_input(name=var_names['final_val'],
+                           shape=(1,) + shape,
+                           units=units,
+                           desc='Final value of the state at the end of the phase.')
+
+            self.add_input(var_names['val'],
+                           shape=(num_nodes,) + shape,
+                           units=units,
+                           desc='state value at all nodes within the phase')
 
             self.add_input(
                 name=var_names['f_approx'],
@@ -84,6 +105,18 @@ class CollocationComp(om.ExplicitComponent):
                 name=var_names['defect'],
                 shape=(num_col_nodes,) + shape,
                 desc=f'Interior defects of state {state_name}',
+                units=units)
+
+            self.add_output(
+                name=var_names['initial_defect'],
+                shape=(1,) + shape,
+                desc=f'Initial value defect of state {state_name}',
+                units=units)
+
+            self.add_output(
+                name=var_names['final_defect'],
+                shape=(1,) + shape,
+                desc=f'Final value defect of state {state_name}',
                 units=units)
 
             if 'defect_ref' in options and options['defect_ref'] is not None:

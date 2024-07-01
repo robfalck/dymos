@@ -2,7 +2,7 @@ import numpy as np
 import openmdao.api as om
 
 from .birkhoff_collocation_comp import BirkhoffCollocationComp
-from .birkhoff_state_resid_comp import BirkhoffStateResidComp
+from .input_resids_comp import InputResidsComp
 
 from ...grid_data import GridData
 from ....phase.options import TimeOptionsDictionary

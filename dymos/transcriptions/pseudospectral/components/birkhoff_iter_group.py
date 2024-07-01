@@ -2,7 +2,7 @@ import numpy as np
 import openmdao.api as om
 
 from .birkhoff_collocation_comp import BirkhoffCollocationComp
-from .birkhoff_state_resid_comp import BirkhoffStateResidComp
+from .input_resids_comp import InputResidsComp
 
 from ...grid_data import GridData
 from ....phase.options import TimeOptionsDictionary
@@ -59,7 +59,7 @@ class BirkhoffIterGroup(om.Group):
                            promotes_inputs=['*'], promotes_outputs=['*'])
 
         if any([opts['solve_segments'] in ('forward', 'backward') for opts in state_options.values()]):
-            self.add_subsystem('states_balance_comp', subsys=BirkhoffStateResidComp(),
+            self.add_subsystem('states_balance_comp', subsys=InputResidComp(),
                                promotes_inputs=['*'], promotes_outputs=['*'])
 
     def _configure_desvars(self, name, options):
@@ -209,20 +209,20 @@ class BirkhoffIterGroup(om.Group):
                                                shape=(nn,) + shape,
                                                units=units)
 
-                states_balance_comp.add_residual_from_input(f'state_defects:{name}',
-                                                            shape=(nn+ns,) + shape,
-                                                            units=units)
+                states_balance_comp.add_input(f'state_defects:{name}',
+                                              shape=(nn+ns,) + shape,
+                                              units=units)
 
                 if ns > 1:
-                    states_balance_comp.add_residual_from_input(f'state_cnty_defects:{name}',
-                                                                shape=(ns - 1,) + shape,
-                                                                units=units)
+                    states_balance_comp.add_input(f'state_cnty_defects:{name}',
+                                                  shape=(ns - 1,) + shape,
+                                                  units=units)
 
             if f'state_rates:{name}' in self._implicit_outputs:
                 states_balance_comp.add_output(f'state_rates:{name}', shape=(nn,) + shape, units=units)
-                states_balance_comp.add_residual_from_input(f'state_rate_defects:{name}',
-                                                            shape=(nn,) + shape,
-                                                            units=units)
+                states_balance_comp.add_input(f'state_rate_defects:{name}',
+                                              shape=(nn,) + shape,
+                                              units=units)
 
             if f'initial_states:{name}' in self._implicit_outputs:
                 states_balance_comp.add_output(f'initial_states:{name}', shape=(1,) + shape, units=units)

@@ -77,8 +77,6 @@ class BirkhoffCollocationComp(om.ExplicitComponent):
                 'state_final_value': f'final_states:{state_name}',
                 'state_defect': f'state_defects:{state_name}',
                 'state_rate_defect': f'state_rate_defects:{state_name}',
-                'initial_state_defect': f'initial_state_defects:{state_name}',
-                'final_state_defect': f'final_state_defects:{state_name}',
                 'state_continuity_defect': f'state_cnty_defects:{state_name}'
             }
 
