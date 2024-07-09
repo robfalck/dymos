@@ -187,16 +187,17 @@ class RadauIterGroup(om.Group):
         # state_interp_comp = self._get_subsystem('state_interp')
         # state_interp_comp.configure_io()
 
-        collocation_comp = self._get_subsystem('defects')
-        collocation_comp.configure_io(phase)
+        defect_comp = self._get_subsystem('defects')
+        defect_comp.configure_io(phase)
 
         gd = self.options['grid_data']
-        nn = gd.subset_num_nodes['all']
+        ndn = gd.subset_num_nodes['state_disc']
+        nin = gd.subset_num_nodes['state_input']
         ncn = gd.subset_num_nodes['col']
         ns = gd.num_segments
+        state_src_idxs = gd.input_maps['state_input_to_disc']
 
         state_options = self.options['state_options']
-        time_options = self.options['time_options']
         states_resids_comp = self._get_subsystem('states_resids_comp')
 
         for name, options in state_options.items():
@@ -205,10 +206,15 @@ class RadauIterGroup(om.Group):
             shape = options['shape']
 
             for tgt in options['targets']:
-                self.promotes('ode_all', [(tgt, f'states:{name}')])
+                self.promotes('ode_all', [(tgt, f'states:{name}')],
+                              src_indices=om.slicer[state_src_idxs, ...])
 
-            # self.promotes('state_interp', [(f'state_disc:{name}', f'states:{name}')])
-            self.set_input_defaults(f'states:{name}', val=1.0, units=units, src_shape=(nn,) + shape)
+            self.promotes('defects', inputs=(f'states:{name}',),
+                          src_indices=om.slicer[state_src_idxs, ...])
+            
+            self.set_input_defaults(f'states:{name}',
+                                    val=1.0, units=units,
+                                    src_shape=(nin,) + shape)
 
             self._implicit_outputs = self._configure_desvars(name, options)
 
@@ -216,7 +222,7 @@ class RadauIterGroup(om.Group):
 
             if f'states:{name}' in self._implicit_outputs:
                 states_resids_comp.add_output(f'states:{name}',
-                                               shape=(nn,) + shape,
+                                               shape=(nin,) + shape,
                                                units=units)
 
                 states_resids_comp.add_input(f'initial_state_defects:{name}', shape=(1,) + shape, units=units)

@@ -86,9 +86,9 @@ class TestRadauIterGroup(unittest.TestCase):
 
                     p = om.Problem()
                     p.model.add_subsystem('radau', RadauIterGroup(state_options=state_options,
-                                                                time_options=time_options,
-                                                                grid_data=grid_data,
-                                                                ode_class=ode_class))
+                                                                  time_options=time_options,
+                                                                  grid_data=grid_data,
+                                                                  ode_class=ode_class))
 
                     radau = p.model._get_subsystem('radau')
 
@@ -115,8 +115,9 @@ class TestRadauIterGroup(unittest.TestCase):
                     x = p.get_val('radau.states:x')
                     x_0 = p.get_val('radau.initial_states:x')
                     x_f = p.get_val('radau.final_states:x')
-                    
-                    assert_near_equal(solution, x, tolerance=1.0E-5)
+
+                    idxs = grid_data.subset_node_indices['state_input']
+                    assert_near_equal(solution[idxs], x, tolerance=1.0E-5)
                     assert_near_equal(solution[np.newaxis, 0], x_0, tolerance=1.0E-7)
                     assert_near_equal(solution[np.newaxis, -1], x_f, tolerance=1.0E-7)
 
@@ -139,15 +140,15 @@ class TestRadauIterGroup(unittest.TestCase):
                     state_options['x']['rate_source'] = 'x_dot'
 
                     time_options = TimeOptionsDictionary()
-                    grid_data = RadauGrid(num_segments=10, nodes_per_seg=4, compressed=False)
+                    grid_data = RadauGrid(num_segments=10, nodes_per_seg=4, compressed=compressed)
                     nn = grid_data.subset_num_nodes['all']
                     ode_class = SimpleODE
 
                     p = om.Problem()
                     p.model.add_subsystem('radau', RadauIterGroup(state_options=state_options,
-                                                                time_options=time_options,
-                                                                grid_data=grid_data,
-                                                                ode_class=ode_class))
+                                                                  time_options=time_options,
+                                                                  grid_data=grid_data,
+                                                                  ode_class=ode_class))
 
                     radau = p.model._get_subsystem('radau')
 
@@ -174,8 +175,9 @@ class TestRadauIterGroup(unittest.TestCase):
                     x = p.get_val('radau.states:x')
                     x_0 = p.get_val('radau.initial_states:x')
                     x_f = p.get_val('radau.final_states:x')
-                    
-                    assert_near_equal(solution, x, tolerance=1.0E-5)
+
+                    idxs = grid_data.subset_node_indices['state_input']
+                    assert_near_equal(solution[idxs], x, tolerance=1.0E-5)
                     assert_near_equal(solution[np.newaxis, 0], x_0, tolerance=1.0E-7)
                     assert_near_equal(solution[np.newaxis, -1], x_f, tolerance=1.0E-7)
 

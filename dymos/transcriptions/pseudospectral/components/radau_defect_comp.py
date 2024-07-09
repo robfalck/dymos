@@ -269,7 +269,8 @@ class RadauDefectComp(om.ExplicitComponent):
             outputs[var_names['initial_defect']] = x_0 - x[0, ...]
             outputs[var_names['final_defect']] = x_f - x[-1, ...]
 
-            outputs[var_names['cnty_defect']] = x[seg_end_idxs[2::2], ...] - x[seg_end_idxs[1:-2:2], ...]
+            if not gd.compressed:
+                outputs[var_names['cnty_defect']] = x[seg_end_idxs[2::2], ...] - x[seg_end_idxs[1:-2:2], ...]
 
     def compute_partials(self, inputs, partials):
         """
