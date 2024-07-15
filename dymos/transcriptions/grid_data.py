@@ -1,19 +1,23 @@
+"""Define the GridData object and supporting API."""
 import functools
+from collections.abc import Iterable
+
 import numpy as np
-
-from scipy.linalg import block_diag
+import numpy.typing as npt
 import scipy.sparse as sp
+from scipy.linalg import block_diag
 
-from dymos.utils.lgl import lgl
-from dymos.utils.lgr import lgr
 from dymos.utils.cgl import cgl
 from dymos.utils.hermite import hermite_matrices
 from dymos.utils.lagrange import lagrange_matrices
+from dymos.utils.lgl import lgl
+from dymos.utils.lgr import lgr
 
 
-def gauss_lobatto_subsets_and_nodes(n, seg_idx, compressed=False):
-    """
-    Provides node information and the location of the nodes for n Legendre-Gauss-Lobatto nodes on the range [-1, 1].
+def gauss_lobatto_subsets_and_nodes(n: int, seg_idx: int, *,
+                                    compressed: bool=False) -> dict[str,
+                                                                    npt.ArrayLike]:
+    """Provide node information and the location for n Legendre-Gauss-Lobatto nodes on the range [-1, 1].
 
     Parameters
     ----------
@@ -43,6 +47,7 @@ def gauss_lobatto_subsets_and_nodes(n, seg_idx, compressed=False):
     -----
     Subset 'state_input' is the same as subset 'state_disc' if `compressed == False` or
     `first_seg == True`.  The same is true of subsets 'control_input' and 'control_disc'.
+
     """
     if n < 2:
         raise ValueError('The number of nodes must be larger than 1.')
@@ -63,9 +68,10 @@ def gauss_lobatto_subsets_and_nodes(n, seg_idx, compressed=False):
     return subsets, lgl(n)[0]
 
 
-def radau_pseudospectral_subsets_and_nodes(n, seg_idx, compressed=False):
-    """
-    Provides node information and the location of the nodes for n Radau nodes on the range [-1, 1].
+def radau_pseudospectral_subsets_and_nodes(n: int, seg_idx: int, *,
+                                           compressed: bool=False) -> tuple[dict[str, npt.ArrayLike],
+                                                                            npt.ArrayLike]:
+    """Provide node information and location for n Radau nodes on the range [-1, 1].
 
     Parameters
     ----------
@@ -111,9 +117,12 @@ def radau_pseudospectral_subsets_and_nodes(n, seg_idx, compressed=False):
     return subsets, lgr(n, include_endpoint=True)[0]
 
 
-def birkhoff_subsets_and_nodes(n, grid, seg_idx, compressed=False):
-    """
-    Provides node information and the location of the nodes for n Radau nodes on the range [-1, 1].
+def birkhoff_subsets_and_nodes(n: int,
+                               grid: str,
+                               seg_idx: int,
+                               *args, **kwargs) -> tuple[dict[str, npt.ArrayLike],
+                                                         npt.ArrayLike]:
+    """Provide node information and the location of the nodes for n Radau nodes on the range [-1, 1].
 
     Parameters
     ----------
@@ -121,10 +130,10 @@ def birkhoff_subsets_and_nodes(n, grid, seg_idx, compressed=False):
         The total number of nodes in the segment.
     grid : str
         The type of Gaussian grid used in the transcription.
-    seg_idx : int
-        The index of this segment within its phase.
-    compressed : bool
-        True if the subset requested is for a phase with compressed transcription.
+    *args : tuple
+        Anonymous positional arguments for compatibility with other subsets and nodes functions.
+    **kwargs : dict
+        Anonymous keyword arguments for compatibility with other subsets and nodes functions.
 
     Returns
     -------
@@ -173,9 +182,9 @@ def birkhoff_subsets_and_nodes(n, grid, seg_idx, compressed=False):
     return subsets, nodes
 
 
-def uniform_subsets_and_nodes(n, *args, **kwargs):
-    """
-    Provides a dict of node info and locations for a uniformly distributed set of n nodes on the range [-1, 1].
+def uniform_subsets_and_nodes(n: int, *args, **kwargs) -> tuple[dict[str, npt.ArrayLike],
+                                                          npt.ArrayLike]:
+    """Provide a dict of node info and locations for a uniformly distributed set of n nodes on the range [-1, 1].
 
     This distribution is not to be used to define polynomials, since equally-spaced nodes
     result in poor polynomial fitting. Most subsets here aside from `all`, `segment_ends`, and
@@ -205,6 +214,7 @@ def uniform_subsets_and_nodes(n, *args, **kwargs):
         'all' gives all node indices.
     np.array
         The location of all nodes on [-1, 1].
+
     """
     subsets = {
         'state_disc': np.empty(0, dtype=int),
@@ -219,9 +229,8 @@ def uniform_subsets_and_nodes(n, *args, **kwargs):
     return subsets, np.linspace(-1, 1, n + 1)
 
 
-def make_subset_map(from_subset_idxs, to_subset_idxs):
-    """
-    Creates a map from one subset to another using the indices of each subset within all nodes.
+def make_subset_map(from_subset_idxs: Iterable[int], to_subset_idxs: Iterable[int]) -> npt.ArrayLike:
+    """Create a map from one subset to another using the indices of each subset within all nodes.
 
     Parameters
     ----------
@@ -235,6 +244,7 @@ def make_subset_map(from_subset_idxs, to_subset_idxs):
     numpy.array of int
         An index map which, when applied to values in the from_subset, will provide values
         in the to_subset.
+
     """
     offset = 0
     subset_map = []
@@ -246,8 +256,7 @@ def make_subset_map(from_subset_idxs, to_subset_idxs):
 
 
 class GridData(object):
-    """
-    Properties associated with the GridData of a phase.
+    """Properties associated with the GridData of a phase.
 
     GridData contains properties associated
     with the "grid" or "mesh" of a phase - the number of segments, the
@@ -299,10 +308,10 @@ class GridData(object):
     segment_indices : int ndarray[:,2]
         Array where each row contains the start and end indices into the nodes.
     subset_node_indices : dict of int ndarray[:]
-        Dict keyed by subset name where each entry are the indices of the nodes
+        dict keyed by subset name where each entry are the indices of the nodes
         belonging to that given subset.
     subset_segment_indices: dict of int ndarray[num_seg,:]
-        Dict keyed by subset name where each entry are the indices of the nodes
+        dict keyed by subset name where each entry are the indices of the nodes
         belonging to the given subset, indexed into subset_node_indices!
     subset_num_nodes: dict of int
         A dict keyed by subset name that provides the total number of
@@ -314,9 +323,11 @@ class GridData(object):
         True if the transcription is compressed (connecting nodes of adjacent segments
         are not duplicated in the inputs).
     input_maps: dict of int ndarray[:]
-        Dict keyed by the map name that provides a mapping for src_indices to
+        dict keyed by the map name that provides a mapping for src_indices to
         and from "compressed" form.
+
     """
+
     def __init__(self, num_segments, transcription, transcription_order=None,
                  segment_ends=None, compressed=False, num_steps_per_segment=1):
         if segment_ends is None:
@@ -673,6 +684,8 @@ class GaussLobattoGrid(GridData):
         to the appropriate indices.
     """
     def __init__(self, num_segments, nodes_per_seg, segment_ends=None, compressed=False):
+        if nodes_per_seg % 2 == 0:
+            raise ValueError(f'nodes_per_seg ({nodes_per_seg}) must be odd for GaussLobattoGrid')
         super().__init__(num_segments=num_segments, transcription='gauss-lobatto',
                          transcription_order=np.asarray(nodes_per_seg, dtype=int),
                          segment_ends=segment_ends, compressed=compressed)

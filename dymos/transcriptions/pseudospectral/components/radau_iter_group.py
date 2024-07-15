@@ -1,7 +1,6 @@
 import numpy as np
 import openmdao.api as om
 
-# from .birkhoff_collocation_comp import BirkhoffCollocationComp
 from .input_resids_comp import InputResidsComp
 from .radau_defect_comp import RadauDefectComp
 
@@ -10,8 +9,7 @@ from ....phase.options import TimeOptionsDictionary
 
 
 class RadauIterGroup(om.Group):
-    """
-    Class definition for the RadauIterGroup.
+    """Class definition for the RadauIterGroup.
 
     This group allows for iteration of the state variables and initial _or_ final value of the state
     depending on the direction of the solve.
@@ -20,15 +18,14 @@ class RadauIterGroup(om.Group):
     ----------
     **kwargs : dict
         Dictionary of optional arguments.
+
     """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._implicit_outputs = set()
 
     def initialize(self):
-        """
-        Declare group options.
-        """
+        """Declare group options."""
         self.options.declare('state_options', types=dict,
                              desc='Dictionary of options for the states.')
         self.options.declare('time_options', types=TimeOptionsDictionary,
@@ -41,9 +38,7 @@ class RadauIterGroup(om.Group):
                              desc='Keyword arguments provided when initializing the ODE System')
 
     def setup(self):
-        """
-        Define the structure of the control group.
-        """
+        """Define the structure of the RadauIterGroup."""
         gd = self.options['grid_data']
         nn = gd.subset_num_nodes['all']
         state_options = self.options['state_options']
@@ -103,22 +98,18 @@ class RadauIterGroup(om.Group):
             ref0 = np.asarray(ref0)
             if ref0.shape == shape:
                 ref0_state = np.tile(ref0.flatten(), num_nodes)
-                ref0_seg_ends = np.tile(ref0.flatten(), 2)
             else:
                 raise ValueError('array-valued scaler/ref must length equal to state-size')
         else:
             ref0_state = ref0
-            ref0_seg_ends = ref0
         if not np.isscalar(ref) and ref is not None:
             ref = np.asarray(ref)
             if ref.shape == shape:
                 ref_state = np.tile(ref.flatten(), num_nodes)
-                ref_seg_ends = np.tile(ref.flatten(), 2)
             else:
                 raise ValueError('array-valued scaler/ref must length equal to state-size')
         else:
             ref_state = ref
-            ref_seg_ends = ref
 
         free_vars = {state_name, initial_state_name, final_state_name}
 
@@ -128,7 +119,6 @@ class RadauIterGroup(om.Group):
             implicit_outputs = {state_name, initial_state_name}
         else:
             implicit_outputs = set()
-            residuals = set()
 
         free_vars = free_vars - implicit_outputs
 
@@ -191,7 +181,6 @@ class RadauIterGroup(om.Group):
         defect_comp.configure_io(phase)
 
         gd = self.options['grid_data']
-        ndn = gd.subset_num_nodes['state_disc']
         nin = gd.subset_num_nodes['state_input']
         ncn = gd.subset_num_nodes['col']
         ns = gd.num_segments
@@ -211,7 +200,7 @@ class RadauIterGroup(om.Group):
 
             self.promotes('defects', inputs=(f'states:{name}',),
                           src_indices=om.slicer[state_src_idxs, ...])
-            
+
             self.set_input_defaults(f'states:{name}',
                                     val=1.0, units=units,
                                     src_shape=(nin,) + shape)
@@ -235,12 +224,6 @@ class RadauIterGroup(om.Group):
                                                   shape=(ns - 1,) + shape,
                                                   units=units)
 
-            # if f'state_rates:{name}' in self._implicit_outputs:
-            #     states_resids_comp.add_output(f'state_rates:{name}', shape=(nn,) + shape, units=units)
-            #     states_resids_comp.add_input(f'state_rate_defects:{name}',
-            #                                   shape=(nn,) + shape,
-            #                                   units=units)
-
             if f'initial_states:{name}' in self._implicit_outputs:
                 # states_resids_comp.add_input(f'initial_state_defects:{name}', shape=(1,) + shape, units=units)
                 states_resids_comp.add_output(f'initial_states:{name}', shape=(1,) + shape, units=units)
@@ -263,8 +246,7 @@ class RadauIterGroup(om.Group):
                              src_indices=gd.subset_node_indices['col'])
 
     def _get_rate_source_path(self, state_name, nodes, phase):
-        """
-        Return the rate source location and indices for a given state name.
+        """Return the rate source location and indices for a given state name.
 
         Parameters
         ----------
@@ -281,6 +263,7 @@ class RadauIterGroup(om.Group):
             Path to the rate source.
         ndarray
             Array of source indices.
+
         """
         gd = self.grid_data
         try:

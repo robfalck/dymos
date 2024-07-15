@@ -1,11 +1,7 @@
 import numpy as np
 import openmdao.api as om
 
-from .birkhoff_collocation_comp import BirkhoffCollocationComp
-from .input_resids_comp import InputResidsComp
-
-from ...grid_data import GridData
-from ....phase.options import TimeOptionsDictionary
+from dymos.transcriptions.grid_data import GridData
 from dymos._options import options as dymos_options
 
 
@@ -25,6 +21,7 @@ class BirkhoffBoundaryMuxComp(om.ExplicitComponent):
     ----------
     **kwargs : dict
         Dictionary of optional phase arguments.
+
     """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -39,6 +36,7 @@ class BirkhoffBoundaryMuxComp(om.ExplicitComponent):
         ----------
         state_options : StateOptionsDictionary
             The phase object to which this transcription instance applies.
+
         """
         self._io_names = {}
         for state_name, options in state_options.items():
@@ -76,6 +74,7 @@ class BirkhoffBoundaryMuxComp(om.ExplicitComponent):
             If not None, dict containing discrete input values.
         discrete_outputs : dict or None
             If not None, dict containing discrete output values.
+
         """
         for state_name, io_names in self._io_names.items():
             outputs[io_names['boundary']][0] = inputs[io_names['initial']]
@@ -126,7 +125,7 @@ class BirkhoffBoundaryGroup(om.Group):
 
     def setup(self):
         """
-        Define the structure of the control group.
+        Define the structure of the BirkhoffBoundaryGroup.
         """
         ode_class = self.options['ode_class']
         ode_init_kwargs = self.options['ode_init_kwargs']
@@ -152,6 +151,7 @@ class BirkhoffBoundaryGroup(om.Group):
         ----------
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
+
         """
         self._get_subsystem('boundary_mux').configure_io(state_options=phase.state_options)
 

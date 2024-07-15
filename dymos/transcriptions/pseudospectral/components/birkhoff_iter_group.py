@@ -1,7 +1,7 @@
 import numpy as np
 import openmdao.api as om
 
-from .birkhoff_collocation_comp import BirkhoffCollocationComp
+from .birkhoff_defect_comp import BirkhoffDefectComp
 from .input_resids_comp import InputResidsComp
 
 from ...grid_data import GridData
@@ -41,7 +41,7 @@ class BirkhoffIterGroup(om.Group):
 
     def setup(self):
         """
-        Define the structure of the control group.
+        Define the structure of the BirkhoffIterGroup.
         """
         gd = self.options['grid_data']
         nn = gd.subset_num_nodes['all']
@@ -53,13 +53,13 @@ class BirkhoffIterGroup(om.Group):
         self.add_subsystem('ode_all', subsys=ode_class(num_nodes=nn, **ode_init_kwargs))
 
         self.add_subsystem('collocation_comp',
-                           subsys=BirkhoffCollocationComp(grid_data=gd,
+                           subsys=BirkhoffDefectComp(grid_data=gd,
                                                           state_options=state_options,
                                                           time_units=time_options['units']),
                            promotes_inputs=['*'], promotes_outputs=['*'])
 
         if any([opts['solve_segments'] in ('forward', 'backward') for opts in state_options.values()]):
-            self.add_subsystem('states_balance_comp', subsys=InputResidComp(),
+            self.add_subsystem('states_balance_comp', subsys=InputResidsComp(),
                                promotes_inputs=['*'], promotes_outputs=['*'])
 
     def _configure_desvars(self, name, options):

@@ -1,20 +1,18 @@
 import numpy as np
+import openmdao.api as om
 import scipy
 import scipy.sparse as sp
 
-import openmdao.api as om
-
-from dymos.transcriptions.grid_data import GridData
-from dymos.utils.misc import get_rate_units
 from dymos._options import options as dymos_options
-from dymos.utils.lgl import lgl
-from dymos.utils.cgl import cgl
+from dymos.transcriptions.grid_data import GridData
 from dymos.utils.birkhoff import birkhoff_matrix
+from dymos.utils.cgl import cgl
+from dymos.utils.lgl import lgl
+from dymos.utils.misc import get_rate_units
 
 
-class BirkhoffCollocationComp(om.ExplicitComponent):
-    """
-    Class definition for the BirkhoffCollocationComp.
+class BirkhoffDefectComp(om.ExplicitComponent):
+    """Class definition for the BirkhoffCollocationComp.
 
     BirkhoffCollocationComp computes the generalized defects of a segment for implicit collocation.
     There are four defects to be evaluated; state, state rate, initial state, and final state.
@@ -29,6 +27,7 @@ class BirkhoffCollocationComp(om.ExplicitComponent):
     ----------
     **kwargs : dict
         Dictionary of optional arguments.
+
     """
 
     def __init__(self, **kwargs):
@@ -36,9 +35,7 @@ class BirkhoffCollocationComp(om.ExplicitComponent):
         self._no_check_partials = not dymos_options['include_check_partials']
 
     def initialize(self):
-        """
-        Declare component options.
-        """
+        """Declare component options."""
         self.options.declare(
             'grid_data', types=GridData,
             desc='Container object for grid info')
@@ -52,13 +49,13 @@ class BirkhoffCollocationComp(om.ExplicitComponent):
             desc='Units of time')
 
     def configure_io(self, phase):
-        """
-        I/O creation is delayed until configure so we can determine shape and units.
+        """I/O creation is delayed until configure so we can determine shape and units.
 
         Parameters
         ----------
         phase : Phase
             The phase object that contains this collocation comp.
+
         """
         gd = self.options['grid_data']
         num_nodes = gd.subset_num_nodes['col']
@@ -277,8 +274,7 @@ class BirkhoffCollocationComp(om.ExplicitComponent):
                                   rows=ar1, cols=c1)
 
     def compute(self, inputs, outputs, discrete_inputs=None, discrete_outputs=None):
-        """
-        Compute component outputs.
+        """Compute component outputs.
 
         Parameters
         ----------
@@ -290,6 +286,7 @@ class BirkhoffCollocationComp(om.ExplicitComponent):
             If not None, dict containing discrete input values.
         discrete_outputs : dict or None
             If not None, dict containing discrete output values.
+
         """
         dt_dstau = np.atleast_2d(inputs['dt_dstau']).T
         num_segs = self.options['grid_data'].num_segments
@@ -322,8 +319,7 @@ class BirkhoffCollocationComp(om.ExplicitComponent):
                 outputs[var_names['state_continuity_defect']] = x_ab[:-1, 1, ...] - x_ab[1:, 0, ...]
 
     def compute_partials(self, inputs, partials):
-        """
-        Compute sub-jacobian parts. The model is assumed to be in an unscaled state.
+        """Compute sub-jacobian parts. The model is assumed to be in an unscaled state.
 
         Parameters
         ----------
@@ -331,6 +327,7 @@ class BirkhoffCollocationComp(om.ExplicitComponent):
             Unscaled, dimensional input variables read via inputs[key].
         partials : Jacobian
             Subjac components written to partials[output_name, input_name].
+
         """
         dt_dstau = inputs['dt_dstau']
 

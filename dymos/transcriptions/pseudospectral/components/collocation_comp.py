@@ -12,10 +12,9 @@ class CollocationComp(om.ExplicitComponent):
     """
     Class definiton for the Collocationcomp.
 
-    CollocationComp computes the generalized defects for implicit collocation.
-    The defects is the interpolated state derivative at the collocation nodes minus
-    the computed state derivative at the collocation nodes, in dimensionless
-    "segment tau" time.
+    CollocationComp computes the generalized defect of a segment for implicit collocation.
+    The defect is the interpolated state derivative at the collocation nodes minus
+    the computed state derivative at the collocation nodes.
 
     Parameters
     ----------
@@ -42,15 +41,12 @@ class CollocationComp(om.ExplicitComponent):
             'time_units', default=None, allow_none=True, types=str,
             desc='Units of time')
 
-    def configure_io(self, phase):
+    def configure_io(self):
         """
         I/O creation is delayed until configure so we can determine shape and units.
         """
         gd = self.options['grid_data']
-        num_nodes = gd.subset_num_nodes['all']
         num_col_nodes = gd.subset_num_nodes['col']
-        num_segs = gd.num_segments
-        compressed = gd.compressed
         time_units = self.options['time_units']
         state_options = self.options['state_options']
 
@@ -61,13 +57,7 @@ class CollocationComp(om.ExplicitComponent):
             var_names[state_name] = {
                 'f_approx': f'f_approx:{state_name}',
                 'f_computed': f'f_computed:{state_name}',
-                'initial_val': f'initial_states:{state_name}',
-                'final_val': f'final_states:{state_name}',
-                'val': f'states:{state_name}',
-                'defect': f'state_rate_defects:{state_name}',
-                'cnty_defect': f'state_cnty_defects:{state_name}',
-                'initial_defect': f'initial_state_defects:{state_name}',
-                'final_defect': f'final_state_defects:{state_name}'
+                'defect': f'defects:{state_name}',
             }
 
         for state_name, options in state_options.items():
@@ -77,21 +67,6 @@ class CollocationComp(om.ExplicitComponent):
             rate_units = get_rate_units(units, time_units)
 
             var_names = self.var_names[state_name]
-
-            self.add_input(name=var_names['initial_val'],
-                           shape=(1,) + shape,
-                           units=units,
-                           desc='Initial value of the state at the start of the phase.')
-
-            self.add_input(name=var_names['final_val'],
-                           shape=(1,) + shape,
-                           units=units,
-                           desc='Final value of the state at the end of the phase.')
-
-            self.add_input(var_names['val'],
-                           shape=(num_nodes,) + shape,
-                           units=units,
-                           desc='state value at all nodes within the phase')
 
             self.add_input(
                 name=var_names['f_approx'],
@@ -110,25 +85,6 @@ class CollocationComp(om.ExplicitComponent):
                 shape=(num_col_nodes,) + shape,
                 desc=f'Interior defects of state {state_name}',
                 units=units)
-
-            self.add_output(
-                name=var_names['initial_defect'],
-                shape=(1,) + shape,
-                desc=f'Initial value defect of state {state_name}',
-                units=units)
-
-            self.add_output(
-                name=var_names['final_defect'],
-                shape=(1,) + shape,
-                desc=f'Final value defect of state {state_name}',
-                units=units)
-
-            if not compressed:
-                self.add_output(
-                    name=var_names['cnty_defect'],
-                    shape=(num_segs-1,) + shape,
-                    desc=f'Segment continuity defect of state {state_name}',
-                    units=units)
 
             if 'defect_ref' in options and options['defect_ref'] is not None:
                 defect_ref = options['defect_ref']
@@ -154,10 +110,9 @@ class CollocationComp(om.ExplicitComponent):
                                     equals=0.0,
                                     ref=defect_ref)
 
-                if not compressed:
-                    self.add_constraint(name=var_names['cnty_defect'],
-                                        equals=0.0,
-                                        ref=defect_ref)
+        # Setup partials
+        num_col_nodes = self.options['grid_data'].subset_num_nodes['col']
+        state_options = self.options['state_options']
 
         for state_name, options in state_options.items():
             shape = options['shape']
@@ -180,25 +135,6 @@ class CollocationComp(om.ExplicitComponent):
                                   wrt='dt_dstau',
                                   rows=r, cols=c)
 
-            ar_size = np.arange(size, dtype=int)
-            ar_last_node = np.arange(size * num_nodes, dtype=int)[-size:]
-
-            self.declare_partials(of=var_names['initial_defect'],
-                                  wrt=var_names['initial_val'],
-                                  rows=ar_size, cols=ar_size, val=1.0)
-
-            self.declare_partials(of=var_names['initial_defect'],
-                                  wrt=var_names['val'],
-                                  rows=ar_size, cols=ar_size, val=-1.0)
-
-            self.declare_partials(of=var_names['final_defect'],
-                                  wrt=var_names['final_val'],
-                                  rows=ar_size, cols=ar_size, val=1.0)
-
-            self.declare_partials(of=var_names['final_defect'],
-                                  wrt=var_names['val'],
-                                  rows=ar_size, cols=ar_last_node, val=-1.0)
-
     def compute(self, inputs, outputs):
         """
         Compute collocation defects.
@@ -219,14 +155,7 @@ class CollocationComp(om.ExplicitComponent):
             f_approx = inputs[var_names['f_approx']]
             f_computed = inputs[var_names['f_computed']]
 
-            val = inputs[var_names['val']]
-            initial_val = inputs[var_names['initial_val']]
-            final_val = inputs[var_names['final_val']]
-
             outputs[var_names['defect']] = ((f_approx - f_computed).T * dt_dstau).T
-
-            outputs[var_names['initial_defect']] = (initial_val - val[0, ...])
-            outputs[var_names['final_defect']] = (final_val - val[-1, ...])
 
     def compute_partials(self, inputs, partials):
         """

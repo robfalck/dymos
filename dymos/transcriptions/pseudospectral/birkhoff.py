@@ -823,8 +823,7 @@ class Birkhoff(TranscriptionBase):
         return connection_info
 
     def _requires_continuity_constraints(self, phase):
-        """
-        Tests whether state and/or control and/or control rate continuity are required.
+        """Test whether state and/or control and/or control rate continuity are required.
 
         Parameters
         ----------
@@ -839,6 +838,7 @@ class Birkhoff(TranscriptionBase):
             True if any control value continuity is required to be enforced.
         any_control_rate_continuity : bool
             True if any control rate continuity is required to be enforced.
+
         """
         num_seg = self.grid_data.num_segments
         compressed = self.grid_data.compressed

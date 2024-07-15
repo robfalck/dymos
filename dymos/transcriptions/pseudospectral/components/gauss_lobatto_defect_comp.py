@@ -6,12 +6,11 @@ from dymos.transcriptions.grid_data import GridData
 from dymos.utils.misc import get_rate_units
 
 
-class RadauDefectComp(om.ExplicitComponent):
-    """Class definiton for the Collocationcomp.
+class GaussLobattoDefectComp(om.ExplicitComponent):
+    """
+    Class definiton for the GaussLobatooDefectComp.
 
-    CollocationComp computes the generalized defect of a segment for implicit collocation.
-    The defect is the interpolated state derivative at the collocation nodes minus
-    the computed state derivative at the collocation nodes.
+    GaussLobatooDefectComp computes the defects of a phase for Gauss-Lobatto collocation.
 
     Parameters
     ----------
@@ -41,15 +40,14 @@ class RadauDefectComp(om.ExplicitComponent):
         """I/O creation is delayed until configure so we can determine shape and units."""
         gd : GridData = self.options['grid_data']
         num_segs : int = gd.num_segments
-        num_nodes : int = gd.subset_num_nodes['all']
+        num_disc_nodes : int = gd.subset_num_nodes['state_disc']
         num_col_nodes : int = gd.subset_num_nodes['col']
+        seg_end_idxs = gd.subset_node_indices['segment_ends']
+        state_disc_idxs = gd.subset_node_indices['state_disc']
         time_units : str = self.options['time_units']
         state_options = self.options['state_options']
 
-        # The radau differentiation matrix
-        _, self._D = self.options['grid_data'].phase_lagrange_matrices('state_disc',
-                                                                       'col',
-                                                                       sparse=True)
+        self._seg_end_idxs_in_disc = np.where(np.isin(state_disc_idxs, seg_end_idxs))[0]
 
         self.add_input('dt_dstau', units=time_units, shape=(num_col_nodes,))
 
@@ -58,8 +56,9 @@ class RadauDefectComp(om.ExplicitComponent):
             var_names[state_name] = {
                 'initial_val': f'initial_states:{state_name}',
                 'final_val': f'final_states:{state_name}',
-                'val': f'states:{state_name}',
-                'f_ode': f'f_ode:{state_name}',
+                'val_disc': f'state_disc:{state_name}',
+                'rate_col': f'staterate_col:{state_name}',
+                'f_col': f'f_col:{state_name}',
                 'rate_defect': f'state_rate_defects:{state_name}',
                 'cnty_defect': f'state_cnty_defects:{state_name}',
                 'initial_defect': f'initial_state_defects:{state_name}',
@@ -84,13 +83,19 @@ class RadauDefectComp(om.ExplicitComponent):
                            units=units,
                            desc='Final value of the state at the end of the phase.')
 
-            self.add_input(var_names['val'],
-                           shape=(num_nodes,) + shape,
+            self.add_input(var_names['val_disc'],
+                           shape=(num_disc_nodes,) + shape,
                            units=units,
-                           desc='state value at all nodes within the phase')
+                           desc='state value at discretization nodes within the phase')
 
             self.add_input(
-                name=var_names['f_ode'],
+                name=var_names['rate_col'],
+                shape=(num_col_nodes,) + shape,
+                desc=f'Estimated rate of state {state_name} at the collocation nodes',
+                units=rate_units)
+
+            self.add_input(
+                name=var_names['f_col'],
                 shape=(num_col_nodes,) + shape,
                 desc=f'Computed derivative of state {state_name} at the collocation nodes',
                 units=rate_units)
@@ -169,7 +174,7 @@ class RadauDefectComp(om.ExplicitComponent):
             var_names = self.var_names[state_name]
 
             self.declare_partials(of=var_names['rate_defect'],
-                                  wrt=var_names['f_ode'],
+                                  wrt=var_names['f_col'],
                                   rows=r, cols=r, val=-1.0)
 
             c = np.repeat(np.arange(num_col_nodes), size)
@@ -179,15 +184,15 @@ class RadauDefectComp(om.ExplicitComponent):
 
             # The state rate defects wrt the state values at the discretization nodes
             # are given by the differentiation matrix.
-            r, c = self._D.nonzero()
+            r = c = np.arange(num_col_nodes * size, dtype=int)
             self.declare_partials(of=var_names['rate_defect'],
-                                  wrt=var_names['val'],
-                                  rows=r, cols=c, val=self._D.data)
+                                  wrt=var_names['rate_col'],
+                                  rows=r, cols=c, val=1.0)
 
             # The initial value defect is just an identity matrix at the "top left" corner of the jacobian.
             ar_size = np.arange(size, dtype=int)
             self.declare_partials(of=var_names['initial_defect'],
-                                  wrt=var_names['val'],
+                                  wrt=var_names['val_disc'],
                                   rows=ar_size, cols=ar_size, val=-1.0)
 
             self.declare_partials(of=var_names['initial_defect'],
@@ -196,9 +201,9 @@ class RadauDefectComp(om.ExplicitComponent):
 
             # The final value defect is an identity matrix at the "bottom right" corner of the jacobian.
             r = np.arange(size, dtype=int)
-            c = np.arange(num_nodes - size, num_nodes, dtype=int)
+            c = np.arange(num_disc_nodes - size, num_disc_nodes, dtype=int)
             self.declare_partials(of=var_names['final_defect'],
-                                  wrt=var_names['val'],
+                                  wrt=var_names['val_disc'],
                                   rows=r, cols=c, val=-1.0)
 
             self.declare_partials(of=var_names['final_defect'],
@@ -207,10 +212,10 @@ class RadauDefectComp(om.ExplicitComponent):
 
             if not gd.compressed:
                 rs = np.repeat(np.arange(num_segs - 1, dtype=int), 2)
-                cs = gd.subset_node_indices['segment_ends'][1:-1]
+                cs = self._seg_end_idxs_in_disc[1:-1]
                 val = np.tile([-1., 1.], num_segs-1)
                 self.declare_partials(of=var_names['cnty_defect'],
-                                      wrt=var_names['val'], rows=rs, cols=cs, val=val)
+                                      wrt=var_names['val_disc'], rows=rs, cols=cs, val=val)
 
     def compute(self, inputs, outputs):
         """
@@ -224,39 +229,35 @@ class RadauDefectComp(om.ExplicitComponent):
             `Vector` containing outputs.
 
         """
-        gd : GridData = self.options['grid_data']
-        num_disc_nodes : int = gd.subset_num_nodes['state_disc']
-        num_col_nodes : int = gd.subset_num_nodes['col']
-        idxs_se : int = gd.subset_node_indices['segment_ends']
+        gd: GridData = self.options['grid_data']
+        seg_end_idxs: npt.ArrayLike = gd.subset_node_indices['segment_ends']
+        state_disc_idxs: npt.ArrayLike = gd.subset_node_indices['state_disc']
 
         state_options = self.options['state_options']
         dt_dstau : np.ndarray = inputs['dt_dstau']
-        D = self._D
 
         for state_name, state_options in state_options.items():
             shape = state_options['shape']
             size = np.prod(shape)
             var_names = self.var_names[state_name]
 
-            f_ode = inputs[var_names['f_ode']]
-            x = inputs[var_names['val']]
+            f_col = inputs[var_names['f_col']]
+            x_d = inputs[var_names['val_disc']]
             x_0 = inputs[var_names['initial_val']]
             x_f = inputs[var_names['final_val']]
+            xdot_col = inputs[var_names['rate_col']]
 
-            # The defect is computed as
-            # defect = D @ x - f_ode * dt_dstau  # noqa: ERA001
+            # The defect is computed as the difference between the polynomial slope
+            # and the ODE evaluation converted to nondimensional time.
             # But scipy.sparse only handles 2D matrices, so we need to force x to be 2D
             # and then change the product back to the proper shape.
-
-            x_flat = np.reshape(x, newshape=(num_disc_nodes, size))
-            f_approx = np.reshape(D.dot(x_flat), newshape=(num_col_nodes,) + shape)
-
-            outputs[var_names['rate_defect']] = f_approx - (f_ode.T * dt_dstau).T
-            outputs[var_names['initial_defect']] = x_0 - x[0, ...]
-            outputs[var_names['final_defect']] = x_f - x[-1, ...]
+            outputs[var_names['rate_defect']] = ((xdot_col - f_col).T * dt_dstau).T
+            outputs[var_names['initial_defect']] = x_0 - x_d[0, ...]
+            outputs[var_names['final_defect']] = x_f - x_d[-1, ...]
 
             if not gd.compressed:
-                outputs[var_names['cnty_defect']] = x[idxs_se[2::2], ...] - x[idxs_se[1:-2:2], ...]
+                outputs[var_names['cnty_defect']] =(x_d[self._seg_end_idxs_in_disc[2::2], ...] -
+                                                    x_d[self._seg_end_idxs_in_disc[1:-2:2], ...])
 
     def compute_partials(self, inputs, partials):
         """
@@ -274,7 +275,9 @@ class RadauDefectComp(om.ExplicitComponent):
         for state_name, options in self.options['state_options'].items():
             size = np.prod(options['shape'])
             var_names = self.var_names[state_name]
-            f_ode = inputs[var_names['f_ode']]
+            f_col = inputs[var_names['f_col']]
+            xdot_col = inputs[var_names['rate_col']]
 
-            partials[var_names['rate_defect'], var_names['f_ode']] = -np.repeat(dt_dstau, size)
-            partials[var_names['rate_defect'], 'dt_dstau'] = -f_ode.ravel()
+            partials[var_names['rate_defect'], var_names['f_col']] = -np.repeat(dt_dstau, size)
+            partials[var_names['rate_defect'], var_names['rate_col']] = np.repeat(dt_dstau, size)
+            partials[var_names['rate_defect'], 'dt_dstau'] = (xdot_col-f_col).ravel()
