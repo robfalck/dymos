@@ -12,7 +12,8 @@ from dymos.utils.misc import get_rate_units
 
 
 class BirkhoffDefectComp(om.ExplicitComponent):
-    """Class definition for the BirkhoffCollocationComp.
+    """
+    Class definition for the BirkhoffCollocationComp.
 
     BirkhoffCollocationComp computes the generalized defects of a segment for implicit collocation.
     There are four defects to be evaluated; state, state rate, initial state, and final state.
@@ -49,7 +50,8 @@ class BirkhoffDefectComp(om.ExplicitComponent):
             desc='Units of time')
 
     def configure_io(self, phase):
-        """I/O creation is delayed until configure so we can determine shape and units.
+        """
+        I/O creation is delayed until configure so we can determine shape and units.
 
         Parameters
         ----------

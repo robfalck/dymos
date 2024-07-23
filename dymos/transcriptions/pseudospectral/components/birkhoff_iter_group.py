@@ -52,14 +52,14 @@ class BirkhoffIterGroup(om.Group):
 
         self.add_subsystem('ode_all', subsys=ode_class(num_nodes=nn, **ode_init_kwargs))
 
-        self.add_subsystem('collocation_comp',
+        self.add_subsystem('defects',
                            subsys=BirkhoffDefectComp(grid_data=gd,
                                                           state_options=state_options,
                                                           time_units=time_options['units']),
                            promotes_inputs=['*'], promotes_outputs=['*'])
 
         if any([opts['solve_segments'] in ('forward', 'backward') for opts in state_options.values()]):
-            self.add_subsystem('states_balance_comp', subsys=InputResidsComp(),
+            self.add_subsystem('states_resids_comp', subsys=InputResidsComp(),
                                promotes_inputs=['*'], promotes_outputs=['*'])
 
     def _configure_desvars(self, name, options):
@@ -182,8 +182,8 @@ class BirkhoffIterGroup(om.Group):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-        collocation_comp = self._get_subsystem('collocation_comp')
-        collocation_comp.configure_io(phase)
+        defects = self._get_subsystem('defects')
+        defects.configure_io(phase)
 
         gd = self.options['grid_data']
         nn = gd.subset_num_nodes['all']
@@ -191,7 +191,7 @@ class BirkhoffIterGroup(om.Group):
 
         state_options = self.options['state_options']
         time_options = self.options['time_options']
-        states_balance_comp = self._get_subsystem('states_balance_comp')
+        states_resids_comp = self._get_subsystem('states_resids_comp')
 
         for name, options in state_options.items():
             units = options['units']
@@ -205,30 +205,30 @@ class BirkhoffIterGroup(om.Group):
             self._implicit_outputs = self._configure_desvars(name, options)
 
             if f'states:{name}' in self._implicit_outputs:
-                states_balance_comp.add_output(f'states:{name}',
+                states_resids_comp.add_output(f'states:{name}',
                                                shape=(nn,) + shape,
                                                units=units)
 
-                states_balance_comp.add_input(f'state_defects:{name}',
+                states_resids_comp.add_input(f'state_defects:{name}',
                                               shape=(nn+ns,) + shape,
                                               units=units)
 
                 if ns > 1:
-                    states_balance_comp.add_input(f'state_cnty_defects:{name}',
+                    states_resids_comp.add_input(f'state_cnty_defects:{name}',
                                                   shape=(ns - 1,) + shape,
                                                   units=units)
 
             if f'state_rates:{name}' in self._implicit_outputs:
-                states_balance_comp.add_output(f'state_rates:{name}', shape=(nn,) + shape, units=units)
-                states_balance_comp.add_input(f'state_rate_defects:{name}',
+                states_resids_comp.add_output(f'state_rates:{name}', shape=(nn,) + shape, units=units)
+                states_resids_comp.add_input(f'state_rate_defects:{name}',
                                               shape=(nn,) + shape,
                                               units=units)
 
             if f'initial_states:{name}' in self._implicit_outputs:
-                states_balance_comp.add_output(f'initial_states:{name}', shape=(1,) + shape, units=units)
+                states_resids_comp.add_output(f'initial_states:{name}', shape=(1,) + shape, units=units)
 
             if f'final_states:{name}' in self._implicit_outputs:
-                states_balance_comp.add_output(f'final_states:{name}', shape=(1,) + shape, units=units)
+                states_resids_comp.add_output(f'final_states:{name}', shape=(1,) + shape, units=units)
 
             try:
                 rate_source_var = options['rate_source']

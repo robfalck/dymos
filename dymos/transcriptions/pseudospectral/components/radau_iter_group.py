@@ -9,7 +9,8 @@ from ....phase.options import TimeOptionsDictionary
 
 
 class RadauIterGroup(om.Group):
-    """Class definition for the RadauIterGroup.
+    """
+    Class definition for the RadauIterGroup.
 
     This group allows for iteration of the state variables and initial _or_ final value of the state
     depending on the direction of the solve.
