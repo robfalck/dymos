@@ -4,8 +4,8 @@ import openmdao.api as om
 from .input_resids_comp import InputResidsComp
 from .radau_defect_comp import RadauDefectComp
 
-from ...grid_data import GridData
-from ....phase.options import TimeOptionsDictionary
+from dymos.transcriptions.grid_data import GridData
+from dymos.phase.options import TimeOptionsDictionary
 
 
 class RadauIterGroup(om.Group):

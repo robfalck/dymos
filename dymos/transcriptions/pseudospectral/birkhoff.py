@@ -138,7 +138,7 @@ class Birkhoff(TranscriptionBase):
 
     def setup_states(self, phase):
         """
-        Setup the states for this transcription.
+        Set up the states for this transcription.
 
         In the Birkhoff transcription, everything typically done in this
         method is instead done by the BirkhoffIterGroup.
@@ -200,14 +200,13 @@ class Birkhoff(TranscriptionBase):
 
     def setup_ode(self, phase):
         """
-        Setup the ode for this transcription.
+        Set up the ode for this transcription.
 
         Parameters
         ----------
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-
         ODEClass = phase.options['ode_class']
         grid_data = self.grid_data
 
@@ -240,12 +239,6 @@ class Birkhoff(TranscriptionBase):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-        grid_data = self.grid_data
-        nn = grid_data.subset_num_nodes['all']
-        map_input_indices_to_disc = grid_data.input_maps['state_input_to_disc']
-        ode = phase._get_subsystem(self._rhs_source)
-        ode_inputs = get_promoted_vars(ode, 'input')
-
         phase._get_subsystem('boundary_vals').configure_io(phase)
         phase._get_subsystem('ode_iter_group').configure_io(phase)
 
@@ -269,8 +262,6 @@ class Birkhoff(TranscriptionBase):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-        grid_data = self.grid_data
-
         for name, options in phase.state_options.items():
             rate_source_type = phase.classify_var(options['rate_source'])
             rate_src_path = self._get_rate_source_path(name, phase)
@@ -279,7 +270,7 @@ class Birkhoff(TranscriptionBase):
 
     def setup_duration_balance(self, phase):
         """
-        Setup the implicit computation of the phase duration.
+        Set up the implicit computation of the phase duration.
 
         Parameters
         ----------
@@ -301,7 +292,7 @@ class Birkhoff(TranscriptionBase):
 
     def setup_solvers(self, phase):
         """
-        Setup the solvers.
+        Set up the solvers.
 
         Parameters
         ----------
@@ -360,7 +351,6 @@ class Birkhoff(TranscriptionBase):
                     # If the src was added, promote it if it was a state,
                     # or connect it otherwise.
                     if src.startswith('states:'):
-                        var_name = ts_output["output_name"]
                         state_name = src.split(':')[-1]
                         ts_inputs_to_promote.append((f'input_values:{name}',
                                                     f'states:{state_name}'))
@@ -373,7 +363,7 @@ class Birkhoff(TranscriptionBase):
 
     def setup_timeseries_outputs(self, phase):
         """
-        Setup the timeseries for this transcription.
+        Set up the timeseries for this transcription.
 
         Parameters
         ----------
@@ -587,7 +577,7 @@ class Birkhoff(TranscriptionBase):
 
     def _get_num_timeseries_nodes(self):
         """
-        Returns the number of nodes in the default timeseries for this transcription.
+        Return the number of nodes in the default timeseries for this transcription.
 
         Returns
         -------
@@ -788,7 +778,7 @@ class Birkhoff(TranscriptionBase):
 
     def get_parameter_connections(self, name, phase):
         """
-        Returns info about a parameter's target connections in the phase.
+        Return info about a parameter's target connections in the phase.
 
         Parameters
         ----------
@@ -823,7 +813,8 @@ class Birkhoff(TranscriptionBase):
         return connection_info
 
     def _requires_continuity_constraints(self, phase):
-        """Test whether state and/or control and/or control rate continuity are required.
+        """
+        Test whether state and/or control and/or control rate continuity are required.
 
         Parameters
         ----------
@@ -854,8 +845,7 @@ class Birkhoff(TranscriptionBase):
 
     def _phase_set_state_val(self, phase, name, vals, time_vals, interpolation_kind):
         """
-        Method to interpolate the provided input and return the variables that need to be set
-        along with their appropriate value.
+        Provide variable names and values when phase.set_state_vals is called.
 
         Parameters
         ----------

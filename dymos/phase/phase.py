@@ -200,31 +200,51 @@ class Phase(om.Group):
 
     @property
     def time_options(self):
+        """
+        Get the time options dictionary of the phase.
+        """
         return self.options['time_options']
 
     @time_options.setter
     def time_options(self, tod: TimeOptionsDictionary):
+        """
+        Set the time options dictioanry of the phase.
+        """
         self.options['time_options'] = tod
 
     @property
     def integ_var_options(self):
-        """ An alias for time options. """
+        """
+        Alias used to get the time options dictionary of the phase.
+        """
         return self.options['time_options']
 
     @integ_var_options.setter
     def integ_var_options(self, iod: TimeOptionsDictionary):
+        """
+        Alias used to set the time otpions dictionary of the phase.
+        """
         self.options['time_options'] = iod
 
     @property
     def state_options(self):
+        """
+        Get the state options for the phase.
+        """
         return self.options['state_options']
 
     @property
     def parameter_options(self):
+        """
+        Get the parameter options for the phase.
+        """
         return self.options['parameter_options']
 
     @property
     def control_options(self):
+        """
+        Get the control options for the phase.
+        """
         return self.options['control_options']
 
     def add_state(self, name, units=_unspecified, shape=_unspecified,
@@ -496,7 +516,7 @@ class Phase(om.Group):
 
     def check_parameter(self, name):
         """
-        Checks that the parameter of the given name is valid.
+        Check that the parameter of the given name is valid.
 
         First name is checked against all existing states, controls, input parameters, and
         parameters.  If it has already been assigned to one of those, ValueError is raised.
@@ -534,7 +554,7 @@ class Phase(om.Group):
                     rate2_continuity=_unspecified, rate2_continuity_scaler=_unspecified,
                     rate2_continuity_ref=_unspecified, control_type=_unspecified):
         """
-        Adds a dynamic control variable to be tied to a parameter in the ODE.
+        Add a dynamic control variable to be tied to a parameter in the ODE.
 
         Parameters
         ----------
@@ -841,7 +861,7 @@ class Phase(om.Group):
                                ref=_unspecified, targets=_unspecified, rate_targets=_unspecified,
                                rate2_targets=_unspecified, shape=_unspecified):
         """
-        Adds a polynomial control variable to be tied to a parameter in the ODE.
+        Add a polynomial control variable to be tied to a parameter in the ODE.
 
         Polynomial controls are defined by values at the Legendre-Gauss-Lobatto nodes of a
         single polynomial, defined on [-1, 1] in phase tau space.
