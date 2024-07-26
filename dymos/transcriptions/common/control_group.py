@@ -14,7 +14,7 @@ from ..._options import options as dymos_options
 
 
 class ControlInterpComp(om.ExplicitComponent):
-    """
+    r"""
     Class definition for the ControlInterpComp.
 
     Compute the approximated control values and rates given the values of a control at all nodes,

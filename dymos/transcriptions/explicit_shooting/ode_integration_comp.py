@@ -140,6 +140,8 @@ class ODEIntegrationComp(om.ExplicitComponent):
 
     def _configure_time(self):
         """
+        Provide a method to be called at configure time to add time inputs and outputs to the integration.
+
         Components do not have configure methods, but since we rely on configure-time introspection to determine
         properties of the states, times, controls, parameters, and timeseries, we need to call this method at
         configure time in the parent ExplicitShooting transcription object.
@@ -167,6 +169,8 @@ class ODEIntegrationComp(om.ExplicitComponent):
 
     def _configure_states(self):
         """
+        Provide a method to be called at configure time to add state inputs and outputs to the integration.
+
         Components do not have configure methods, but since we rely on configure-time introspection to determine
         properties of the states, times, controls, parameters, and timeseries, we need to call this method at
         configure time in the parent ExplicitShooting transcription object.
@@ -234,6 +238,8 @@ class ODEIntegrationComp(om.ExplicitComponent):
 
     def _configure_parameters(self):
         """
+        Provide a method to be called at configure time to add parameters to the integration.
+
         Components do not have configure methods, but since we rely on configure-time introspection to determine
         properties of the states, times, controls, parameters, and timeseries, we need to call this method at
         configure time in the parent ExplicitShooting transcription object.
@@ -265,6 +271,8 @@ class ODEIntegrationComp(om.ExplicitComponent):
 
     def _configure_controls(self):
         """
+        Provide a method to be called at configure time to finish adding inputs for controls.
+
         Components do not have configure methods, but since we rely on configure-time introspection to determine
         properties of the states, times, controls, parameters, and timeseries, we need to call this method at
         configure time in the parent ExplicitShooting transcription object.
@@ -463,10 +471,6 @@ class ODEIntegrationComp(om.ExplicitComponent):
             A flattened, contiguous vector of the ODE parameter values.
         linearize : bool
             If True, linearize the model after calling run_model.
-
-        Returns
-        -------
-
         """
         subprob = self._eval_subprob
         t_units = self.time_options['units']
@@ -588,8 +592,7 @@ class ODEIntegrationComp(om.ExplicitComponent):
 
     def _f_augmented(self, t, y, theta, dtheta_dz):
         """
-        The ODE-callable function where y is the augmented state vector, theta are the ODE parameters, and dtheta_dz
-        are the sensitivities of the ODE parameters to the integration parameters.
+        Provide a function interface for calling the augmented ODE.
 
         Parameters
         ----------
@@ -635,8 +638,7 @@ class ODEIntegrationComp(om.ExplicitComponent):
 
     def _f_primal(self, t, x, theta):
         """
-        The ODE-callable function where y is the augmented state vector, theta are the ODE parameters, and dtheta_dz
-        are the sensitivities of the ODE parameters to the integration parameters.
+        Provide a function interface for calling the ODE with time, states, and parameters.
 
         Parameters
         ----------

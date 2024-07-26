@@ -87,6 +87,14 @@ class Trajectory(om.Group):
 
     @property
     def parameter_options(self):
+        """
+        Return the parameter options for this Trajectory.
+
+        Returns
+        -------
+        OptionsDictionary
+            The parameter options for this dictionary.
+        """
         return self.options['parameter_options']
 
     def add_phase(self, name, phase, **kwargs):
@@ -317,8 +325,7 @@ class Trajectory(om.Group):
 
     def _setup_parameters(self):
         """
-        Adds an IndepVarComp if necessary and issues appropriate connections based
-        on transcription.
+        Add an IndepVarComp if necessary and issues appropriate connections based on transcription.
         """
         if self.parameter_options:
             param_comp = ParameterComp()
@@ -415,7 +422,7 @@ class Trajectory(om.Group):
 
     def setup(self):
         """
-        Setup the Trajectory Group.
+        Set up the Trajectory Group.
         """
         super(Trajectory, self).setup()
 
@@ -430,8 +437,7 @@ class Trajectory(om.Group):
 
     def _configure_parameters(self):
         """
-        Configure connections from input or design parameters to the appropriate targets
-        in each phase.
+        Configure connections from input or design parameters to the appropriate targets in each phase.
         """
         parameter_options = self.parameter_options
         promoted_inputs = []
@@ -540,8 +546,9 @@ class Trajectory(om.Group):
 
     def _configure_phase_options_dicts(self):
         """
-        Called during configure if we are under MPI. Loops over all phases and populates the
-        phase options dictionaries in self._phases.
+        Loop over all phases and populates the phase options dictionaries in self._phases.
+
+        Called during configure if we are under MPI.
 
         Because each phase performs introspection, on MPI the trajectory may not know certain
         metadata for phase variables that is necessary for things like linkage calculations.
@@ -573,21 +580,12 @@ class Trajectory(om.Group):
 
     def _update_linkage_options_configure(self, linkage_options):
         """
-        Called during configure to return the source paths, units, and shapes of variables
-        in linkages.
+        Update the source paths, units, and shapes of variables in linkage options.
 
         Parameters
         ----------
-        phases : Sequence of (str, str)
-            The names of the phases involved in the linkage.
-        vars : Sequence of (str, str)
-            The paths of the variables involved in the linkage.
-        options : dict
+        linkage_options : dict
             The linkage options set during `add_linkage_constraint`.
-
-        Returns
-        -------
-
         """
         phase_name_a = linkage_options['phase_a']
         phase_name_b = linkage_options['phase_b']
@@ -698,7 +696,7 @@ class Trajectory(om.Group):
 
     def _expand_star_linkage_configure(self):
         """
-        Finds the variable pair ('*', '*') and expands it out to time and all states if found.
+        Find the variable pair ('*', '*') and expands it out to time and all states if found.
 
         Returns
         -------
@@ -730,7 +728,7 @@ class Trajectory(om.Group):
 
     def _is_valid_linkage(self, phase_name_a, phase_name_b, loc_a, loc_b, var_a, var_b, fixed_a, fixed_b):
         """
-        Validates linkage constraints.
+        Validate linkage constraints.
 
         Ensures that the posed linkage constraint can be satisfied by checking that the optimizer
         has the freedom to change the linked variable value on either side of the linkage.

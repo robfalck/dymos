@@ -228,8 +228,6 @@ class ODEEvaluationGroup(om.Group):
             else:
                 shape = options['shape']
 
-            static_target = [tgt for tgt, meta in targets.items() if 'dymos.static_target' in meta['tags']]
-
             self._ivc.add_output(var_name, shape=shape, units=units)
             self.add_design_var(var_name)
 
@@ -313,8 +311,7 @@ class ODEEvaluationGroup(om.Group):
 
     def _get_rate_source_path(self, state_var):
         """
-        Get path of the rate source variable so that we can connect it to the
-        outputs when we're done.
+        Get path of the rate source variable so that we can connect it to the outputs when we're done.
 
         Parameters
         ----------

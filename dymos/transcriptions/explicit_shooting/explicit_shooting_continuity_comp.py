@@ -46,17 +46,17 @@ class ExplicitShootingContinuityComp(ContinuityCompBase):
     def _configure_control_continuity(self, controls_to_enforce=None, control_rates_to_enforce=None,
                                       control_rates2_to_enforce=None):
         """
-        Configures control continuity.
+        Configure control continuity.
 
         Each argument contains the names of those variables which require continuity.
 
         Parameters
         ----------
-        controls : set or Sequence of str or None
+        controls_to_enforce : set or Sequence of str or None
             The names of the controls whose values are to be enforced at segment boundaries.
-        control_rates : set or Sequence of str or None
+        control_rates_to_enforce : set or Sequence of str or None
             The names of controls whose rates are to be enforced at segment boundaries.
-        control_rates2 : set or Sequence of str or None
+        control_rates2_to_enforce : set or Sequence of str or None
             The names of controls whose second derivatives are to be enforced at the segment boundaries.
         """
         control_options = self.options['control_options']
@@ -203,7 +203,7 @@ class ExplicitShootingContinuityComp(ContinuityCompBase):
     def configure_io(self, controls_to_enforce=None, control_rates_to_enforce=None,
                      control_rates2_to_enforce=None):
         """
-        Configures control continuity.
+        Configure control continuity.
 
         Each argument contains the names of those variables which require continuity.
 

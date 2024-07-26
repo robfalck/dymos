@@ -28,7 +28,8 @@ class ExplicitShooting(TranscriptionBase):
 
     .. math::
 
-    \bar{x}_{f} = \\mathcal{I}(\bar{x}_0, t_0, t_d, \bar{\theta}) = \bar{x}_{0} + \\int_{t_0}^{t_0+t_d} \\left( f_{ode}(\bar{x}, t, \bar{\theta}) \right) dt
+    \bar{x}_{f} = \\mathcal{I}(\bar{x}_0, t_0, t_d, \bar{\theta}) =
+    \bar{x}_{0} + \\int_{t_0}^{t_0+t_d} \\left( f_{ode}(\bar{x}, t, \bar{\theta}) \right) dt
 
     then the inputs are the initial states ($\bar{x}$), the initial time and duration ($t_0$ and $t_d$), and some set
     of parameters that impact the ODE ($\theta$). For Dymos, $\theta$ may include the phase parameters, or the node values
@@ -227,11 +228,9 @@ class ExplicitShooting(TranscriptionBase):
                 if tgt_shape == (1,):
                     src_idxs = None
                     flat_src_idxs = None
-                    src_shape = None
                 else:
                     src_idxs = np.zeros(self._output_grid_data.subset_num_nodes['all'])
                     flat_src_idxs = True
-                    src_shape = (1,)
 
                 phase.connect(f'{name}_val', f'ode.{name}',
                               src_indices=src_idxs,

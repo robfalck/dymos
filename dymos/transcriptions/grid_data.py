@@ -475,6 +475,7 @@ class GridData(object):
         Parameters
         ----------
         other : GridData
+            The GridData instance to which this one is being compared.
 
         Returns
         -------
