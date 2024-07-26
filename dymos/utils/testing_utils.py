@@ -132,8 +132,7 @@ def assert_cases_equal(case1, case2, tol=1.0E-12, require_same_vars=True):
 def _write_out_timeseries_values_out_of_tolerance(isclose, rel_tolerance, abs_tolerance,
                                                   t_check, x_check, x_ref):
     """
-    Helper function used to write out a table of values indicating which timeseries values
-    were out of tolerance.
+    Write out a table of values indicating which timeseries values were out of tolerance.
 
     Parameters
     ----------
@@ -160,7 +159,7 @@ def _write_out_timeseries_values_out_of_tolerance(isclose, rel_tolerance, abs_to
              f"{'checked_data':13s} | " + \
              f"{'abs_error':13s} | " + \
              f"{'rel_error':13} | " + \
-             f" ABS or REL error "
+             " ABS or REL error "
     err_msg += f"{header}\n"
     err_msg += len(header) * '-' + '\n'
 

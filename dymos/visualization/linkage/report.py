@@ -13,11 +13,12 @@ _default_linkage_report_filename = 'linkage_report.html'
 
 def _create_model_data(traj):
     """
-    Creates the model_data dictionary for the given trajectory.
+    Create the model_data dictionary for the given trajectory.
 
     Parameters
     ----------
-    traj : A dymos Trajectory object.
+    traj : Trajectory
+        The dymos Trajectory object.
 
     Returns
     -------
@@ -278,7 +279,9 @@ def _linkages_to_list(traj, model_data):
 
 
 def _conn_name_to_path(name):
-    """ Convert the full name of the connection to a format the diagram uses. """
+    """
+    Convert the full name of the connection to a format the diagram uses.
+    """
     if re.search(r'.*param_comp.parameter_vals.*|.*param_comp.parameters.*', name):
         # Special handling in case the name contains colons
         tokens = re.split(r'\.', name)
@@ -304,18 +307,24 @@ def _conn_name_to_path(name):
 
 
 def _is_param_conn(name) -> bool:
-    """ Determine if the specified connection involves a parameter. """
+    """
+    Determine if the specified connection involves a parameter.
+    """
     return re.match(r'.*param_comp\.parameters:.*', name) \
         and not re.match(r'.*param_comp\.parameter_vals:.*', name)
 
 
 def _is_ignored_conn(name) -> bool:
-    """ Determine if an connection endpoint should be ignored for this diagram. """
+    """
+    Determine if an connection endpoint should be ignored for this diagram.
+    """
     return re.match(r'.*timeseries.*', name) or re.match(r'.*_auto_ivc.*', name)
 
 
 def _var_ref_from_path(tree, path: str):
-    """ Find a reference into the tree from a path string. """
+    """
+    Find a reference into the tree from a path string.
+    """
     tokens = re.split(r'\.', path)
 
     if (len(tokens) < 2):
@@ -333,7 +342,9 @@ def _var_ref_from_path(tree, path: str):
 
 
 def _get_fixed_val(tree, path: str) -> bool:
-    """ Get the value of the fixed property for the specified path. """
+    """
+    Get the value of the fixed property for the specified path.
+    """
     ref = _var_ref_from_path(tree, path)
     fixed = False if (ref is None or 'fixed' not in ref) else ref['fixed']
 
@@ -341,7 +352,16 @@ def _get_fixed_val(tree, path: str) -> bool:
 
 
 def _parameter_connections(traj, model_data):
-    """ Find all parameter-to-parameter connections. """
+    """
+    Find all parameter-to-parameter connections.
+
+    Parameters
+    ----------
+    traj : Trajectory
+        The trajectory with the linkages structure.
+    model_data : dict
+        Data extracted from the trajectory's phases.
+    """
     allconn = traj._problem_meta['model_ref']()._conn_global_abs_in2out
     tree = model_data['tree']
     param_conns = []
@@ -363,7 +383,9 @@ def _parameter_connections(traj, model_data):
 
 
 def _display_child(child, show_all_vars):
-    """ Determine whether the object should be included in the diagram. """
+    """
+    Determine whether the object should be included in the diagram.
+    """
     if show_all_vars is True:
         return True
 
@@ -380,7 +402,9 @@ def _display_child(child, show_all_vars):
 
 
 def _convert_dicts_to_lists(tree_dict, show_all_vars):
-    """ Convert all children_by_name dicts to lists. """
+    """
+    Convert all children_by_name dicts to lists.
+    """
     if CBN in tree_dict:
         tree_dict['children'] = []
         for child in tree_dict[CBN].values():
@@ -392,8 +416,14 @@ def _convert_dicts_to_lists(tree_dict, show_all_vars):
 
 
 def _run_linkage_report(prob):
-    """ Function invoked by the reports system """
+    """
+    Generate the linkage report for each trajectory.
 
+    Parameters
+    ----------
+    prob : Problem
+        The OpenMDAO Problem under which this report is being run.
+    """
     # Find all Trajectory objects in the Problem. Usually, there's only one
     for traj in prob.model.system_iter(include_self=True, recurse=True, typ=dm.Trajectory):
         # Only create a report for a trajectory with linkages

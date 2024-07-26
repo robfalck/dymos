@@ -64,11 +64,14 @@ def _meta_tree_subsys_iter(tree, recurse=True, cls=None, path=None):
 
     Parameters
     ----------
+    tree : dict
+        A tree of metadata for a given system.
     recurse : bool
         If True, iterate over the whole tree under this system.
     cls : None, str, or Sequence
         The class of the nodes to be iterated
-    path : The absolute path of the given tree.
+    path : str or Path
+        The absolute path of the given tree.
 
     Yields
     ------
@@ -90,7 +93,8 @@ def _meta_tree_subsys_iter(tree, recurse=True, cls=None, path=None):
 
 
 def _get_model_options_from_cr(cr, syspath, run_number=None):
-    """Retrieve model options for the given system from the given case reader.
+    """
+    Retrieve model options for the given system from the given case reader.
 
     The the options for system stored in the given case reader.
     If there is more than one set of model options, this function returns the last recorded ones.
@@ -133,7 +137,8 @@ def _get_model_options_from_cr(cr, syspath, run_number=None):
 
 
 def _get_traj_and_phases_from_problem(problem, rank: int = 0):
-    """Retrieve a dictionary tree structure of all trajectories and phases in the problem.
+    """
+    Retrieve a dictionary tree structure of all trajectories and phases in the problem.
 
     Parameters
     ----------
@@ -171,7 +176,8 @@ def _get_traj_and_phases_from_problem(problem, rank: int = 0):
 
 # TODO: Enable this function when system options are correctly stored under MPI
 def _get_trajs_and_phases_from_cr(cr, problem=None):  # pragma: no cover
-    """Retrieve dictionaries of the trajectories and phases from the given case reader and problem.
+    """
+    Retrieve dictionaries of the trajectories and phases from the given case reader and problem.
 
     Due to a bug in OpenMDAO, model options may not be available from the case reader. In this case,
     use the problem to obtain them.
@@ -234,7 +240,7 @@ def _load_data_sources(traj_and_phase_meta=None, solution_record_file=None, simu
         and associated options.
     solution_record_file : str
         The path to the solution record file.
-    sim_record_file : str
+    simulation_record_file : str
         The path to the corresponding simulation record file.
 
     Returns
@@ -248,14 +254,12 @@ def _load_data_sources(traj_and_phase_meta=None, solution_record_file=None, simu
     if Path(solution_record_file).is_file():
         sol_cr = om.CaseReader(solution_record_file)
         sol_case = sol_cr.get_case('final')
-        abs2prom_map = sol_cr.problem_metadata['abs2prom']
     else:
         sol_case = None
 
     if Path(simulation_record_file).is_file():
         sim_cr = om.CaseReader(simulation_record_file)
         sim_case = sim_cr.get_case('final')
-        abs2prom_map = sim_cr.problem_metadata['abs2prom']
     else:
         sim_case = None
 
@@ -288,7 +292,6 @@ def _load_data_sources(traj_and_phase_meta=None, solution_record_file=None, simu
             sim_case = None
 
     for traj_path, traj_data in traj_and_phase_meta.items():
-        traj_params = traj_data['parameter_options']
         traj_name = traj_data['name']
         data_dict[traj_data['name']] = {'param_data_by_phase': {},
                                         'sol_data_by_phase': {},
@@ -348,7 +351,8 @@ def _load_data_sources(traj_and_phase_meta=None, solution_record_file=None, simu
 
 
 def _gather_system_options(model, sys_cls=None, rank=0):
-    """Retreive system options for systems of the given class and/or pathname.
+    """
+    Retreive system options for systems of the given class and/or pathname.
 
     Parameters
     ----------
