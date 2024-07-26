@@ -14,18 +14,18 @@ from dymos.utils.indexing import get_constraint_flat_idxs, get_src_indices_by_ro
 
 class Birkhoff(TranscriptionBase):
     """
-        Birkhoff Pseudospectral Transcription.
+    Birkhoff Pseudospectral Transcription.
 
-        Parameters
-        ----------
-        **kwargs : dict
-            Dictionary of optional arguments.
+    Parameters
+    ----------
+    **kwargs : dict
+        Dictionary of optional arguments.
 
-        References
-        ----------
-        I. M. Ross, "A Universeal Birkhoff Theory for Fast Trajectory Optimization"
-        https://arxiv.org/abs/2308.01400v2
-        """
+    References
+    ----------
+    I. M. Ross, "A Universeal Birkhoff Theory for Fast Trajectory Optimization"
+    https://arxiv.org/abs/2308.01400v2
+    """
     def __init__(self, **kwargs):
         super(Birkhoff, self).__init__(**kwargs)
         self._rhs_source = 'ode_iter_group.ode_all'
@@ -53,7 +53,7 @@ class Birkhoff(TranscriptionBase):
 
     def init_grid(self):
         """
-        Setup the GridData object for the Transcription.
+        Set up the GridData object for the Transcription.
         """
         if self.options['grid'] in ('cgl', None):
             self.grid_data = BirkhoffGrid(num_nodes=self.options['order'],
@@ -63,7 +63,7 @@ class Birkhoff(TranscriptionBase):
 
     def setup_time(self, phase):
         """
-        Setup the time component.
+        Set up the time component.
 
         Parameters
         ----------

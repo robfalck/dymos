@@ -8,7 +8,8 @@ from dymos.utils.misc import get_rate_units
 
 
 class GaussLobattoInterpComp(om.ExplicitComponent):
-    r"""Provide interpolated state values and rates for the Gauss Lobatto transcription.
+    r"""
+    Provide interpolated state values and rates for the Gauss Lobatto transcription.
 
     When the transcription is *gauss-lobatto* it accepts the state values and derivatives
     at discretization nodes and computes the interpolated state values and derivatives
@@ -21,7 +22,6 @@ class GaussLobattoInterpComp(om.ExplicitComponent):
     ----------
     **kwargs : dict
         Dictionary of optional arguments.
-
     """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -42,7 +42,9 @@ class GaussLobattoInterpComp(om.ExplicitComponent):
             desc='Units of the integration variable')
 
     def configure_io(self):
-        """I/O creation is delayed until configure so we can determine shape and units."""
+        """
+        I/O creation is delayed until configure so we can determine shape and units.
+        """
         time_units = self.options['time_units']
 
         num_disc_nodes = self.options['grid_data'].subset_num_nodes['state_disc']
@@ -143,6 +145,16 @@ class GaussLobattoInterpComp(om.ExplicitComponent):
                                   rows=Ad_rows, cols=Ad_cols)
 
     def compute(self, inputs, outputs):
+        """
+        Compute the outputs of the GaussLobattoInterpComp.
+
+        Parameters
+        ----------
+        inputs : dict[str, ArrayLike]
+            Inputs used in the calculation.
+        outputs : dict[str, ArrayLike]
+            Outputs of the calculation.
+        """
         state_options = self.options['state_options']
 
         dt_dstau = inputs['dt_dstau'][:, np.newaxis]
@@ -175,6 +187,16 @@ class GaussLobattoInterpComp(om.ExplicitComponent):
             outputs[xdotc_str] = np.reshape(col_rate, (num_col_nodes,) + shape)
 
     def compute_partials(self, inputs, partials):
+        """
+        Compute the partial derivatives of the GaussLobattoInterpComp.
+
+        Parameters
+        ----------
+        inputs : dict[str, ArrayLike]
+            Inputs used in the calculation.
+        partials : dict[tuple[str, str], ArrayLike]
+            Partials of outputs with respect to inputs.
+        """
         ndn = self.options['grid_data'].subset_num_nodes['state_disc']
 
         Ad = self._matrices['Ad']

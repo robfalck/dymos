@@ -1,4 +1,3 @@
-import builtins
 import io
 import os
 
@@ -15,7 +14,7 @@ from openmdao import __version__ as openmdao_version
 
 def assert_check_partials(data, atol=1.0E-6, rtol=1.0E-6):
     """
-    Wrapper around OpenMDAO's assert_check_partials with a dymos-specific message.
+    Wrap OpenMDAO's assert_check_partials with a dymos-specific message.
 
     Calls OpenMDAO's assert_check_partials but verifies that the dictionary of assertion data is
     not empty due to dymos.options['include_check_partials'] being False.
@@ -132,8 +131,7 @@ def assert_cases_equal(case1, case2, tol=1.0E-12, require_same_vars=True):
 def _write_out_timeseries_values_out_of_tolerance(isclose, rel_tolerance, abs_tolerance,
                                                   t_check, x_check, x_ref):
     """
-    Helper function used to write out a table of values indicating which timeseries values
-    were out of tolerance.
+    Write out a table of values indicating which timeseries values were out of tolerance.
 
     Parameters
     ----------
@@ -160,7 +158,7 @@ def _write_out_timeseries_values_out_of_tolerance(isclose, rel_tolerance, abs_to
              f"{'checked_data':13s} | " + \
              f"{'abs_error':13s} | " + \
              f"{'rel_error':13} | " + \
-             f" ABS or REL error "
+             " ABS or REL error "
     err_msg += f"{header}\n"
     err_msg += len(header) * '-' + '\n'
 
@@ -395,6 +393,21 @@ class set_env_vars(object):
             The function being wrapped.
         """
         def wrap(*args, **kwargs):
+            """
+            Provide a wrapper to the given function.
+
+            Parameters
+            ----------
+            *args : tuple
+                Positional arguments to fnc.
+            **kwargs : dict
+                Keyword arguments to fnc.
+
+            Returns
+            -------
+            Callable
+                The wrapped function.
+            """
             saved = {}
             try:
                 for k, v in self.envs.items():
@@ -416,6 +429,7 @@ class set_env_vars(object):
 class _PhaseStub():
     """
     A stand-in for the Phase during config_io for testing.
+
     It just supports the classify_var method and returns "state", the only value needed for unittests.
     """
     def __init__(self):
@@ -431,12 +445,22 @@ class SimpleODE(om.ExplicitComponent):
     A simple ODE for testing.
 
     From https://math.okstate.edu/people/yqwang/teaching/math4513_fall11/Notes/rungekutta.pdf
-    
+
+    Parameters
+    ----------
+    **kwargs : dict
+        Keyword arguments passed to ExplicitComponent.
     """
     def initialize(self):
+        """
+        Set options for SimpleODE.
+        """
         self.options.declare('num_nodes', types=(int,))
 
     def setup(self):
+        """
+        Set up IO and partials for SimpleODE.
+        """
         nn = self.options['num_nodes']
         self.add_input('x', shape=(nn,), units='s**2')
         self.add_input('t', shape=(nn,), units='s')
@@ -450,11 +474,31 @@ class SimpleODE(om.ExplicitComponent):
         self.declare_partials(of='x_dot', wrt='p', rows=ar, cols=ar, val=1.0)
 
     def compute(self, inputs, outputs):
+        """
+        Provide outputs for SimpleODE.
+
+        Parameters
+        ----------
+        inputs : ArrayLike
+            Inputs for the SimpleODE evaluation.
+        outputs : ArrayLike
+            Outputs for the SimpleODE evaluation.
+        """
         x = inputs['x']
         t = inputs['t']
         p = inputs['p']
         outputs['x_dot'] = x - t**2 + p
 
     def compute_partials(self, inputs, partials):
+        """
+        Evaluate the nonlinear partials for SimpleODE.
+
+        Parameters
+        ----------
+        inputs : ArrayLike
+            Inputs for the SimpleODE evaluation.
+        partials : dict
+            Partial derivatives for the SimpleODE evaluation.
+        """
         t = inputs['t']
         partials['x_dot', 't'] = -2*t

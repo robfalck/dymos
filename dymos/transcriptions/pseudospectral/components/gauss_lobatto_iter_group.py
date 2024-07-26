@@ -10,7 +10,8 @@ from .input_resids_comp import InputResidsComp
 
 
 class GaussLobattoIterGroup(om.Group):
-    """Class definition for the RadauIterGroup.
+    """
+    Class definition for the RadauIterGroup.
 
     This group allows for iteration of the state variables and initial _or_ final value of the state
     depending on the direction of the solve.
@@ -19,7 +20,6 @@ class GaussLobattoIterGroup(om.Group):
     ----------
     **kwargs : dict
         Dictionary of optional arguments.
-
     """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -39,7 +39,9 @@ class GaussLobattoIterGroup(om.Group):
                              desc='Keyword arguments provided when initializing the ODE System')
 
     def setup(self):
-        """Define the structure of the GaussLobattoIterGroup."""
+        """
+        Define the structure of the GaussLobattoIterGroup.
+        """
         gd = self.options['grid_data']
         ndn = gd.subset_num_nodes['state_disc']
         ncn = gd.subset_num_nodes['col']
@@ -172,13 +174,13 @@ class GaussLobattoIterGroup(om.Group):
         return implicit_outputs
 
     def configure_io(self, phase):
-        """I/O creation is delayed until configure so that we can determine shape and units for the states.
+        """
+        I/O creation is delayed until configure so that we can determine shape and units for the states.
 
         Parameters
         ----------
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
-
         """
         state_interp_comp = self._get_subsystem('state_interp')
         state_interp_comp.configure_io()
@@ -253,7 +255,8 @@ class GaussLobattoIterGroup(om.Group):
                 self.connect(f'ode_col.{rate_source}', f'f_col:{name}')
 
     def _get_rate_source_path(self, state_name, nodes, phase):
-        """Return the rate source location and indices for a given state name.
+        """
+        Return the rate source location and indices for a given state name.
 
         Parameters
         ----------
@@ -270,7 +273,6 @@ class GaussLobattoIterGroup(om.Group):
             Path to the rate source.
         ndarray
             Array of source indices.
-
         """
         gd = self.grid_data
         try:

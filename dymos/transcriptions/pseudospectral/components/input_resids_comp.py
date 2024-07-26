@@ -12,7 +12,8 @@ _om_version = tuple([int(s) for s in openmdao.__version__.split('-')[0].split('.
 
 
 class InputResidsComp(om.ImplicitComponent):
-    """Class definition for the InputResidsComp.
+    """
+    Class definition for the InputResidsComp.
 
     Uses all inputs as residuals while allowing individual outputs that are not necessarily
     associated with a specific residual.
@@ -21,7 +22,6 @@ class InputResidsComp(om.ImplicitComponent):
     ----------
     **kwargs : dict
         Dictionary of optional arguments.
-
     """
 
     def __init__(self, **kwargs):
@@ -30,7 +30,8 @@ class InputResidsComp(om.ImplicitComponent):
         self._io_pairs = []
 
     def add_input(self, name, **kwargs):
-        """Add an input to be used as a residual.
+        """
+        Add an input to be used as a residual.
 
         Parameters
         ----------
@@ -38,7 +39,6 @@ class InputResidsComp(om.ImplicitComponent):
             The name of the input providing the residuals for the given output.
         **kwargs : dict
             Additional keyword arguments for add_input and add_residual.
-
         """
         val = kwargs['val'] if 'val' in kwargs else 1.0
         shape = kwargs['shape'] if 'shape' in kwargs else None
@@ -57,7 +57,8 @@ class InputResidsComp(om.ImplicitComponent):
             self.declare_partials(of='*', wrt='*', method='fd')
 
     def apply_nonlinear(self, inputs, outputs, residuals):
-        """Compute residuals given inputs and outputs.
+        """
+        Compute residuals given inputs and outputs.
 
         The model is assumed to be in an unscaled state.
 
@@ -69,6 +70,5 @@ class InputResidsComp(om.ImplicitComponent):
             Unscaled, dimensional output variables read via outputs[key].
         residuals : Vector
             Unscaled, dimensional residuals written to via residuals[key].
-
         """
         residuals.set_val(inputs.asarray())

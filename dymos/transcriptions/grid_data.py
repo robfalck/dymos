@@ -1,4 +1,6 @@
-"""Define the GridData object and supporting API."""
+"""
+Define the GridData object and supporting API.
+"""
 import functools
 from collections.abc import Iterable
 
@@ -17,7 +19,8 @@ from dymos.utils.lgr import lgr
 def gauss_lobatto_subsets_and_nodes(n: int, seg_idx: int, *,
                                     compressed: bool=False) -> dict[str,
                                                                     npt.ArrayLike]:
-    """Provide node information and the location for n Legendre-Gauss-Lobatto nodes on the range [-1, 1].
+    """
+    Provide node information and the location for n Legendre-Gauss-Lobatto nodes on the range [-1, 1].
 
     Parameters
     ----------
@@ -47,7 +50,6 @@ def gauss_lobatto_subsets_and_nodes(n: int, seg_idx: int, *,
     -----
     Subset 'state_input' is the same as subset 'state_disc' if `compressed == False` or
     `first_seg == True`.  The same is true of subsets 'control_input' and 'control_disc'.
-
     """
     if n < 2:
         raise ValueError('The number of nodes must be larger than 1.')
@@ -71,7 +73,8 @@ def gauss_lobatto_subsets_and_nodes(n: int, seg_idx: int, *,
 def radau_pseudospectral_subsets_and_nodes(n: int, seg_idx: int, *,
                                            compressed: bool=False) -> tuple[dict[str, npt.ArrayLike],
                                                                             npt.ArrayLike]:
-    """Provide node information and location for n Radau nodes on the range [-1, 1].
+    """
+    Provide node information and location for n Radau nodes on the range [-1, 1].
 
     Parameters
     ----------
@@ -116,13 +119,13 @@ def radau_pseudospectral_subsets_and_nodes(n: int, seg_idx: int, *,
 
     return subsets, lgr(n, include_endpoint=True)[0]
 
-
 def birkhoff_subsets_and_nodes(n: int,
                                grid: str,
                                seg_idx: int,
                                *args, **kwargs) -> tuple[dict[str, npt.ArrayLike],
                                                          npt.ArrayLike]:
-    """Provide node information and the location of the nodes for n Radau nodes on the range [-1, 1].
+    """
+    Provide node information and the location of the nodes for n Radau nodes on the range [-1, 1].
 
     Parameters
     ----------
@@ -130,6 +133,9 @@ def birkhoff_subsets_and_nodes(n: int,
         The total number of nodes in the segment.
     grid : str
         The type of Gaussian grid used in the transcription.
+    seg_idx : int
+        Birkhoff transcription is intended to use a single segment. This option is only
+        provide for API compatibility with other methods.
     *args : tuple
         Anonymous positional arguments for compatibility with other subsets and nodes functions.
     **kwargs : dict
@@ -184,7 +190,8 @@ def birkhoff_subsets_and_nodes(n: int,
 
 def uniform_subsets_and_nodes(n: int, *args, **kwargs) -> tuple[dict[str, npt.ArrayLike],
                                                           npt.ArrayLike]:
-    """Provide a dict of node info and locations for a uniformly distributed set of n nodes on the range [-1, 1].
+    """
+    Provide a dict of node info and locations for a uniformly distributed set of n nodes on the range [-1, 1].
 
     This distribution is not to be used to define polynomials, since equally-spaced nodes
     result in poor polynomial fitting. Most subsets here aside from `all`, `segment_ends`, and
@@ -214,7 +221,6 @@ def uniform_subsets_and_nodes(n: int, *args, **kwargs) -> tuple[dict[str, npt.Ar
         'all' gives all node indices.
     np.array
         The location of all nodes on [-1, 1].
-
     """
     subsets = {
         'state_disc': np.empty(0, dtype=int),
@@ -230,7 +236,8 @@ def uniform_subsets_and_nodes(n: int, *args, **kwargs) -> tuple[dict[str, npt.Ar
 
 
 def make_subset_map(from_subset_idxs: Iterable[int], to_subset_idxs: Iterable[int]) -> npt.ArrayLike:
-    """Create a map from one subset to another using the indices of each subset within all nodes.
+    """
+    Create a map from one subset to another using the indices of each subset within all nodes.
 
     Parameters
     ----------
@@ -244,7 +251,6 @@ def make_subset_map(from_subset_idxs: Iterable[int], to_subset_idxs: Iterable[in
     numpy.array of int
         An index map which, when applied to values in the from_subset, will provide values
         in the to_subset.
-
     """
     offset = 0
     subset_map = []
@@ -256,7 +262,8 @@ def make_subset_map(from_subset_idxs: Iterable[int], to_subset_idxs: Iterable[in
 
 
 class GridData(object):
-    """Properties associated with the GridData of a phase.
+    """
+    Properties associated with the GridData of a phase.
 
     GridData contains properties associated
     with the "grid" or "mesh" of a phase - the number of segments, the
@@ -325,9 +332,7 @@ class GridData(object):
     input_maps: dict of int ndarray[:]
         dict keyed by the map name that provides a mapping for src_indices to
         and from "compressed" form.
-
     """
-
     def __init__(self, num_segments, transcription, transcription_order=None,
                  segment_ends=None, compressed=False, num_steps_per_segment=1):
         if segment_ends is None:
@@ -524,7 +529,7 @@ class GridData(object):
             (np.abs(self.segment_ends - other.segment_ends) <= tol).all()
 
     def phase_lagrange_matrices(self, given_set_name, eval_set_name, sparse=False):
-        """
+        r"""
         Compute the matrices mapping values at some nodes to values and derivatives at new nodes.
 
         Parameters
@@ -585,7 +590,7 @@ class GridData(object):
         return L, D
 
     def phase_hermite_matrices(self, given_set_name, eval_set_name, sparse=False):
-        """
+        r"""
         Compute the matrices mapping values at some nodes to values and derivatives at new nodes.
 
         Parameters

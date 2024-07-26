@@ -7,7 +7,8 @@ from dymos.utils.misc import get_rate_units
 
 
 class RadauDefectComp(om.ExplicitComponent):
-    """Class definiton for the Collocationcomp.
+    """
+    Class definiton for the Collocationcomp.
 
     CollocationComp computes the generalized defect of a segment for implicit collocation.
     The defect is the interpolated state derivative at the collocation nodes minus
@@ -17,7 +18,6 @@ class RadauDefectComp(om.ExplicitComponent):
     ----------
     **kwargs : dict
         Dictionary of optional arguments.
-
     """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -38,7 +38,14 @@ class RadauDefectComp(om.ExplicitComponent):
             desc='Units of time')
 
     def configure_io(self, phase):
-        """I/O creation is delayed until configure so we can determine shape and units."""
+        """
+        I/O creation is delayed until configure so we can determine shape and units.
+
+        Parameters
+        ----------
+        phase : Phase
+            The phase in which this component exists.
+        """
         gd : GridData = self.options['grid_data']
         num_segs : int = gd.num_segments
         num_nodes : int = gd.subset_num_nodes['all']
@@ -222,7 +229,6 @@ class RadauDefectComp(om.ExplicitComponent):
             `Vector` containing inputs.
         outputs : `Vector`
             `Vector` containing outputs.
-
         """
         gd : GridData = self.options['grid_data']
         num_disc_nodes : int = gd.subset_num_nodes['state_disc']
@@ -268,7 +274,6 @@ class RadauDefectComp(om.ExplicitComponent):
             Unscaled, dimensional input variables read via inputs[key].
         partials : Jacobian
             Subjac components written to partials[output_name, input_name].
-
         """
         dt_dstau = inputs['dt_dstau']
         for state_name, options in self.options['state_options'].items():

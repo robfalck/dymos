@@ -28,7 +28,6 @@ class BirkhoffDefectComp(om.ExplicitComponent):
     ----------
     **kwargs : dict
         Dictionary of optional arguments.
-
     """
 
     def __init__(self, **kwargs):
@@ -57,7 +56,6 @@ class BirkhoffDefectComp(om.ExplicitComponent):
         ----------
         phase : Phase
             The phase object that contains this collocation comp.
-
         """
         gd = self.options['grid_data']
         num_nodes = gd.subset_num_nodes['col']
@@ -276,7 +274,8 @@ class BirkhoffDefectComp(om.ExplicitComponent):
                                   rows=ar1, cols=c1)
 
     def compute(self, inputs, outputs, discrete_inputs=None, discrete_outputs=None):
-        """Compute component outputs.
+        """
+        Compute component outputs.
 
         Parameters
         ----------
@@ -288,7 +287,6 @@ class BirkhoffDefectComp(om.ExplicitComponent):
             If not None, dict containing discrete input values.
         discrete_outputs : dict or None
             If not None, dict containing discrete output values.
-
         """
         dt_dstau = np.atleast_2d(inputs['dt_dstau']).T
         num_segs = self.options['grid_data'].num_segments
@@ -321,7 +319,8 @@ class BirkhoffDefectComp(om.ExplicitComponent):
                 outputs[var_names['state_continuity_defect']] = x_ab[:-1, 1, ...] - x_ab[1:, 0, ...]
 
     def compute_partials(self, inputs, partials):
-        """Compute sub-jacobian parts. The model is assumed to be in an unscaled state.
+        """
+        Compute sub-jacobian parts. The model is assumed to be in an unscaled state.
 
         Parameters
         ----------
@@ -329,7 +328,6 @@ class BirkhoffDefectComp(om.ExplicitComponent):
             Unscaled, dimensional input variables read via inputs[key].
         partials : Jacobian
             Subjac components written to partials[output_name, input_name].
-
         """
         dt_dstau = inputs['dt_dstau']
 

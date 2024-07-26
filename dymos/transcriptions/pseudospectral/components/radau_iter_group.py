@@ -19,7 +19,6 @@ class RadauIterGroup(om.Group):
     ----------
     **kwargs : dict
         Dictionary of optional arguments.
-
     """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -39,7 +38,9 @@ class RadauIterGroup(om.Group):
                              desc='Keyword arguments provided when initializing the ODE System')
 
     def setup(self):
-        """Define the structure of the RadauIterGroup."""
+        """
+        Define the structure of the RadauIterGroup.
+        """
         gd = self.options['grid_data']
         nn = gd.subset_num_nodes['all']
         state_options = self.options['state_options']
@@ -247,7 +248,8 @@ class RadauIterGroup(om.Group):
                              src_indices=gd.subset_node_indices['col'])
 
     def _get_rate_source_path(self, state_name, nodes, phase):
-        """Return the rate source location and indices for a given state name.
+        """
+        Return the rate source location and indices for a given state name.
 
         Parameters
         ----------

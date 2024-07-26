@@ -16,7 +16,6 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
     ----------
     **kwargs : dict
         Dictionary of optional arguments.
-
     """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -37,7 +36,14 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
             desc='Units of time')
 
     def configure_io(self, phase):
-        """I/O creation is delayed until configure so we can determine shape and units."""
+        """
+        I/O creation is delayed until configure so we can determine shape and units.
+
+        Parameters
+        ----------
+        phase : Phase
+            The phase in which this component is used.
+        """
         gd : GridData = self.options['grid_data']
         num_segs : int = gd.num_segments
         num_disc_nodes : int = gd.subset_num_nodes['state_disc']
@@ -227,7 +233,6 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
             `Vector` containing inputs.
         outputs : `Vector`
             `Vector` containing outputs.
-
         """
         gd: GridData = self.options['grid_data']
         seg_end_idxs: npt.ArrayLike = gd.subset_node_indices['segment_ends']
@@ -269,7 +274,6 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
             Unscaled, dimensional input variables read via inputs[key].
         partials : Jacobian
             Subjac components written to partials[output_name, input_name].
-
         """
         dt_dstau = inputs['dt_dstau']
         for state_name, options in self.options['state_options'].items():
