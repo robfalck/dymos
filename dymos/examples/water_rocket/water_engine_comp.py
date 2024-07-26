@@ -5,7 +5,7 @@ import openmdao.api as om
 
 class WaterEngine(om.Group):
     """
-    Computes thrust and water flow for a water.
+    Compute thrust and flow rate for a water engine.
 
     Simplifications:
      - the pressure due to the water column in the non inertial frame (i.e.
@@ -13,9 +13,15 @@ class WaterEngine(om.Group):
      - the water does not have appreciable speed inside the bottle
     """
     def initialize(self):
+        """
+        Declare options for the WaterEngine group.
+        """
         self.options.declare('num_nodes', types=int)
 
     def setup(self):
+        """
+        Add subsystems to the WaterEngine group.
+        """
         nn = self.options['num_nodes']
 
         self.add_subsystem(name='water_exhaust_speed',
@@ -39,10 +45,20 @@ class WaterEngine(om.Group):
 
 
 class _WaterExhaustSpeed(om.ExplicitComponent):
+    """
+    Compute the exhaust velocity of a water engine.
+    """
+
     def initialize(self):
+        """
+        Declare options for the _WaterExhaustSpeed component.
+        """
         self.options.declare('num_nodes', types=int)
 
     def setup(self):
+        """
+        Add I/O to the _WaterExhaustSpeed component.
+        """
         nn = self.options['num_nodes']
 
         self.add_input(name='rho_w', val=1e3*np.ones(nn), desc='water density', units='kg/m**3')
@@ -56,6 +72,16 @@ class _WaterExhaustSpeed(om.ExplicitComponent):
         self.declare_partials(of='*', wrt='*', rows=ar, cols=ar)
 
     def compute(self, inputs, outputs):
+        """
+        Compute the outputs of the water exhaust speed component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        outputs : Vector
+            Outputs.
+        """
         p = inputs['p']
         p_a = inputs['p_a']
         rho_w = inputs['rho_w']
@@ -63,6 +89,16 @@ class _WaterExhaustSpeed(om.ExplicitComponent):
         outputs['v_out'] = np.sqrt(2*(p-p_a)/rho_w)
 
     def compute_partials(self, inputs, partials):
+        """
+        Compute the partial derivatives of the water exhaust speed component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        partials : Vector
+            Partial derivatives of outputs wrt the inputs..
+        """
         p = inputs['p']
         p_a = inputs['p_a']
         rho_w = inputs['rho_w']
@@ -71,15 +107,23 @@ class _WaterExhaustSpeed(om.ExplicitComponent):
 
         partials['v_out', 'p'] = 1/v_out/rho_w
         partials['v_out', 'p_a'] = -1/v_out/rho_w
-        partials['v_out', 'rho_w'] = dv_outdrho_w = 1/v_out*(-(p-p_a)/rho_w**2)
+        partials['v_out', 'rho_w'] = 1/v_out*(-(p-p_a)/rho_w**2)
 
 
 class _WaterFlowRate(om.ExplicitComponent):
-    """Computer water flow rate"""
+    """
+    Compute the volumetric flow rate of water from a water engine.
+    """
     def initialize(self):
+        """
+        Declare options for the _WaterFlowRate component.
+        """
         self.options.declare('num_nodes', types=int)
 
     def setup(self):
+        """
+        Add I/O to the _WaterFlowRate component.
+        """
         nn = self.options['num_nodes']
 
         self.add_input(name='A_out', val=np.ones(nn), desc='nozzle outlet area', units='m**2')
@@ -92,12 +136,32 @@ class _WaterFlowRate(om.ExplicitComponent):
         self.declare_partials(of='*', wrt='*', rows=ar, cols=ar)
 
     def compute(self, inputs, outputs):
+        """
+        Compute the outputs of the _WaterFlowRate component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        outputs : Vector
+            Outputs.
+        """
         A_out = inputs['A_out']
         v_out = inputs['v_out']
 
         outputs['Vdot'] = -v_out*A_out
 
     def compute_partials(self, inputs, partials):
+        """
+        Compute the partial derivatives of the _WaterFlowRate component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        partials : dict
+            Partial derivatives of outputs wrt inputs.
+        """
         A_out = inputs['A_out']
         v_out = inputs['v_out']
 
@@ -106,10 +170,19 @@ class _WaterFlowRate(om.ExplicitComponent):
 
 
 class _PressureRate(om.ExplicitComponent):
+    """
+    Compute the rate of change of pressure in a water engine.
+    """
     def initialize(self):
+        """
+        Declare options for the _PressureRate component.
+        """
         self.options.declare('num_nodes', types=int)
 
     def setup(self):
+        """
+        Add I/O to the _PressureRate component.
+        """
         nn = self.options['num_nodes']
 
         self.add_input(name='p', val=np.ones(nn), desc='air pressure', units='N/m**2')
@@ -125,6 +198,16 @@ class _PressureRate(om.ExplicitComponent):
         self.declare_partials(of='*', wrt='*', rows=ar, cols=ar)
 
     def compute(self, inputs, outputs):
+        """
+        Compute the outputs of the _PressureRate component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        outputs : Vector
+            Outputs.
+        """
         p = inputs['p']
         k = inputs['k']
         V_b = inputs['V_b']
@@ -136,6 +219,16 @@ class _PressureRate(om.ExplicitComponent):
         outputs['pdot'] = pdot
 
     def compute_partials(self, inputs, partials):
+        """
+        Compute the partial derivatives of the _PressureRate component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        partials : dict
+            Partial derivatives of outputs wrt inputs.
+        """
         p = inputs['p']
         k = inputs['k']
         V_b = inputs['V_b']
@@ -151,9 +244,15 @@ class _PressureRate(om.ExplicitComponent):
 
 class _WaterThrust(om.ExplicitComponent):
     def initialize(self):
+        """
+        Declare options for the _WaterThrust component.
+        """
         self.options.declare('num_nodes', types=int)
 
     def setup(self):
+        """
+        Add I/O to the _WaterThrust component.
+        """
         nn = self.options['num_nodes']
 
         self.add_input(name='rho_w', val=1e3*np.ones(nn), desc='water density', units='kg/m**3')
@@ -167,6 +266,16 @@ class _WaterThrust(om.ExplicitComponent):
         self.declare_partials(of='*', wrt='*', rows=ar, cols=ar)
 
     def compute(self, inputs, outputs):
+        """
+        Compute the outputs of the _WaterThrust component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        outputs : Vector
+            Outputs.
+        """
         rho_w = inputs['rho_w']
         A_out = inputs['A_out']
         v_out = inputs['v_out']
@@ -174,6 +283,16 @@ class _WaterThrust(om.ExplicitComponent):
         outputs['F'] = rho_w*v_out**2*A_out
 
     def compute_partials(self, inputs, partials):
+        """
+        Compute the partial derivatives of the _WaterThrust component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        partials : dict
+            Partial derivatives of outputs wrt inputs.
+        """
         rho_w = inputs['rho_w']
         A_out = inputs['A_out']
         v_out = inputs['v_out']

@@ -6,7 +6,9 @@ from dymos.examples.vanderpol.vanderpol_ode import VanderpolODE
 def vanderpol(transcription='gauss-lobatto', num_segments=40, transcription_order=3,
               compressed=True, optimizer='SLSQP', use_pyoptsparse=False, delay=0.0, distrib=True,
               solve_segments=False):
-    """Dymos problem definition for optimal control of a Van der Pol oscillator"""
+    """
+    Dymos problem definition for optimal control of a Van der Pol oscillator.
+    """
     # define the OpenMDAO problem
     p = om.Problem(model=om.Group())
 

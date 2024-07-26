@@ -9,13 +9,22 @@ from .water_engine_comp import WaterEngine
 
 
 class WaterPropulsionODE(om.Group):
+    """
+    The ordinary differential equations governing the water rocket example.
+    """
 
     def initialize(self):
+        """
+        Declare options for the WaterPropulsionODE Group.
+        """
         self.options.declare('num_nodes', types=int)
         self.options.declare('ballistic', types=bool, default=False,
                              desc='If True, neglect propulsion system.')
 
     def setup(self):
+        """
+        Add subsystems to the water propulsion ODE group.
+        """
         nn = self.options['num_nodes']
 
         self.add_subsystem(name='atmos',
@@ -54,9 +63,15 @@ class WaterPropulsionODE(om.Group):
 class _MassAdder(om.ExplicitComponent):
 
     def initialize(self):
+        """
+        Declare options for the _MassAdder component.
+        """
         self.options.declare('num_nodes', types=int)
 
     def setup(self):
+        """
+        Add I/O for the _MassAdder component.
+        """
         nn = self.options['num_nodes']
 
         self.add_input('m_empty', val=np.zeros(nn), desc='empty mass', units='kg')
@@ -69,9 +84,29 @@ class _MassAdder(om.ExplicitComponent):
         self.declare_partials('*', '*', cols=ar, rows=ar)
 
     def compute(self, inputs, outputs):
+        """
+        Compute the outputs of the _MassAdder component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs
+        outputs : Vector
+            Outputs
+        """
         outputs['m'] = inputs['m_empty'] + inputs['rho_w']*inputs['V_w']
 
     def compute_partials(self, inputs, jacobian):
+        """
+        Computet he partials of the _MassAdder component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        jacobian : dict
+            Partial derivatives of the outputs wrt the inputs.
+        """
         jacobian['m', 'm_empty'] = 1
         jacobian['m', 'rho_w'] = inputs['V_w']
         jacobian['m', 'V_w'] = inputs['rho_w']

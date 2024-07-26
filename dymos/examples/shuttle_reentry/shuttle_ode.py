@@ -16,9 +16,15 @@ class ShuttleODE(Group):
     """
 
     def initialize(self):
+        """
+        Declare options for the ShuttleODE group.
+        """
         self.options.declare('num_nodes', types=int)
 
     def setup(self):
+        """
+        Build the ShuttleODE group.
+        """
         nn = self.options['num_nodes']
 
         self.add_subsystem('atmosphere', subsys=Atmosphere(num_nodes=nn),

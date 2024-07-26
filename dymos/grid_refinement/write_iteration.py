@@ -1,12 +1,12 @@
 """
-Utility for storing and outputting grid refinement information at each iteration
+Utility for storing and outputting grid refinement information at each iteration.
 """
 import numpy as np
 
 
 def write_error(f, iter_number, phases, refine_results):
     """
-    Writes a summary of the current grid refinement iteration to the given stream.
+    Write a summary of the current grid refinement iteration to the given stream.
 
     Parameters
     ----------
@@ -57,7 +57,7 @@ def write_error(f, iter_number, phases, refine_results):
 
 def write_refine_iter(f, iter_number, phases, refine_results):
     """
-    Writes a summary of the current grid refinement iteration to the given stream.
+    Write a summary of the current grid refinement iteration to the given stream.
 
     Parameters
     ----------

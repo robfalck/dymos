@@ -13,9 +13,15 @@ class AerodynamicHeating(om.ExplicitComponent):
     """
 
     def initialize(self):
+        """
+        Declare partials forthe AerodynamicHeating component.
+        """
         self.options.declare('num_nodes', types=int)
 
     def setup(self):
+        """
+        Add I/O to the AerodynamicHeating component.
+        """
         nn = self.options['num_nodes']
 
         self.add_input('rho', val=np.ones(nn), desc='local density', units='slug/ft**3')
@@ -34,6 +40,16 @@ class AerodynamicHeating(om.ExplicitComponent):
         self.declare_partials('q', 'alpha', rows=partial_range, cols=partial_range)
 
     def compute(self, inputs, outputs):
+        """
+        Compute the outputs of the AerodynamicHeating component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        outputs : Vector
+            Outputs.
+        """
         rho = inputs['rho']
         v = inputs['v']
         alpha = inputs['alpha']
@@ -48,6 +64,16 @@ class AerodynamicHeating(om.ExplicitComponent):
         outputs['q'] = q_r * q_a
 
     def compute_partials(self, inputs, partials):
+        """
+        Compute the partials of the AerodynamicHeating component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        partials : dict[tuple[str, str]: ArrayLike]
+            Partial derivatives of outputs wrt inputs.
+        """
         rho = inputs['rho']
         v = inputs['v']
         alpha = inputs['alpha']

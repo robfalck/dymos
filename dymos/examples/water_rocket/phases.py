@@ -5,6 +5,19 @@ from dymos.examples.water_rocket.water_propulsion_ode import WaterPropulsionODE
 
 
 def new_propelled_ascent_phase(transcription):
+    """
+    Create a new propelled ascent phase with the given transcription.
+
+    Parameters
+    ----------
+    transcription : Transcription
+        The transcription to be used for the propelled ascent phase.
+
+    Returns
+    -------
+    Phase
+        The instantiated propelled ascent Phase.
+    """
     propelled_ascent = dm.Phase(ode_class=WaterPropulsionODE,
                                 transcription=transcription)
 
@@ -43,6 +56,19 @@ def new_propelled_ascent_phase(transcription):
 
 
 def new_ballistic_ascent_phase(transcription):
+    """
+    Create a new ballistic ascent phase with the given transcription.
+
+    Parameters
+    ----------
+    transcription : Transcription
+        The transcription to be used for the ballistic ascent phase.
+
+    Returns
+    -------
+    Phase
+        The instantiated ballistic ascent Phase.
+    """
     ballistic_ascent = dm.Phase(ode_class=WaterPropulsionODE, transcription=transcription,
                                 ode_init_kwargs={'ballistic': True})
 
@@ -69,6 +95,19 @@ def new_ballistic_ascent_phase(transcription):
 
 
 def new_descent_phase(transcription):
+    """
+    Create a new descent phase with the given transcription.
+
+    Parameters
+    ----------
+    transcription : Transcription
+        The transcription to be used for the descent phase.
+
+    Returns
+    -------
+    Phase
+        The instantiated descent Phase.
+    """
     descent = dm.Phase(ode_class=WaterPropulsionODE, transcription=transcription,
                        ode_init_kwargs={'ballistic': True})
 
@@ -94,6 +133,14 @@ def new_descent_phase(transcription):
 
 
 def new_water_rocket_trajectory(objective):
+    """
+    Create a new water rocket problem Trajectory object.
+
+    Parameters
+    ----------
+    objective : str
+        Objective to maximize. One of "height" or "range".
+    """
     tx_prop = dm.Radau(num_segments=50, order=3, compressed=True)
     tx_bal = dm.Radau(num_segments=10, order=3, compressed=True)
     tx_desc = dm.Radau(num_segments=10, order=3, compressed=True)
@@ -163,6 +210,14 @@ def new_water_rocket_trajectory(objective):
 
 
 def set_sane_initial_guesses(phases):
+    """
+    Provide reasonably good initial guesses for the water rocket problem.
+
+    Parameters
+    ----------
+    phases : dict
+        Dictionary of phase objects in the water rocket problem.
+    """
     propelled_ascent = phases['propelled_ascent']
     ballistic_ascent = phases['ballistic_ascent']
     descent = phases['descent']

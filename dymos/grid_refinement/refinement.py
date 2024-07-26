@@ -16,7 +16,7 @@ import openmdao
 
 def _refine_iter(problem, refine_iteration_limit=0, refine_method='hp', case_prefix=None, reset_iter_counts=True):
     """
-    This function performs grid refinement for a phases in which solve_segments is true.
+    Perform grid refinement for a phases in which refine_options['refine'] is True.
 
     Parameters
     ----------

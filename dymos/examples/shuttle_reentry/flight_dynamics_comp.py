@@ -13,9 +13,15 @@ class FlightDynamics(ExplicitComponent):
     """
 
     def initialize(self):
+        """
+        Declare options for the FlightDynamics component.
+        """
         self.options.declare('num_nodes', types=int)
 
     def setup(self):
+        """
+        Add I/O for the FlightDynamics component.
+        """
         nn = self.options['num_nodes']
 
         self.add_input('beta', val=np.ones(nn), desc='bank angle', units='rad')
@@ -75,6 +81,16 @@ class FlightDynamics(ExplicitComponent):
         self.declare_partials('vdot', 'h', rows=partial_range, cols=partial_range)
 
     def compute(self, inputs, outputs):
+        """
+        Compute the outputs of the FlightDynamics component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        outputs : Vector
+            Outputs.
+        """
         v = inputs['v']
         gamma = inputs['gamma']
         theta = inputs['theta']
@@ -108,6 +124,16 @@ class FlightDynamics(ExplicitComponent):
         outputs['vdot'] = -drag / m - g * s_gamma
 
     def compute_partials(self, inputs, J):
+        """
+        Compute the partial derivatives of the FlightDynamics component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        J : dict[tuple[str, str]: ArrayLike]
+            Partial derivatives.
+        """
         v = inputs['v']
         gamma = inputs['gamma']
         theta = inputs['theta']

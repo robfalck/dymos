@@ -82,9 +82,9 @@ def integration_matrix(grid):
         I_block = np.linalg.inv(D_block[:, 1:])
         I_blocks.append(I_block)
 
-    I = block_diag(*I_blocks)
+    Imat = block_diag(*I_blocks)
 
-    return I
+    return Imat
 
 
 def eval_ode_on_grid(phase, transcription):
@@ -113,8 +113,6 @@ def eval_ode_on_grid(phase, transcription):
     u_rate = {}
     u_rate2 = {}
     p = {}
-    p_rate = {}
-    p_rate2 = {}
     param = {}
     f = {}
 
@@ -142,7 +140,6 @@ def eval_ode_on_grid(phase, transcription):
     ode = p_refine.model.grid_refinement_system.ode
 
     t_name = phase.time_options['name']
-    t_phase_name = f'{t_name}_phase'
 
     t_prev = phase.get_val(f'timeseries.{t_name}', units=phase.time_options['units'])
     t_phase_prev = t_prev - t_prev[0]
@@ -273,7 +270,7 @@ def compute_state_quadratures(x_hat, f_hat, t_duration, transcription):
     gd = transcription.grid_data
 
     # Build the integration matrix which integrates state values at all nodes on the new grid.
-    I = integration_matrix(gd)
+    Imat = integration_matrix(gd)
 
     left_end_idxs = gd.subset_node_indices['segment_ends'][0::2]
     all_idxs = gd.subset_node_indices['all']
@@ -293,7 +290,7 @@ def compute_state_quadratures(x_hat, f_hat, t_duration, transcription):
         left_end_idxs_repeated = np.repeat(left_end_idxs, nnps)
         x_prime[state_name][not_left_end_idxs, ...] = \
             x_hat[state_name][left_end_idxs_repeated, ...] \
-            + dt_dstau * np.dot(I, f_hat[state_name][not_left_end_idxs, ...])
+            + dt_dstau * np.dot(Imat, f_hat[state_name][not_left_end_idxs, ...])
 
     return x_prime
 

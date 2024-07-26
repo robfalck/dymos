@@ -9,7 +9,7 @@ from ..transcriptions.grid_data import GridData
 
 class GridRefinementODESystem(om.Group):
     """
-    Defines a group that performs grid refinement on an ODE.
+    Define a group that performs grid refinement on an ODE.
 
     The Grid Refinement algorithms in Dymos use the following approach for computing
     errors in the transcription:

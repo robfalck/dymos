@@ -7,10 +7,17 @@ from openmdao.utils.mpi import MPI
 
 class VanderpolODE(om.ExplicitComponent):
     """
-    intentionally slow version of vanderpol_ode for effects of demonstrating distributed component calculations
+    An intentionally slow version of vanderpol_ode for effects of demonstrating distributed component calculations.
 
     MPI can run this component in multiple processes, distributing the calculation of derivatives.
     This code has a delay in it to simulate a longer computation. It should run faster with more processes.
+
+    Parameters
+    ----------
+    *args : tuple
+        Positional arguments passed to super.
+    **kwargs : dict
+        Keywork arguments passed to super.
     """
 
     def __init__(self, *args, **kwargs):
@@ -18,11 +25,17 @@ class VanderpolODE(om.ExplicitComponent):
         super().__init__(*args, **kwargs)
 
     def initialize(self):
+        """
+        Declare options for the VanderpolODE component.
+        """
         self.options.declare('num_nodes', types=int)
         self.options.declare('distrib', types=bool, default=False)
         self.options.declare('delay', types=(float,), default=0.0)
 
     def setup(self):
+        """
+        Set up the VanderpolODE component.
+        """
         nn = self.options['num_nodes']
         comm = self.comm
         rank = comm.rank
@@ -62,6 +75,16 @@ class VanderpolODE(om.ExplicitComponent):
         self.declare_partials(of='Jdot', wrt='u',   rows=r, cols=c)
 
     def compute(self, inputs, outputs):
+        """
+        Compute the outputs of the Vanderpol ODE.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        outputs : Vector
+            Outputs.
+        """
         # introduce slowness proportional to size of computation
         time.sleep(self.options['delay'] * self.io_size)
 
@@ -75,14 +98,31 @@ class VanderpolODE(om.ExplicitComponent):
         outputs['Jdot'] = x0**2 + x1**2 + u**2
 
     def compute_jacvec_product(self, inputs, d_inputs, d_outputs, mode):
+        """
+        Compute the "matrix-free" derivatives of this component in either forward or reverse mode.
 
-        # it's necessary to make this component matrix free because the inputs are non-distributed
-        # and the outputs are distributed, and the framework doesn't know how to populate the full
-        # nondistributed inputs on each rank in reverse mode.
+        It's necessary to make this component matrix free because the inputs are non-distributed
+        and the outputs are distributed, and the framework doesn't know how to populate the full
+        nondistributed inputs on each rank in reverse mode.
 
-        # FIXME: this delay will be applied on every call to compute_jacvec_product, which may be
-        #        more often than was originally intended before this component was converted to
-        #        matrix free (it was originally done in compute_partials).
+        TODO: This delay will be applied on every call to compute_jacvec_product, which may be
+              more often than was originally intended before this component was converted to
+              matrix free (it was originally done in compute_partials).
+
+        Parameters
+        ----------
+        inputs : The inputs to the component.
+            The inputs to the
+        d_inputs : Vector
+            In forward mode, the "tangents" to the inputs to be propagated to the outputs.
+            In reverse mode, the pertubations to the inputs reflecting changes to the outputs.
+        d_outputs : Vector
+            In forward mode, the perturbations to the outputs caused by changes to the inputs.
+            In reverse mode, the "cotangent" of the outputs to be propagated to the inputs.
+        mode : _type_
+            Either 'fwd' or 'rev', the direction through the component
+            in which the derivatives should be applied.
+        """
         time.sleep(self.options['delay'])
 
         myslice = slice(self.start_idx, self.end_idx)

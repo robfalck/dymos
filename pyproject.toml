@@ -101,3 +101,4 @@ quote-style = "single"
 "joss/*" = ["D","E","F"]  # Don't check joss
 "***/tests/*" = ["D","E","F"]  # Don't lint tests
 "***/test/*" = ["D","E","F"]  # Don't lint tests
+"***/doc/*" = ["D","E","F"]  # Don't lint tests

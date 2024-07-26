@@ -9,7 +9,7 @@ from openmdao.utils.om_warnings import issue_warning, warn_deprecation
 
 def find_phases(sys):
     """
-    Finds all instances of Dymos Phases within the given system, and returns them as a dictionary.
+    Find all instances of Dymos Phases within the given system, and returns them as a dictionary.
 
     Parameters
     ----------
@@ -33,9 +33,9 @@ def find_phases(sys):
 
 def find_trajectories(sys):
     """
-    Finds all instances of Dymos Trajectories within the given system, and returns them as a dictionary.
-    They are keyed by promoted name if use_prom_path=True, otherwise they are keyed by their
-    absolute name.
+    Find all instances of Dymos Trajectories within the given system, and return them as a dictionary.
+
+    They are keyed by promoted name if use_prom_path=True, otherwise they are keyed by their absolute name.
 
     Parameters
     ----------
@@ -59,8 +59,7 @@ def find_trajectories(sys):
 
 def load_case(problem, previous_solution, deprecation_warning=True):
     """
-    Populate a guess for the given problem involving Dymos Phases by interpolating results
-    from the previous solution.
+    Populate a guess for the given problem involving Dymos Phases by interpolating results from the previous solution.
 
     Parameters
     ----------

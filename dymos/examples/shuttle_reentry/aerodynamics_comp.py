@@ -4,7 +4,7 @@ import openmdao.api as om
 
 class Aerodynamics(om.ExplicitComponent):
     """
-    Defines the aerodynamics for the shuttle reentry problem.
+    Define the aerodynamics for the shuttle reentry problem.
 
     References
     ----------
@@ -13,9 +13,15 @@ class Aerodynamics(om.ExplicitComponent):
     """
 
     def initialize(self):
+        """
+        Declare options for the Aerodynaomics component.
+        """
         self.options.declare('num_nodes', types=int)
 
     def setup(self):
+        """
+        Add I/O to the Aerodynamics component.
+        """
         nn = self.options['num_nodes']
 
         self.add_input('alpha', val=np.ones(nn), desc='angle of attack', units='deg')
@@ -36,6 +42,16 @@ class Aerodynamics(om.ExplicitComponent):
         self.declare_partials('lift', 'rho', rows=partial_range, cols=partial_range)
 
     def compute(self, inputs, outputs):
+        """
+        Compute lift and drag for the shuttle reentry problem.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        outputs : Vector
+            Outputs.
+        """
         a_0 = -.20704
         a_1 = .029244
         b_0 = .07854
@@ -52,6 +68,16 @@ class Aerodynamics(om.ExplicitComponent):
         outputs['lift'] = .5 * c_L * S * rho * v ** 2
 
     def compute_partials(self, inputs, J):
+        """
+        Compute partial derivatives of the Aerodynamics component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        J : dict[tuple[str, str]: ArrayLike]
+            Partial derivatives.
+        """
         alpha = inputs['alpha']
         v = inputs['v']
         rho = inputs['rho']

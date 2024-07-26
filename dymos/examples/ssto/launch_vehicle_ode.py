@@ -3,8 +3,16 @@ import numpy as np
 
 
 class LaunchVehicleODE(om.ExplicitComponent):
+    """
+    A component that defines the ODE for a simple 2DOF launch vehicle optimization problem.
+
+    This component uses complex step to compute its partial derivatives.
+    """
 
     def initialize(self):
+        """
+        Declare options for the LaunchVehicleODE.
+        """
         self.options.declare('num_nodes', types=int,
                              desc='Number of nodes to be evaluated in the RHS')
 
@@ -24,6 +32,9 @@ class LaunchVehicleODE(om.ExplicitComponent):
                              desc='aerodynamic reference area (m**2)')
 
     def setup(self):
+        """
+        Add I/O to the LaunchVehicleODE component.
+        """
         nn = self.options['num_nodes']
 
         self.add_input('y',
@@ -96,7 +107,16 @@ class LaunchVehicleODE(om.ExplicitComponent):
         self.declare_coloring(wrt='*', method='cs', show_sparsity=False)
 
     def compute(self, inputs, outputs):
+        """
+        Compute outputs for the LaunchVehicleODE.
 
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        outputs : Vector
+            Outputs.
+        """
         theta = inputs['theta']
         cos_theta = np.cos(theta)
         sin_theta = np.sin(theta)

@@ -102,7 +102,7 @@ class AnalyticPhase(Phase):
                     rate_continuity_scaler=_unspecified, rate2_continuity=_unspecified,
                     rate2_continuity_scaler=_unspecified):
         """
-        Adds a dynamic control variable to be tied to a parameter in the ODE.
+        Add a dynamic control variable to be tied to a parameter in the ODE.
 
         Parameters
         ----------
@@ -276,7 +276,7 @@ class AnalyticPhase(Phase):
                                ref=_unspecified, targets=_unspecified, rate_targets=_unspecified,
                                rate2_targets=_unspecified, shape=_unspecified):
         """
-        Adds an polynomial control variable to be tied to a parameter in the ODE.
+        Add an polynomial control variable to be tied to a parameter in the ODE.
 
         Polynomial controls are defined by values at the Legendre-Gauss-Lobatto nodes of a
         single polynomial, defined on [-1, 1] in phase tau space.

@@ -22,9 +22,12 @@ def run_problem(problem, refine_method='hp', refine_iteration_limit=0, run_drive
                 plot_kwargs=None,
                 ):
     """
+    Run a problem that uses dymos trajectory or phase components, with some dymos-specific features.
+
     A Dymos-specific interface to execute an OpenMDAO problem containing Dymos Trajectories or
     Phases.  This function can iteratively call run_driver to perform grid refinement, and
-    automatically call simulate following a run to check the validity of a result.
+    automatically call simulate following a run to check the validity of a result. If `make_plots`
+    is True, then timeseries plots of the trajectory will be generated.
 
     Parameters
     ----------

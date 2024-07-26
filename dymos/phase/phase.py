@@ -203,6 +203,9 @@ class Phase(om.Group):
 
     @property
     def time_options(self):
+        """
+        Return the time options of the phase.
+        """
         return self.options['time_options']
 
     @time_options.setter
@@ -211,7 +214,7 @@ class Phase(om.Group):
 
     @property
     def integ_var_options(self):
-        """An alias for time options."""
+        """An alias for time_options."""
         return self.options['time_options']
 
     @integ_var_options.setter
@@ -220,14 +223,23 @@ class Phase(om.Group):
 
     @property
     def state_options(self):
+        """
+        Return the state options of the phase.
+        """
         return self.options['state_options']
 
     @property
     def parameter_options(self):
+        """
+        Return the parameter options of the phase.
+        """
         return self.options['parameter_options']
 
     @property
     def control_options(self):
+        """
+        Return the control options of the phase.
+        """
         return self.options['control_options']
 
     def add_state(self, name, units=_unspecified, shape=_unspecified,
@@ -499,7 +511,7 @@ class Phase(om.Group):
 
     def check_parameter(self, name):
         """
-        Checks that the parameter of the given name is valid.
+        Check that the parameter of the given name is valid.
 
         First name is checked against all existing states, controls, input parameters, and
         parameters.  If it has already been assigned to one of those, ValueError is raised.
@@ -537,7 +549,7 @@ class Phase(om.Group):
                     rate2_continuity=_unspecified, rate2_continuity_scaler=_unspecified,
                     rate2_continuity_ref=_unspecified, control_type=_unspecified):
         """
-        Adds a dynamic control variable to be tied to a parameter in the ODE.
+        Add a dynamic control variable to be tied to an input in the ODE.
 
         Parameters
         ----------
@@ -844,7 +856,7 @@ class Phase(om.Group):
                                ref=_unspecified, targets=_unspecified, rate_targets=_unspecified,
                                rate2_targets=_unspecified, shape=_unspecified):
         """
-        Adds a polynomial control variable to be tied to a parameter in the ODE.
+        Add a polynomial control variable to be tied to a parameter in the ODE.
 
         Polynomial controls are defined by values at the Legendre-Gauss-Lobatto nodes of a
         single polynomial, defined on [-1, 1] in phase tau space.
@@ -1659,7 +1671,7 @@ class Phase(om.Group):
 
     def add_timeseries(self, name, transcription, subset='all'):
         r"""
-        Adds a new timeseries output upon which outputs can be provided.
+        Add a new timeseries output upon which outputs can be provided.
 
         Parameters
         ----------
@@ -1754,7 +1766,7 @@ class Phase(om.Group):
                          time_phase_targets=_unspecified, t_initial_targets=_unspecified,
                          t_duration_targets=_unspecified, name=_unspecified):
         """
-        Sets options for time in the phase.
+        Set options for time in the phase.
 
         Only those options which are specified in the arguments will be updated.
 
@@ -2072,7 +2084,7 @@ class Phase(om.Group):
 
     def set_duration_balance(self, name, val=0.0, index=None, units=None, mult_val=None, normalize=False):
         """
-        Adds a condition for the duration of the phase. This is satisfied using a nonlinear solver.
+        Add a condition for the duration of the phase. This is satisfied using a nonlinear solver.
 
         Parameters
         ----------
@@ -2337,8 +2349,7 @@ class Phase(om.Group):
 
     def _check_parameter_options(self):
         """
-        Check that parameter options are valid and issue warnings if invalid
-        options are provided.
+        Check that parameter options are valid and issue warnings if invalid options are provided.
 
         Warns:
         -----
@@ -2554,7 +2565,6 @@ class Phase(om.Group):
         # t = deepcopy(self.options['transcription']) if transcription is None else transcription
         ode_class = self.options['ode_class']
         ode_init_kwargs = self.options['ode_init_kwargs']
-        auto_solvers = self.options['auto_solvers']
 
         self_tx = self.options['transcription']
         num_seg = self_tx.grid_data.num_segments
@@ -2635,7 +2645,7 @@ class Phase(om.Group):
 
     def initialize_values_from_phase(self, prob, from_phase, phase_path='', skip_params=None):
         """
-        Initializes values in the Phase using the phase from which it was created.
+        Initialize values in the Phase using the phase from which it was created.
 
         Parameters
         ----------
@@ -2660,8 +2670,6 @@ class Phase(om.Group):
                                                                                 out_stream=None)])
         ip_dict = dict([(name, options) for (name, options) in phs.list_inputs(units=True,
                                                                                out_stream=None)])
-
-        phs_path = phs.pathname + '.' if phs.pathname else ''
 
         if self.pathname.partition('.')[0] == self.name:
             self_path = self.name + '.'
