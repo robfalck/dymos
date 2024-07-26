@@ -24,7 +24,7 @@ from .options import ControlOptionsDictionary, ParameterOptionsDictionary, \
 
 from ..transcriptions.transcription_base import TranscriptionBase
 from ..transcriptions.grid_data import GaussLobattoGrid, RadauGrid, UniformGrid, BirkhoffGrid
-from ..transcriptions import ExplicitShooting, GaussLobatto, Radau, Birkhoff
+from ..transcriptions import ExplicitShooting, GaussLobatto, Radau
 from ..utils.indexing import get_constraint_flat_idxs
 from ..utils.introspection import configure_time_introspection, _configure_constraint_introspection, \
     configure_controls_introspection, configure_parameters_introspection, \
@@ -211,7 +211,7 @@ class Phase(om.Group):
 
     @property
     def integ_var_options(self):
-        """ An alias for time options. """
+        """An alias for time options."""
         return self.options['time_options']
 
     @integ_var_options.setter
@@ -2269,7 +2269,7 @@ class Phase(om.Group):
         """
         Check that time options are valid and issue warnings if invalid options are provided.
 
-        Warns
+        Warns:
         -----
         RuntimeWarning
             RuntimeWarning is issued in the case of one or more invalid time options.
@@ -2314,7 +2314,7 @@ class Phase(om.Group):
         """
         Check that control options are valid and issue warnings if invalid options are provided.
 
-        Warns
+        Warns:
         -----
         RuntimeWarning
             RuntimeWarning is issued in the case of one or more invalid time options.
@@ -2340,7 +2340,7 @@ class Phase(om.Group):
         Check that parameter options are valid and issue warnings if invalid
         options are provided.
 
-        Warns
+        Warns:
         -----
         RuntimeWarning
             RuntimeWarning is issued in the case of one or more invalid time options.

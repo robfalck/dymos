@@ -1,11 +1,7 @@
-from openmdao.utils.mpi import MPI
 
 from .phase import Phase
-from .._options import options as dymos_options
-from ..transcriptions.grid_data import BirkhoffGrid, GaussLobattoGrid, RadauGrid, UniformGrid
-from ..transcriptions import ExplicitShooting, GaussLobatto, Radau
+from ..transcriptions import ExplicitShooting
 
-from ..utils.misc import _unspecified
 
 
 class SimulationPhase(Phase):
@@ -249,7 +245,7 @@ class SimulationPhase(Phase):
 
         This check is not performed by SimulationPhase.
 
-        Warns
+        Warns:
         -----
         RuntimeWarning
             RuntimeWarning is issued in the case of one or more invalid time options.
@@ -262,7 +258,7 @@ class SimulationPhase(Phase):
 
         This check is not performed by SimulationPhase.
 
-        Warns
+        Warns:
         -----
         RuntimeWarning
             RuntimeWarning is issued in the case of one or more invalid time options.
@@ -275,7 +271,7 @@ class SimulationPhase(Phase):
 
         This check is not performed by SimulationPhase.
 
-        Warns
+        Warns:
         -----
         RuntimeWarning
             RuntimeWarning is issued in the case of one or more invalid time options.

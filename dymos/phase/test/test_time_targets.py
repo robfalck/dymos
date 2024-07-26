@@ -189,9 +189,9 @@ class TestPhaseTimeTargets(unittest.TestCase):
                 exp_out = p.model._get_subsystem('phase0').simulate()
 
                 time_comp = exp_out.model.phase0._get_subsystem('time')
-                integrator_comp = exp_out.model.phase0._get_subsystem(f'integrator')
-                ode = exp_out.model.phase0._get_subsystem(f'ode')
-                timeseries_comp = exp_out.model.phase0._get_subsystem(f'timeseries')
+                integrator_comp = exp_out.model.phase0._get_subsystem('integrator')
+                ode = exp_out.model.phase0._get_subsystem('ode')
+                timeseries_comp = exp_out.model.phase0._get_subsystem('timeseries')
 
                 time_comp_t_initial = time_comp.get_val('t_initial')
                 integrator_comp_t_initial = integrator_comp.get_val('t_initial')
@@ -241,9 +241,9 @@ class TestPhaseTimeTargets(unittest.TestCase):
                 exp_out = p.model.phase0.simulate()
 
                 time_comp = exp_out.model.phase0._get_subsystem('time')
-                integrator_comp = exp_out.model.phase0._get_subsystem(f'integrator')
-                ode = exp_out.model.phase0._get_subsystem(f'ode')
-                timeseries_comp = exp_out.model.phase0._get_subsystem(f'timeseries')
+                integrator_comp = exp_out.model.phase0._get_subsystem('integrator')
+                ode = exp_out.model.phase0._get_subsystem('ode')
+                timeseries_comp = exp_out.model.phase0._get_subsystem('timeseries')
 
                 time_comp_t_initial = time_comp.get_val('t_initial')
                 integrator_comp_t_initial = integrator_comp.get_val('t_initial')
@@ -329,9 +329,9 @@ class TestPhaseTimeTargets(unittest.TestCase):
         exp_out = p.model._get_subsystem('phase0').simulate()
 
         time_comp = exp_out.model.phase0._get_subsystem('time')
-        integrator_comp = exp_out.model.phase0._get_subsystem(f'integrator')
-        ode = exp_out.model.phase0._get_subsystem(f'ode')
-        timeseries_comp = exp_out.model.phase0._get_subsystem(f'timeseries')
+        integrator_comp = exp_out.model.phase0._get_subsystem('integrator')
+        ode = exp_out.model.phase0._get_subsystem('ode')
+        timeseries_comp = exp_out.model.phase0._get_subsystem('timeseries')
 
         time_comp_t_initial = time_comp.get_val('t_initial')
         integrator_comp_t_initial = integrator_comp.get_val('t_initial')
@@ -379,9 +379,9 @@ class TestPhaseTimeTargets(unittest.TestCase):
         exp_out = p.model._get_subsystem('phase0').simulate()
 
         time_comp = exp_out.model.phase0._get_subsystem('time')
-        integrator_comp = exp_out.model.phase0._get_subsystem(f'integrator')
-        ode = exp_out.model.phase0._get_subsystem(f'ode')
-        timeseries_comp = exp_out.model.phase0._get_subsystem(f'timeseries')
+        integrator_comp = exp_out.model.phase0._get_subsystem('integrator')
+        ode = exp_out.model.phase0._get_subsystem('ode')
+        timeseries_comp = exp_out.model.phase0._get_subsystem('timeseries')
 
         time_comp_t_initial = time_comp.get_val('t_initial')
         integrator_comp_t_initial = integrator_comp.get_val('t_initial')

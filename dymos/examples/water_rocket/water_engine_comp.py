@@ -75,7 +75,7 @@ class _WaterExhaustSpeed(om.ExplicitComponent):
 
 
 class _WaterFlowRate(om.ExplicitComponent):
-    """ Computer water flow rate"""
+    """Computer water flow rate"""
     def initialize(self):
         self.options.declare('num_nodes', types=int)
 

@@ -8,24 +8,24 @@ from .components import BirkhoffIterGroup, BirkhoffBoundaryGroup
 
 from ..grid_data import BirkhoffGrid
 from dymos.utils.misc import get_rate_units
-from dymos.utils.introspection import get_promoted_vars, get_source_metadata, get_targets
+from dymos.utils.introspection import get_promoted_vars, get_source_metadata
 from dymos.utils.indexing import get_constraint_flat_idxs, get_src_indices_by_row
 
 
 class Birkhoff(TranscriptionBase):
     """
-        Birkhoff Pseudospectral Transcription.
+    Birkhoff Pseudospectral Transcription.
 
-        Parameters
-        ----------
-        **kwargs : dict
-            Dictionary of optional arguments.
+    Parameters
+    ----------
+    **kwargs : dict
+        Dictionary of optional arguments.
 
-        References
-        ----------
-        I. M. Ross, "A Universeal Birkhoff Theory for Fast Trajectory Optimization"
-        https://arxiv.org/abs/2308.01400v2
-        """
+    References
+    ----------
+    I. M. Ross, "A Universeal Birkhoff Theory for Fast Trajectory Optimization"
+    https://arxiv.org/abs/2308.01400v2
+    """
     def __init__(self, **kwargs):
         super(Birkhoff, self).__init__(**kwargs)
         self._rhs_source = 'ode_iter_group.ode_all'
@@ -207,7 +207,6 @@ class Birkhoff(TranscriptionBase):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-
         ODEClass = phase.options['ode_class']
         grid_data = self.grid_data
 

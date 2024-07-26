@@ -6,8 +6,6 @@ from numpy.testing import assert_almost_equal
 import openmdao.api as om
 from openmdao.utils.testing_utils import use_tempdirs
 
-from dymos.transcriptions.grid_data import GridData
-from dymos.transcriptions.pseudospectral.components.state_independents import StateIndependentsComp
 
 # Modify class so we can run it standalone.
 import dymos as dm

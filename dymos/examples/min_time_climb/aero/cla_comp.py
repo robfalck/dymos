@@ -4,7 +4,8 @@ import openmdao.api as om
 
 
 class CLaComp(om.ExplicitComponent):
-    """ Computes the alpha lift coefficient for induced drag
+    """
+    Computes the alpha lift coefficient for induced drag
 
     """
     def initialize(self):

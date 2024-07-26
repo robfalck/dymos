@@ -5,7 +5,7 @@ from .crm_data import h_bp, alpha_bp, mach_bp, eta_bp, CL_data, CD_data, CM_data
 
 
 class AeroCoefComp(om.MetaModelStructuredComp):
-    """ Interpolates aerodynamic coefficients for the NASA Common Research Model. """
+    """Interpolates aerodynamic coefficients for the NASA Common Research Model."""
 
     def setup(self):
         nn = self.options['vec_size']

@@ -6,7 +6,8 @@ from openmdao.utils.mpi import MPI
 
 
 class VanderpolODE(om.ExplicitComponent):
-    """intentionally slow version of vanderpol_ode for effects of demonstrating distributed component calculations
+    """
+    intentionally slow version of vanderpol_ode for effects of demonstrating distributed component calculations
 
     MPI can run this component in multiple processes, distributing the calculation of derivatives.
     This code has a delay in it to simulate a longer computation. It should run faster with more processes.

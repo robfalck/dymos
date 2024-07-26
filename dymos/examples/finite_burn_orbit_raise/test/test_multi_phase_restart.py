@@ -2,7 +2,7 @@ import unittest
 import warnings
 
 import openmdao.api as om
-from openmdao.utils.assert_utils import assert_near_equal, assert_warnings, assert_no_warning
+from openmdao.utils.assert_utils import assert_near_equal
 from openmdao.utils.testing_utils import use_tempdirs, require_pyoptsparse
 from openmdao.utils.mpi import MPI, multi_proc_exception_check
 
@@ -84,11 +84,11 @@ class TestExampleTwoBurnOrbitRaiseConnected(unittest.TestCase):
             [(om.OpenMDAOWarning,
               "'traj' <class Trajectory>: Setting phases.nonlinear_solver to `om.NonlinearBlockJac(iprint=0)`.\n"
               "Connected phases in parallel require a non-default nonlinear solver.\n"
-              "Use traj.options[\'default_nonlinear_solver\'] to explicitly set the solver."),
+              "Use traj.options['default_nonlinear_solver'] to explicitly set the solver."),
              (om.OpenMDAOWarning,
               "'traj' <class Trajectory>: Setting phases.linear_solver to `om.PETScKrylov()`.\n"
               "Connected phases in parallel require a non-default linear solver.\n"
-              "Use traj.options[\'default_linear_solver\'] to explicitly set the solver.")]
+              "Use traj.options['default_linear_solver'] to explicitly set the solver.")]
 
         with warnings.catch_warnings(record=True) as w:
             p = two_burn_orbit_raise_problem(transcription='gauss-lobatto', transcription_order=3,

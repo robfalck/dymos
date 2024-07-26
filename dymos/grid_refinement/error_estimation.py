@@ -155,13 +155,13 @@ def eval_ode_on_grid(phase, transcription):
     t_initial_targets = get_targets(ode, 't_initial', phase.time_options['t_initial_targets'])
     t_duration_targets = get_targets(ode, 't_duration', phase.time_options['t_duration_targets'])
     if targets:
-        p_refine.set_val(f'time', t)
+        p_refine.set_val('time', t)
     if t_phase_targets:
-        p_refine.set_val(f't_phase', t_phase)
+        p_refine.set_val('t_phase', t_phase)
     if t_initial_targets:
-        p_refine.set_val(f't_initial', t_initial)
+        p_refine.set_val('t_initial', t_initial)
     if t_duration_targets:
-        p_refine.set_val(f't_duration', t_duration)
+        p_refine.set_val('t_duration', t_duration)
 
     state_prefix = 'states:' if phase.timeseries_options['use_prefix'] else ''
     control_prefix = 'controls:' if phase.timeseries_options['use_prefix'] else ''

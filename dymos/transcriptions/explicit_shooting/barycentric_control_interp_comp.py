@@ -30,7 +30,8 @@ def _compute_dl_dg(tau: float,
                    dl_dg: ArrayLike,
                    d2l_dg2: ArrayLike,
                    d3l_dg3: Union[ArrayLike, None] = None,):
-    """Compute the Lagrange polynomials and the first three derivatives wrt g at the nodes.
+    """
+    Compute the Lagrange polynomials and the first three derivatives wrt g at the nodes.
 
     This function achieves good performance with numba.njit (and uses a do-nothing njit decorator
     if numba is not available).
@@ -301,7 +302,6 @@ class BarycentricControlInterpComp(om.ExplicitComponent):
         """
         I/O creation is delayed until configure so we can determine shape and units for the controls.
         """
-
         # self.add_discrete_input('segment_index', val=0, desc='index of the segment')
         self.add_input('stau', shape=(1,), units=None)
         self.add_input('dstau_dt', val=1.0, units=f'1/{self._time_units}')
@@ -311,7 +311,8 @@ class BarycentricControlInterpComp(om.ExplicitComponent):
         self._configure_controls()
 
     def _compute_barycentric_weights(self, taus: ArrayLike, ptaus: dict):
-        """Computes the barycentric weights given a set of nodes.
+        """
+        Computes the barycentric weights given a set of nodes.
 
         Parameters
         ----------

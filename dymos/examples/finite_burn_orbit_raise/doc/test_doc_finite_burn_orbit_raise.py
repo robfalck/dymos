@@ -195,7 +195,7 @@ class TestFiniteBurnOrbitRaise(unittest.TestCase):
         ax_u1.grid(True)
 
         ax_deltav.set_xlabel('time ($TU$)')
-        ax_deltav.set_ylabel('${\Delta}v$ ($DU/TU$)')  # nopep8: W605
+        ax_deltav.set_ylabel(r'${\Delta}v$ ($DU/TU$)')  # nopep8: W605
         ax_deltav.grid(True)
 
         t_sol = dict((phs, p.get_val('traj.{0}.timeseries.time'.format(phs)))

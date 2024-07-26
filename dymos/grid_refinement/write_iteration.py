@@ -71,7 +71,6 @@ def write_refine_iter(f, iter_number, phases, refine_results):
         A dictionary containing the grid refinement data for each phase, keyed by the phase path
         in the model.
     """
-
     for phase_path, phase in phases.items():
         refine_data = refine_results[phase_path]
         refine_options = phase.refine_options

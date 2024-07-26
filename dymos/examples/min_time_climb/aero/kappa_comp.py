@@ -4,7 +4,8 @@ import openmdao.api as om
 
 
 class KappaComp(om.ExplicitComponent):
-    r""" Computes the term kappa in the drag equation:
+    r"""
+    Computes the term kappa in the drag equation:
 
     .. math::
 

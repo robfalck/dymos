@@ -4,7 +4,8 @@ import openmdao.api as om
 
 
 class ThrustComp(om.ExplicitComponent):
-    """ Compute thrust from the thrust coefficient
+    """
+    Compute thrust from the thrust coefficient
     """
     def initialize(self):
         self.options.declare('num_nodes', types=int)

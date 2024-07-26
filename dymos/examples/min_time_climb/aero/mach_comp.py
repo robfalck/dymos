@@ -4,7 +4,8 @@ import openmdao.api as om
 
 
 class MachComp(om.ExplicitComponent):
-    """ Compute the Mach number based on vehicle airspeed and local speed
+    """
+    Compute the Mach number based on vehicle airspeed and local speed
     of sound.
     """
     def initialize(self):

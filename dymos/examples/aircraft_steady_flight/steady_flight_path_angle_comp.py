@@ -4,7 +4,7 @@ import openmdao.api as om
 
 
 class SteadyFlightPathAngleComp(om.ExplicitComponent):
-    """ Compute the flight path angle (gamma) based on true airspeed and climb rate. """
+    """Compute the flight path angle (gamma) based on true airspeed and climb rate."""
 
     def initialize(self):
         self.options.declare('num_nodes', types=int)

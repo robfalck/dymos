@@ -51,7 +51,7 @@ def setup_surrogates_all(model_name='CRM'):
 
 
 class InterpNDAeroCoeffComp(om.ExplicitComponent):
-    """ Compute the lift, drag, and moment coefficients of the aircraft """
+    """Compute the lift, drag, and moment coefficients of the aircraft"""
     def initialize(self):
         self.options.declare('vec_size', types=int)
         self.options.declare('interpND_CL')

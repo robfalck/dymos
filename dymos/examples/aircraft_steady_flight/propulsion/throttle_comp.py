@@ -4,9 +4,10 @@ import openmdao.api as om
 
 
 class ThrottleComp(om.ExplicitComponent):
-    """ Compute 'tau' (throttle parameter) which is the ratio of the current thrust
-        (as determined to provie flight equilibrium) with the maximum thrust given
-        the current aircraft state.
+    """
+    Compute 'tau' (throttle parameter) which is the ratio of the current thrust
+    (as determined to provie flight equilibrium) with the maximum thrust given
+    the current aircraft state.
 
     """
     def initialize(self):

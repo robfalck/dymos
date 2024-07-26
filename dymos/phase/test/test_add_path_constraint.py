@@ -3,8 +3,7 @@ import unittest
 import numpy as np
 
 import openmdao.api as om
-from openmdao.utils.testing_utils import use_tempdirs, require_pyoptsparse
-from openmdao.utils.assert_utils import assert_near_equal
+from openmdao.utils.testing_utils import use_tempdirs
 
 import dymos as dm
 

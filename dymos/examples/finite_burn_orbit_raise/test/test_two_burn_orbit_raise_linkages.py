@@ -410,7 +410,7 @@ class TestTwoBurnOrbitRaiseLinkages(unittest.TestCase):
         ax_u1.grid(True)
 
         ax_deltav.set_xlabel('time ($TU$)')
-        ax_deltav.set_ylabel('${\Delta}v$ ($DU/TU$)')  # nopep8: W605
+        ax_deltav.set_ylabel(r'${\Delta}v$ ($DU/TU$)')  # nopep8: W605
         ax_deltav.grid(True)
 
         t_sol = dict((phs, p.get_val('traj.{0}.timeseries.time'.format(phs)))
@@ -455,7 +455,6 @@ class TestTwoBurnOrbitRaiseLinkages(unittest.TestCase):
     def test_two_burn_orbit_raise_link_control_to_param(self):
         import numpy as np
 
-        import matplotlib.pyplot as plt
 
         import openmdao.api as om
         from openmdao.utils.assert_utils import assert_near_equal
@@ -630,7 +629,6 @@ class TestTwoBurnOrbitRaiseLinkages(unittest.TestCase):
     def test_two_burn_orbit_raise_gl_list_add_timeseries_output(self):
         import numpy as np
 
-        import matplotlib.pyplot as plt
 
         import openmdao.api as om
         from openmdao.utils.assert_utils import assert_near_equal

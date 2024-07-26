@@ -151,8 +151,9 @@ class TestDocSSTOLinearTangentGuidance(unittest.TestCase):
                 jacobian['mdot', 'Isp'] = F_T / (g * Isp ** 2)
 
         class LinearTangentGuidanceComp(om.ExplicitComponent):
-            """ Compute pitch angle from static controls governing linear expression for
-                pitch angle tangent as function of time.
+            """
+            Compute pitch angle from static controls governing linear expression for
+            pitch angle tangent as function of time.
             """
 
             def initialize(self):

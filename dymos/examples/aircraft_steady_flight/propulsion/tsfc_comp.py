@@ -4,7 +4,8 @@ import openmdao.api as om
 
 
 class SFCComp(om.ExplicitComponent):
-    """ Compute the specific fuel consumption based on the altitude
+    """
+    Compute the specific fuel consumption based on the altitude
     and the sea-level specific fuel consumption.
     """
     def initialize(self):

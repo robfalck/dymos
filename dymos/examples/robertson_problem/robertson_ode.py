@@ -3,7 +3,8 @@ import openmdao.api as om
 
 
 class RobertsonODE(om.ExplicitComponent):
-    """example for a stiff ODE from Robertson.
+    """
+    example for a stiff ODE from Robertson.
     """
 
     def initialize(self):

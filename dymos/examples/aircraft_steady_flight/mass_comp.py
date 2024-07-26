@@ -4,7 +4,7 @@ import openmdao.api as om
 
 
 class MassComp(om.ExplicitComponent):
-    """ Compute the total mass of the aircraft """
+    """Compute the total mass of the aircraft"""
 
     def initialize(self):
         self.options.declare('num_nodes', types=int)

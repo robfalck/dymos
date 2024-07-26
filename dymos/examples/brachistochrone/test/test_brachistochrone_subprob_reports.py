@@ -1,8 +1,6 @@
 """Unit Tests for the code that does automatic report generation"""
 import unittest
-import pathlib
 import os
-from packaging.version import Version
 
 import openmdao
 import openmdao.api as om

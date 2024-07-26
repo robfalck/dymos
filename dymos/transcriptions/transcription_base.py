@@ -325,7 +325,6 @@ class TranscriptionBase(object):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-
         raise NotImplementedError(f'Transcription {self.__class__.__name__} does not implement'
                                   f' method setup_duration_balance.')
 
@@ -454,7 +453,6 @@ class TranscriptionBase(object):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-
         for ibc in phase._initial_boundary_constraints:
             con_output, constraint_kwargs = self._get_constraint_kwargs('initial', ibc, phase)
             phase.add_constraint(con_output, **constraint_kwargs)

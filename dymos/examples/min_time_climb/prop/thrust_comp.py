@@ -4,7 +4,7 @@ import openmdao.api as om
 
 
 class ThrustComp(om.ExplicitComponent):
-    """ Computes mass flow rate for the F4's 2 J79 engines at full throttle. """
+    """Computes mass flow rate for the F4's 2 J79 engines at full throttle."""
 
     def initialize(self):
         self.options.declare('num_nodes', types=int)

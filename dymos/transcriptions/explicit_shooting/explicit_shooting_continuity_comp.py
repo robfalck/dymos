@@ -59,7 +59,6 @@ class ExplicitShootingContinuityComp(ContinuityCompBase):
         control_rates2 : set or Sequence of str or None
             The names of controls whose second derivatives are to be enforced at the segment boundaries.
         """
-
         control_options = self.options['control_options']
         num_segend_nodes = self.options['grid_data'].subset_num_nodes['segment_ends']
         num_segments = self.options['grid_data'].num_segments

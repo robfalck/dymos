@@ -4,8 +4,9 @@ import openmdao.api as om
 
 
 class MaxThrustComp(om.ExplicitComponent):
-    """ Compute the maximum thrust given the current aircraft state and its
-        maximum sea-level thrust with a simple pressure correction.
+    """
+    Compute the maximum thrust given the current aircraft state and its
+    maximum sea-level thrust with a simple pressure correction.
     """
     def initialize(self):
         self.options.declare('num_nodes', types=int)

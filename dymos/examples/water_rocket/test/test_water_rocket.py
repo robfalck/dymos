@@ -176,7 +176,7 @@ def plot_states(p, exp_out):
              }
 
     for i, (state, unit) in enumerate(zip(states, units)):
-        axes[i].set_ylabel(f"{state} ({unit})" if state != 'gam' else f'$\gamma$ ({unit})')
+        axes[i].set_ylabel(f"{state} ({unit})" if state != 'gam' else rf'$\gamma$ ({unit})')
 
         axes[i].plot(time_imp['propelled_ascent'], x_imp['propelled_ascent'][state], 'ro', markerfacecolor='None')
         axes[i].plot(time_imp['ballistic_ascent'], x_imp['ballistic_ascent'][state], 'mo', markerfacecolor='None')
@@ -222,7 +222,7 @@ def plot_propelled_ascent(p, exp_out):
 
     ax[4].plot(t_imp, p.get_val('traj.propelled_ascent.timeseries.gam', 'deg'), 'ro', markerfacecolor='None')
     ax[4].plot(t_exp, exp_out.get_val('traj.propelled_ascent.timeseries.gam', 'deg'), 'r-')
-    ax[4].set_ylabel('$\gamma$ (deg)')
+    ax[4].set_ylabel(r'$\gamma$ (deg)')
     ax[4].yaxis.set_major_locator(mpl.ticker.MaxNLocator(nbins='auto', steps=[1, 1.5, 3, 4.5, 6, 9, 10]))
 
     ax[-1].set_xlabel('t (s)')

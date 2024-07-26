@@ -4,7 +4,7 @@ import openmdao.api as om
 
 
 class TrueAirspeedComp(om.ExplicitComponent):
-    """ Compute Mach number based on true airspeed and the local speed of sound. """
+    """Compute Mach number based on true airspeed and the local speed of sound."""
 
     def initialize(self):
         self.options.declare('num_nodes', types=int)

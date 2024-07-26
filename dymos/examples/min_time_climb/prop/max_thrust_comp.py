@@ -62,7 +62,7 @@ THR_DATA = {'mach': np.array([0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8],
 
 
 class MaxThrustComp(om.MetaModelStructuredComp):
-    """ Interpolates max thrust for 2 J79 jet engines. """
+    """Interpolates max thrust for 2 J79 jet engines."""
 
     def setup(self):
         nn = self.options['vec_size']

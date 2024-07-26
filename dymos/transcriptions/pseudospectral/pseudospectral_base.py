@@ -447,7 +447,6 @@ class PseudospectralBase(TranscriptionBase):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-
         if self._implicit_duration:
             duration_balance_comp = om.BalanceComp()
             phase.add_subsystem('t_duration_balance_comp', duration_balance_comp)
@@ -461,7 +460,6 @@ class PseudospectralBase(TranscriptionBase):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-
         if self._implicit_duration:
             duration_balance_comp = phase._get_subsystem('t_duration_balance_comp')
             configure_duration_balance_introspection(phase)
@@ -681,7 +679,6 @@ class PseudospectralBase(TranscriptionBase):
             Dict containing the values that need to be set in the phase
 
         """
-
         input_data = {}
         if np.isscalar(vals):
             interp_vals = vals
