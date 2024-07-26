@@ -99,5 +99,5 @@ quote-style = "single"
 "docs/*.py" = ["D","E","F","W"]  # Don't check doc helper scripts
 "benchmark/*" = ["D","E","F","W"]  # Don't check joss
 "joss/*" = ["D","E","F"]  # Don't check joss
-"***/tests/*" = ["D", "E"]  # Don't lint tests
-"***/test/*" = ["D", "E"]  # Don't lint tests
+"***/tests/*" = ["D","E","F"]  # Don't lint tests
+"***/test/*" = ["D","E","F"]  # Don't lint tests

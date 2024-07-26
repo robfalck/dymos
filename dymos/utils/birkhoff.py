@@ -4,7 +4,7 @@ import scipy.special as sp
 
 def birkhoff_matrix(tau, w, grid_type):
     """
-    Returns the pseudospectral integration matrix for a Birkhoff polynomial at the given nodes.
+    Return the pseudospectral integration matrix for a Birkhoff polynomial at the given nodes.
 
     Parameters
     ----------

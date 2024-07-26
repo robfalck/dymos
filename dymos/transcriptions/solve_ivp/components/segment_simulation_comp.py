@@ -1,6 +1,5 @@
 """
-SimulationPhase is an instance that resembles a Phase in structure but is intended for
-use with scipy.solve_ivp to verify the accuracy of the implicit solutions of Dymos.
+Provide a component to simulate a segment.
 """
 import numpy as np
 

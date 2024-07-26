@@ -1,7 +1,10 @@
-from .segment_state_mux_comp import SegmentStateMuxComp
-from .segment_simulation_comp import SegmentSimulationComp
-from .ode_integration_interface import ODEIntegrationInterface
-from .odeint_control_interpolation_comp import ODEIntControlInterpolationComp
-from .solve_ivp_control_group import SolveIVPControlGroup
-from .solve_ivp_timeseries_comp import SolveIVPTimeseriesOutputComp
-from .state_rate_collector_comp import StateRateCollectorComp
+"""
+Components used in the SolveIVP transcription.
+"""
+from .segment_state_mux_comp import SegmentStateMuxComp as SegmentStateMuxComp
+from .segment_simulation_comp import SegmentSimulationComp as SegmentSimulationComp
+from .ode_integration_interface import ODEIntegrationInterface as ODEIntegrationInterface
+from .odeint_control_interpolation_comp import ODEIntControlInterpolationComp as ODEIntControlInterpolationComp
+from .solve_ivp_control_group import SolveIVPControlGroup as SolveIVPControlGroup
+from .solve_ivp_timeseries_comp import SolveIVPTimeseriesOutputComp as SolveIVPTimeseriesOutputComp
+from .state_rate_collector_comp import StateRateCollectorComp as StateRateCollectorComp

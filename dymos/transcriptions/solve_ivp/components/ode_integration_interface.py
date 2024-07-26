@@ -71,8 +71,7 @@ class ODEIntegrationInterface(object):
 
     def _unpack_state_vec(self, x):
         """
-        Given the state vector in 1D, extract the values corresponding to
-        each state into the ode integrators problem states.
+        Extract the values corresponding to each state into the ode integrators problem states.
 
         Parameters
         ----------
@@ -121,7 +120,7 @@ class ODEIntegrationInterface(object):
 
     def setup_interpolant(self, name, x0, xf, f_j):
         """
-        Setup the values to be interpolated in an existing interpolant.
+        Set up the values to be interpolated in an existing interpolant.
 
         Parameters
         ----------
@@ -141,7 +140,7 @@ class ODEIntegrationInterface(object):
 
     def __call__(self, t, x):
         """
-        The function interface used by scipy.ode
+        Provide the function interface used by scipy.ode.
 
         Parameters
         ----------

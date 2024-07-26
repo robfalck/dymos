@@ -9,7 +9,7 @@ from ..utils.constants import INF_BOUND
 from ..utils.indexing import get_constraint_flat_idxs
 from ..utils.misc import _none_or_unspecified
 from ..utils.introspection import configure_states_introspection, get_promoted_vars, \
-    configure_states_discovery
+    configure_states_discovery, _get_targets_metadata, _get_common_metadata
 
 
 class TranscriptionBase(object):
@@ -60,13 +60,13 @@ class TranscriptionBase(object):
 
     def init_grid(self):
         """
-        Setup the GridData object for the Transcription.
+        Set up the GridData object for the Transcription.
         """
         raise NotImplementedError(f'Transcription {self.__class__.__name__} does not implement method init_grid.')
 
     def setup_time(self, phase):
         """
-        Setup up the time component and time extents for the phase.
+        Set up the time component and time extents for the phase.
 
         Parameters
         ----------
@@ -108,11 +108,8 @@ class TranscriptionBase(object):
         if time_options['units'] in _none_or_unspecified:
             if time_options['targets']:
                 ode = phase._get_subsystem(self._rhs_source)
-
-                _, time_options['units'] = get_target_metadata(ode, name='time',
-                                                               user_targets=time_options['targets'],
-                                                               user_units=time_options['units'],
-                                                               user_shape='')
+                targets = _get_targets_metadata(ode, 'time', user_targets=time_options['targets'])
+                time_options['units'] = _get_common_metadata(targets, 'units')
 
         if not (time_options['input_initial'] or time_options['fix_initial']):
             lb, ub = time_options['initial_bounds']
@@ -142,7 +139,7 @@ class TranscriptionBase(object):
 
     def setup_controls(self, phase):
         """
-        Setup the control group.
+        Set up the control group.
 
         Parameters
         ----------
@@ -189,7 +186,7 @@ class TranscriptionBase(object):
 
     def setup_parameters(self, phase):
         """
-        Sets input defaults for parameters and optionally adds design variables.
+        Set input defaults for parameters and optionally adds design variables.
 
         Parameters
         ----------
@@ -241,7 +238,7 @@ class TranscriptionBase(object):
 
     def setup_states(self, phase):
         """
-        Setup the states for this transcription.
+        Set up the states for this transcription.
 
         Parameters
         ----------
@@ -307,7 +304,7 @@ class TranscriptionBase(object):
 
     def setup_ode(self, phase):
         """
-        Setup the ode for this transcription.
+        Set up the ode for this transcription.
 
         Parameters
         ----------
@@ -318,7 +315,7 @@ class TranscriptionBase(object):
 
     def setup_duration_balance(self, phase):
         """
-        Setup the implicit computation of the phase duration.
+        Set up the implicit computation of the phase duration.
 
         Parameters
         ----------
@@ -342,7 +339,7 @@ class TranscriptionBase(object):
 
     def setup_solvers(self, phase):
         """
-        Setup the solvers for this transcription.
+        Set up the solvers for this transcription.
 
         Parameters
         ----------
@@ -401,7 +398,7 @@ class TranscriptionBase(object):
 
     def setup_timeseries_outputs(self, phase):
         """
-        Setup the timeseries for this transcription.
+        Set up the timeseries for this transcription.
 
         Parameters
         ----------
@@ -443,7 +440,7 @@ class TranscriptionBase(object):
 
     def configure_boundary_constraints(self, phase):
         """
-        Configures the boundary constraints.
+        Configure the boundary constraints.
 
         Adds BoundaryConstraintComp for initial and/or final boundary constraints if necessary
         and issues appropriate connections.
@@ -609,7 +606,7 @@ class TranscriptionBase(object):
 
         Parameters
         ----------
-        var : str
+        name : str
             Name of the variable to be used as the objective.
         loc : str
             The location of the objective in the phase ['initial', 'final'].
@@ -638,7 +635,7 @@ class TranscriptionBase(object):
 
     def _get_ode(self, phase):
         """
-        Returns an instance of the ODE used in the phase that can be interrogated for IO metadata.
+        Return an instance of the ODE used in the phase that can be interrogated for IO metadata.
 
         Parameters
         ----------
@@ -655,7 +652,7 @@ class TranscriptionBase(object):
 
     def get_parameter_connections(self, name, phase):
         """
-        Returns info about a parameter's target connections in the phase.
+        Return info about a parameter's target connections in the phase.
 
         Parameters
         ----------
@@ -708,7 +705,7 @@ class TranscriptionBase(object):
 
     def _requires_continuity_constraints(self, phase):
         """
-        Tests whether state and/or control and/or control rate continuity are required.
+        Test whether state and/or control and/or control rate continuity are required.
 
         Parameters
         ----------
@@ -729,8 +726,7 @@ class TranscriptionBase(object):
 
     def _phase_set_state_val(self, phase, name, vals, times, interpolation_kind):
         """
-        Method to interpolate the provided input and return the variables that need to be set
-        along with their appropriate value.
+        Interpolate the provided input and return the variables that need to be set along with their appropriate value.
 
         Parameters
         ----------
@@ -761,7 +757,7 @@ class TranscriptionBase(object):
 
     def _get_num_timeseries_nodes(self):
         """
-        Returns the number of nodes in the default timeseries for this transcription.
+        Return the number of nodes in the default timeseries for this transcription.
 
         Returns
         -------

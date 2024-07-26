@@ -2942,7 +2942,7 @@ class Phase(om.Group):
 
     def _indices_in_constraints(self, name, loc):
         """
-        Returns a set of the C-order flattened indices involving constraint of the given name at the given loc.
+        Return a set of the C-order flattened indices involving constraint of the given name at the given loc.
 
         Parameters
         ----------

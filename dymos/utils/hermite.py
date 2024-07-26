@@ -2,7 +2,7 @@ import numpy as np
 
 
 def hermite_matrices(x_given, x_eval):
-    """
+    r"""
     Return matrices for a Hermite polynomial at the given nodes.
 
     This includes interpolation matrices (A_i and B_i) and differentiation matrices (A_d and B_d).
@@ -68,7 +68,7 @@ def hermite_matrices(x_given, x_eval):
 
 def heriwi(tau, taus):
     """
-    Computes the weights for computing the values of polynomial with hermite interpolation.
+    Compute the weights for computing the values of polynomial with hermite interpolation.
 
     Based off of the ACM211 algorithm.
 
@@ -106,7 +106,7 @@ def heriwi(tau, taus):
 
 def heriwd(tau, taus):
     """
-    Computes the weights for computing the derivatives of a polynomial with hermite interpolation.
+    Compute the weights for computing the derivatives of a polynomial with hermite interpolation.
 
     Based off of the ACM211 algorithm
 

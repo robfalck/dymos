@@ -30,7 +30,7 @@ class BirkhoffStateResidComp(om.ImplicitComponent):
 
     def add_residual_from_input(self, name, **kwargs):
         """
-        Adds a residual whose value is given by resid_input.
+        Add a residual whose value is given by resid_input.
 
         Parameters
         ----------

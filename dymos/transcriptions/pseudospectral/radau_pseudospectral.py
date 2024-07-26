@@ -31,7 +31,7 @@ class Radau(PseudospectralBase):
 
     def init_grid(self):
         """
-        Setup the GridData object for the Transcription.
+        Set up the GridData object for the Transcription.
         """
         self.grid_data = GridData(num_segments=self.options['num_segments'],
                                   transcription='radau-ps',
@@ -111,7 +111,7 @@ class Radau(PseudospectralBase):
 
     def setup_ode(self, phase):
         """
-        Setup the ode for this transcription.
+        Set up the ode for this transcription.
 
         Parameters
         ----------
@@ -411,7 +411,7 @@ class Radau(PseudospectralBase):
 
     def get_parameter_connections(self, name, phase):
         """
-        Returns info about a parameter's target connections in the phase.
+        Return info about a parameter's target connections in the phase.
 
         Parameters
         ----------
@@ -445,7 +445,7 @@ class Radau(PseudospectralBase):
 
     def _requires_continuity_constraints(self, phase):
         """
-        Tests whether state and/or control and/or control rate continuity are required.
+        Test whether state and/or control and/or control rate continuity are required.
 
         Parameters
         ----------

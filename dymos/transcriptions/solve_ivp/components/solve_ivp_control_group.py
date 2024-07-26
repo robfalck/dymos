@@ -9,7 +9,7 @@ from ....utils.lagrange import lagrange_matrices
 
 
 class SolveIVPControlInterpComp(om.ExplicitComponent):
-    """
+    r"""
     Class definition for SolveIVPControlInterpComp.
 
     Compute the approximated control values and rates given the values of a control at output nodes

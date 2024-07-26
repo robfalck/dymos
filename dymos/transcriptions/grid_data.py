@@ -13,7 +13,7 @@ from dymos.utils.lagrange import lagrange_matrices
 
 def gauss_lobatto_subsets_and_nodes(n, seg_idx, compressed=False):
     """
-    Provides node information and the location of the nodes for n Legendre-Gauss-Lobatto nodes on the range [-1, 1].
+    Provide node information and the location of the nodes for n Legendre-Gauss-Lobatto nodes on the range [-1, 1].
 
     Parameters
     ----------
@@ -65,7 +65,7 @@ def gauss_lobatto_subsets_and_nodes(n, seg_idx, compressed=False):
 
 def radau_pseudospectral_subsets_and_nodes(n, seg_idx, compressed=False):
     """
-    Provides node information and the location of the nodes for n Radau nodes on the range [-1, 1].
+    Provide node information and the location of the nodes for n Radau nodes on the range [-1, 1].
 
     Parameters
     ----------
@@ -113,7 +113,7 @@ def radau_pseudospectral_subsets_and_nodes(n, seg_idx, compressed=False):
 
 def birkhoff_subsets_and_nodes(n, grid, seg_idx, compressed=False):
     """
-    Provides node information and the location of the nodes for n Radau nodes on the range [-1, 1].
+    Provide node information and the location of the nodes for n Radau nodes on the range [-1, 1].
 
     Parameters
     ----------
@@ -175,7 +175,7 @@ def birkhoff_subsets_and_nodes(n, grid, seg_idx, compressed=False):
 
 def uniform_subsets_and_nodes(n, *args, **kwargs):
     """
-    Provides a dict of node info and locations for a uniformly distributed set of n nodes on the range [-1, 1].
+    Provide a dict of node info and locations for a uniformly distributed set of n nodes on the range [-1, 1].
 
     This distribution is not to be used to define polynomials, since equally-spaced nodes
     result in poor polynomial fitting. Most subsets here aside from `all`, `segment_ends`, and
@@ -221,7 +221,7 @@ def uniform_subsets_and_nodes(n, *args, **kwargs):
 
 def make_subset_map(from_subset_idxs, to_subset_idxs):
     """
-    Creates a map from one subset to another using the indices of each subset within all nodes.
+    Create a map from one subset to another using the indices of each subset within all nodes.
 
     Parameters
     ----------
@@ -513,7 +513,7 @@ class GridData(object):
             (np.abs(self.segment_ends - other.segment_ends) <= tol).all()
 
     def phase_lagrange_matrices(self, given_set_name, eval_set_name, sparse=False):
-        """
+        r"""
         Compute the matrices mapping values at some nodes to values and derivatives at new nodes.
 
         Parameters
@@ -574,7 +574,7 @@ class GridData(object):
         return L, D
 
     def phase_hermite_matrices(self, given_set_name, eval_set_name, sparse=False):
-        """
+        r"""
         Compute the matrices mapping values at some nodes to values and derivatives at new nodes.
 
         Parameters

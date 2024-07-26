@@ -1,5 +1,5 @@
 """
-This module houses constants that are used throughout dymos
+Constants that are used throughout dymos.
 
 Attributes
 ----------

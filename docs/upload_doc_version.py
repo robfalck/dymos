@@ -50,8 +50,7 @@ def get_commit_info():
 
 def get_doc_version():
     """
-    Returns either a git commit ID, or a X.Y.Z release number,
-    and an indicator if this is a release or not
+    Return either a git commit ID, or a X.Y.Z release number, and an indicator if this is a release or not
     """
     release_tag, release_commit = get_tag_info()
 

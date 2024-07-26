@@ -3,7 +3,7 @@ import numpy as np
 
 def lgr(n, include_endpoint=False, tol=1.0E-15):
     """
-    Returns the Legendre-Gauss-Radau nodes and weights for a Jacobi Polynomial with n abscissae.
+    Return the Legendre-Gauss-Radau nodes and weights for a Jacobi Polynomial with n abscissae.
 
     Parameters
     ----------

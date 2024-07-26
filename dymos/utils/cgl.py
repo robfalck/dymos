@@ -6,7 +6,7 @@ _cgl_cache = {}
 
 def clenshaw_curtis(n):
     """
-    Returns the Chebyshev-Gauss-Lobatto nodes and weights for a Jacobi Polynomial with n abscissae.
+    Return the Chebyshev-Gauss-Lobatto nodes and weights for a Jacobi Polynomial with n abscissae.
 
     The nodes are on the range [-1, 1].
 
@@ -48,7 +48,7 @@ def clenshaw_curtis(n):
 
 def _cgl(n):
     """
-    Returns the Chebyshev-Gauss-Lobatto nodes and weights for a Jacobi Polynomial with n abscissae.
+    Return the Chebyshev-Gauss-Lobatto nodes and weights for a Jacobi Polynomial with n abscissae.
 
     The nodes are on the range [-1, 1].
 

@@ -7,7 +7,8 @@ from .components import SegmentSimulationComp, SegmentStateMuxComp, \
     SolveIVPControlGroup, SolveIVPTimeseriesOutputComp
 from ..common import TimeComp, TimeseriesOutputGroup
 from ...utils.misc import get_rate_units
-from ...utils.introspection import get_promoted_vars, get_targets, get_source_metadata
+from ...utils.introspection import get_promoted_vars, get_targets, get_source_metadata, \
+    _get_targets_metadata, _get_common_metadata
 from ...utils.indexing import get_src_indices_by_row
 
 
@@ -52,13 +53,13 @@ class SolveIVP(TranscriptionBase):
 
     def init_grid(self):
         """
-        Setup the GridData object for the Transcription.
+        Set up the GridData object for the Transcription.
         """
         pass
 
     def setup_time(self, phase):
         """
-        Setup the time component.
+        Set up the time component.
 
         Parameters
         ----------
@@ -139,10 +140,10 @@ class SolveIVP(TranscriptionBase):
         for name, targets, dynamic in [('t_initial', options['t_initial_targets'], False),
                                        ('t_duration', options['t_duration_targets'], False)]:
 
-            shape, units, static_target = get_target_metadata(ode, name=name,
-                                                              user_targets=targets,
-                                                              user_units=options['units'],
-                                                              user_shape=(1,))
+            targets = _get_targets_metadata(ode, 'time', user_targets=options['targets'])
+            options['units'] = _get_common_metadata(targets, 'units')
+            shape = _get_common_metadata(targets, 'shape')
+
             if shape == (1,):
                 src_idxs = None
                 flat_src_idxs = None
@@ -164,7 +165,7 @@ class SolveIVP(TranscriptionBase):
 
     def setup_states(self, phase):
         """
-        Setup the states for this transcription.
+        Set up the states for this transcription.
 
         Parameters
         ----------
@@ -223,7 +224,7 @@ class SolveIVP(TranscriptionBase):
 
     def setup_ode(self, phase):
         """
-        Setup the ode for this transcription.
+        Set up the ode for this transcription.
 
         Parameters
         ----------
@@ -286,7 +287,7 @@ class SolveIVP(TranscriptionBase):
 
     def setup_controls(self, phase):
         """
-        Setup the control group.
+        Set up the control group.
 
         Parameters
         ----------
@@ -447,7 +448,7 @@ class SolveIVP(TranscriptionBase):
 
     def setup_timeseries_outputs(self, phase):
         """
-        Setup the timeseries for this transcription.
+        Set up the timeseries for this transcription.
 
         Parameters
         ----------
@@ -478,7 +479,7 @@ class SolveIVP(TranscriptionBase):
 
     def get_parameter_connections(self, name, phase):
         """
-        Returns info about a parameter's target connections in the phase.
+        Return info about a parameter's target connections in the phase.
 
         Parameters
         ----------
@@ -615,7 +616,7 @@ class SolveIVP(TranscriptionBase):
 
     def _get_num_timeseries_nodes(self):
         """
-        Returns the number of nodes in the default timeseries for this transcription.
+        Return the number of nodes in the default timeseries for this transcription.
 
         Returns
         -------

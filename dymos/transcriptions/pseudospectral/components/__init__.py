@@ -1,8 +1,11 @@
-from .collocation_comp import CollocationComp
-from .state_interp_comp import StateInterpComp
-from .state_independents import StateIndependentsComp
-from .control_endpoint_defect_comp import ControlEndpointDefectComp
-from .gauss_lobatto_interleave_comp import GaussLobattoInterleaveComp
-from .birkhoff_collocation_comp import BirkhoffCollocationComp
-from .birkhoff_iter_group import BirkhoffIterGroup
-from .birkhoff_boundary_group import BirkhoffBoundaryGroup
+"""
+Definitions for components common to the pseudospectral transcirptions.
+"""
+from .collocation_comp import CollocationComp as CollocationComp
+from .state_interp_comp import StateInterpComp as StateInterpComp
+from .state_independents import StateIndependentsComp as StateIndependentsComp
+from .control_endpoint_defect_comp import ControlEndpointDefectComp as ControlEndpointDefectComp
+from .gauss_lobatto_interleave_comp import GaussLobattoInterleaveComp as GaussLobattoInterleaveComp
+from .birkhoff_collocation_comp import BirkhoffCollocationComp as BirkhoffCollocationComp
+from .birkhoff_iter_group import BirkhoffIterGroup as BirkhoffIterGroup
+from .birkhoff_boundary_group import BirkhoffBoundaryGroup as BirkhoffBoundaryGroup

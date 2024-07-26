@@ -79,7 +79,7 @@ def climb_ode(rho, S, CD0, CL0, CL_max, alpha_max, h_w, AR, e, span, T, m, v, h,
 
 def wrap_ode_func(num_nodes, flight_mode, grad_method='jax', jax_jit=True):
     """
-    Returns the metadata from omf needed to create a new ExplciitFuncComp.
+    Return the metadata from omf needed to create a new ExplciitFuncComp.
     """
     nn = num_nodes
     ode_func = runway_ode if flight_mode == 'runway' else climb_ode

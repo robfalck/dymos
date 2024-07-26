@@ -14,7 +14,7 @@ from openmdao import __version__ as openmdao_version
 
 def assert_check_partials(data, atol=1.0E-6, rtol=1.0E-6):
     """
-    Wrapper around OpenMDAO's assert_check_partials with a dymos-specific message.
+    Wrap OpenMDAO's assert_check_partials with a dymos-specific message.
 
     Calls OpenMDAO's assert_check_partials but verifies that the dictionary of assertion data is
     not empty due to dymos.options['include_check_partials'] being False.

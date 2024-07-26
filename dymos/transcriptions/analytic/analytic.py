@@ -26,7 +26,7 @@ class Analytic(TranscriptionBase):
 
     def init_grid(self):
         """
-        Setup the GridData object for the Transcription.
+        Set up the GridData object for the Transcription.
         """
         self.grid_data = GridData(num_segments=1,
                                   transcription='gauss-lobatto',
@@ -36,7 +36,7 @@ class Analytic(TranscriptionBase):
 
     def setup_time(self, phase):
         """
-        Setup the time component.
+        Set up the time component.
 
         Parameters
         ----------
@@ -106,7 +106,7 @@ class Analytic(TranscriptionBase):
 
     def setup_controls(self, phase):
         """
-        Setup the inputs/outputs for the controls.
+        Set up the inputs/outputs for the controls.
 
         Parameters
         ----------
@@ -128,7 +128,7 @@ class Analytic(TranscriptionBase):
 
     def setup_polynomial_controls(self, phase):
         """
-        Setup the inputs/outputs for the controls.
+        Set up the inputs/outputs for the controls.
 
         Parameters
         ----------
@@ -139,7 +139,7 @@ class Analytic(TranscriptionBase):
 
     def setup_states(self, phase):
         """
-        Setup the states for this transcription.
+        Set up the states for this transcription.
 
         Parameters
         ----------
@@ -198,7 +198,7 @@ class Analytic(TranscriptionBase):
 
     def setup_ode(self, phase):
         """
-        Setup the ode for this transcription.
+        Set up the ode for this transcription.
 
         Parameters
         ----------
@@ -226,7 +226,7 @@ class Analytic(TranscriptionBase):
 
     def setup_defects(self, phase):
         """
-        Setup the defects for this transcription. The AnalyticTranscription has no defect constraints.
+        Set up the defects for this transcription. The AnalyticTranscription has no defect constraints.
 
         Parameters
         ----------
@@ -237,7 +237,7 @@ class Analytic(TranscriptionBase):
 
     def setup_duration_balance(self, phase):
         """
-        Setup the implicit computation of the phase duration.
+        Set up the implicit computation of the phase duration.
 
         Parameters
         ----------
@@ -259,7 +259,7 @@ class Analytic(TranscriptionBase):
 
     def setup_solvers(self, phase):
         """
-        Setup the solvers for this transcription.
+        Set up the solvers for this transcription.
 
         Parameters
         ----------
@@ -281,7 +281,7 @@ class Analytic(TranscriptionBase):
 
     def setup_timeseries_outputs(self, phase):
         """
-        Setup the timeseries for this transcription.
+        Set up the timeseries for this transcription.
 
         Parameters
         ----------
@@ -392,7 +392,7 @@ class Analytic(TranscriptionBase):
 
     def get_parameter_connections(self, name, phase):
         """
-        Returns info about a parameter's target connections in the phase.
+        Return info about a parameter's target connections in the phase.
 
         Parameters
         ----------
@@ -427,7 +427,7 @@ class Analytic(TranscriptionBase):
 
     def _requires_continuity_constraints(self, phase):
         """
-        Tests whether state and/or control and/or control rate continuity are required.
+        Test whether state and/or control and/or control rate continuity are required.
 
         Parameters
         ----------
@@ -457,7 +457,7 @@ class Analytic(TranscriptionBase):
 
     def _get_num_timeseries_nodes(self):
         """
-        Returns the number of nodes in the default timeseries for this transcription.
+        Return the number of nodes in the default timeseries for this transcription.
 
         Returns
         -------
@@ -510,7 +510,6 @@ class Analytic(TranscriptionBase):
             constraint_path = 't_phase'
         elif var_type == 'state':
             constraint_path = f'{self._rhs_source}.{var}'
-            src_path = phase.state_options[var]['source']
             meta = get_source_metadata(ode_outputs, var, user_units=None, user_shape=None)
             shape = meta['shape']
             units = meta['units']

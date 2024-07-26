@@ -32,7 +32,7 @@ class GaussLobatto(PseudospectralBase):
 
     def init_grid(self):
         """
-        Setup the GridData object for the Transcription.
+        Set up the GridData object for the Transcription.
         """
         num_segments = self.options['num_segments']
 
@@ -127,7 +127,6 @@ class GaussLobatto(PseudospectralBase):
             The phase object to which this transcription instance applies.
         """
         super(GaussLobatto, self).configure_controls(phase)
-        ode_inputs = get_promoted_vars(self._get_ode(phase), 'input')
 
         grid_data = self.grid_data
 
@@ -177,7 +176,7 @@ class GaussLobatto(PseudospectralBase):
 
     def setup_ode(self, phase):
         """
-        Setup the ode for this transcription.
+        Set up the ode for this transcription.
 
         Parameters
         ----------
@@ -386,7 +385,6 @@ class GaussLobatto(PseudospectralBase):
         except RuntimeError:
             raise ValueError(f"state '{state_name}' in phase '{phase.name}' was not given a rate_source")
         var_type = phase.classify_var(var)
-        time_name = phase.time_options['name']
 
         # Determine the path to the variable
         if var_type == 't':
@@ -553,7 +551,7 @@ class GaussLobatto(PseudospectralBase):
 
     def get_parameter_connections(self, name, phase):
         """
-        Returns info about a parameter's target connections in the phase.
+        Return info about a parameter's target connections in the phase.
 
         Parameters
         ----------
@@ -601,7 +599,7 @@ class GaussLobatto(PseudospectralBase):
 
     def _requires_continuity_constraints(self, phase):
         """
-        Tests whether state and/or control and/or control rate continuity are required.
+        Test whether state and/or control and/or control rate continuity are required.
 
         Parameters
         ----------

@@ -171,7 +171,7 @@ class ODEIntegrationInterfaceSystem(om.Group):
 
     def setup_interpolant(self, name, x0, xf, f_j):
         """
-        Setup the values to be interpolated in an existing interpolant.
+        Set up the values to be interpolated in an existing interpolant.
 
         Parameters
         ----------

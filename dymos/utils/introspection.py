@@ -79,7 +79,7 @@ def classify_var(var, time_options, state_options, parameter_options, control_op
 
 def get_promoted_vars(ode, iotypes, metadata_keys=None, get_remote=True):
     """
-    Returns a dictionary mapping the promoted names of all inputs in a system to their associated metadata.
+    Return a dictionary mapping the promoted names of all inputs in a system to their associated metadata.
 
     Parameters
     ----------
@@ -471,7 +471,7 @@ def configure_time_introspection(time_options, ode):
 def configure_states_introspection(state_options, time_options, control_options, parameter_options,
                                    ode):
     """
-    Modifies state options in-place, automatically determining 'targets', 'units', and 'shape' if necessary.
+    Modify state options in-place, automatically determining 'targets', 'units', and 'shape' if necessary.
 
     The precedence rules for the state shape and units are as follows:
     1. If the user has specified units and shape in the state options, use those.
@@ -573,7 +573,7 @@ def configure_states_introspection(state_options, time_options, control_options,
 
 def configure_analytic_states_introspection(state_options, ode):
     """
-    Modifies state options in-place, automatically determining 'targets', 'units', and 'shape' if necessary.
+    Modify state options in-place, automatically determining 'targets', 'units', and 'shape' if necessary.
 
     The precedence rules for the state shape and units are as follows:
     1. If the user has specified units and shape in the state options, use those.
@@ -612,7 +612,7 @@ def configure_analytic_states_introspection(state_options, ode):
 
 def configure_states_discovery(state_options, ode):
     """
-    Searches phase output metadata for any declared states and adds them.
+    Search phase output metadata for any declared states and adds them.
 
     Parameters
     ----------
@@ -669,7 +669,7 @@ def configure_states_discovery(state_options, ode):
 
 def configure_analytic_states_discovery(state_options, ode):
     """
-    Searches phase output metadata for any declared states and adds them.
+    Search phase output metadata for any declared states and adds them.
 
     Parameters
     ----------
@@ -781,7 +781,6 @@ def configure_timeseries_output_introspection(phase):
         not_found = set()
 
         for output_name, output_options in ts_opts['outputs'].items():
-            name = output_options['name']
             if output_options['is_expr']:
                 output_meta = phase.timeseries_ec_vars[ts_name][output_name]['meta_data']
             else:
@@ -1104,9 +1103,9 @@ def _get_targets_metadata(ode, name, user_targets=_unspecified):
 
 def _get_common_metadata(targets, metadata_key):
     """
-    Given a dictionary containing targets and their metadata, return the value associated
-    with the given metadata key if that value is common to all targets, otherwise raise an
-    Exception.
+    Return the value associated with the given metadata key if that value is common to all targets.
+
+    If targets do not share the same value for metadata key, raise an Exception.
 
     Parameters
     ----------

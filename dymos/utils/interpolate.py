@@ -2,7 +2,7 @@ import numpy as np
 
 
 class LagrangeBarycentricInterpolant(object):
-    """
+    r"""
     Class definition for LagrangeBarycentricInterpolant.
 
     Interpolates values and first derivatives of set of data using barycentric interpolation of a
@@ -105,8 +105,8 @@ class LagrangeBarycentricInterpolant(object):
         self._is_setup = False
 
     def x_to_tau(self, x):
-        """
-        Converts the independent variable x to its corresponding value of $\tau$.
+        r"""
+        Convert the independent variable x to its corresponding value of $\tau$.
 
         Given bounds on the independent variable x0 and xf which
         correspond to $\tau$ of -1 and 1, respectively, the returned value
@@ -128,7 +128,7 @@ class LagrangeBarycentricInterpolant(object):
         return -1.0 + (x - self.x0) / self.dx_dtau
 
     def setup(self, x0, xf, f_j):
-        """
+        r"""
         Prepare the interpolant for use by setting the values to be interpolated.
 
         Parameters
@@ -179,7 +179,7 @@ class LagrangeBarycentricInterpolant(object):
         tau = self.x_to_tau(x)
 
         g = tau - self.tau_i
-        l = np.ones_like(g)
+        l = np.ones_like(g)  # noqa: E741
 
         for i in range(self.num_nodes):
             for j in range(self.num_nodes):

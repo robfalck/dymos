@@ -27,7 +27,7 @@ def _get_phases_node_in_problem_metadata(node, path=""):
     Returns
     -------
     tuple of a list and a string
-        Returns the node and path name to the node, if found. Otherwise, returns (None, None).
+        Return the node and path name to the node, if found. Otherwise, returns (None, None).
     """
     for item in node:
         if item['name'] == 'phases':
@@ -289,7 +289,7 @@ except ImportError:
         """
         Wrap the given image for display as an html file.
 
-        Returns an html syntax string that can be written to a file.
+        Return an html syntax string that can be written to a file.
 
         Parameters
         ----------
