@@ -3,18 +3,26 @@ import openmdao.api as om
 
 
 class RobotArmODE(om.ExplicitComponent):
+    """
+    The ODE governing the robot arm problem.
+    """
 
     def initialize(self):
+        """
+        Declare options for the RobotArmODE component.
+        """
         self.options.declare('num_nodes', types=int)
         self.options.declare('arm_length', types=float, default=5.0)
 
     def setup(self):
+        """
+        Set up the RobotArmODE component.
+        """
         nn = self.options['num_nodes']
         L = self.options['arm_length']
 
         # inputs: 6 states and 3 controls
         self.add_input(name='x0', val=np.ones(nn), desc='distance the arm protrudes from the pivot', units='m')
-        self.add_input(name='x1', val=np.ones(nn), desc='horizontal angle of the arm', units='rad')
         self.add_input(name='x2', val=np.ones(nn), desc='vertical angle of the arm', units='rad')
         self.add_input(name='x3', val=np.ones(nn), desc='rate of change of arm protrusion', units='m/s')
         self.add_input(name='x4', val=np.ones(nn), desc='horizontal angular velocity', units='rad/s')
@@ -54,10 +62,19 @@ class RobotArmODE(om.ExplicitComponent):
         self.declare_partials(of='x5_dot', wrt='u2', rows=r, cols=c)
 
     def compute(self, inputs, outputs):
+        """
+        Compute the outputs.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        outputs : Vector
+            Outputs.
+        """
         L = self.options['arm_length']
 
         x0 = inputs['x0']
-        x1 = inputs['x1']
         x2 = inputs['x2']
         x3 = inputs['x3']
         x4 = inputs['x4']
@@ -75,6 +92,16 @@ class RobotArmODE(om.ExplicitComponent):
         outputs['x5_dot'] = 3*u2/((L - x0)**3 + x0**3)
 
     def compute_partials(self, inputs, partials):
+        """
+        Compute the partial derivatives.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        partials : dict[tuple[str, str]: ArrayLike]
+            Partial derivatives.
+        """
         L = self.options['arm_length']
 
         x0 = inputs['x0']

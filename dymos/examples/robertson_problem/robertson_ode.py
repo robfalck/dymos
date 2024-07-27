@@ -4,13 +4,19 @@ import openmdao.api as om
 
 class RobertsonODE(om.ExplicitComponent):
     """
-    example for a stiff ODE from Robertson.
+    Example of a stiff ODE from Robertson.
     """
 
     def initialize(self):
+        """
+        Declare the options for the RobertsonODE Component.
+        """
         self.options.declare('num_nodes', types=int)
 
     def setup(self):
+        """
+        Set up the Robertson ODE component.
+        """
         nn = self.options['num_nodes']
 
         # input: state
@@ -27,6 +33,16 @@ class RobertsonODE(om.ExplicitComponent):
         self.declare_partials(of='*', wrt='*', method='exact', rows=r, cols=r)
 
     def compute(self, inputs, outputs):
+        """
+        Compute the outputs of the RobertsonODE component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        outputs : Vector
+            Outputs.
+        """
         x = inputs['x']
         y = inputs['y']
         z = inputs['z']
@@ -40,7 +56,16 @@ class RobertsonODE(om.ExplicitComponent):
         outputs['zdot'] = zdot
 
     def compute_partials(self, inputs, jacobian):
-        x = inputs['x']
+        """
+        Compute partial derivatives of the Robertson ODE component.
+
+        Parameters
+        ----------
+        inputs : Vector
+            Inputs.
+        jacobian : dict[tuple[str, str]: ArrayLike]
+            Partial derivatives.
+        """
         y = inputs['y']
         z = inputs['z']
 
