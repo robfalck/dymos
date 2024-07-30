@@ -120,7 +120,7 @@ class RadauDefectComp(om.ExplicitComponent):
                 desc=f'Interior defects of state {state_name}',
                 units=units)
 
-            if not gd.compressed:
+            if gd.num_segments > 1 and not gd.compressed:
                 self.add_output(
                     name=var_names['cnty_defect'],
                     shape=(num_segs - 1,) + shape,
@@ -158,7 +158,7 @@ class RadauDefectComp(om.ExplicitComponent):
                                     equals=0.0,
                                     ref=defect_ref)
 
-                if not gd.compressed:
+                if gd.num_segments > 1 and not gd.compressed:
                     self.add_constraint(name=var_names['cnty_defect'],
                                         equals=0.0,
                                         ref=defect_ref)
@@ -212,7 +212,7 @@ class RadauDefectComp(om.ExplicitComponent):
                                   wrt=var_names['final_val'],
                                   rows=ar_size, cols=ar_size, val=1.0)
 
-            if not gd.compressed:
+            if gd.num_segments > 1 and not gd.compressed:
                 rs = np.repeat(np.arange(num_segs - 1, dtype=int), 2)
                 cs = gd.subset_node_indices['segment_ends'][1:-1]
                 val = np.tile([-1., 1.], num_segs-1)
@@ -261,7 +261,7 @@ class RadauDefectComp(om.ExplicitComponent):
             outputs[var_names['initial_defect']] = x_0 - x[0, ...]
             outputs[var_names['final_defect']] = x_f - x[-1, ...]
 
-            if not gd.compressed:
+            if gd.num_segments > 1 and not gd.compressed:
                 outputs[var_names['cnty_defect']] = x[idxs_se[2::2], ...] - x[idxs_se[1:-2:2], ...]
 
     def compute_partials(self, inputs, partials):

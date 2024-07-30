@@ -176,20 +176,23 @@ class RadauIterGroup(om.Group):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-        # state_interp_comp = self._get_subsystem('state_interp')
-        # state_interp_comp.configure_io()
-
         defect_comp = self._get_subsystem('defects')
         defect_comp.configure_io(phase)
 
         gd = self.options['grid_data']
+        nn = gd.subset_num_nodes['all']
         nin = gd.subset_num_nodes['state_input']
         ncn = gd.subset_num_nodes['col']
         ns = gd.num_segments
         state_src_idxs = gd.input_maps['state_input_to_disc']
+        col_idxs = gd.subset_node_indices['col']
 
         state_options = self.options['state_options']
         states_resids_comp = self._get_subsystem('states_resids_comp')
+
+        self.promotes('defects', inputs=('dt_dstau',),
+                        src_indices=om.slicer[col_idxs, ...],
+                        src_shape=(nn,))
 
         for name, options in state_options.items():
             units = options['units']
@@ -198,18 +201,18 @@ class RadauIterGroup(om.Group):
 
             for tgt in options['targets']:
                 self.promotes('ode_all', [(tgt, f'states:{name}')],
-                              src_indices=om.slicer[state_src_idxs, ...])
+                              src_indices=om.slicer[state_src_idxs, ...],
+                              src_shape=(nin,) + shape)
+                self.set_input_defaults(f'states:{name}', val=1.0, units=units, src_shape=(nin,) + shape)
 
             self.promotes('defects', inputs=(f'states:{name}',),
                           src_indices=om.slicer[state_src_idxs, ...])
 
-            self.set_input_defaults(f'states:{name}',
-                                    val=1.0, units=units,
-                                    src_shape=(nin,) + shape)
+            # self.set_input_defaults(f'states:{name}',
+            #                         val=1.0, units=units,
+            #                         src_shape=(nin,) + shape)
 
             self._implicit_outputs = self._configure_desvars(name, options)
-
-            # self.connect(f'state_interp.staterate_col:{name}', f'f_approx:{name}')
 
             if f'states:{name}' in self._implicit_outputs:
                 states_resids_comp.add_output(f'states:{name}',

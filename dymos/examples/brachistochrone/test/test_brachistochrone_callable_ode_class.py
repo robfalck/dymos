@@ -8,7 +8,7 @@ from openmdao.utils.assert_utils import assert_near_equal
 import dymos as dm
 
 
-@use_tempdirs
+# @use_tempdirs
 class TestBrachExecCompODE(unittest.TestCase):
 
     @require_pyoptsparse(optimizer='SLSQP')
@@ -19,7 +19,13 @@ class TestBrachExecCompODE(unittest.TestCase):
         p = om.Problem(model=om.Group())
 
         p.driver = om.pyOptSparseDriver()
-        p.driver.options['optimizer'] = optimizer
+        p.driver.options['optimizer'] = 'IPOPT'
+        p.driver.opt_settings['print_level'] = 5
+        p.driver.opt_settings['derivative_test'] = 'first-order'
+        p.driver.opt_settings['max_iter'] = 500
+        # p.driver.options['optimizer'] = 'SNOPT'
+        # p.driver.opt_settings['iSumm'] = 6
+        # p.driver.opt_settings['Verify level'] = 3
         p.driver.declare_coloring(tol=1.0E-12)
 
         if transcription == 'gauss-lobatto':
@@ -27,13 +33,15 @@ class TestBrachExecCompODE(unittest.TestCase):
                                 order=transcription_order,
                                 compressed=compressed)
         elif transcription == 'radau-ps':
-            t = dm.Radau(num_segments=num_segments,
-                         order=transcription_order,
+            t = dm.Radau(num_segments=1,
+                         order=9,
                          compressed=compressed)
         elif transcription == 'birkhoff':
             grid = dm.BirkhoffGrid(num_nodes=transcription_order+1,
                                    grid_type='cgl')
             t = dm.Birkhoff(grid=grid)
+        elif transcription == 'radau-new':
+            t = dm.RadauNew(num_segments=1, nodes_per_seg=10, compressed=compressed)
 
         def ode(num_nodes):
             return om.ExecComp(['vdot = g * cos(theta)',
@@ -88,7 +96,7 @@ class TestBrachExecCompODE(unittest.TestCase):
         phase.set_control_val('theta', [5, 100])
         phase.set_parameter_val('g', 9.80665)
 
-        dm.run_problem(p, run_driver=run_driver, simulate=True)
+        dm.run_problem(p, run_driver=True, simulate=False)
 
         return p
 
@@ -128,6 +136,9 @@ class TestBrachExecCompODE(unittest.TestCase):
 
     def test_ex_brachistochrone_radau_uncompressed(self):
         self._make_problem(transcription='radau-ps', compressed=False)
+        self.run_asserts()
+    def test_ex_brachistochrone_radau_new_uncompressed(self):
+        self._make_problem(transcription='radau-new', compressed=False)
         self.run_asserts()
 
     def test_ex_brachistochrone_gl_uncompressed(self):
@@ -307,26 +318,26 @@ class TestBrachCallableODE(unittest.TestCase):
 
         return p
 
-    def run_asserts(self):
+    def run_asserts(self, p):
 
-        for db in ['dymos_solution.db', 'dymos_simulation.db']:
-            p = om.CaseReader(db).get_case('final')
+        for db in [p.get_outputs_dir() / 'dymos_solution.db', p.get_outputs_dir() /'dymos_simulation.db']:
+            case = om.CaseReader(db).get_case('final')
 
-            t_initial = p.get_val('traj0.phase0.timeseries.time')[0]
-            tf = p.get_val('traj0.phase0.timeseries.time')[-1]
+            t_initial = case.get_val('traj0.phase0.timeseries.time')[0]
+            tf = case.get_val('traj0.phase0.timeseries.time')[-1]
 
-            x0 = p.get_val('traj0.phase0.timeseries.x')[0]
-            xf = p.get_val('traj0.phase0.timeseries.x')[-1]
+            x0 = case.get_val('traj0.phase0.timeseries.x')[0]
+            xf = case.get_val('traj0.phase0.timeseries.x')[-1]
 
-            y0 = p.get_val('traj0.phase0.timeseries.y')[0]
-            yf = p.get_val('traj0.phase0.timeseries.y')[-1]
+            y0 = case.get_val('traj0.phase0.timeseries.y')[0]
+            yf = case.get_val('traj0.phase0.timeseries.y')[-1]
 
-            v0 = p.get_val('traj0.phase0.timeseries.v')[0]
-            vf = p.get_val('traj0.phase0.timeseries.v')[-1]
+            v0 = case.get_val('traj0.phase0.timeseries.v')[0]
+            vf = case.get_val('traj0.phase0.timeseries.v')[-1]
 
-            g = p.get_val('traj0.phase0.parameter_vals:g')[0]
+            g = case.get_val('traj0.phase0.parameter_vals:g')[0]
 
-            thetaf = p.get_val('traj0.phase0.timeseries.theta')[-1]
+            thetaf = case.get_val('traj0.phase0.timeseries.theta')[-1]
 
             assert_near_equal(t_initial, 0.0)
             assert_near_equal(x0, 0.0)
@@ -342,8 +353,8 @@ class TestBrachCallableODE(unittest.TestCase):
             assert_near_equal(thetaf, 100.12, tolerance=0.01)
 
     def test_ex_brachistochrone_radau_uncompressed(self):
-        self._make_problem(transcription='radau-ps', compressed=False)
-        self.run_asserts()
+        prob = self._make_problem(transcription='radau-ps', compressed=False)
+        self.run_asserts(prob)
 
     def test_in_series(self):
         self._make_problem(transcription='gauss-lobatto', compressed=False)
