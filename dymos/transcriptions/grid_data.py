@@ -689,7 +689,7 @@ class GaussLobattoGrid(GridData):
         to the appropriate indices.
     """
     def __init__(self, num_segments, nodes_per_seg, segment_ends=None, compressed=False):
-        if nodes_per_seg % 2 == 0:
+        if np.any(nodes_per_seg % 2 == 0):
             raise ValueError(f'nodes_per_seg ({nodes_per_seg}) must be odd for GaussLobattoGrid')
         super().__init__(num_segments=num_segments, transcription='gauss-lobatto',
                          transcription_order=np.asarray(nodes_per_seg, dtype=int),
