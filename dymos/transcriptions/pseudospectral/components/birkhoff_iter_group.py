@@ -54,8 +54,8 @@ class BirkhoffIterGroup(om.Group):
 
         self.add_subsystem('defects',
                            subsys=BirkhoffDefectComp(grid_data=gd,
-                                                          state_options=state_options,
-                                                          time_units=time_options['units']),
+                                                     state_options=state_options,
+                                                     time_units=time_options['units']),
                            promotes_inputs=['*'], promotes_outputs=['*'])
 
         if any([opts['solve_segments'] in ('forward', 'backward') for opts in state_options.values()]):
@@ -206,23 +206,23 @@ class BirkhoffIterGroup(om.Group):
 
             if f'states:{name}' in self._implicit_outputs:
                 states_resids_comp.add_output(f'states:{name}',
-                                               shape=(nn,) + shape,
-                                               units=units)
+                                              shape=(nn,) + shape,
+                                              units=units)
 
                 states_resids_comp.add_input(f'state_defects:{name}',
-                                              shape=(nn+ns,) + shape,
-                                              units=units)
+                                             shape=(nn+ns,) + shape,
+                                             units=units)
 
                 if ns > 1:
                     states_resids_comp.add_input(f'state_cnty_defects:{name}',
-                                                  shape=(ns - 1,) + shape,
-                                                  units=units)
+                                                 shape=(ns - 1,) + shape,
+                                                 units=units)
 
             if f'state_rates:{name}' in self._implicit_outputs:
                 states_resids_comp.add_output(f'state_rates:{name}', shape=(nn,) + shape, units=units)
                 states_resids_comp.add_input(f'state_rate_defects:{name}',
-                                              shape=(nn,) + shape,
-                                              units=units)
+                                             shape=(nn,) + shape,
+                                             units=units)
 
             if f'initial_states:{name}' in self._implicit_outputs:
                 states_resids_comp.add_output(f'initial_states:{name}', shape=(1,) + shape, units=units)

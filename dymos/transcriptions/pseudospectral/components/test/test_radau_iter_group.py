@@ -44,9 +44,9 @@ class TestRadauIterGroup(unittest.TestCase):
 
                         p = om.Problem()
                         p.model.add_subsystem('radau', RadauIterGroup(state_options=state_options,
-                                                                    time_options=time_options,
-                                                                    grid_data=grid_data,
-                                                                    ode_class=ode_class))
+                                                                      time_options=time_options,
+                                                                      grid_data=grid_data,
+                                                                      ode_class=ode_class))
 
                         radau = p.model._get_subsystem('radau')
 
@@ -63,18 +63,18 @@ class TestRadauIterGroup(unittest.TestCase):
                         # Each segment is of the same length, so dt_dstau is constant.
                         # dt_dstau is (tf - t0) / 2.0 / num_seg
                         p.set_val('radau.dt_dstau', (times[-1] / 2.0 / grid_data.num_segments))
-                        
+
                         if direction == 'forward':
                             p.set_val('radau.initial_states:x', 0.5)
                         else:
                             p.set_val('radau.final_states:x', solution[-1])
-                            
+
                         p.set_val('radau.states:x', 0.0)
                         p.set_val('radau.ode_all.t', times)
                         p.set_val('radau.ode_all.p', 1.0)
 
                         p.run_model()
-                        
+
                         x = p.get_val('radau.states:x')
                         x_0 = p.get_val('radau.initial_states:x')
                         x_f = p.get_val('radau.final_states:x')

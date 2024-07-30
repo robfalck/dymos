@@ -14,7 +14,7 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
 
     Parameters
     ----------
-    **kwargs : dict
+    **kwargs: dict
         Dictionary of optional arguments.
     """
     def __init__(self, **kwargs):
@@ -41,16 +41,16 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
 
         Parameters
         ----------
-        phase : Phase
+        phase: Phase
             The phase in which this component is used.
         """
-        gd : GridData = self.options['grid_data']
-        num_segs : int = gd.num_segments
-        num_disc_nodes : int = gd.subset_num_nodes['state_disc']
-        num_col_nodes : int = gd.subset_num_nodes['col']
+        gd: GridData = self.options['grid_data']
+        num_segs: int = gd.num_segments
+        num_disc_nodes: int = gd.subset_num_nodes['state_disc']
+        num_col_nodes: int = gd.subset_num_nodes['col']
         seg_end_idxs = gd.subset_node_indices['segment_ends']
         state_disc_idxs = gd.subset_node_indices['state_disc']
-        time_units : str = self.options['time_units']
+        time_units: str = self.options['time_units']
         state_options = self.options['state_options']
 
         self._seg_end_idxs_in_disc = np.where(np.isin(state_disc_idxs, seg_end_idxs))[0]
@@ -229,9 +229,9 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
 
         Parameters
         ----------
-        inputs : `Vector`
+        inputs: `Vector`
             `Vector` containing inputs.
-        outputs : `Vector`
+        outputs: `Vector`
             `Vector` containing outputs.
         """
         gd: GridData = self.options['grid_data']
@@ -239,7 +239,7 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
         state_disc_idxs: npt.ArrayLike = gd.subset_node_indices['state_disc']
 
         state_options = self.options['state_options']
-        dt_dstau : np.ndarray = inputs['dt_dstau']
+        dt_dstau: np.ndarray = inputs['dt_dstau']
 
         for state_name, state_options in state_options.items():
             shape = state_options['shape']
@@ -261,8 +261,9 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
             outputs[var_names['final_defect']] = x_f - x_d[-1, ...]
 
             if not gd.compressed:
-                outputs[var_names['cnty_defect']] =(x_d[self._seg_end_idxs_in_disc[2::2], ...] -
-                                                    x_d[self._seg_end_idxs_in_disc[1:-2:2], ...])
+                seg_end_vals = x_d[self._seg_end_idxs_in_disc[2::2], ...]
+                seg_start_vals = x_d[self._seg_end_idxs_in_disc[1:-2:2], ...]
+                outputs[var_names['cnty_defect']] = (seg_end_vals - seg_start_vals)
 
     def compute_partials(self, inputs, partials):
         """
@@ -270,9 +271,9 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
 
         Parameters
         ----------
-        inputs : Vector
+        inputs: Vector
             Unscaled, dimensional input variables read via inputs[key].
-        partials : Jacobian
+        partials: Jacobian
             Subjac components written to partials[output_name, input_name].
         """
         dt_dstau = inputs['dt_dstau']

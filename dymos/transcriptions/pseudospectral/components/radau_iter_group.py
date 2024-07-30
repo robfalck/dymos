@@ -213,18 +213,17 @@ class RadauIterGroup(om.Group):
 
             if f'states:{name}' in self._implicit_outputs:
                 states_resids_comp.add_output(f'states:{name}',
-                                               shape=(nin,) + shape,
-                                               units=units)
+                                              shape=(nin,) + shape,
+                                              units=units)
 
                 states_resids_comp.add_input(f'initial_state_defects:{name}', shape=(1,) + shape, units=units)
                 states_resids_comp.add_input(f'final_state_defects:{name}', shape=(1,) + shape, units=units)
                 states_resids_comp.add_input(f'state_rate_defects:{name}', shape=(ncn,) + shape, units=units)
 
-
                 if ns > 1 and not gd.compressed:
                     states_resids_comp.add_input(f'state_cnty_defects:{name}',
-                                                  shape=(ns - 1,) + shape,
-                                                  units=units)
+                                                 shape=(ns - 1,) + shape,
+                                                 units=units)
 
             if f'initial_states:{name}' in self._implicit_outputs:
                 # states_resids_comp.add_input(f'initial_state_defects:{name}', shape=(1,) + shape, units=units)

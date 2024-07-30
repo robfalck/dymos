@@ -46,11 +46,11 @@ class RadauDefectComp(om.ExplicitComponent):
         phase : Phase
             The phase in which this component exists.
         """
-        gd : GridData = self.options['grid_data']
-        num_segs : int = gd.num_segments
-        num_nodes : int = gd.subset_num_nodes['all']
-        num_col_nodes : int = gd.subset_num_nodes['col']
-        time_units : str = self.options['time_units']
+        gd: GridData = self.options['grid_data']
+        num_segs: int = gd.num_segments
+        num_nodes: int = gd.subset_num_nodes['all']
+        num_col_nodes: int = gd.subset_num_nodes['col']
+        time_units: str = self.options['time_units']
         state_options = self.options['state_options']
 
         # The radau differentiation matrix
@@ -230,13 +230,13 @@ class RadauDefectComp(om.ExplicitComponent):
         outputs : `Vector`
             `Vector` containing outputs.
         """
-        gd : GridData = self.options['grid_data']
-        num_disc_nodes : int = gd.subset_num_nodes['state_disc']
-        num_col_nodes : int = gd.subset_num_nodes['col']
-        idxs_se : int = gd.subset_node_indices['segment_ends']
+        gd: GridData = self.options['grid_data']
+        num_disc_nodes: int = gd.subset_num_nodes['state_disc']
+        num_col_nodes: int = gd.subset_num_nodes['col']
+        idxs_se: int = gd.subset_node_indices['segment_ends']
 
         state_options = self.options['state_options']
-        dt_dstau : np.ndarray = inputs['dt_dstau']
+        dt_dstau: np.ndarray = inputs['dt_dstau']
         D = self._D
 
         for state_name, state_options in state_options.items():

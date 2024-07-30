@@ -17,8 +17,7 @@ from dymos.utils.lgr import lgr
 
 
 def gauss_lobatto_subsets_and_nodes(n: int, seg_idx: int, *,
-                                    compressed: bool=False) -> dict[str,
-                                                                    npt.ArrayLike]:
+                                    compressed: bool = False) -> dict[str, npt.ArrayLike]:
     """
     Provide node information and the location for n Legendre-Gauss-Lobatto nodes on the range [-1, 1].
 
@@ -71,18 +70,18 @@ def gauss_lobatto_subsets_and_nodes(n: int, seg_idx: int, *,
 
 
 def radau_pseudospectral_subsets_and_nodes(n: int, seg_idx: int, *,
-                                           compressed: bool=False) -> tuple[dict[str, npt.ArrayLike],
-                                                                            npt.ArrayLike]:
+                                           compressed: bool = False) -> tuple[dict[str, npt.ArrayLike],
+                                                                              npt.ArrayLike]:
     """
     Provide node information and location for n Radau nodes on the range [-1, 1].
 
     Parameters
     ----------
-    n : int
+    n: int
         The total number of nodes in the Radau Pseudospectral segment (including right endpoint).
-    seg_idx : int
+    seg_idx: int
         The index of this segment within its phase.
-    compressed : bool
+    compressed: bool
         True if the subset requested is for a phase with compressed transcription.
 
     Returns
@@ -118,6 +117,7 @@ def radau_pseudospectral_subsets_and_nodes(n: int, seg_idx: int, *,
     }
 
     return subsets, lgr(n, include_endpoint=True)[0]
+
 
 def birkhoff_subsets_and_nodes(n: int,
                                grid: str,
@@ -189,7 +189,7 @@ def birkhoff_subsets_and_nodes(n: int,
 
 
 def uniform_subsets_and_nodes(n: int, *args, **kwargs) -> tuple[dict[str, npt.ArrayLike],
-                                                          npt.ArrayLike]:
+                                                                npt.ArrayLike]:
     """
     Provide a dict of node info and locations for a uniformly distributed set of n nodes on the range [-1, 1].
 

@@ -111,8 +111,8 @@ class GaussLobattoInterpComp(om.ExplicitComponent):
                 # Each jacobian matrix has a form that is defined by the Kronecker product
                 # of the interpolation matrix eye(size).
                 self._jacs[key][name] = sp.kron(sp.csr_matrix(self._matrices[key]),
-                                               sp.eye(size, format='csr'),
-                                               format='csr')
+                                                sp.eye(size, format='csr'),
+                                                format='csr')
 
             self._sizes[name] = size
 
@@ -130,15 +130,15 @@ class GaussLobattoInterpComp(om.ExplicitComponent):
 
             Ai_rows, Ai_cols, data = sp.find(self._jacs['Ai'][name])
             self.declare_partials(of=self.xc_str[name], wrt=self.xd_str[name],
-                                    rows=Ai_rows, cols=Ai_cols, val=data)
+                                  rows=Ai_rows, cols=Ai_cols, val=data)
 
             Bi_rows, Bi_cols = self._jacs['Bi'][name].nonzero()
             self.declare_partials(of=self.xc_str[name], wrt=self.fd_str[name],
-                                    rows=Bi_rows, cols=Bi_cols)
+                                  rows=Bi_rows, cols=Bi_cols)
 
             Bd_rows, Bd_cols, data = sp.find(self._jacs['Bd'][name])
             self.declare_partials(of=self.xdotc_str[name], wrt=self.fd_str[name],
-                                    rows=Bd_rows, cols=Bd_cols, val=data)
+                                  rows=Bd_rows, cols=Bd_cols, val=data)
 
             Ad_rows, Ad_cols = self._jacs['Ad'][name].nonzero()
             self.declare_partials(of=self.xdotc_str[name], wrt=self.xd_str[name],
