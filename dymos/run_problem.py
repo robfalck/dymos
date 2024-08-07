@@ -10,6 +10,9 @@ from dymos.visualization.timeseries_plots import timeseries_plots
 from .grid_refinement.refinement import _refine_iter
 
 
+_om_version = tuple([int(s) for s in openmdao.__version__.split('-')[0].split('.')])
+
+
 def run_problem(problem, refine_method='hp', refine_iteration_limit=0, run_driver=True,
                 simulate=False, restart=None,
                 solution_record_file='dymos_solution.db',
@@ -72,7 +75,14 @@ def run_problem(problem, refine_method='hp', refine_iteration_limit=0, run_drive
             raise ValueError('If given, option restart must specify a string to the filepath of a valid dymos '
                              'output case, or a case dictionary returned from om.CaseReader.get_case.')
 
-    if solution_record_file not in [rec._filepath for rec in iter(problem._rec_mgr)]:
+    if _om_version <= (3, 34, 2):
+        _sol_record_file = problem.get_outputs_dir() / solution_record_file
+        _sim_record_file = None if not simulate else problem.get_outputs_dir() / simulation_record_file
+    else:
+        _sol_record_file = solution_record_file
+        _sim_record_file = simulation_record_file
+
+    if _sol_record_file not in [rec._filepath for rec in iter(problem._rec_mgr)]:
         recorder = om.SqliteRecorder(solution_record_file)
         problem.add_recorder(recorder)
 
@@ -119,12 +129,13 @@ def run_problem(problem, refine_method='hp', refine_iteration_limit=0, run_drive
     if make_plots:
         if dymos_options['plots'] == 'bokeh':
             from dymos.visualization.timeseries.bokeh_timeseries_report import make_timeseries_report
-            make_timeseries_report(prob=problem, solution_record_file=solution_record_file,
-                                   simulation_record_file=simulation_record_file)
+            make_timeseries_report(prob=problem,
+                                   solution_record_file=_sol_record_file,
+                                   simulation_record_file=_sim_record_file)
         else:
-            _sim_record_file = None if not simulate else simulation_record_file
             _plot_kwargs = plot_kwargs if plot_kwargs is not None else {}
-            timeseries_plots(solution_record_file, simulation_record_file=_sim_record_file,
+            timeseries_plots(_sol_record_file,
+                             simulation_record_file=_sim_record_file,
                              plot_dir=plot_dir, problem=problem, **_plot_kwargs)
 
     return failed

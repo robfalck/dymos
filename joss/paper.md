@@ -321,7 +321,7 @@ y = p.get_val('traj.phase0.timeseries.states:y', units='m')
 ax.plot(x,y, marker='o')
 ax.set_xlabel('x (m)')
 ax.set_ylabel('y (m)')
-fig.savefig('brachistochone_yx.png', bbox_inches='tight')
+fig.savefig('brachistochrone_yx.png', bbox_inches='tight')
 ```
 \normalsize
 
@@ -333,7 +333,7 @@ The built-in plotting utility in Dymos will plot all relevant quantities vs time
 
 The more traditional way to view the brachistochrone solution is to view the actual shape of the wire (i.e. y vs x):
 
-![Brachistochrone Solution: y as a function of x](brachistochone_yx.png){width=50%}
+![Brachistochrone Solution: y as a function of x](brachistochrone_yx.png){width=50%}
 
 
 ## Coupled co-design example: Designing a cannonball

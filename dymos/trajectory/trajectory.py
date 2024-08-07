@@ -1480,6 +1480,7 @@ class Trajectory(om.Group):
         traj_name = self.name if self.name else 'sim_traj'
         sim_prob.model.add_subsystem(traj_name, sim_traj)
 
+        print('RECORD FILE IS ', record_file)
         if record_file is not None:
             rec = om.SqliteRecorder(record_file)
             sim_prob.add_recorder(rec)
@@ -1492,10 +1493,10 @@ class Trajectory(om.Group):
             # fault of the user.
             warnings.filterwarnings(action='ignore', category=om.UnusedOptionWarning)
             warnings.filterwarnings(action='ignore', category=om.SetupWarning)
-            if om_version <= (3, 42, 2):
-                sim_prob.setup(check=True)
-            else:
+            if om_version >= (3, 34, 3):
                 sim_prob.setup(check=True, parent=self)
+            else:
+                sim_prob.setup(check=True)
             sim_prob.final_setup()
 
         # Assign trajectory parameter values

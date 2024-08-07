@@ -115,7 +115,7 @@ class TestBrachistochroneForJOSS(unittest.TestCase):
         ax.plot(x,y, marker='o')
         ax.set_xlabel('x (m)')
         ax.set_ylabel('y (m)')
-        fig.savefig('brachistochone_yx.png', bbox_inches='tight')
+        fig.savefig('brachistochrone_yx.png', bbox_inches='tight')
         # end code for paper
         assert_near_equal(p.get_val('traj.phase0.timeseries.time')[-1], 1.8016, tolerance=1.0E-4)
         assert_near_equal(x[-1], 10, tolerance=1.0E-4)
