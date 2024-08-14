@@ -533,6 +533,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="../length_constrained_brachistochrone/length_constrained_brachistochrone.html">The Length-Constrained Brachistochrone</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../min_time_climb/min_time_climb.html">Supersonic Interceptor Minimum Time Climb</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mountain_car/mountain_car.html">The Mountain Car Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../moon_landing/moon_landing.html">Moon Landing Problem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../multi_phase_cannonball/multi_phase_cannonball.html">Multi-Phase Cannonball</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Multibranch Trajectory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../racecar/racecar.html">Race car Lap Simulation</a></li>
@@ -1150,17 +1151,10 @@ state of charge.</p>
 
 <span class="n">prob</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
 
-<span class="n">prob</span><span class="p">[</span><span class="s1">&#39;traj.phase0.t_initial&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">prob</span><span class="p">[</span><span class="s1">&#39;traj.phase0.t_duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">*</span><span class="mi">3600</span>
-
-<span class="n">prob</span><span class="p">[</span><span class="s1">&#39;traj.phase1.t_initial&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">*</span><span class="mi">3600</span>
-<span class="n">prob</span><span class="p">[</span><span class="s1">&#39;traj.phase1.t_duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">*</span><span class="mi">3600</span>
-
-<span class="n">prob</span><span class="p">[</span><span class="s1">&#39;traj.phase1_bfail.t_initial&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">*</span><span class="mi">3600</span>
-<span class="n">prob</span><span class="p">[</span><span class="s1">&#39;traj.phase1_bfail.t_duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">*</span><span class="mi">3600</span>
-
-<span class="n">prob</span><span class="p">[</span><span class="s1">&#39;traj.phase1_mfail.t_initial&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">*</span><span class="mi">3600</span>
-<span class="n">prob</span><span class="p">[</span><span class="s1">&#39;traj.phase1_mfail.t_duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">*</span><span class="mi">3600</span>
+<span class="n">phase0</span><span class="o">.</span><span class="n">set_time_val</span><span class="p">(</span><span class="n">initial</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">3600</span><span class="p">)</span>
+<span class="n">phase1</span><span class="o">.</span><span class="n">set_time_val</span><span class="p">(</span><span class="n">initial</span><span class="o">=</span><span class="mf">3600.0</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mf">3600.0</span><span class="p">)</span>
+<span class="n">phase1_bfail</span><span class="o">.</span><span class="n">set_time_val</span><span class="p">(</span><span class="n">initial</span><span class="o">=</span><span class="mf">3600.0</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mf">3600.0</span><span class="p">)</span>
+<span class="n">phase1_mfail</span><span class="o">.</span><span class="n">set_time_val</span><span class="p">(</span><span class="n">initial</span><span class="o">=</span><span class="mf">3600.0</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mf">3600.0</span><span class="p">)</span>
 
 <span class="n">prob</span><span class="o">.</span><span class="n">set_solver_print</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">dm</span><span class="o">.</span><span class="n">run_problem</span><span class="p">(</span><span class="n">prob</span><span class="p">)</span>
@@ -1221,23 +1215,23 @@ state of charge.</p>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian for problem &#39;problem&#39; was computed 3 times, taking 0.06028320999996595 seconds.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian for problem &#39;problem&#39; was computed 3 times, taking 0.055485112000042136 seconds.
 Total jacobian shape: (107, 122) 
-
-
-Jacobian shape: (107, 122)  (4.63% nonzero)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Jacobian shape: (107, 122)  (4.63% nonzero)
 FWD solves: 6   REV solves: 0
 Total colors vs. total size: 6 vs 122  (95.08% improvement)
 
 Sparsity computed using tolerance: 1e-25
-Time to compute sparsity:   0.0603 sec
-Time to compute coloring:   0.0502 sec
-Memory to compute coloring:   0.3750 MB
-Coloring created on: 2024-05-03 18:07:11
+Time to compute sparsity:   0.0555 sec
+Time to compute coloring:   0.0409 sec
+Memory to compute coloring:   0.2500 MB
+Coloring created on: 2024-08-14 15:38:14
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Optimization terminated successfully    (Exit mode 0)
-            Current function value: [7200.]
+            Current function value: 7200.0
             Iterations: 3
             Function evaluations: 4
             Gradient evaluations: 3
@@ -1245,11 +1239,11 @@ Optimization Complete
 -----------------------------------
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.10/site-packages/openmdao/visualization/opt_report/opt_report.py:625: UserWarning: Attempting to set identical low and high ylims makes transformation singular; automatically expanding.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.11/site-packages/openmdao/visualization/opt_report/opt_report.py:625: UserWarning: Attempting to set identical low and high ylims makes transformation singular; automatically expanding.
   ax.set_ylim([ymin_plot, ymax_plot])
 </pre></div>
 </div>
-<img alt="../../_images/adfcf735d63b0bfadc987d115911d433baeb2e05cf6460c2b4c07dd79e0258fb.png" src="../../_images/adfcf735d63b0bfadc987d115911d433baeb2e05cf6460c2b4c07dd79e0258fb.png" />
+<img alt="../../_images/3c9081bac9257cb3108083a7961e7297d3edc04fea73eb423e4db3e2128eaef4.png" src="../../_images/3c9081bac9257cb3108083a7961e7297d3edc04fea73eb423e4db3e2128eaef4.png" />
 </div>
 </div>
 </section>
