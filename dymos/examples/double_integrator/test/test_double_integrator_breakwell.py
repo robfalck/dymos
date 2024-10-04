@@ -1,8 +1,6 @@
-import itertools
 import os
 import unittest
 
-import numpy as np
 import openmdao.api as om
 from openmdao.utils.assert_utils import assert_near_equal, assert_check_partials
 from openmdao.utils.testing_utils import use_tempdirs, require_pyoptsparse
@@ -37,8 +35,7 @@ def double_integrator_direct_collocation(transcription='gauss-lobatto', compress
     elif transcription == "radau-ps":
         t = dm.Radau(num_segments=30, order=3, compressed=compressed)
     elif transcription == 'birkhoff':
-        grid = dm.BirkhoffGrid(num_nodes=51)
-        t = dm.Birkhoff(grid=grid)
+        t = dm.Birkhoff(num_nodes=51)
     else:
         raise ValueError('invalid transcription')
 

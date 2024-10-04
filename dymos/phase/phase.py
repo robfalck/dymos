@@ -7,7 +7,6 @@ import numpy as np
 
 from scipy import interpolate
 
-import openmdao
 import openmdao.api as om
 from openmdao.utils.mpi import MPI
 from openmdao.utils.om_warnings import issue_warning
@@ -23,17 +22,13 @@ from .options import ControlOptionsDictionary, ParameterOptionsDictionary, \
 
 from ..transcriptions.transcription_base import TranscriptionBase
 from ..transcriptions.grid_data import GaussLobattoGrid, RadauGrid, UniformGrid, BirkhoffGrid
-from ..transcriptions import ExplicitShooting, GaussLobatto, Radau, Birkhoff
+from ..transcriptions import ExplicitShooting, GaussLobatto, Radau
 from ..utils.indexing import get_constraint_flat_idxs
 from ..utils.introspection import configure_time_introspection, _configure_constraint_introspection, \
     configure_controls_introspection, configure_parameters_introspection, \
     configure_timeseries_output_introspection, classify_var, configure_timeseries_expr_introspection
-from ..utils.misc import _unspecified, create_subprob
+from ..utils.misc import _unspecified, create_subprob, om_version
 from ..utils.lgl import lgl
-
-
-om_dev_version = openmdao.__version__.endswith('dev')
-om_version = tuple(int(s) for s in openmdao.__version__.split('-')[0].split('.'))
 
 
 class Phase(om.Group):
@@ -2534,7 +2529,7 @@ class Phase(om.Group):
 
     def get_simulation_phase(self, times_per_seg=_unspecified, method=_unspecified, atol=_unspecified,
                              rtol=_unspecified, first_step=_unspecified, max_step=_unspecified,
-                             reports=False):
+                             reports=False, interpolant='cubic'):
         """
         Return a SimulationPhase instance that is essentially a copy of this Phase.
 
@@ -2561,6 +2556,8 @@ class Phase(om.Group):
             Maximum step size for the integration.
         reports : bool or None or str or Sequence
             The reports setting for the subproblem run under each simulation segment.
+        interpolant : str
+            The interpolation method to be used for the controls in the simulation phase.
 
         Returns
         -------
@@ -2573,7 +2570,6 @@ class Phase(om.Group):
         # t = deepcopy(self.options['transcription']) if transcription is None else transcription
         ode_class = self.options['ode_class']
         ode_init_kwargs = self.options['ode_init_kwargs']
-        auto_solvers = self.options['auto_solvers']
 
         self_tx = self.options['transcription']
         num_seg = self_tx.grid_data.num_segments
@@ -2618,7 +2614,7 @@ class Phase(om.Group):
                               rtol=_rtol,
                               first_step=_first_step,
                               max_step=_max_step,
-                              control_interp='barycentric')
+                              control_interp=interpolant)
 
         sim_phase = SimulationPhase(transcription=tx,
                                     ode_class=ode_class,
@@ -2680,8 +2676,6 @@ class Phase(om.Group):
         ip_dict = dict([(name, options) for (name, options) in phs.list_inputs(units=True,
                                                                                out_stream=None)])
 
-        phs_path = phs.pathname + '.' if phs.pathname else ''
-
         if self.pathname.partition('.')[0] == self.name:
             self_path = self.name + '.'
         else:
@@ -2721,7 +2715,8 @@ class Phase(om.Group):
             prob.set_val(prob_path, val)
 
     def simulate(self, times_per_seg=None, method=_unspecified, atol=_unspecified, rtol=_unspecified,
-                 first_step=_unspecified, max_step=_unspecified, record_file=None, reports=False):
+                 first_step=_unspecified, max_step=_unspecified, record_file=None, reports=False,
+                 interpolant='cubic'):
         """
         Simulate the Phase using scipy.integrate.solve_ivp.
 
@@ -2745,6 +2740,8 @@ class Phase(om.Group):
             If None, no record of the simulation will be saved.
         reports : bool or None or str or Sequence
             Reports setting for the subproblems run under simualate.
+        interpolant : str
+            The interpolation method to be used for the controls in the simulation phase.
 
         Returns
         -------
@@ -2758,7 +2755,7 @@ class Phase(om.Group):
                                                   reports=reports)
 
         sim_phase = self.get_simulation_phase(times_per_seg=times_per_seg, method=method, atol=atol, rtol=rtol,
-                                              first_step=first_step, max_step=max_step)
+                                              first_step=first_step, max_step=max_step, interpolant=interpolant)
 
         sim_prob.model.add_subsystem(self.name, sim_phase)
 
@@ -2766,7 +2763,7 @@ class Phase(om.Group):
             rec = om.SqliteRecorder(record_file)
             sim_prob.add_recorder(rec)
 
-        if om_version <= (3, 42, 2):
+        if om_version()[0] <= (3, 42, 2):
             sim_prob.setup(check=True)
         else:
             sim_prob.setup(check=True, parent=self)
@@ -2985,9 +2982,10 @@ class Phase(om.Group):
             duplicate_idxs = all_flat_idxs.intersection(flat_idxs)
             if duplicate_idxs:
                 s = {'initial': 'initial boundary', 'final': 'final boundary', 'path': 'path'}
-                raise ValueError(f'Duplicate constraint in phase {self.pathname}. '
-                                 f'The following indices of `{name}` are used in '
-                                 f'multiple {s[loc]} constraints:\n{duplicate_idxs}')
+                with np.printoptions(legacy='1.13'):
+                    raise ValueError(f'Duplicate constraint in phase {self.pathname}. '
+                                     f'The following indices of `{name}` are used in '
+                                     f'multiple {s[loc]} constraints:\n{duplicate_idxs}')
 
             all_flat_idxs.update(flat_idxs)
 

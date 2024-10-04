@@ -54,6 +54,8 @@ class RadauNew(TranscriptionBase):
         """
         Set up the GridData object for the Transcription.
         """
+        if self.options['compressed']:
+            raise ValueError('Option `compressed` is no longer supported. All transcriptions are now "uncompressed".')
         self.grid_data = RadauGrid(num_segments=self.options['num_segments'],
                                    nodes_per_seg=self.options['nodes_per_seg'],
                                    segment_ends=self.options['segment_ends'],
@@ -107,7 +109,6 @@ class RadauNew(TranscriptionBase):
                 phase.connect(name, [f'ode_all.{t}' for t in targets], src_indices=src_idxs,
                               flat_src_indices=True)
                 src_idxs = om.slicer[[0, -1], ...]
-                # phase.connect(name, [f'boundary_vals.{t}' for t in targets], src_indices=src_idxs)
 
         for name, targets in [('t_initial', options['t_initial_targets']),
                               ('t_duration', options['t_duration_targets'])]:
@@ -115,20 +116,17 @@ class RadauNew(TranscriptionBase):
                 shape = ode_inputs[t]['shape']
 
                 if shape == (1,):
-                    src_idxs = endpoint_src_idxs = None
+                    src_idxs = None
                     flat_src_idxs = None
                     src_shape = None
                 else:
                     src_idxs = np.zeros(self.grid_data.subset_num_nodes['all'], dtype=int)
-                    endpoint_src_idxs = np.zeros(2, dtype=int)
                     flat_src_idxs = True
                     src_shape = (1,)
 
                 phase.promotes('ode_all', inputs=[(t, name)], src_indices=src_idxs,
                                flat_src_indices=flat_src_idxs, src_shape=src_shape)
 
-                # phase.promotes('boundary_vals', inputs=[(t, name)], src_indices=endpoint_src_idxs,
-                #                flat_src_indices=flat_src_idxs, src_shape=src_shape)
             if targets:
                 phase.set_input_defaults(name=name,
                                          val=np.ones((1,)),
@@ -146,6 +144,9 @@ class RadauNew(TranscriptionBase):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
+        if self.options['compressed']:
+            raise ValueError('RadauNew does not support compressed transcription')
+
         self.any_solved_segs = False
         self.any_connected_opt_segs = False
         for options in phase.state_options.values():
@@ -179,22 +180,14 @@ class RadauNew(TranscriptionBase):
         for name, options in phase.control_options.items():
             if options['targets']:
                 phase.connect(f'control_values:{name}', [f'ode_all.{t}' for t in options['targets']])
-                # phase.connect(f'control_values:{name}', [f'boundary_vals.{t}' for t in options['targets']],
-                #               src_indices=om.slicer[[0, -1], ...])
 
             if options['rate_targets']:
                 phase.connect(f'control_rates:{name}_rate',
                               [f'ode_all.{t}' for t in options['rate_targets']])
-                # phase.connect(f'control_rates:{name}_rate',
-                #               [f'boundary_vals.{t}' for t in options['rate_targets']],
-                #               src_indices=om.slicer[[0, -1], ...])
 
             if options['rate2_targets']:
                 phase.connect(f'control_rates:{name}_rate2',
                               [f'ode_all.{t}' for t in options['rate2_targets']])
-                # phase.connect(f'control_rates:{name}_rate2',
-                #               [f'boundary_vals.{t}' for t in options['rate2_targets']],
-                #               src_indices=om.slicer[[0, -1], ...])
 
     def setup_ode(self, phase):
         """
@@ -209,8 +202,6 @@ class RadauNew(TranscriptionBase):
         grid_data = self.grid_data
 
         ode_init_kwargs = phase.options['ode_init_kwargs']
-        ibcs = phase._initial_boundary_constraints
-        fbcs = phase._final_boundary_constraints
 
         phase.add_subsystem('ode_iter_group',
                             subsys=RadauIterGroup(grid_data=grid_data, state_options=phase.state_options,
@@ -218,15 +209,6 @@ class RadauNew(TranscriptionBase):
                                                   ode_class=ODEClass,
                                                   ode_init_kwargs=ode_init_kwargs),
                             promotes=['*'])
-
-        # phase.add_subsystem('boundary_vals',
-        #                     subsys=RadauNewBoundaryGroup(grid_data=grid_data,
-        #                                                  ode_class=ODEClass,
-        #                                                  ode_init_kwargs=ode_init_kwargs,
-        #                                                  initial_boundary_constraints=ibcs,
-        #                                                  final_boundary_constraints=fbcs,
-        #                                                  objectives=phase._objectives),
-        #                     promotes_inputs=['initial_states:*', 'final_states:*'])
 
     def configure_ode(self, phase):
         """
@@ -428,7 +410,7 @@ class RadauNew(TranscriptionBase):
             if constraint_type == 'initial':
                 constraint_kwargs['indices'] = flat_idxs
             elif constraint_type == 'final':
-                constraint_kwargs['indices'] = size + flat_idxs
+                constraint_kwargs['indices'] = size * (num_nodes - 1) + flat_idxs
             else:
                 # Path
                 path_idxs = []
@@ -586,7 +568,6 @@ class RadauNew(TranscriptionBase):
         ndarray
             Array of source indices.
         """
-        gd = self.grid_data
         try:
             var = phase.state_options[state_name]['rate_source']
         except RuntimeError:
@@ -625,11 +606,6 @@ class RadauNew(TranscriptionBase):
             rate_path = f'control_rates:{control_name}_rate2'
         elif var_type == 'parameter':
             rate_path = f'parameter_vals:{var}'
-            dynamic = not phase.parameter_options[var]['static_target']
-            if dynamic:
-                node_idxs = np.zeros(gd.subset_num_nodes['col'], dtype=int)
-            else:
-                node_idxs = np.zeros(1, dtype=int)
         else:
             # Failed to find variable, assume it is in the ODE
             rate_path = f'ode_all.{var}'
@@ -780,16 +756,13 @@ class RadauNew(TranscriptionBase):
             for tgt in options['targets']:
                 if tgt in options['static_targets']:
                     src_idxs = np.squeeze(get_src_indices_by_row([0], options['shape']), axis=0)
-                    endpoint_src_idxs = om.slicer[:, ...]
                 else:
                     src_idxs_raw = np.zeros(self.grid_data.subset_num_nodes['all'], dtype=int)
                     src_idxs = get_src_indices_by_row(src_idxs_raw, options['shape'])
-                    endpoint_src_idxs = om.slicer[[0, -1], ...]
                     if options['shape'] == (1,):
                         src_idxs = src_idxs.ravel()
 
                 connection_info.append((f'ode_all.{tgt}', (src_idxs,)))
-                # connection_info.append((f'boundary_vals.{tgt}', (endpoint_src_idxs,)))
 
         return connection_info
 

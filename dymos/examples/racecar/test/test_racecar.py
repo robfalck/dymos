@@ -15,17 +15,11 @@ class TestRaceCarForDocs(unittest.TestCase):
     @require_pyoptsparse(optimizer='IPOPT')
     @unittest.skipIf(matplotlib is None, "This test requires matplotlib")
     def test_racecar_for_docs(self):
-        import numpy as np
         import openmdao.api as om
         import dymos as dm
-        import matplotlib.pyplot as plt
-        import matplotlib as mpl
 
         from dymos.examples.racecar.combinedODE import CombinedODE
-        from dymos.examples.racecar.spline import (get_spline, get_track_points, get_gate_normals,
-                                                   reverse_transform_gates, set_gate_displacements,
-                                                   transform_gates, )
-        from dymos.examples.racecar.linewidthhelper import linewidth_from_data_units
+        from dymos.examples.racecar.spline import get_spline, get_track_points
         from dymos.examples.racecar.tracks import ovaltrack  # track curvature imports
 
         # change track here and in curvature.py. Tracks are defined in tracks.py
@@ -42,7 +36,7 @@ class TestRaceCarForDocs(unittest.TestCase):
 
         txs = {'radau': dm.Radau(num_segments=50, order=3, compressed=True),
                'gauss-lobatto': dm.GaussLobatto(num_segments=50, order=3, compressed=True),
-               'birkhoff': dm.Birkhoff(grid=dm.BirkhoffGrid(num_nodes=100))}
+               'birkhoff': dm.Birkhoff(num_nodes=100)}
 
         for tx_name, tx in txs.items():
             with self.subTest(tx_name):

@@ -4,7 +4,7 @@ import unittest
 import os
 
 try:
-    import matplotlib
+    import matplotlib  # noqa: F401
     SHOW_PLOTS = True
 except ImportError:
     SHOW_PLOTS = False
@@ -29,7 +29,7 @@ def goddard_rocket_direct_collocation(grid_type='lgl'):
         p.driver.opt_settings['Major optimality tolerance'] = 1.0E-3
         p.driver.opt_settings['iSumm'] = 6
 
-    t = dm.Birkhoff(grid=dm.BirkhoffGrid(num_nodes=150, grid_type=grid_type))
+    t = dm.Birkhoff(num_nodes=150, grid_type=grid_type)
 
     traj = p.model.add_subsystem('traj', dm.Trajectory())
 

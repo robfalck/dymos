@@ -98,7 +98,6 @@ class TestBrachistochronePolynomialControl(unittest.TestCase):
 
     @unittest.skipIf(matplotlib is None, "This test requires matplotlib")
     def test_brachistochrone_polynomial_control_radau(self):
-        import numpy as np
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
@@ -184,7 +183,6 @@ class TestBrachistochronePolynomialControl(unittest.TestCase):
 
     @unittest.skipIf(matplotlib is None, "This test requires matplotlib")
     def test_brachistochrone_polynomial_control_birkhoff(self):
-        import numpy as np
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
@@ -198,7 +196,7 @@ class TestBrachistochronePolynomialControl(unittest.TestCase):
         p.driver.declare_coloring()
 
         phase = dm.Phase(ode_class=BrachistochroneODE,
-                         transcription=dm.Birkhoff(grid=dm.BirkhoffGrid(num_nodes=15)))
+                         transcription=dm.Birkhoff(num_nodes=15))
 
         p.model.add_subsystem('phase0', phase)
 
@@ -450,7 +448,6 @@ class TestBrachistochronePolynomialControlBoundaryConstrained(unittest.TestCase)
 
     @unittest.skipIf(matplotlib is None, "This test requires matplotlib")
     def test_brachistochrone_polynomial_control_birkhoff(self):
-        import numpy as np
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
@@ -464,7 +461,7 @@ class TestBrachistochronePolynomialControlBoundaryConstrained(unittest.TestCase)
         p.driver.declare_coloring()
 
         phase = dm.Phase(ode_class=BrachistochroneODE,
-                         transcription=dm.Birkhoff(grid=dm.BirkhoffGrid(num_nodes=15)))
+                         transcription=dm.Birkhoff(num_nodes=15))
 
         p.model.add_subsystem('phase0', phase)
 
@@ -715,7 +712,6 @@ class TestBrachistochronePolynomialControlPathConstrained(unittest.TestCase):
 
     @unittest.skipIf(matplotlib is None, "This test requires matplotlib")
     def test_brachistochrone_polynomial_control_birkhoff(self):
-        import numpy as np
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
@@ -729,7 +725,7 @@ class TestBrachistochronePolynomialControlPathConstrained(unittest.TestCase):
         p.driver.declare_coloring()
 
         phase = dm.Phase(ode_class=BrachistochroneODE,
-                         transcription=dm.Birkhoff(grid=dm.BirkhoffGrid(num_nodes=15)))
+                         transcription=dm.Birkhoff(num_nodes=15))
 
         p.model.add_subsystem('phase0', phase)
 
@@ -807,7 +803,6 @@ class TestBrachistochronePolynomialControlRatePathConstrained(unittest.TestCase)
 
     @unittest.skipIf(matplotlib is None, "This test requires matplotlib")
     def test_brachistochrone_polynomial_control_gauss_lobatto(self):
-        import numpy as np
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
@@ -895,7 +890,6 @@ class TestBrachistochronePolynomialControlRatePathConstrained(unittest.TestCase)
 
     @unittest.skipIf(matplotlib is None, "This test requires matplotlib")
     def test_brachistochrone_polynomial_control_radau(self):
-        import numpy as np
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
@@ -983,7 +977,6 @@ class TestBrachistochronePolynomialControlRatePathConstrained(unittest.TestCase)
 
     @unittest.skipIf(matplotlib is None, "This test requires matplotlib")
     def test_brachistochrone_polynomial_control_birkhoff(self):
-        import numpy as np
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
@@ -997,7 +990,7 @@ class TestBrachistochronePolynomialControlRatePathConstrained(unittest.TestCase)
         p.driver.declare_coloring()
 
         phase = dm.Phase(ode_class=BrachistochroneODE,
-                         transcription=dm.Birkhoff(grid=dm.BirkhoffGrid(num_nodes=15)))
+                         transcription=dm.Birkhoff(num_nodes=15))
 
         p.model.add_subsystem('phase0', phase)
 
@@ -1075,7 +1068,6 @@ class TestBrachistochronePolynomialControlRate2PathConstrained(unittest.TestCase
 
     @unittest.skipIf(matplotlib is None, "This test requires matplotlib")
     def test_brachistochrone_polynomial_control_gauss_lobatto(self):
-        import numpy as np
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
@@ -1163,7 +1155,6 @@ class TestBrachistochronePolynomialControlRate2PathConstrained(unittest.TestCase
 
     @unittest.skipIf(matplotlib is None, "This test requires matplotlib")
     def test_brachistochrone_polynomial_control_radau(self):
-        import numpy as np
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
@@ -1251,7 +1242,6 @@ class TestBrachistochronePolynomialControlRate2PathConstrained(unittest.TestCase
 
     @unittest.skipIf(matplotlib is None, "This test requires matplotlib")
     def test_brachistochrone_polynomial_control_birkhoff(self):
-        import numpy as np
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
@@ -1265,7 +1255,7 @@ class TestBrachistochronePolynomialControlRate2PathConstrained(unittest.TestCase
         p.driver.declare_coloring()
 
         phase = dm.Phase(ode_class=BrachistochroneODE,
-                         transcription=dm.Birkhoff(grid=dm.BirkhoffGrid(num_nodes=15)))
+                         transcription=dm.Birkhoff(num_nodes=15))
 
         p.model.add_subsystem('phase0', phase)
 
@@ -1455,10 +1445,8 @@ class TestBrachistochronePolynomialControlSimulation(unittest.TestCase):
 
     @unittest.skipIf(matplotlib is None, "This test requires matplotlib")
     def test_brachistochrone_polynomial_control_birkhoff(self):
-        import numpy as np
         import matplotlib
         matplotlib.use('Agg')
-        import matplotlib.pyplot as plt
         import openmdao.api as om
         from openmdao.utils.assert_utils import assert_near_equal
         import dymos as dm
@@ -1469,7 +1457,7 @@ class TestBrachistochronePolynomialControlSimulation(unittest.TestCase):
         p.driver.declare_coloring()
 
         phase = dm.Phase(ode_class=BrachistochroneODE,
-                         transcription=dm.Birkhoff(grid=dm.BirkhoffGrid(num_nodes=15)))
+                         transcription=dm.Birkhoff(num_nodes=15))
 
         p.model.add_subsystem('phase0', phase)
 

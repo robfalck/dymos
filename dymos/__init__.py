@@ -1,8 +1,8 @@
-__version__ = '1.10.1-dev'
+__version__ = '1.12.1-dev'
 
 
 from .phase import Phase, AnalyticPhase
-from .transcriptions import GaussLobatto, Radau, ExplicitShooting, Analytic, Birkhoff, RadauNew
+from .transcriptions import GaussLobatto, Radau, ExplicitShooting, Analytic, Birkhoff, RadauDeprecated
 from .transcriptions.grid_data import GaussLobattoGrid, RadauGrid, UniformGrid, BirkhoffGrid
 from .trajectory.trajectory import Trajectory
 from .run_problem import run_problem

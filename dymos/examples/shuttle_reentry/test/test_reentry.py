@@ -8,6 +8,7 @@ from openmdao.utils.assert_utils import assert_near_equal, assert_check_partials
 from openmdao.utils.testing_utils import use_tempdirs, require_pyoptsparse
 
 from dymos.examples.shuttle_reentry.shuttle_ode import ShuttleODE
+from dymos.utils.misc import om_version
 
 # Expected results from Betts
 expected_results = {'constrained': {'time': 2198.67, 'theta': 30.6255},
@@ -121,7 +122,7 @@ class TestReentry(unittest.TestCase):
 
     @require_pyoptsparse(optimizer='IPOPT')
     def test_reentry_constrained_birkhoff_lgl(self):
-        tx = dm.Birkhoff(grid=dm.BirkhoffGrid(num_nodes=30, grid_type='lgl'))
+        tx = dm.Birkhoff(num_nodes=30, grid_type='lgl')
         p = self.make_problem(constrained=True, transcription=tx, optimizer='IPOPT')
 
         p.run_driver()
@@ -135,7 +136,7 @@ class TestReentry(unittest.TestCase):
 
     @require_pyoptsparse(optimizer='IPOPT')
     def test_reentry_constrained_birkhoff_cgl(self):
-        tx = dm.Birkhoff(grid=dm.BirkhoffGrid(num_nodes=30, grid_type='cgl'))
+        tx = dm.Birkhoff(num_nodes=30, grid_type='cgl')
         p = self.make_problem(constrained=True, transcription=tx, optimizer='IPOPT')
 
         p.run_driver()
@@ -177,7 +178,7 @@ class TestReentry(unittest.TestCase):
 
     @require_pyoptsparse(optimizer='IPOPT')
     def test_reentry_unconstrained_birkhoff_lgl(self):
-        tx = dm.Birkhoff(grid=dm.BirkhoffGrid(num_nodes=60, grid_type='lgl'))
+        tx = dm.Birkhoff(num_nodes=60, grid_type='lgl')
         p = self.make_problem(constrained=False, transcription=tx, optimizer='IPOPT')
 
         p.run_driver()
@@ -191,7 +192,7 @@ class TestReentry(unittest.TestCase):
 
     @require_pyoptsparse(optimizer='IPOPT')
     def test_reentry_unconstrained_birkhoff_cgl(self):
-        tx = dm.Birkhoff(grid=dm.BirkhoffGrid(num_nodes=60, grid_type='cgl'))
+        tx = dm.Birkhoff(num_nodes=60, grid_type='cgl')
         p = self.make_problem(constrained=False, transcription=tx, optimizer='IPOPT')
 
         p.run_driver()
@@ -272,8 +273,15 @@ class TestReentry(unittest.TestCase):
 
         dm.run_problem(p, simulate=True)
 
-        sol = om.CaseReader('dymos_solution.db').get_case('final')
-        sim = om.CaseReader('dymos_simulation.db').get_case('final')
+        if om_version()[0] > (3, 34, 2):
+            sol_db = p.get_outputs_dir() / 'dymos_solution.db'
+            sim_db = p.model.traj.sim_prob.get_outputs_dir() / 'dymos_simulation.db'
+        else:
+            sol_db = 'dymos_solution.db'
+            sim_db = 'dymos_simulation.db'
+
+        sol = om.CaseReader(sol_db).get_case('final')
+        sim = om.CaseReader(sim_db).get_case('final')
 
         from scipy.interpolate import interp1d
 

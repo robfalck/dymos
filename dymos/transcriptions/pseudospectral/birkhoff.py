@@ -8,7 +8,7 @@ from .components import BirkhoffIterGroup, BirkhoffBoundaryGroup
 
 from ..grid_data import BirkhoffGrid
 from dymos.utils.misc import get_rate_units
-from dymos.utils.introspection import get_promoted_vars, get_source_metadata, get_targets
+from dymos.utils.introspection import get_promoted_vars, get_source_metadata
 from dymos.utils.indexing import get_constraint_flat_idxs, get_src_indices_by_row
 
 
@@ -34,10 +34,13 @@ class Birkhoff(TranscriptionBase):
         """
         Declare transcription options.
         """
-        self.options.declare('grid', types=(BirkhoffGrid, str),
-                             allow_none=True, default=None,
-                             desc='The grid distribution used to layout the control inputs and provide the default '
-                                  'output nodes. Use either "cgl" or "lgl".')
+        self.options.declare('num_nodes', types=int, default=3,
+                             desc='The number of nodes in the grid')
+
+        self.options.declare('grid_type', values=('cgl', 'lgl'), default='cgl',
+                             desc='Specifies which type of grid is to be used. '
+                                  'Options are Chebyshev-Gauss-Lobatto ("cgl") '
+                                  'and Legendre-Gauss-Lobatto ("lgl")')
 
         self.options.declare(name='solve_segments', default=False,
                              values=(False, 'forward', 'backward'),
@@ -55,11 +58,8 @@ class Birkhoff(TranscriptionBase):
         """
         Set up the GridData object for the Transcription.
         """
-        if self.options['grid'] in ('cgl', None):
-            self.grid_data = BirkhoffGrid(num_nodes=self.options['order'],
-                                          grid_type='cgl')
-        else:
-            self.grid_data = self.options['grid']
+        self.grid_data = BirkhoffGrid(num_nodes=self.options['num_nodes'],
+                                      grid_type=self.options['grid_type'])
 
     def setup_time(self, phase):
         """
@@ -604,7 +604,6 @@ class Birkhoff(TranscriptionBase):
         ndarray
             Array of source indices.
         """
-        gd = self.grid_data
         try:
             var = phase.state_options[state_name]['rate_source']
         except RuntimeError:
@@ -643,11 +642,6 @@ class Birkhoff(TranscriptionBase):
             rate_path = f'control_rates:{control_name}_rate2'
         elif var_type == 'parameter':
             rate_path = f'parameter_vals:{var}'
-            dynamic = not phase.parameter_options[var]['static_target']
-            if dynamic:
-                node_idxs = np.zeros(gd.subset_num_nodes['col'], dtype=int)
-            else:
-                node_idxs = np.zeros(1, dtype=int)
         else:
             # Failed to find variable, assume it is in the ODE
             rate_path = f'ode_all.{var}'

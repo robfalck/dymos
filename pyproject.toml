@@ -6,6 +6,7 @@ build-backend = "hatchling.build"
 name = "dymos"
 dynamic = ["version"]
 description = "Open-Source Optimization of Dynamic Multidisciplinary Systems"
+readme = "readme.md"
 license = "Apache-2.0"
 requires-python = ">=3.9"
 classifiers = [
@@ -53,6 +54,7 @@ notebooks = [
     "tabulate",
 ]
 test = [
+    "pre-commit",
     "aiounittest",
     "matplotlib",
     "numpydoc>=1.1",
@@ -78,23 +80,27 @@ include = [
 ]
 
 [tool.ruff]
-line-length = 120
-
-[tool.ruff.lint]
-select = ["F", "E", "W", "D", "Q"]
-ignore = ["Q000",  # Do not require double quotes
-          "D204",  # Do not require one blank line after class docstring
-          "D100",  # Do not require module docstring
-          "D107",  # Do not require a docstring for __init__
-          "D200",  # Do not require one line docstring to be on same line as """.
-          "D212",  # Do not summary of docstring on first line.
-          "D413",  # Do not require blank line after docstring sections.
-          ]
+line-length = 100
+indent-width = 4
 
 [tool.ruff.format]
-# Prefer single quotes over double quotes.
-quote-style = "single"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.ruff.lint]
+select = ["E", "F"]
+preview = false
+
+[tool.ruff.lint.pycodestyle]
+max-line-length = 130
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
 
 [tool.ruff.lint.per-file-ignores]
-"***/tests/*" = ["D"]  # Don't lint tests
-"***/test/*" = ["D"]  # Don't lint tests
+# Ignore `F401` (unused import) in api files.
+"__init__.py" = ["F401"]
+# Ignore import related conventions in docs
+"**/dymos_book/**" = ["E402", "E501"]
+# Ignore Test classifiers
+"test_*.py" = ["D", "E", "F"]
