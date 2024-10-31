@@ -424,7 +424,7 @@ class HPAdaptive:
                          ) ** (1 / q_split)), np.ceil(np.log(self.error[phase_path][split_seg_idxs] /
                                                              phase.refine_options['tolerance']) /
                                                       np.log(seg_order[split_seg_idxs]))),
-                2*np.ones(split_seg_idxs.size))
+                2 * np.ones(split_seg_idxs.size))
 
             # reduce segment order where error is much below the tolerance
             if reduce_order_indx.size > 0:
@@ -497,7 +497,7 @@ class HPAdaptive:
                         err_val = np.dot(np.absolute(b - b_hat).ravel(),
                                          np.array([2 ** el for el in range(seg_size[gd.transcription])])) / beta
 
-                        if err_val > phase.refine_options['tolerance']/10 and merge_seg[k + 1]:
+                        if err_val > phase.refine_options['tolerance'] / 10 and merge_seg[k + 1]:
                             merge_seg[k + 1] = False
 
             H[np.where(merge_seg)] = 0

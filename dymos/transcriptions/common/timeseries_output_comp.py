@@ -277,7 +277,7 @@ class TimeseriesOutputComp(om.ExplicitComponent):
             if ogd is igd and output_subset == 'all':
                 optau_segi = iptau_segi
             else:
-                ptau_hi = igd.segment_ends[iseg+1]
+                ptau_hi = igd.segment_ends[iseg + 1]
                 if iseg < igd.num_segments - 1:
                     optau_segi = output_nodes_ptau[output_nodes_ptau <= ptau_hi]
                 else:

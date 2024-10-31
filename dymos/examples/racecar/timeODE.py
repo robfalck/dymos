@@ -69,13 +69,13 @@ class TimeODE(om.ExplicitComponent):
         axdot = inputs['axdot']
         aydot = inputs['aydot']
 
-        outputs['domega_ds'] = omegadot/sdot
-        outputs['dV_ds'] = Vdot/sdot
-        outputs['dalpha_ds'] = alphadot/sdot
-        outputs['dlambda_ds'] = lambdadot/sdot
-        outputs['dn_ds'] = ndot/sdot
-        outputs['dax_ds'] = axdot/sdot
-        outputs['day_ds'] = aydot/sdot
+        outputs['domega_ds'] = omegadot / sdot
+        outputs['dV_ds'] = Vdot / sdot
+        outputs['dalpha_ds'] = alphadot / sdot
+        outputs['dlambda_ds'] = lambdadot / sdot
+        outputs['dn_ds'] = ndot / sdot
+        outputs['dax_ds'] = axdot / sdot
+        outputs['day_ds'] = aydot / sdot
 
     def compute_partials(self, inputs, jacobian):
         omegadot = inputs['omegadot']
@@ -87,23 +87,23 @@ class TimeODE(om.ExplicitComponent):
         axdot = inputs['axdot']
         aydot = inputs['aydot']
 
-        jacobian['dn_ds', 'sdot'] = -ndot/sdot**2
-        jacobian['dn_ds', 'ndot'] = 1/sdot
+        jacobian['dn_ds', 'sdot'] = -ndot / sdot**2
+        jacobian['dn_ds', 'ndot'] = 1 / sdot
 
-        jacobian['dalpha_ds', 'sdot'] = -alphadot/sdot**2
-        jacobian['dalpha_ds', 'alphadot'] = 1/sdot
+        jacobian['dalpha_ds', 'sdot'] = -alphadot / sdot**2
+        jacobian['dalpha_ds', 'alphadot'] = 1 / sdot
 
-        jacobian['domega_ds', 'sdot'] = -omegadot/sdot**2
-        jacobian['domega_ds', 'omegadot'] = 1/sdot
+        jacobian['domega_ds', 'sdot'] = -omegadot / sdot**2
+        jacobian['domega_ds', 'omegadot'] = 1 / sdot
 
-        jacobian['dlambda_ds', 'sdot'] = -lambdadot/sdot**2
-        jacobian['dlambda_ds', 'lambdadot'] = 1/sdot
+        jacobian['dlambda_ds', 'sdot'] = -lambdadot / sdot**2
+        jacobian['dlambda_ds', 'lambdadot'] = 1 / sdot
 
-        jacobian['dV_ds', 'sdot'] = -Vdot/sdot**2
-        jacobian['dV_ds', 'Vdot'] = 1/sdot
+        jacobian['dV_ds', 'sdot'] = -Vdot / sdot**2
+        jacobian['dV_ds', 'Vdot'] = 1 / sdot
 
-        jacobian['dax_ds', 'sdot'] = -axdot/sdot**2
-        jacobian['dax_ds', 'axdot'] = 1/sdot
+        jacobian['dax_ds', 'sdot'] = -axdot / sdot**2
+        jacobian['dax_ds', 'axdot'] = 1 / sdot
 
-        jacobian['day_ds', 'sdot'] = -aydot/sdot**2
-        jacobian['day_ds', 'aydot'] = 1/sdot
+        jacobian['day_ds', 'sdot'] = -aydot / sdot**2
+        jacobian['day_ds', 'aydot'] = 1 / sdot

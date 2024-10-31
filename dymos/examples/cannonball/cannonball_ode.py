@@ -8,8 +8,8 @@ from dymos.models.atmosphere.atmos_1976 import USatm1976Data
 
 english_to_metric_rho = om.unit_conversion('slug/ft**3', 'kg/m**3')[0]
 english_to_metric_h = om.unit_conversion('ft', 'm')[0]
-rho_interp = InterpND(points=np.array(USatm1976Data.alt*english_to_metric_h),
-                      values=np.array(USatm1976Data.rho*english_to_metric_rho),
+rho_interp = InterpND(points=np.array(USatm1976Data.alt * english_to_metric_h),
+                      values=np.array(USatm1976Data.rho * english_to_metric_rho),
                       method='slinear').interpolate
 
 
@@ -60,13 +60,13 @@ class CannonballODE(om.ExplicitComponent):
 
         rho = rho_interp(h)
 
-        q = 0.5*rho*inputs['v']**2
+        q = 0.5 * rho * inputs['v']**2
         qS = q * S
         D = qS * CD
         cgam = np.cos(gam)
         sgam = np.sin(gam)
-        outputs['v_dot'] = - D/m-GRAVITY*sgam
-        outputs['gam_dot'] = -(GRAVITY/v)*cgam
-        outputs['h_dot'] = v*sgam
-        outputs['r_dot'] = v*cgam
-        outputs['ke'] = 0.5*m*v**2
+        outputs['v_dot'] = - D / m - GRAVITY * sgam
+        outputs['gam_dot'] = -(GRAVITY / v) * cgam
+        outputs['h_dot'] = v * sgam
+        outputs['r_dot'] = v * cgam
+        outputs['ke'] = 0.5 * m * v**2

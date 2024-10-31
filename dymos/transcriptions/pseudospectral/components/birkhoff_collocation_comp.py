@@ -155,7 +155,7 @@ class BirkhoffCollocationComp(om.ExplicitComponent):
             if not np.isscalar(defect_ref):
                 defect_ref = np.asarray(defect_ref)
                 if defect_ref.shape == shape:
-                    defect_ref_state = np.tile(defect_ref.flatten(), num_nodes+num_segs)
+                    defect_ref_state = np.tile(defect_ref.flatten(), num_nodes + num_segs)
                     defect_ref_v = np.tile(defect_ref.flatten(), num_nodes)
                 else:
                     raise ValueError('array-valued scaler/ref must length equal to state-size')

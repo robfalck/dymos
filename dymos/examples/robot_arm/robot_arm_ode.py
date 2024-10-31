@@ -42,7 +42,7 @@ class RobotArmODE(om.ExplicitComponent):
         self.declare_partials(of='x2_dot', wrt='x5', rows=r, cols=c, val=1.0)
 
         self.declare_partials(of='x3_dot', wrt='x3', rows=r, cols=c, val=1.0)
-        self.declare_partials(of='x3_dot', wrt='u0', rows=r, cols=c, val=1.0/L)
+        self.declare_partials(of='x3_dot', wrt='u0', rows=r, cols=c, val=1.0 / L)
 
         self.declare_partials(of='x4_dot', wrt='x0', rows=r, cols=c)
         self.declare_partials(of='x4_dot', wrt='x2', rows=r, cols=c)
@@ -70,9 +70,9 @@ class RobotArmODE(om.ExplicitComponent):
         outputs['x0_dot'] = x3
         outputs['x1_dot'] = x4
         outputs['x2_dot'] = x5
-        outputs['x3_dot'] = u0/L
-        outputs['x4_dot'] = 3*u1/(((L - x0)**3 + x0**3)*np.sin(x2)**2)
-        outputs['x5_dot'] = 3*u2/((L - x0)**3 + x0**3)
+        outputs['x3_dot'] = u0 / L
+        outputs['x4_dot'] = 3 * u1 / (((L - x0)**3 + x0**3) * np.sin(x2)**2)
+        outputs['x5_dot'] = 3 * u2 / ((L - x0)**3 + x0**3)
 
     def compute_partials(self, inputs, partials):
         L = self.options['arm_length']
@@ -83,9 +83,9 @@ class RobotArmODE(om.ExplicitComponent):
         u1 = inputs['u1']
         u2 = inputs['u2']
 
-        partials['x4_dot', 'x0'] = 9*u1*(L - 2*x0)/(L*(L**2 - 3*L*x0 + 3*x0**2)**2*np.sin(x2)**2)
-        partials['x4_dot', 'x2'] = -24*u1*np.cos(x2)/(((L - x0)**3 + x0**3)*(3*np.sin(x2) - np.sin(3*x2)))
-        partials['x4_dot', 'u1'] = 3/(((L - x0)**3 + x0**3)*np.sin(x2)**2)
+        partials['x4_dot', 'x0'] = 9 * u1 * (L - 2 * x0) / (L * (L**2 - 3 * L * x0 + 3 * x0**2)**2 * np.sin(x2)**2)
+        partials['x4_dot', 'x2'] = -24 * u1 * np.cos(x2) / (((L - x0)**3 + x0**3) * (3 * np.sin(x2) - np.sin(3 * x2)))
+        partials['x4_dot', 'u1'] = 3 / (((L - x0)**3 + x0**3) * np.sin(x2)**2)
 
-        partials['x5_dot', 'x0'] = 9*u2*(L - 2*x0)/(L*(L**2 - 3*L*x0 + 3*x0**2)**2)
-        partials['x5_dot', 'u2'] = 3/((L - x0)**3 + x0**3)
+        partials['x5_dot', 'x0'] = 9 * u2 * (L - 2 * x0) / (L * (L**2 - 3 * L * x0 + 3 * x0**2)**2)
+        partials['x5_dot', 'u2'] = 3 / ((L - x0)**3 + x0**3)

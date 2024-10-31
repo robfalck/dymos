@@ -209,7 +209,7 @@ class BirkhoffIterGroup(om.Group):
                                                units=units)
 
                 states_balance_comp.add_residual_from_input(f'state_defects:{name}',
-                                                            shape=(nn+ns,) + shape,
+                                                            shape=(nn + ns,) + shape,
                                                             units=units)
 
                 if ns > 1:

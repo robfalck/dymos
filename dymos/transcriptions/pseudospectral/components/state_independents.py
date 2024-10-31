@@ -116,7 +116,7 @@ class StateIndependentsComp(om.ImplicitComponent):
                 num_solve_nodes = solve_idx.shape[0]
 
                 base_idx = np.tile(np.arange(size), num_indep_nodes).reshape(num_indep_nodes, size)
-                row = (indep_idx[:, np.newaxis]*size + base_idx).flatten()
+                row = (indep_idx[:, np.newaxis] * size + base_idx).flatten()
 
                 # anything that looks like an indep
                 self.declare_partials(of=state_var_name, wrt=state_var_name,
@@ -130,7 +130,7 @@ class StateIndependentsComp(om.ImplicitComponent):
 
                 col = np.arange(num_solve_nodes * size)
                 base_idx = np.tile(np.arange(size), num_solve_nodes).reshape(num_solve_nodes, size)
-                row = (solve_idx[:, np.newaxis]*size + base_idx).flatten()
+                row = (solve_idx[:, np.newaxis] * size + base_idx).flatten()
 
                 var_names = self.var_names[state_name]
                 self.declare_partials(of=state_var_name,
@@ -138,7 +138,7 @@ class StateIndependentsComp(om.ImplicitComponent):
                                       rows=row, cols=col, val=1.0)
 
             else:
-                row_col = np.arange(num_state_input_nodes*np.prod(shape), dtype=int)
+                row_col = np.arange(num_state_input_nodes * np.prod(shape), dtype=int)
                 self.declare_partials(of=state_var_name, wrt=state_var_name,
                                       rows=row_col, cols=row_col, val=-1.0)
 

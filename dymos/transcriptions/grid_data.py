@@ -54,7 +54,7 @@ def gauss_lobatto_subsets_and_nodes(n, seg_idx, compressed=False):
         'control_disc': np.arange(n, dtype=int),
         'control_input': np.arange(n, dtype=int) if not compressed or seg_idx == 0
         else np.arange(1, n, dtype=int),
-        'segment_ends': np.array([0, n-1], dtype=int),
+        'segment_ends': np.array([0, n - 1], dtype=int),
         'col': np.arange(1, n, 2, dtype=int),
         'all': np.arange(n, dtype=int),
         'solution': np.arange(n, dtype=int),

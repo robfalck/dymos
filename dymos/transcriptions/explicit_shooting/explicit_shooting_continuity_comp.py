@@ -114,7 +114,7 @@ class ExplicitShootingContinuityComp(ContinuityCompBase):
 
                 self.add_output(
                     name=f'defect_controls:{control_name}',
-                    val=5*np.ones((num_segments - 1,) + shape),
+                    val=5 * np.ones((num_segments - 1,) + shape),
                     desc=f'Continuity constraint values for control {control_name}',
                     units=units)
 

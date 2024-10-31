@@ -29,7 +29,7 @@ class RangeRateComp(om.ExplicitComponent):
     def compute(self, inputs, outputs):
         TAS = inputs['TAS']
         gam = inputs['gam']
-        outputs['dXdt:range'] = TAS*np.cos(gam)
+        outputs['dXdt:range'] = TAS * np.cos(gam)
 
     def compute_partials(self, inputs, partials):
         TAS = inputs['TAS']

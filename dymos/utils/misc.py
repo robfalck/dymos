@@ -140,7 +140,7 @@ class CoerceDesvar(object):
         if isinstance(val, list):
             val = np.asarray(val)
         if val.shape == self.options['shape']:
-            return np.tile(val.flatten(), int(len(self.desvar_indices)/val.size))
+            return np.tile(val.flatten(), int(len(self.desvar_indices) / val.size))
         else:
             raise ValueError('array-valued option {0} must have same shape '
                              'as states ({1})'.format(option, self.options['shape']))

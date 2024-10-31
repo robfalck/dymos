@@ -22,7 +22,7 @@ class BatteryODE(om.Group):
         num_motor = self.options['num_motor']
 
         self.add_subsystem(name='pwr_balance',
-                           subsys=om.BalanceComp(name='I_Li', val=1.0*np.ones(num_nodes),
+                           subsys=om.BalanceComp(name='I_Li', val=1.0 * np.ones(num_nodes),
                                                  rhs_name='pwr_out_batt',
                                                  lhs_name='P_pack',
                                                  units='A', eq_units='W', lower=0.0, upper=50.))

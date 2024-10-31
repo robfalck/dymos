@@ -114,7 +114,7 @@ class CubicSplineControlInterpComp(om.ExplicitComponent):
                 self.add_output(rate_name, shape=output_shape, units=rate_units)
                 self.add_output(rate2_name, shape=output_shape, units=rate2_units)
                 self._control_io_names[control_name] = (input_name, output_name, rate_name, rate2_name)
-                self._polynomial_control_nodes[control_name], _ = lgl(order+1)
+                self._polynomial_control_nodes[control_name], _ = lgl(order + 1)
 
     def setup(self):
         """
@@ -183,8 +183,8 @@ class CubicSplineControlInterpComp(om.ExplicitComponent):
 
                     for i in range(size):
                         spl = CubicSpline(ptau_grid[input_node_idxs][self._input_grid],
-                                          inputs[input_name][self._input_grid].flatten('F')[self.num_uhat_nodes*i:
-                                                                                            self.num_uhat_nodes*(i+1)])
+                                          inputs[input_name][self._input_grid].flatten('F')[self.num_uhat_nodes * i:
+                                                                                            self.num_uhat_nodes * (i + 1)])
                         out[:, i] = spl(ptau)
                         rate[:, i] = spl(ptau, nu=1) / (0.5 * inputs['t_duration'])
                         rate2[:, i] = spl(ptau, nu=2) / (0.5 * inputs['t_duration'])**2

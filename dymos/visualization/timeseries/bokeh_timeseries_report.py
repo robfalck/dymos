@@ -448,7 +448,7 @@ def make_timeseries_report(prob, solution_record_file=None, simulation_record_fi
                 param_tables.append(DataTable(source=ColumnDataSource(param_data),
                                               columns=columns,
                                               index_position=None,
-                                              height=30*len(param_data['param']),
+                                              height=30 * len(param_data['param']),
                                               sizing_mode='stretch_both'))
 
             # Plot the timeseries

@@ -147,8 +147,8 @@ def new_water_rocket_trajectory(objective):
                        targets={'propelled_ascent': 'V_b'},
                        opt=False)
 
-    traj.add_parameter('S', units='m**2', val=np.pi*106e-3**2/4, opt=False)
-    traj.add_parameter('A_out', units='m**2', val=np.pi*22e-3**2/4.,
+    traj.add_parameter('S', units='m**2', val=np.pi * 106e-3**2 / 4, opt=False)
+    traj.add_parameter('A_out', units='m**2', val=np.pi * 22e-3**2 / 4.,
                        targets={'propelled_ascent': ['water_engine.A_out']},
                        opt=False)
     traj.add_parameter('k', units=None, val=1.2, opt=False,

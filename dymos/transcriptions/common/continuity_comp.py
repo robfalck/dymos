@@ -120,8 +120,8 @@ class ContinuityCompBase(om.ExplicitComponent):
             n = len(num_nodes_per_segment)
             indices = np.array([], dtype=int)
             for i in range(1, n):
-                if num_nodes_per_segment[i] > 3 or num_nodes_per_segment[i-1] > 3:
-                    np.append(indices, i-1)
+                if num_nodes_per_segment[i] > 3 or num_nodes_per_segment[i - 1] > 3:
+                    np.append(indices, i - 1)
 
             indices = om.slicer[indices, ...]
 
@@ -143,7 +143,7 @@ class ContinuityCompBase(om.ExplicitComponent):
 
                 self.add_output(
                     name=f'defect_controls:{control_name}',
-                    val=5*np.ones((num_segments - 1,) + shape),
+                    val=5 * np.ones((num_segments - 1,) + shape),
                     desc=f'Continuity constraint values for control {control_name}',
                     units=units)
 

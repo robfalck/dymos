@@ -59,7 +59,7 @@ def _compute_dl_dg(tau: float,
         l[i] = np.prod(g)
         # dl_dg is symmetric, so fill two elements at once
         if dl_dg is not None:
-            for j in range(i+1, n):
+            for j in range(i + 1, n):
                 j_save = g[j]
                 g[j] = 1.0
                 val = np.prod(g)

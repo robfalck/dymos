@@ -486,7 +486,7 @@ class ExplicitShooting(TranscriptionBase):
             The phase object to which this transcription instance applies.
         """
         ogd = self._output_grid_data
-        any_state_cnty, any_control_cnty, any_rate_cnty = self._requires_continuity_constraints(phase)
+        _, any_control_cnty, any_rate_cnty = self._requires_continuity_constraints(phase)
         src_idxs = om.slicer[ogd.subset_node_indices['segment_ends'], ...]
 
         controls_to_enforce = set()

@@ -32,7 +32,7 @@ class BrachistochroneVectorStatesODE(om.ExplicitComponent):
         self.declare_partials(of='vdot', wrt='g', rows=arange, cols=arange)
         self.declare_partials(of='vdot', wrt='theta', rows=arange, cols=arange)
 
-        rs = np.arange(2*nn, dtype=int)
+        rs = np.arange(2 * nn, dtype=int)
         cs = np.repeat(np.arange(nn, dtype=int), 2)
         self.declare_partials(of='pos_dot', wrt='v', rows=rs, cols=cs)
         self.declare_partials(of='pos_dot', wrt='theta', rows=rs, cols=cs)

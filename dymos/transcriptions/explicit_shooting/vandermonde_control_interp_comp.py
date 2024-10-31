@@ -234,7 +234,7 @@ class VandermondeControlInterpComp(om.ExplicitComponent):
         dv3 : np.array
             The third derivative of v wrt the independent variable.
         """
-        p, n = v.shape
+        _, n = v.shape
         dv = np.zeros_like(v)
         dv2 = dv.copy()
         if self.options['compute_derivs']:
@@ -300,7 +300,7 @@ class VandermondeControlInterpComp(om.ExplicitComponent):
                 else:
                     input_name, output_name, rate_name, rate2_name = self._control_io_names[control_name]
                     order = options['order']
-                    V_ptau = np.vander(ptau, N=order+1, increasing=True)
+                    V_ptau = np.vander(ptau, N=order + 1, increasing=True)
                     dV_ptau, dV2_ptau, _ = self._dvander(V_ptau)
                     a = np.atleast_2d(self._V_hat_inv[order] @ inputs[input_name])
                     outputs[output_name] = V_ptau @ a
@@ -375,7 +375,7 @@ class VandermondeControlInterpComp(om.ExplicitComponent):
                     input_name, output_name, rate_name, rate2_name = self._control_io_names[control_name]
                     order = options['order']
 
-                    V_ptau = np.vander(ptau, N=order+1, increasing=True)
+                    V_ptau = np.vander(ptau, N=order + 1, increasing=True)
                     dV_ptau, dV2_ptau, dV3_ptau = self._dvander(V_ptau)
 
                     u_hat = inputs[input_name].real

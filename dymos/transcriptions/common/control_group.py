@@ -387,7 +387,7 @@ class ControlInterpComp(om.ExplicitComponent):
                 options = control_options[name]
                 control_name = self._input_names[name]
                 num_input_nodes = options['order'] + 1
-                L_de, D_de, D2_de = self._matrices[name]
+                _, D_de, D2_de = self._matrices[name]
                 nn = self.options['output_grid_data'].num_nodes
 
                 size = self.sizes[name]

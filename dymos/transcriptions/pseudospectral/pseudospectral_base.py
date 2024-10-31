@@ -474,7 +474,7 @@ class PseudospectralBase(TranscriptionBase):
                 use_mult = True
                 mult_val = options['mult_val']
 
-            src_idx = [-1] if options['index'] is None else [[-1]]+options['index']
+            src_idx = [-1] if options['index'] is None else [[-1]] + options['index']
 
             duration_balance_comp.add_balance('t_duration', val=options['val'],
                                               eq_units=options['units'], units=phase.time_options['units'],

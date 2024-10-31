@@ -30,14 +30,14 @@ class CannonballSizeComp(om.ExplicitComponent):
         radius = inputs['radius']
         dens = inputs['dens']
 
-        outputs['mass'] = (4/3.) * dens * np.pi * radius ** 3
+        outputs['mass'] = (4 / 3.) * dens * np.pi * radius ** 3
         outputs['S'] = np.pi * radius ** 2
 
     def compute_partials(self, inputs, partials):
         radius = inputs['radius']
         dens = inputs['dens']
 
-        partials['mass', 'dens'] = (4/3.) * np.pi * radius ** 3
+        partials['mass', 'dens'] = (4 / 3.) * np.pi * radius ** 3
         partials['mass', 'radius'] = 4. * dens * np.pi * radius ** 2
 
         partials['S', 'radius'] = 2 * np.pi * radius
