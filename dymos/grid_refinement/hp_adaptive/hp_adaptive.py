@@ -133,7 +133,7 @@ class HPAdaptive:
             left_end_idxs = np.append(left_end_idxs, gd.subset_num_nodes['all'])
 
             # obtain state and state rate histories from timeseries output
-            L, D = interpolation_lagrange_matrix(gd, gd)
+            _, D = interpolation_lagrange_matrix(gd, gd)
             x, _, _, x_d = eval_ode_on_grid(phase=phase, transcription=tx)
 
             # create and store second derivative information using differentiation matrix
@@ -334,7 +334,7 @@ class HPAdaptive:
             old_left_end_idxs = np.append(old_left_end_idxs, self.previous_gd[phase_path].subset_num_nodes['all'])
 
             # compute curvature
-            L, D = interpolation_lagrange_matrix(gd, gd)
+            _, D = interpolation_lagrange_matrix(gd, gd)
             x, _, _, x_d = eval_ode_on_grid(phase=phase, transcription=tx)
             x_dd[phase_path] = {}
             P = {}

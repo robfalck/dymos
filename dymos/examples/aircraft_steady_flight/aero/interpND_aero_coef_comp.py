@@ -117,7 +117,7 @@ class InterpNDAeroCoeffComp(om.ExplicitComponent):
 
         for ind, name, interp in self.interp_tup:
             # compute_derivative
-            values, derivs = interp.interpolate(self.inputs, compute_derivative=True)[:]
+            _, derivs = interp.interpolate(self.inputs, compute_derivative=True)[:]
             partials[name, 'M'] = derivs[:, 0]
             partials[name, 'alpha'] = np.degrees(derivs[:, 1])
             partials[name, 'h'] = derivs[:, 2] * 3.28e3
