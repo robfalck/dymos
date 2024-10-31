@@ -93,7 +93,7 @@ line-ending = "lf"
 [tool.ruff.lint]
 select = ["E", "F"]
 preview = true
-ignore = ["E241"]
+# ignore = ["E241"]
 
 [tool.ruff.lint.pycodestyle]
 max-line-length = 130
@@ -109,4 +109,5 @@ convention = "numpy"
 # Ignore Test classifiers
 "test_*.py" = ["D", "E", "F"]
 # Allow space-based formatting in some data files.
-"examples/aircraft_steady_flight/aero/crm_data.py" = ["E241"]
+"crm_data.py" = ["E241"]
+"max_thrust_comp.py" = ["E241"]
