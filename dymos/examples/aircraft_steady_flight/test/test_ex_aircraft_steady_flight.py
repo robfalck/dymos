@@ -26,16 +26,16 @@ def ex_aircraft_steady_flight(transcription, optimizer='SLSQP', use_boundary_con
     elif optimizer == 'IPOPT':
         p.driver.opt_settings['mu_init'] = 1e-3
         p.driver.opt_settings['max_iter'] = 200
-        p.driver.opt_settings['acceptable_tol'] = 1e-6
-        p.driver.opt_settings['constr_viol_tol'] = 1e-6
-        p.driver.opt_settings['compl_inf_tol'] = 1e-6
+        p.driver.opt_settings['acceptable_tol'] = 1e-5
+        p.driver.opt_settings['constr_viol_tol'] = 1e-5
+        p.driver.opt_settings['compl_inf_tol'] = 1e-5
         p.driver.opt_settings['acceptable_iter'] = 0
-        p.driver.opt_settings['tol'] = 1e-6
+        p.driver.opt_settings['tol'] = 1e-5
         p.driver.opt_settings['nlp_scaling_method'] = 'gradient-based'  # for faster convergence
         p.driver.opt_settings['alpha_for_y'] = 'safer-min-dual-infeas'
         p.driver.opt_settings['mu_strategy'] = 'monotone'
         # p.driver.opt_settings['derivative_test'] = 'first-order'
-        p.driver.opt_settings['print_level'] = 0
+        p.driver.opt_settings['print_level'] = 5
     elif optimizer == 'SLSQP':
         p.driver.opt_settings['MAXIT'] = 100
 
