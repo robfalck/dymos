@@ -60,7 +60,7 @@ def gauss_lobatto_subsets_and_nodes(n, seg_idx, compressed=False):
         'solution': np.arange(n, dtype=int),
     }
 
-    return subsets, lgl(n)[0]
+    return subsets, *lgl(n)
 
 
 def radau_pseudospectral_subsets_and_nodes(n, seg_idx, compressed=False):
@@ -108,7 +108,7 @@ def radau_pseudospectral_subsets_and_nodes(n, seg_idx, compressed=False):
         'solution': np.arange(n + 1, dtype=int),
     }
 
-    return subsets, lgr(n, include_endpoint=True)[0]
+    return subsets, *lgr(n, include_endpoint=True)
 
 
 def birkhoff_subsets_and_nodes(n, grid, seg_idx, compressed=False):
@@ -170,7 +170,7 @@ def birkhoff_subsets_and_nodes(n, grid, seg_idx, compressed=False):
     else:
         raise ValueError(f'Unrecognized grid. Acceptable values are one of {acceptable_grids}')
 
-    return subsets, nodes
+    return subsets, nodes, np.ones_like(nodes)
 
 
 def uniform_subsets_and_nodes(n, *args, **kwargs):
@@ -216,7 +216,7 @@ def uniform_subsets_and_nodes(n, *args, **kwargs):
         'all': np.arange(n + 1, dtype=int),
         'solution': np.arange(n + 1, dtype=int),
     }
-    return subsets, np.linspace(-1, 1, n + 1)
+    return subsets, np.linspace(-1, 1, n + 1), np.ones(n+1) / (n - 1)
 
 
 def make_subset_map(from_subset_idxs, to_subset_idxs):
@@ -349,6 +349,8 @@ class GridData(object):
 
         self.node_dptau_dstau = np.empty(0,)
 
+        self.node_weight = np.empty(0,)
+
         self.segment_indices = np.empty((num_segments, 2), dtype=int)
 
         self.subset_node_indices = {}
@@ -377,13 +379,13 @@ class GridData(object):
 
         # Define get_subsets and node points based on the transcription scheme
         if self.transcription == 'gauss-lobatto':
-            get_subsets_and_nodes = gauss_lobatto_subsets_and_nodes
+            get_subsets_nodes_weights = gauss_lobatto_subsets_and_nodes
         elif self.transcription == 'radau-ps':
-            get_subsets_and_nodes = radau_pseudospectral_subsets_and_nodes
+            get_subsets_nodes_weights = radau_pseudospectral_subsets_and_nodes
         elif self.transcription == 'uniform':
-            get_subsets_and_nodes = uniform_subsets_and_nodes
+            get_subsets_nodes_weights = uniform_subsets_and_nodes
         elif self.transcription == 'birkhoff':
-            get_subsets_and_nodes = functools.partial(birkhoff_subsets_and_nodes, grid=self.grid_type)
+            get_subsets_nodes_weights = functools.partial(birkhoff_subsets_and_nodes, grid=self.grid_type)
 
         # Make sure transcription_order is a vector
         if isinstance(transcription_order, str):
@@ -403,9 +405,9 @@ class GridData(object):
         self.segment_indices[0, 0] = 0
         ind0 = 0  # index of the first node in the segment
         for iseg in range(num_segments):
-            subsets_i, nodes_i = get_subsets_and_nodes(self.transcription_order[iseg],
-                                                       seg_idx=iseg,
-                                                       compressed=compressed)
+            subsets_i, nodes_i, weights_i = get_subsets_nodes_weights(self.transcription_order[iseg],
+                                                                      seg_idx=iseg,
+                                                                      compressed=compressed)
 
             if iseg == 0:
                 subset_ind0 = {name: 0 for name in subsets_i}
@@ -418,6 +420,9 @@ class GridData(object):
 
             # Append our nodes in segment tau space
             self.node_stau = np.concatenate((self.node_stau, nodes_i))
+
+            # Append our weights
+            self.node_weight = np.concatenate((self.node_weight, weights_i))
 
             # Append our nodes in phase tau space
             v0 = segment_ends[iseg]
