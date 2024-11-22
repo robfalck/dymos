@@ -190,9 +190,9 @@ def costate_estimation_example_fahroo():
 
     p.driver.declare_coloring()
 
-    tx = dm.Radau(num_segments=30, order=3)
+    # tx = dm.Radau(num_segments=30, order=3)
     # tx = dm.GaussLobatto(num_segments=50, order=3)
-    # tx = dm.Birkhoff(num_nodes=60)
+    tx = dm.Birkhoff(num_nodes=60)
 
     traj = dm.Trajectory()
     phase = traj.add_phase('phase', phase=dm.Phase(ode_class=FahrooRossOrbitCostateODE,
@@ -286,16 +286,24 @@ def costate_estimation_example_fahroo():
     plot_costates = True
     with np.printoptions(linewidth=10000):
         for con_name, lamb in lambdas.items():
+            state_name = con_name.split(":")[-1]
             if isinstance(tx, (dm.Radau, dm.GaussLobatto)):
                 if 'collocation_constraint' in con_name:
-                    state_name = con_name.split(":")[-1]
                     # print(f'{state_name} values')
                     # print(p.get_val(f'traj.phase.timeseries.{state_name}').ravel())
                     # print(f'\u03BB {state_name}')
                     # print(lamb / gd.node_weight[gd.subset_node_indices['col']])
                     lam_dict[state_name] = lamb / gd.node_weight[gd.subset_node_indices['col']]
             elif isinstance(tx, dm.Birkhoff):
-                om.issue_warning('Birkhoff does not implement covector mapping yet.')
+                # p.list_driver_vars()
+                # print(f'{state_name} values')
+                # print(p.get_val(f'traj.phase.timeseries.{state_name}').ravel())
+                if 'defects' in con_name:
+                    # print(f'\u03BB {state_name}')
+                    print(con_name)
+                    print(lamb)
+                    # print(lamb / gd.node_weight[gd.subset_node_indices['col']])
+                # om.issue_warning('Birkhoff does not implement covector mapping yet.')
                 plot_costates = False
             else:
                 om.issue_warning(f'Transcirption {tx.__class__.__name__} does not support covector mapping.')
