@@ -479,29 +479,6 @@ def make_timeseries_report(prob, solution_record_file=None, simulation_record_fi
             x_range = None
 
             for var_name in sorted(ts_units_dict.keys(), key=str.casefold):
-                # fig_kwargs = {'x_range': x_range} if x_range is not None else {}
-
-                # tool_tips = [(f'{x_name}', f'@{x_name}'), (f'{var_name}', f'@{var_name}')]
-
-                # fig = figure(tools='pan,box_zoom,xwheel_zoom,hover,undo,reset,save',
-                #              tooltips=tool_tips,
-                #              x_axis_label=f'{x_name} ({ts_units_dict[x_name]})',
-                #              y_axis_label=f'{var_name} ({ts_units_dict[var_name]})',
-                #              toolbar_location='above',
-                #              sizing_mode='stretch_both',
-                #              min_height=250, max_height=300,
-                #              margin=margin,
-                #              **fig_kwargs)
-                # fig.xaxis.axis_label_text_font_size = '10pt'
-                # fig.yaxis.axis_label_text_font_size = '10pt'
-                # fig.toolbar.autohide = True
-                # fig = _new_figure(x_name=x_name, y_name=var_name,
-                #                   x_units=ts_units_dict[x_name],
-                #                   y_units=ts_units_dict[var_name],
-                #                   margin=margin,
-                #                   x_range=x_range)
-
-                legend_data = []
                 for i, phase_name in enumerate(phase_names):
                     color = colors[i % 20]
                     sol_data = source_data[traj_path]['sol_data_by_phase'][phase_name]
@@ -513,6 +490,9 @@ def make_timeseries_report(prob, solution_record_file=None, simulation_record_fi
                         sources = {}
                         for idxs in indices:
                             str_idxs = ','.join([str(i) for i in idxs])
+                            # Bokeh ColumnDataSource doesn't allow special characters in keys,
+                            # but we want the y_axis label to show the indices of the columns
+                            # being plotted as 'varname[i,j,k]'.
                             sources[f'{var_name}[{str_idxs}]'] = s = f'{var_name}_{str_idxs.replace(",","_")}'
                             sol_data_column = sol_data[var_name][:, *idxs]
                             sol_data[s] = sol_data_column
@@ -524,6 +504,7 @@ def make_timeseries_report(prob, solution_record_file=None, simulation_record_fi
                     sim_source = ColumnDataSource(sim_data)
                     if x_name in sol_data and var_name in sol_data:
                         for _var_name, _source in sources.items():
+                            legend_data = []
                             legend_items = []
                             fig = _new_figure(x_name=x_name, y_name=_var_name,
                                               x_units=ts_units_dict[x_name],
