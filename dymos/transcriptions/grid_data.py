@@ -38,6 +38,8 @@ def gauss_lobatto_subsets_and_nodes(n, seg_idx, compressed=False):
         'all' Gives all node indices.
     np.array
         The location of all nodes on [-1, 1].
+    np.array
+        The quadrature weights at the nodes.
 
     Notes
     -----
@@ -60,7 +62,7 @@ def gauss_lobatto_subsets_and_nodes(n, seg_idx, compressed=False):
         'solution': np.arange(n, dtype=int),
     }
 
-    return subsets, lgl(n)[0]
+    return subsets, *lgl(n)
 
 
 def radau_pseudospectral_subsets_and_nodes(n, seg_idx, compressed=False):
@@ -89,6 +91,8 @@ def radau_pseudospectral_subsets_and_nodes(n, seg_idx, compressed=False):
         'all' gives all node indices.
     np.array
         The location of all nodes on [-1, 1].
+    np.array
+        The quadrature weights at the nodes.
 
     Notes
     -----
@@ -108,7 +112,7 @@ def radau_pseudospectral_subsets_and_nodes(n, seg_idx, compressed=False):
         'solution': np.arange(n + 1, dtype=int),
     }
 
-    return subsets, lgr(n, include_endpoint=True)[0]
+    return subsets, *lgr(n, include_endpoint=True)
 
 
 def birkhoff_subsets_and_nodes(n, grid, seg_idx, compressed=False):
@@ -159,18 +163,18 @@ def birkhoff_subsets_and_nodes(n, grid, seg_idx, compressed=False):
     }
 
     if grid == 'lgl':
-        nodes = lgl(n)[0]
+        nodes, weights = lgl(n)
         subsets['all'] = np.arange(n, dtype=int)
     elif grid == 'lgr':
-        nodes = lgr(n, include_endpoint=False)[0]
+        nodes, weights = lgr(n, include_endpoint=False)
         subsets['all'] = np.arange(n, dtype=int)
     elif grid == 'cgl':
-        nodes = cgl(n)[0]
+        nodes, weights = cgl(n)
         subsets['all'] = np.arange(n, dtype=int)
     else:
         raise ValueError(f'Unrecognized grid. Acceptable values are one of {acceptable_grids}')
 
-    return subsets, nodes
+    return subsets, nodes, weights
 
 
 def uniform_subsets_and_nodes(n, *args, **kwargs):
@@ -184,7 +188,7 @@ def uniform_subsets_and_nodes(n, *args, **kwargs):
     Parameters
     ----------
     n : int
-        The total number of nodes in the Radau Pseudospectral segment (including right endpoint).
+        The total number of nodes in the segment.
     *args : Iterable
         Non-keyword arguments that make this function consistent with radau_subsets_and_nodes and
         gauss_lobatto_subsets_and_nodes, but whose additional arguments have no bearing on the uniform grid.
@@ -205,6 +209,8 @@ def uniform_subsets_and_nodes(n, *args, **kwargs):
         'all' gives all node indices.
     np.array
         The location of all nodes on [-1, 1].
+    np.array
+        The quadrature weights at the nodes.
     """
     subsets = {
         'state_disc': np.empty(0, dtype=int),
@@ -216,7 +222,12 @@ def uniform_subsets_and_nodes(n, *args, **kwargs):
         'all': np.arange(n + 1, dtype=int),
         'solution': np.arange(n + 1, dtype=int),
     }
-    return subsets, np.linspace(-1, 1, n + 1)
+    nodes = np.linspace(-1, 1, n + 1)
+    dx = nodes[1] - nodes[0]
+    weights = dx * np.ones_like(nodes)
+    weights[0] = weights[0] / 2
+    weights[-1] = weights[-1] / 2
+    return subsets, nodes, weights
 
 
 def make_subset_map(from_subset_idxs, to_subset_idxs):
@@ -290,6 +301,8 @@ class GridData(object):
         The number of steps to take in each segment of the phase, for explicit phases.
     num_nodes : int
         The total number of nodes in the phase
+    node_weight : ndarray
+        The quadrature weights for the nodes
     node_stau : ndarray
         The locations of each node in non-dimensional segment time (segment tau space).
     node_ptau : ndarray
@@ -343,6 +356,8 @@ class GridData(object):
 
         self.num_steps_per_segment = 0
 
+        self.node_weight = np.empty(0,)
+
         self.node_stau = np.empty(0,)
 
         self.node_ptau = np.empty(0,)
@@ -377,13 +392,13 @@ class GridData(object):
 
         # Define get_subsets and node points based on the transcription scheme
         if self.transcription == 'gauss-lobatto':
-            get_subsets_and_nodes = gauss_lobatto_subsets_and_nodes
+            get_subsets_nodes_and_weights = gauss_lobatto_subsets_and_nodes
         elif self.transcription == 'radau-ps':
-            get_subsets_and_nodes = radau_pseudospectral_subsets_and_nodes
+            get_subsets_nodes_and_weights = radau_pseudospectral_subsets_and_nodes
         elif self.transcription == 'uniform':
-            get_subsets_and_nodes = uniform_subsets_and_nodes
+            get_subsets_nodes_and_weights = uniform_subsets_and_nodes
         elif self.transcription == 'birkhoff':
-            get_subsets_and_nodes = functools.partial(birkhoff_subsets_and_nodes, grid=self.grid_type)
+            get_subsets_nodes_and_weights = functools.partial(birkhoff_subsets_and_nodes, grid=self.grid_type)
 
         # Make sure transcription_order is a vector
         if isinstance(transcription_order, str):
@@ -403,9 +418,9 @@ class GridData(object):
         self.segment_indices[0, 0] = 0
         ind0 = 0  # index of the first node in the segment
         for iseg in range(num_segments):
-            subsets_i, nodes_i = get_subsets_and_nodes(self.transcription_order[iseg],
-                                                       seg_idx=iseg,
-                                                       compressed=compressed)
+            subsets_i, nodes_i, w_i = get_subsets_nodes_and_weights(self.transcription_order[iseg],
+                                                                    seg_idx=iseg,
+                                                                    compressed=compressed)
 
             if iseg == 0:
                 subset_ind0 = {name: 0 for name in subsets_i}
@@ -418,6 +433,9 @@ class GridData(object):
 
             # Append our nodes in segment tau space
             self.node_stau = np.concatenate((self.node_stau, nodes_i))
+
+            # Append the weights
+            self.node_weight = np.concatenate((self.node_weight, w_i))
 
             # Append our nodes in phase tau space
             v0 = segment_ends[iseg]

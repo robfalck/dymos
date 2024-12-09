@@ -18,7 +18,8 @@ import dymos as dm
 from .options import ControlOptionsDictionary, ParameterOptionsDictionary, \
     StateOptionsDictionary, TimeOptionsDictionary, ConstraintOptionsDictionary, \
     GridRefinementOptionsDictionary, SimulateOptionsDictionary, \
-    TimeseriesOutputOptionsDictionary, PhaseTimeseriesOptionsDictionary
+    TimeseriesOutputOptionsDictionary, PhaseTimeseriesOptionsDictionary, \
+    QuadratureOptionsDictionary
 
 from ..transcriptions.transcription_base import TranscriptionBase
 from ..transcriptions.grid_data import GaussLobattoGrid, RadauGrid, UniformGrid, BirkhoffGrid
@@ -194,6 +195,8 @@ class Phase(om.Group):
                              desc='Options for each parameter in this phase.')
         self.options.declare('control_options', types=dict, default={},
                              desc='Options for each control in this phase.')
+        self.options.declare('quadrature_options', types=dict, default={},
+                             desc='Options for each quadrature variable in this phase.')
 
     @property
     def time_options(self):
@@ -223,6 +226,10 @@ class Phase(om.Group):
     @property
     def control_options(self):
         return self.options['control_options']
+
+    @property
+    def quadrature_options(self):
+        return self.options['quadrature_options']
 
     def add_state(self, name, units=_unspecified, shape=_unspecified,
                   rate_source=_unspecified, targets=_unspecified,
@@ -490,6 +497,68 @@ class Phase(om.Group):
 
         if final_bounds is not _unspecified:
             self.state_options[name]['final_bounds'] = final_bounds
+
+    def add_quadrature(self, name, rate_source, units=_unspecified, shape=_unspecified,
+                       direction='forward', opt_initial=False, opt_final=False,
+                       initial_bounds=_unspecified, final_bounds=_unspecified,
+                       scaler=None, adder=None, ref0=None, ref=None):
+        """
+        Add a new quadrature output to the phase.
+
+        Quadrature outputs are integrated quatities, but unlike states:
+        - quaderature values are only known at the ends of the phase
+        - quadratures are explicitly computed
+
+        The direction of the integration can be controled via the
+        `direction` option, which may be one of 'forward' or 'backward'.
+
+        If the quadrature direction is 'forward', then a new phase
+        input `phase.initial_quadratures:{name}` will be created. The quadrature will
+        integrate forward from this point. This initial value is fixed by default,
+        but can be made a design variable via by setting option `opt_initial` to True.
+
+        Similarly, if the quadrature direction is 'backward', then a new phase
+        input `phase.final_quadratures:{name}` will be created. The quadrature will
+        integrate backward from this point. Similarly, setting `opt_final` to True
+        will turn this value into a design variable.
+
+        Quadrature outputs will be computed and available as `phase.quadratures.{name}`.
+        Each output will consist of two rows, one for the initial value and one for the
+        final value.  Having both ends as outputs will allow phase linkages to be
+        applied to quadrature values.
+
+        Parameters
+        ----------
+        name : str
+            The name of the quadrature output.
+        rate_source : str
+            The rate source being integrated for the quadrature. This can be a parameter, control,
+            time, state, or ODE output, just like a rate_source for a state.
+        units : str
+            The units of the quadrature output. By default, attempt to determine the units
+            via introspection.
+        direction : str
+            One of 'forward' or 'backward', specifying the direction of integraion.
+        opt_initial : bool
+            Flag indicating whether the value of this quadrature at the start
+            of the phase should be considered a design variable. This is only
+            relevant if `direction` is 'forward'
+        opt_final : bool
+            Flag indicating whether the value of this quadrature at the end
+            of the phase should be considered a design variable. This is only
+            valid if `direction` is 'backward'.
+        """
+        if name not in self.quadrature_options:
+            self.quadrature_options[name] = QuadratureOptionsDictionary()
+            self.quadrature_options[name]['name'] = name
+
+        self.quadrature_options[name].set(rate_source=rate_source, units=units,
+                                          direction=direction, shape=shape,
+                                          opt_initial=opt_initial, opt_final=opt_final,
+                                          scaler=scaler, adder=adder,
+                                          ref0=ref0, ref=ref,
+                                          initial_bounds=initial_bounds,
+                                          final_bounds=final_bounds)
 
     def check_parameter(self, name):
         """

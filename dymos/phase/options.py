@@ -423,6 +423,77 @@ class StateOptionsDictionary(om.OptionsDictionary):
                      desc='Whether the final value of the state is expected to be connected to an exterior value.')
 
 
+class QuadratureOptionsDictionary(om.OptionsDictionary):
+    """
+    An OptionsDictionary specific to quadratures.
+
+    Parameters
+    ----------
+    read_only : bool
+        If True, setting (via __setitem__ or update) is not permitted.
+    """
+    def __init__(self, read_only=False):
+        super(QuadratureOptionsDictionary, self).__init__(read_only)
+
+        self.declare(name='name', types=str,
+                     desc='name of ODE state variable')
+
+        self.declare(name='rate_source', types=str, allow_none=True, default=None,
+                     desc='ODE-path or phase variable providing the derivative of the state variable')
+
+        self.declare(name='units', default=_unspecified,
+                     allow_none=True, desc='units in which the state variable is defined')
+
+        self.declare(name='indices', types=(Iterable,), default=None, allow_none=True,
+                     desc='Indices value of the variable, format is controlled by the `flat_indices` option.')
+
+        self.declare(name='direction', values=('forward', 'backward'), default='forward',
+                     desc='Direction of integration for the quadrature.')
+
+        self.declare(name='opt_initial', types=bool, default=False,
+                     desc='If True, the initial value of this quadrature is a design variable. '
+                          'This option is invalid if direction="backward".')
+
+        self.declare(name='opt_final', types=bool, default=False,
+                     desc='If True, the final value of this quadrature is a design variable. '
+                          'This option is invalid if direction="forward".')
+
+        self.declare(name='initial_bounds', types=Iterable, default=None, allow_none=True,
+                     desc='Bounds on the initial value of the state at the start of the phase. '
+                          'This option is invalid unless opt_initial=True.')
+
+        self.declare(name='final_bounds', types=Iterable, default=None, allow_none=True,
+                     desc='Bounds on the final value of the state at the start of the phase. '
+                          'This option is invalid unless opt_final=True.')
+
+        self.declare(name='shape', types=Iterable, allow_none=True, default=None,
+                     desc='shape of the state variable, as determined by introspection')
+
+        self.declare(name='scaler',
+                     types=(Iterable, Number), default=None,
+                     allow_none=True,
+                     desc='Scaler of the state variable initial/final '
+                          'value if used as an design variables.')
+
+        self.declare(name='adder',
+                     types=(Iterable, Number), default=None,
+                     allow_none=True,
+                     desc='Adder of the state variable initial/final '
+                          'value if used as an design variables.')
+
+        self.declare(name='ref0',
+                     types=(Iterable, Number), default=None,
+                     allow_none=True,
+                     desc='Zero reference of the state variable initial/final '
+                          'value if used as an design variables.')
+
+        self.declare(name='ref',
+                     types=(Iterable, Number), default=None,
+                     allow_none=True,
+                     desc='Unit-reference of the state variable initial/final '
+                          'value if used as an design variables.')
+
+
 class TimeOptionsDictionary(om.OptionsDictionary):
     """
     An OptionsDictionary for time options.
