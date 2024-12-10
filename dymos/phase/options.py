@@ -436,13 +436,13 @@ class QuadratureOptionsDictionary(om.OptionsDictionary):
         super(QuadratureOptionsDictionary, self).__init__(read_only)
 
         self.declare(name='name', types=str,
-                     desc='name of ODE state variable')
+                     desc='name of the quadrature variable')
 
         self.declare(name='rate_source', types=str, allow_none=True, default=None,
-                     desc='ODE-path or phase variable providing the derivative of the state variable')
+                     desc='ODE-path or phase variable providing the derivative of the quadrature variable')
 
         self.declare(name='units', default=_unspecified,
-                     allow_none=True, desc='units in which the state variable is defined')
+                     allow_none=True, desc='units in which the quadrature variable is defined')
 
         self.declare(name='indices', types=(Iterable,), default=None, allow_none=True,
                      desc='Indices value of the variable, format is controlled by the `flat_indices` option.')
@@ -466,31 +466,31 @@ class QuadratureOptionsDictionary(om.OptionsDictionary):
                      desc='Bounds on the final value of the state at the start of the phase. '
                           'This option is invalid unless opt_final=True.')
 
-        self.declare(name='shape', types=Iterable, allow_none=True, default=None,
-                     desc='shape of the state variable, as determined by introspection')
+        self.declare(name='shape', allow_none=True, default=_unspecified,
+                     desc='shape of the quadrature variable, as determined by introspection')
 
         self.declare(name='scaler',
                      types=(Iterable, Number), default=None,
                      allow_none=True,
-                     desc='Scaler of the state variable initial/final '
+                     desc='Scaler of the quadrature variable initial/final '
                           'value if used as an design variables.')
 
         self.declare(name='adder',
                      types=(Iterable, Number), default=None,
                      allow_none=True,
-                     desc='Adder of the state variable initial/final '
+                     desc='Adder of the quadrature variable initial/final '
                           'value if used as an design variables.')
 
         self.declare(name='ref0',
                      types=(Iterable, Number), default=None,
                      allow_none=True,
-                     desc='Zero reference of the state variable initial/final '
+                     desc='Zero reference of the quadrature variable initial/final '
                           'value if used as an design variables.')
 
         self.declare(name='ref',
                      types=(Iterable, Number), default=None,
                      allow_none=True,
-                     desc='Unit-reference of the state variable initial/final '
+                     desc='Unit-reference of the quadrature variable initial/final '
                           'value if used as an design variables.')
 
 

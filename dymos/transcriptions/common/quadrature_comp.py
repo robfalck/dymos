@@ -39,6 +39,7 @@ class QuadratureComp(om.ExplicitComponent):
         super().__init__(**kwargs)
         self._no_check_partials = not dymos_options['include_check_partials']
 
+        self._grid_data = None
         self._initial_names = {}
         self._final_names = {}
         self._input_names = {}
@@ -56,7 +57,7 @@ class QuadratureComp(om.ExplicitComponent):
         """
         Perform setup procedure for the QuadratureComp.
 
-        All IO is added during phase configuration.
+        All IO is added during phase configure_io.
         """
         pass
 
@@ -71,6 +72,7 @@ class QuadratureComp(om.ExplicitComponent):
     def configure_io(self, phase):
         quad_options = self.options['quadrature_options']
         time_units = phase.time_options['units']
+        self._grid_data = phase.options['transcription'].grid_data
 
         self.add_input('t_duration', units=time_units)
 
@@ -101,7 +103,7 @@ class QuadratureComp(om.ExplicitComponent):
                             compute_shape=shape_func)
 
     def setup_partials(self):
-        gd = self.options['grid_data']
+        gd = self._grid_data
         w = gd.node_weight
 
         quad_options = self.options['quadrature_options']
@@ -135,6 +137,8 @@ class QuadratureComp(om.ExplicitComponent):
         gd = self.options['grid_data']
         quadrature_options = self.options['quadrature_options']
 
+        dt_dptau = inputs['t_duration'] / 2
+
         w = gd.node_weight
 
         for name, options in quadrature_options.items():
@@ -146,4 +150,4 @@ class QuadratureComp(om.ExplicitComponent):
             else:
                 v0 = inputs[self._final_names[name]]
                 k = -1.0
-            outputs[name] = v0 + k * quad
+            outputs[name] = v0 + k * dt_dptau * quad

@@ -498,10 +498,11 @@ class Phase(om.Group):
         if final_bounds is not _unspecified:
             self.state_options[name]['final_bounds'] = final_bounds
 
-    def add_quadrature(self, name, rate_source, units=_unspecified, shape=_unspecified,
-                       direction='forward', opt_initial=False, opt_final=False,
-                       initial_bounds=_unspecified, final_bounds=_unspecified,
-                       scaler=None, adder=None, ref0=None, ref=None):
+    # def add_quadrature(self, name, rate_source, units=_unspecified, shape=_unspecified,
+    #                    direction='forward', opt_initial=False, opt_final=False,
+    #                    initial_bounds=None, final_bounds=None,
+    #                    scaler=None, adder=None, ref0=None, ref=None):
+    def add_quadrature(self, name, rate_source, **kwargs):
         """
         Add a new quadrature output to the phase.
 
@@ -534,9 +535,12 @@ class Phase(om.Group):
         rate_source : str
             The rate source being integrated for the quadrature. This can be a parameter, control,
             time, state, or ODE output, just like a rate_source for a state.
-        units : str
+        units : str or _unspecified
             The units of the quadrature output. By default, attempt to determine the units
             via introspection.
+        shape : str or _unspecified
+            The shape of the quadrature output. The input shape has num_nodes as its first
+            dimension and then this shape for the remaining dimensions.
         direction : str
             One of 'forward' or 'backward', specifying the direction of integraion.
         opt_initial : bool
@@ -547,18 +551,19 @@ class Phase(om.Group):
             Flag indicating whether the value of this quadrature at the end
             of the phase should be considered a design variable. This is only
             valid if `direction` is 'backward'.
+        initial_bounds : iterable or None
+            Bounds on the initial value of the quadrature, when direction=='forward'.
+        final_bounds : iterable or None
+            Bounds on the final value of the quadrature, when direction=='backward'.
+        scaler : float or None or ndarray
+        adder : float or None or ndarray
+        ref0 : float or None or ndarray
+        ref : float or None or ndarray
         """
         if name not in self.quadrature_options:
             self.quadrature_options[name] = QuadratureOptionsDictionary()
-            self.quadrature_options[name]['name'] = name
 
-        self.quadrature_options[name].set(rate_source=rate_source, units=units,
-                                          direction=direction, shape=shape,
-                                          opt_initial=opt_initial, opt_final=opt_final,
-                                          scaler=scaler, adder=adder,
-                                          ref0=ref0, ref=ref,
-                                          initial_bounds=initial_bounds,
-                                          final_bounds=final_bounds)
+        self.quadrature_options[name].set(name=name, rate_source=rate_source, **kwargs)
 
     def check_parameter(self, name):
         """
@@ -2267,6 +2272,7 @@ class Phase(om.Group):
         transcription.setup_ode(self)
 
         transcription.setup_timeseries_outputs(self)
+        transcription.setup_quadratures(self)
 
         transcription.setup_duration_balance(self)
 
@@ -2301,6 +2307,7 @@ class Phase(om.Group):
         transcription.configure_controls(self)
         transcription.configure_parameters(self)
         transcription.configure_states(self)
+        transcription.configure_quadratures(self)
 
         transcription.configure_ode(self)
 

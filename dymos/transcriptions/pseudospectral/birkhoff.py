@@ -631,7 +631,7 @@ class Birkhoff(TranscriptionBase):
             # Failed to find variable, assume it is in the ODE
             rate_path = f'ode_all.{var}'
 
-        return rate_path
+        return rate_path, None
 
     def _get_timeseries_var_source(self, var, output_name, phase):
         """

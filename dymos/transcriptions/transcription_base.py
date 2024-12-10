@@ -4,7 +4,7 @@ import numpy as np
 
 import openmdao.api as om
 
-from .common import ControlGroup, ParameterComp
+from .common import ControlGroup, ParameterComp, QuadratureComp
 from ..utils.constants import INF_BOUND
 from ..utils.indexing import get_constraint_flat_idxs
 from ..utils.introspection import configure_states_introspection, get_promoted_vars, \
@@ -228,6 +228,10 @@ class TranscriptionBase(object):
                     phase.connect(f'parameter_vals:{name}', tgts, src_indices=src_idxs,
                                   flat_src_indices=True)
 
+    def configure_quadratures(self, phase):
+        if phase.quadrature_options:
+            phase._get_subsystem('quad_comp').configure_io(phase)
+
     def setup_states(self, phase):
         """
         Setup the states for this transcription.
@@ -417,6 +421,18 @@ class TranscriptionBase(object):
                 phase.connect(src_name=src,
                               tgt_name=f'{timeseries_name}.{input_name}',
                               src_indices=src_idxs)
+
+    def _setup_quadratures(self, phase):
+        if phase.quadrature_options:
+            phase.add_subsystem('quad_comp',
+                                QuadratureComp(quadrature_options=phase.quadrature_options),
+                                promotes_inputs=['t_duration'])
+
+    def _configure_quadratures(self, phase):
+        for name, options in phase.quadrature_options:
+            # TODO: finish
+            pass
+
 
     def configure_boundary_constraints(self, phase):
         """
