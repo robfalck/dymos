@@ -116,7 +116,7 @@ class GridRefinementODESystem(om.Group):
                 self.promotes('ode', inputs=[(tgt, f'states:{name}')])
             if targets:
                 self.set_input_defaults(name=f'states:{name}',
-                                        val=np.ones(num_nodes),
+                                        val=np.ones((num_nodes,) + options['shape']),
                                         units=options['units'])
 
         # Configure the controls
@@ -132,7 +132,7 @@ class GridRefinementODESystem(om.Group):
                 for tgt in targets:
                     self.promotes('ode', inputs=[(tgt, f'controls:{name}')])
                 self.set_input_defaults(name=f'controls:{name}',
-                                        val=np.ones(num_nodes),
+                                        val=np.ones((num_nodes,) + options['shape']),
                                         units=options['units'])
 
             targets = get_targets(self.ode, f'{name}_rate', options['rate_targets'])
@@ -140,7 +140,7 @@ class GridRefinementODESystem(om.Group):
                 for tgt in targets:
                     self.promotes('ode', inputs=[(tgt, f'control_rates:{name}_rate')])
                 self.set_input_defaults(name=f'control_rates:{name}_rate',
-                                        val=np.ones(num_nodes),
+                                        val=np.ones((num_nodes,) + options['shape']),
                                         units=rate_units)
 
             targets = get_targets(self.ode, f'{name}_rate2', options['rate2_targets'])
@@ -148,7 +148,7 @@ class GridRefinementODESystem(om.Group):
                 for tgt in targets:
                     self.promotes('ode', inputs=[(tgt, f'control_rates:{name}_rate2')])
                 self.set_input_defaults(name=f'control_rates:{name}_rate2',
-                                        val=np.ones(num_nodes),
+                                        val=np.ones((num_nodes,) + options['shape']),
                                         units=rate2_units)
 
         # Configure the parameters

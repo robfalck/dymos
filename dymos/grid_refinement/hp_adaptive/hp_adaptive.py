@@ -138,7 +138,7 @@ class HPAdaptive:
 
             # create and store second derivative information using differentiation matrix
             for state_name, options in phase.state_options.items():
-                self.previous_x_dd[phase_path][state_name] = D @ x_d[state_name]
+                self.previous_x_dd[phase_path][state_name] = np.einsum("ij,j...->i...", D, x_d[state_name])
 
             gd = phase.options['transcription'].grid_data
             numseg = gd.num_segments

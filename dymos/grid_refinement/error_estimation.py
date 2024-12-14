@@ -163,7 +163,7 @@ def eval_ode_on_grid(phase, transcription):
 
     for name, options in phase.state_options.items():
         x_prev = phase.get_val(f'timeseries.{state_prefix}{name}', units=options['units'])
-        x[name] = np.dot(L, x_prev)
+        x[name] = np.einsum("ij,j...->i...", L, x_prev)
         targets = get_targets(ode, name, options['targets'])
         if targets:
             p_refine.set_val(f'states:{name}', x[name])
@@ -174,19 +174,19 @@ def eval_ode_on_grid(phase, transcription):
         rate2_targets = get_targets(ode, f'{name}_rate2', options['rate2_targets'])
 
         u_prev = phase.get_val(f'timeseries.{control_prefix}{name}', units=options['units'])
-        u[name] = np.dot(L, u_prev)
+        u[name] = np.einsum("ij,j...->i...", L, u_prev)
         if targets:
             p_refine.set_val(f'controls:{name}', u[name])
 
         if phase.timeseries_options['include_control_rates']:
             if rate_targets:
                 u_rate_prev = phase.get_val(f'timeseries.control_rates:{name}_rate')
-                u_rate[name] = np.dot(L, u_rate_prev)
+                u_rate[name] = np.einsum("ij,j...->i...", L, u_rate_prev)
                 p_refine.set_val(f'control_rates:{name}_rate', u_rate[name])
 
             if rate2_targets:
                 u_rate2_prev = phase.get_val(f'timeseries.control_rates:{name}_rate2')
-                u_rate2[name] = np.dot(L, u_rate2_prev)
+                u_rate2[name] = np.einsum("ij,j...->i...", L, u_rate2_prev)
                 p_refine.set_val(f'control_rates:{name}_rate2', u_rate2[name])
 
     # Configure the parameters
@@ -286,9 +286,12 @@ def compute_state_quadratures(x_hat, f_hat, t_duration, transcription):
         x_prime[state_name][left_end_idxs, ...] = x_hat[state_name][left_end_idxs, ...]
         nnps = np.array(gd.subset_num_nodes_per_segment['all']) - 1
         left_end_idxs_repeated = np.repeat(left_end_idxs, nnps)
+        f_hat_non_left = f_hat[state_name][not_left_end_idxs, ...]
+        dt_dstau_reshaped = dt_dstau.reshape(-1, *([1] * (f_hat_non_left.ndim - 1)))
         x_prime[state_name][not_left_end_idxs, ...] = \
             x_hat[state_name][left_end_idxs_repeated, ...] \
-            + dt_dstau * np.dot(I, f_hat[state_name][not_left_end_idxs, ...])
+            + dt_dstau_reshaped * np.einsum("ij,j...->i...", I, f_hat_non_left)
+            # + dt_dstau * np.dot(I, f_hat[state_name][not_left_end_idxs, ...])
 
     return x_prime
 
