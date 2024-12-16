@@ -291,7 +291,6 @@ def compute_state_quadratures(x_hat, f_hat, t_duration, transcription):
         x_prime[state_name][not_left_end_idxs, ...] = \
             x_hat[state_name][left_end_idxs_repeated, ...] \
             + dt_dstau_reshaped * np.einsum("ij,j...->i...", I, f_hat_non_left)
-            # + dt_dstau * np.dot(I, f_hat[state_name][not_left_end_idxs, ...])
 
     return x_prime
 
