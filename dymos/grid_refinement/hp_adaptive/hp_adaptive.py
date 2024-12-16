@@ -234,7 +234,7 @@ class HPAdaptive:
 
                     for state_name, options in phase.state_options.items():
                         beta = 1 + np.max(x[state_name][left_end_idxs[k]:left_end_idxs[k + 1]])
-                        c = a @ x[state_name][left_end_idxs[k]:left_end_idxs[k + 1]]
+                        c = np.einsum('ij,j...->i...', a, x[state_name][left_end_idxs[k]:left_end_idxs[k + 1]])
                         b = np.multiply(c.ravel(), np.array([(h_ / h[k]) ** el for el in
                                                              range(seg_size[gd.transcription])]))
                         b_hat = np.multiply(c.ravel(),
