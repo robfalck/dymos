@@ -7,7 +7,7 @@ import pathlib
 import subprocess
 
 
-EXCLUDE_DIRS = ('_build', '.ipynb_checkpoints')
+EXCLUDE_DIRS = ('_build', '.ipynb_checkpoints', 'sphinx_doc')
 
 
 class bcolors:
