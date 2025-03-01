@@ -548,7 +548,7 @@ const thebe_selector_output = ".output, .cell_output"
 
 <li class="toctree-l2"><a class="reference internal" href="../cart_pole/cart_pole.html">Cart-Pole Optimal Control</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../brachistochrone/brachistochrone_tandem_phases.html">Brachistochrone with tandem phases</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cannonball_implicit_duration/cannonball_implicit_duration.html">Cannonball Implicit Duration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../implicit_duration/brachistochrone_implicit_duration.html">Implicit Duration</a></li>
 </ul>
 </li>
 </ul>
@@ -562,6 +562,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="../../features/phases/constraints.html">Constraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../features/phases/objective.html">Objective</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../features/phases/timeseries.html">Timeseries Outputs</a></li>
+
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../features/trajectories/trajectories.html">Organizing Phases into Trajectories</a></li>
@@ -800,20 +801,20 @@ traveled by a block (that starts and ends at rest) sliding without
 friction along a horizontal surface, with acceleration as the control.</p>
 <p>We minimize the final time, <span class="math notranslate nohighlight">\(t_f\)</span>, by varying the dynamic control,
 <span class="math notranslate nohighlight">\(u\)</span>, subject to the dynamics:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-2ed061dc-595b-47ee-b02d-971392108f51">
-<span class="eqno">(45)<a class="headerlink" href="#equation-2ed061dc-595b-47ee-b02d-971392108f51" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-434bc5ac-c1f9-4b1a-b7ee-04f4e7ccb856">
+<span class="eqno">(45)<a class="headerlink" href="#equation-434bc5ac-c1f9-4b1a-b7ee-04f4e7ccb856" title="Permalink to this equation">#</a></span>\[\begin{align}
   \frac{dx}{dt} &amp;= v \\
   \frac{dv}{dt} &amp;= u
 \end{align}\]</div>
 <p>The initial conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-180f5e78-f35e-434b-8c42-7a3cb41798ab">
-<span class="eqno">(46)<a class="headerlink" href="#equation-180f5e78-f35e-434b-8c42-7a3cb41798ab" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-72b936da-e624-4548-9874-5ec7cbfd218a">
+<span class="eqno">(46)<a class="headerlink" href="#equation-72b936da-e624-4548-9874-5ec7cbfd218a" title="Permalink to this equation">#</a></span>\[\begin{align}
   x_0 &amp;= 0 \\
   v_0 &amp;= 0
 \end{align}\]</div>
 <p>and the final conditions are</p>
-<div class="amsmath math notranslate nohighlight" id="equation-d40333ab-6e43-4ba6-89bf-1845b5a8e466">
-<span class="eqno">(47)<a class="headerlink" href="#equation-d40333ab-6e43-4ba6-89bf-1845b5a8e466" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-a0e09346-e998-43bd-8231-efdd64c02033">
+<span class="eqno">(47)<a class="headerlink" href="#equation-a0e09346-e998-43bd-8231-efdd64c02033" title="Permalink to this equation">#</a></span>\[\begin{align}
   x_f &amp;= \rm{free} \\
   v_f &amp;= 0
 \end{align}\]</div>
@@ -829,7 +830,7 @@ option, but it has no inputs and no outputs. The rates for the states
 are entirely provided by the other states and controls.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DoubleIntegratorODE</span><span class="p">(</span><span class="n">om</span><span class="o">.</span><span class="n">ExplicitComponent</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">DoubleIntegratorODE</span><span class="p">(</span><span class="n">om</span><span class="o">.</span><span class="n">ExplicitComponent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The double integrator is a special case where the state rates are all set to other states</span>
 <span class="sd">    or parameters.  Since we aren&#39;t computing any other outputs, the ODE doesn&#39;t actually</span>
@@ -843,7 +844,7 @@ are entirely provided by the other states and controls.</p>
 <span class="sd">    in the ODE system.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">declare</span><span class="p">(</span><span class="s1">&#39;num_nodes&#39;</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -869,9 +870,9 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .output_html .hll { background-color: #ffffcc }
 .output_html { background: #f8f8f8; }
 .output_html .c { color: #3D7B7B; font-style: italic } /* Comment */
-.output_html .err { border: 1px solid #FF0000 } /* Error */
+.output_html .err { border: 1px solid #F00 } /* Error */
 .output_html .k { color: #008000; font-weight: bold } /* Keyword */
-.output_html .o { color: #666666 } /* Operator */
+.output_html .o { color: #666 } /* Operator */
 .output_html .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
 .output_html .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
 .output_html .cp { color: #9C6500 } /* Comment.Preproc */
@@ -888,34 +889,34 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .output_html .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
 .output_html .gs { font-weight: bold } /* Generic.Strong */
 .output_html .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-.output_html .gt { color: #0044DD } /* Generic.Traceback */
+.output_html .gt { color: #04D } /* Generic.Traceback */
 .output_html .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
 .output_html .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
 .output_html .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
 .output_html .kp { color: #008000 } /* Keyword.Pseudo */
 .output_html .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
 .output_html .kt { color: #B00040 } /* Keyword.Type */
-.output_html .m { color: #666666 } /* Literal.Number */
+.output_html .m { color: #666 } /* Literal.Number */
 .output_html .s { color: #BA2121 } /* Literal.String */
 .output_html .na { color: #687822 } /* Name.Attribute */
 .output_html .nb { color: #008000 } /* Name.Builtin */
-.output_html .nc { color: #0000FF; font-weight: bold } /* Name.Class */
-.output_html .no { color: #880000 } /* Name.Constant */
-.output_html .nd { color: #AA22FF } /* Name.Decorator */
+.output_html .nc { color: #00F; font-weight: bold } /* Name.Class */
+.output_html .no { color: #800 } /* Name.Constant */
+.output_html .nd { color: #A2F } /* Name.Decorator */
 .output_html .ni { color: #717171; font-weight: bold } /* Name.Entity */
 .output_html .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
-.output_html .nf { color: #0000FF } /* Name.Function */
+.output_html .nf { color: #00F } /* Name.Function */
 .output_html .nl { color: #767600 } /* Name.Label */
-.output_html .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.output_html .nn { color: #00F; font-weight: bold } /* Name.Namespace */
 .output_html .nt { color: #008000; font-weight: bold } /* Name.Tag */
 .output_html .nv { color: #19177C } /* Name.Variable */
-.output_html .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-.output_html .w { color: #bbbbbb } /* Text.Whitespace */
-.output_html .mb { color: #666666 } /* Literal.Number.Bin */
-.output_html .mf { color: #666666 } /* Literal.Number.Float */
-.output_html .mh { color: #666666 } /* Literal.Number.Hex */
-.output_html .mi { color: #666666 } /* Literal.Number.Integer */
-.output_html .mo { color: #666666 } /* Literal.Number.Oct */
+.output_html .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.output_html .w { color: #BBB } /* Text.Whitespace */
+.output_html .mb { color: #666 } /* Literal.Number.Bin */
+.output_html .mf { color: #666 } /* Literal.Number.Float */
+.output_html .mh { color: #666 } /* Literal.Number.Hex */
+.output_html .mi { color: #666 } /* Literal.Number.Integer */
+.output_html .mo { color: #666 } /* Literal.Number.Oct */
 .output_html .sa { color: #BA2121 } /* Literal.String.Affix */
 .output_html .sb { color: #BA2121 } /* Literal.String.Backtick */
 .output_html .sc { color: #BA2121 } /* Literal.String.Char */
@@ -930,15 +931,15 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .output_html .s1 { color: #BA2121 } /* Literal.String.Single */
 .output_html .ss { color: #19177C } /* Literal.String.Symbol */
 .output_html .bp { color: #008000 } /* Name.Builtin.Pseudo */
-.output_html .fm { color: #0000FF } /* Name.Function.Magic */
+.output_html .fm { color: #00F } /* Name.Function.Magic */
 .output_html .vc { color: #19177C } /* Name.Variable.Class */
 .output_html .vg { color: #19177C } /* Name.Variable.Global */
 .output_html .vi { color: #19177C } /* Name.Variable.Instance */
 .output_html .vm { color: #19177C } /* Name.Variable.Magic */
-.output_html .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">openmdao.api</span> <span class="k">as</span> <span class="nn">om</span>
+.output_html .il { color: #666 } /* Literal.Number.Integer.Long */</style><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">openmdao.api</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">om</span>
 
 
-<span class="k">class</span> <span class="nc">DoubleIntegratorODE</span><span class="p">(</span><span class="n">om</span><span class="o">.</span><span class="n">ExplicitComponent</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DoubleIntegratorODE</span><span class="p">(</span><span class="n">om</span><span class="o">.</span><span class="n">ExplicitComponent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The double integrator is a special case where the state rates are all set to other states</span>
 <span class="sd">    or parameters.  Since we aren&#39;t computing any other outputs, the ODE doesn&#39;t actually</span>
@@ -952,7 +953,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <span class="sd">    in the ODE system.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">declare</span><span class="p">(</span><span class="s1">&#39;num_nodes&#39;</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 </pre></div>
 </div></div>
@@ -960,11 +961,10 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 <div class="cell tag_output_scroll docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">openmdao.api</span> <span class="k">as</span> <span class="nn">om</span>
-<span class="kn">import</span> <span class="nn">dymos</span> <span class="k">as</span> <span class="nn">dm</span>
-<span class="kn">from</span> <span class="nn">dymos.examples.plotting</span> <span class="kn">import</span> <span class="n">plot_results</span>
-<span class="kn">from</span> <span class="nn">dymos.examples.double_integrator.double_integrator_ode</span> <span class="kn">import</span> <span class="n">DoubleIntegratorODE</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">openmdao.api</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">om</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dymos</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dymos.examples.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_results</span>
 
 <span class="c1"># Initialize the problem and assign the driver</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">om</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">om</span><span class="o">.</span><span class="n">Group</span><span class="p">())</span>
@@ -1023,82 +1023,120 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 &#39;rhs_checking&#39; is disabled for &#39;DirectSolver in &lt;model&gt; &lt;class Group&gt;&#39; but that solver has redundant adjoint solves. If it is expensive to compute derivatives for this solver, turning on &#39;rhs_checking&#39; may improve performance.
 
-INFO: checking out_of_order
+INFO: checking out_of_order...
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking system
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:     out_of_order check complete (0.000457 sec).
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking solvers
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking system...
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking dup_inputs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:     system check complete (0.000017 sec).
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking missing_recorders
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking solvers...
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The Problem has no recorder of any kind attached
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:     solvers check complete (0.000186 sec).
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking unserializable_options
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking dup_inputs...
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking comp_has_no_outputs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:     dup_inputs check complete (0.000036 sec).
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The following Components do not have any outputs:
-   traj.phases.phase0.rhs_all
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking missing_recorders...
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:     missing_recorders check complete (0.000002 sec).
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model viewer data has already been recorded for Driver.
-INFO: checking out_of_order
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking unserializable_options...
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking system
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:     unserializable_options check complete (0.002879 sec).
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking solvers
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking dup_inputs
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking missing_recorders
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The Problem has no recorder of any kind attached
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking unserializable_options
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking comp_has_no_outputs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking comp_has_no_outputs...
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The following Components do not have any outputs:
    traj.phases.phase0.rhs_all
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:     comp_has_no_outputs check complete (0.000496 sec).
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full total jacobian for problem &#39;problem&#39; was computed 3 times, taking 0.06185227799994664 seconds.
-Total jacobian shape: (181, 327) 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:     auto_ivc_warnings check complete (0.000003 sec).
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking out_of_order...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:     out_of_order check complete (0.000238 sec).
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking system...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:     system check complete (0.000018 sec).
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking solvers...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:     solvers check complete (0.000140 sec).
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking dup_inputs...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:     dup_inputs check complete (0.000033 sec).
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking missing_recorders...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:     missing_recorders check complete (0.000002 sec).
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking unserializable_options...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:     unserializable_options check complete (0.002963 sec).
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking comp_has_no_outputs...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The following Components do not have any outputs:
+   traj.phases.phase0.rhs_all
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:     comp_has_no_outputs check complete (0.000429 sec).
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO:     auto_ivc_warnings check complete (0.000002 sec).
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Jacobian shape: (181, 327)  (1.51% nonzero)
 FWD solves: 0   REV solves: 6
 Total colors vs. total size: 6 vs 181  (96.69% improvement)
 
-Sparsity computed using tolerance: 1e-25
-Time to compute sparsity:   0.0619 sec
-Time to compute coloring:   0.0887 sec
-Memory to compute coloring:   0.1250 MB
-Coloring created on: 2024-08-14 15:36:19
+Sparsity computed using tolerance: 1e-25.
+Dense total jacobian for Problem &#39;problem&#39; was computed 3 times.
+Time to compute sparsity:   0.0692 sec
+Time to compute coloring:   0.1994 sec
+Memory to compute coloring:   0.2500 MB
+Coloring created on: 2025-03-01 20:10:51
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Optimization Problem -- Optimization using pyOpt_sparse
@@ -1107,11 +1145,11 @@ Coloring created on: 2024-08-14 15:36:19
 
     Solution: 
 --------------------------------------------------------------------------------
-    Total Time:                    2.3855
-       User Objective Time :       0.0182
-       User Sensitivity Time :     0.6366
-       Interface Time :            0.0716
-       Opt Solver Time:            1.6590
+    Total Time:                    2.5883
+       User Objective Time :       0.0200
+       User Sensitivity Time :     0.6586
+       Interface Time :            0.2341
+       Opt Solver Time:            1.6757
     Calls to Objective Function :      19
     Calls to Sens Function :           19
 
@@ -1452,186 +1490,186 @@ Coloring created on: 2024-08-14 15:36:19
 
    Constraints (i - inequality, e - equality)
       Index  Name                                         Type          Lower           Value           Upper    Status  Lagrange Multiplier (N/A)
-          0  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -7.401487E-18    0.000000E+00              9.00000E+100
-          1  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.850372E-18    0.000000E+00              9.00000E+100
-          2  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -3.700743E-18    0.000000E+00              9.00000E+100
-          3  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -2.220446E-17    0.000000E+00              9.00000E+100
-          4  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    7.401487E-18    0.000000E+00              9.00000E+100
-          5  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    5.551115E-18    0.000000E+00              9.00000E+100
-          6  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -5.181041E-17    0.000000E+00              9.00000E+100
-          7  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    3.700743E-18    0.000000E+00              9.00000E+100
-          8  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -7.401487E-18    0.000000E+00              9.00000E+100
-          9  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -2.590520E-17    0.000000E+00              9.00000E+100
-         10  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.480297E-17    0.000000E+00              9.00000E+100
-         11  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -4.440892E-17    0.000000E+00              9.00000E+100
-         12  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -4.625929E-17    0.000000E+00              9.00000E+100
-         13  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    5.736152E-17    0.000000E+00              9.00000E+100
-         14  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    7.401487E-18    0.000000E+00              9.00000E+100
-         15  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -9.251859E-18    0.000000E+00              9.00000E+100
-         16  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    3.700743E-17    0.000000E+00              9.00000E+100
-         17  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.295260E-17    0.000000E+00              9.00000E+100
-         18  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.110223E-17    0.000000E+00              9.00000E+100
-         19  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.480297E-17    0.000000E+00              9.00000E+100
-         20  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -3.700743E-18    0.000000E+00              9.00000E+100
-         21  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -4.996004E-17    0.000000E+00              9.00000E+100
-         22  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    5.921189E-17    0.000000E+00              9.00000E+100
-         23  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -6.846375E-17    0.000000E+00              9.00000E+100
-         24  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    4.810966E-17    0.000000E+00              9.00000E+100
-         25  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    6.291264E-17    0.000000E+00              9.00000E+100
-         26  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.480297E-17    0.000000E+00              9.00000E+100
-         27  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.369275E-16    0.000000E+00              9.00000E+100
+          0  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    5.551115E-18    0.000000E+00              9.00000E+100
+          1  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
+          2  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.850372E-18    0.000000E+00              9.00000E+100
+          3  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -2.035409E-17    0.000000E+00              9.00000E+100
+          4  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.110223E-17    0.000000E+00              9.00000E+100
+          5  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -2.590520E-17    0.000000E+00              9.00000E+100
+          6  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -4.440892E-17    0.000000E+00              9.00000E+100
+          7  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.295260E-17    0.000000E+00              9.00000E+100
+          8  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    3.145632E-17    0.000000E+00              9.00000E+100
+          9  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    2.590520E-17    0.000000E+00              9.00000E+100
+         10  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -3.700743E-18    0.000000E+00              9.00000E+100
+         11  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    3.700743E-17    0.000000E+00              9.00000E+100
+         12  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.850372E-17    0.000000E+00              9.00000E+100
+         13  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.850372E-18    0.000000E+00              9.00000E+100
+         14  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    2.960595E-17    0.000000E+00              9.00000E+100
+         15  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.036208E-16    0.000000E+00              9.00000E+100
+         16  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    5.181041E-17    0.000000E+00              9.00000E+100
+         17  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    4.440892E-17    0.000000E+00              9.00000E+100
+         18  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    3.145632E-17    0.000000E+00              9.00000E+100
+         19  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    5.551115E-17    0.000000E+00              9.00000E+100
+         20  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -2.035409E-17    0.000000E+00              9.00000E+100
+         21  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -2.220446E-17    0.000000E+00              9.00000E+100
+         22  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -5.551115E-18    0.000000E+00              9.00000E+100
+         23  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    8.511710E-17    0.000000E+00              9.00000E+100
+         24  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -4.070818E-17    0.000000E+00              9.00000E+100
+         25  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.221245E-16    0.000000E+00              9.00000E+100
+         26  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    9.992007E-17    0.000000E+00              9.00000E+100
+         27  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    2.349972E-16    0.000000E+00              9.00000E+100
          28  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -2.220446E-17    0.000000E+00              9.00000E+100
-         29  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -7.401487E-18    0.000000E+00              9.00000E+100
-         30  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.165734E-16    0.000000E+00              9.00000E+100
-         31  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.480297E-17    0.000000E+00              9.00000E+100
-         32  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.017704E-16    0.000000E+00              9.00000E+100
-         33  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -8.881784E-17    0.000000E+00              9.00000E+100
-         34  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -6.846375E-17    0.000000E+00              9.00000E+100
-         35  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.276756E-16    0.000000E+00              9.00000E+100
-         36  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -9.621933E-17    0.000000E+00              9.00000E+100
-         37  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.110223E-16    0.000000E+00              9.00000E+100
-         38  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -3.700743E-17    0.000000E+00              9.00000E+100
-         39  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.591320E-16    0.000000E+00              9.00000E+100
-         40  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.110223E-16    0.000000E+00              9.00000E+100
-         41  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -2.220446E-16    0.000000E+00              9.00000E+100
-         42  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    2.183439E-16    0.000000E+00              9.00000E+100
-         43  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    4.440892E-17    0.000000E+00              9.00000E+100
-         44  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -9.251859E-17    0.000000E+00              9.00000E+100
-         45  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    9.066821E-17    0.000000E+00              9.00000E+100
-         46  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    3.700743E-18    0.000000E+00              9.00000E+100
-         47  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -6.661338E-17    0.000000E+00              9.00000E+100
-         48  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    7.216450E-17    0.000000E+00              9.00000E+100
-         49  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    5.921189E-17    0.000000E+00              9.00000E+100
-         50  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.480297E-16    0.000000E+00              9.00000E+100
-         51  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.961394E-16    0.000000E+00              9.00000E+100
-         52  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    5.921189E-17    0.000000E+00              9.00000E+100
-         53  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -4.440892E-17    0.000000E+00              9.00000E+100
-         54  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.239749E-16    0.000000E+00              9.00000E+100
-         55  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -3.330669E-17    0.000000E+00              9.00000E+100
-         56  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    3.145632E-17    0.000000E+00              9.00000E+100
-         57  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    4.070818E-17    0.000000E+00              9.00000E+100
-         58  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -2.035409E-17    0.000000E+00              9.00000E+100
-         59  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.517305E-16    0.000000E+00              9.00000E+100
-         60  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    2.035409E-16    0.000000E+00              9.00000E+100
-         61  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.480297E-17    0.000000E+00              9.00000E+100
-         62  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -6.291264E-17    0.000000E+00              9.00000E+100
-         63  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    8.511710E-17    0.000000E+00              9.00000E+100
-         64  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -4.440892E-17    0.000000E+00              9.00000E+100
-         65  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    6.476301E-17    0.000000E+00              9.00000E+100
-         66  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    5.921189E-17    0.000000E+00              9.00000E+100
-         67  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -4.255855E-17    0.000000E+00              9.00000E+100
-         68  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    3.330669E-17    0.000000E+00              9.00000E+100
-         69  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -4.070818E-17    0.000000E+00              9.00000E+100
-         70  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -4.440892E-17    0.000000E+00              9.00000E+100
-         71  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -3.700743E-18    0.000000E+00              9.00000E+100
-         72  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -6.291264E-17    0.000000E+00              9.00000E+100
-         73  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.850372E-17    0.000000E+00              9.00000E+100
-         74  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    3.700743E-17    0.000000E+00              9.00000E+100
-         75  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.480297E-17    0.000000E+00              9.00000E+100
-         76  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -4.996004E-17    0.000000E+00              9.00000E+100
-         77  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
-         78  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    7.401487E-18    0.000000E+00              9.00000E+100
-         79  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.295260E-17    0.000000E+00              9.00000E+100
-         80  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -4.070818E-17    0.000000E+00              9.00000E+100
-         81  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.295260E-17    0.000000E+00              9.00000E+100
-         82  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.850372E-18    0.000000E+00              9.00000E+100
-         83  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.850372E-17    0.000000E+00              9.00000E+100
-         84  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
-         85  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
-         86  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    9.251859E-18    0.000000E+00              9.00000E+100
-         87  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -2.035409E-17    0.000000E+00              9.00000E+100
-         88  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.850372E-18    0.000000E+00              9.00000E+100
-         89  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
-         90  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -2.168404E-19    0.000000E+00              9.00000E+100
-         91  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
-         92  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    5.782412E-20    0.000000E+00              9.00000E+100
-         93  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -6.938894E-19    0.000000E+00              9.00000E+100
-         94  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -2.312965E-19    0.000000E+00              9.00000E+100
-         95  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -2.312965E-19    0.000000E+00              9.00000E+100
+         29  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -2.220446E-17    0.000000E+00              9.00000E+100
+         30  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    2.775558E-17    0.000000E+00              9.00000E+100
+         31  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    6.291264E-17    0.000000E+00              9.00000E+100
+         32  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    5.551115E-18    0.000000E+00              9.00000E+100
+         33  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -2.423987E-16    0.000000E+00              9.00000E+100
+         34  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -8.326673E-17    0.000000E+00              9.00000E+100
+         35  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    4.810966E-17    0.000000E+00              9.00000E+100
+         36  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    3.145632E-17    0.000000E+00              9.00000E+100
+         37  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.073216E-16    0.000000E+00              9.00000E+100
+         38  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.017704E-16    0.000000E+00              9.00000E+100
+         39  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.036208E-16    0.000000E+00              9.00000E+100
+         40  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    9.251859E-17    0.000000E+00              9.00000E+100
+         41  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    2.220446E-17    0.000000E+00              9.00000E+100
+         42  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -3.404684E-16    0.000000E+00              9.00000E+100
+         43  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.461794E-16    0.000000E+00              9.00000E+100
+         44  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -6.291264E-17    0.000000E+00              9.00000E+100
+         45  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -5.921189E-17    0.000000E+00              9.00000E+100
+         46  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -8.141636E-17    0.000000E+00              9.00000E+100
+         47  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.147230E-16    0.000000E+00              9.00000E+100
+         48  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -9.251859E-17    0.000000E+00              9.00000E+100
+         49  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -6.291264E-17    0.000000E+00              9.00000E+100
+         50  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -2.775558E-17    0.000000E+00              9.00000E+100
+         51  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    5.440093E-16    0.000000E+00              9.00000E+100
+         52  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.221245E-16    0.000000E+00              9.00000E+100
+         53  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -3.700743E-17    0.000000E+00              9.00000E+100
+         54  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    3.404684E-16    0.000000E+00              9.00000E+100
+         55  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.480297E-17    0.000000E+00              9.00000E+100
+         56  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.480297E-17    0.000000E+00              9.00000E+100
+         57  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -8.511710E-17    0.000000E+00              9.00000E+100
+         58  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.258253E-16    0.000000E+00              9.00000E+100
+         59  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.665335E-17    0.000000E+00              9.00000E+100
+         60  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -2.405483E-17    0.000000E+00              9.00000E+100
+         61  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    4.440892E-17    0.000000E+00              9.00000E+100
+         62  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.591320E-16    0.000000E+00              9.00000E+100
+         63  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.091719E-16    0.000000E+00              9.00000E+100
+         64  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.480297E-17    0.000000E+00              9.00000E+100
+         65  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.850372E-17    0.000000E+00              9.00000E+100
+         66  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.406282E-16    0.000000E+00              9.00000E+100
+         67  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.480297E-17    0.000000E+00              9.00000E+100
+         68  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    3.700743E-17    0.000000E+00              9.00000E+100
+         69  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -9.251859E-17    0.000000E+00              9.00000E+100
+         70  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.110223E-17    0.000000E+00              9.00000E+100
+         71  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -3.700743E-17    0.000000E+00              9.00000E+100
+         72  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.295260E-16    0.000000E+00              9.00000E+100
+         73  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.850372E-17    0.000000E+00              9.00000E+100
+         74  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    4.070818E-17    0.000000E+00              9.00000E+100
+         75  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -4.255855E-17    0.000000E+00              9.00000E+100
+         76  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    4.070818E-17    0.000000E+00              9.00000E+100
+         77  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -6.106227E-17    0.000000E+00              9.00000E+100
+         78  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    2.960595E-17    0.000000E+00              9.00000E+100
+         79  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    2.035409E-17    0.000000E+00              9.00000E+100
+         80  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -7.401487E-18    0.000000E+00              9.00000E+100
+         81  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    5.921189E-17    0.000000E+00              9.00000E+100
+         82  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
+         83  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.480297E-17    0.000000E+00              9.00000E+100
+         84  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    2.960595E-17    0.000000E+00              9.00000E+100
+         85  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.665335E-17    0.000000E+00              9.00000E+100
+         86  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.850372E-17    0.000000E+00              9.00000E+100
+         87  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00   -1.850372E-18    0.000000E+00              9.00000E+100
+         88  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
+         89  traj.phase0.collocation_constraint.defects:v    e   0.000000E+00    1.850372E-18    0.000000E+00              9.00000E+100
+         90  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.084202E-19    0.000000E+00              9.00000E+100
+         91  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -2.891206E-20    0.000000E+00              9.00000E+100
+         92  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.734723E-19    0.000000E+00              9.00000E+100
+         93  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    8.095376E-19    0.000000E+00              9.00000E+100
+         94  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -3.469447E-19    0.000000E+00              9.00000E+100
+         95  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.156482E-19    0.000000E+00              9.00000E+100
          96  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.156482E-18    0.000000E+00              9.00000E+100
-         97  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    4.625929E-19    0.000000E+00              9.00000E+100
-         98  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -4.625929E-19    0.000000E+00              9.00000E+100
-         99  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    9.251859E-19    0.000000E+00              9.00000E+100
-        100  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.387779E-18    0.000000E+00              9.00000E+100
-        101  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
-        102  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    6.013708E-18    0.000000E+00              9.00000E+100
-        103  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
-        104  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    4.625929E-19    0.000000E+00              9.00000E+100
-        105  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    2.174187E-17    0.000000E+00              9.00000E+100
-        106  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    4.625929E-19    0.000000E+00              9.00000E+100
-        107  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    2.312965E-18    0.000000E+00              9.00000E+100
+         97  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.619075E-18    0.000000E+00              9.00000E+100
+         98  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
+         99  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -5.319819E-18    0.000000E+00              9.00000E+100
+        100  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    4.163336E-18    0.000000E+00              9.00000E+100
+        101  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    4.625929E-19    0.000000E+00              9.00000E+100
+        102  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.387779E-18    0.000000E+00              9.00000E+100
+        103  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -3.238150E-18    0.000000E+00              9.00000E+100
+        104  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -4.625929E-19    0.000000E+00              9.00000E+100
+        105  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.434038E-17    0.000000E+00              9.00000E+100
+        106  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    4.163336E-18    0.000000E+00              9.00000E+100
+        107  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -4.625929E-19    0.000000E+00              9.00000E+100
         108  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    6.938894E-18    0.000000E+00              9.00000E+100
-        109  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    2.775558E-18    0.000000E+00              9.00000E+100
-        110  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    5.088522E-18    0.000000E+00              9.00000E+100
-        111  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    9.251859E-19    0.000000E+00              9.00000E+100
-        112  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -5.551115E-18    0.000000E+00              9.00000E+100
-        113  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -2.775558E-18    0.000000E+00              9.00000E+100
-        114  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    3.700743E-18    0.000000E+00              9.00000E+100
-        115  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -5.551115E-18    0.000000E+00              9.00000E+100
-        116  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    3.700743E-18    0.000000E+00              9.00000E+100
-        117  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    3.423188E-17    0.000000E+00              9.00000E+100
-        118  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.665335E-17    0.000000E+00              9.00000E+100
-        119  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -8.326673E-18    0.000000E+00              9.00000E+100
-        120  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    8.326673E-18    0.000000E+00              9.00000E+100
-        121  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    3.700743E-18    0.000000E+00              9.00000E+100
-        122  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -4.625929E-18    0.000000E+00              9.00000E+100
-        123  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    3.608225E-17    0.000000E+00              9.00000E+100
-        124  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    3.700743E-18    0.000000E+00              9.00000E+100
-        125  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -3.330669E-17    0.000000E+00              9.00000E+100
-        126  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -4.625929E-18    0.000000E+00              9.00000E+100
-        127  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    3.700743E-18    0.000000E+00              9.00000E+100
-        128  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.757853E-17    0.000000E+00              9.00000E+100
-        129  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    2.683039E-17    0.000000E+00              9.00000E+100
-        130  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -3.238150E-17    0.000000E+00              9.00000E+100
-        131  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.387779E-17    0.000000E+00              9.00000E+100
-        132  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    5.551115E-18    0.000000E+00              9.00000E+100
-        133  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    3.978299E-17    0.000000E+00              9.00000E+100
-        134  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.202742E-17    0.000000E+00              9.00000E+100
-        135  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    3.608225E-17    0.000000E+00              9.00000E+100
-        136  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    3.700743E-18    0.000000E+00              9.00000E+100
-        137  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.110223E-17    0.000000E+00              9.00000E+100
-        138  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -2.775558E-18    0.000000E+00              9.00000E+100
-        139  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    2.590520E-17    0.000000E+00              9.00000E+100
-        140  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    6.568820E-17    0.000000E+00              9.00000E+100
-        141  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -3.608225E-17    0.000000E+00              9.00000E+100
-        142  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -3.700743E-18    0.000000E+00              9.00000E+100
-        143  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    3.515706E-17    0.000000E+00              9.00000E+100
-        144  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.017704E-17    0.000000E+00              9.00000E+100
-        145  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -9.251859E-18    0.000000E+00              9.00000E+100
-        146  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -9.251859E-19    0.000000E+00              9.00000E+100
-        147  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    8.326673E-18    0.000000E+00              9.00000E+100
-        148  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.665335E-17    0.000000E+00              9.00000E+100
-        149  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.850372E-17    0.000000E+00              9.00000E+100
-        150  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.406282E-16    0.000000E+00              9.00000E+100
-        151  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    6.476301E-18    0.000000E+00              9.00000E+100
-        152  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    5.181041E-17    0.000000E+00              9.00000E+100
-        153  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    6.291264E-17    0.000000E+00              9.00000E+100
-        154  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.017704E-17    0.000000E+00              9.00000E+100
-        155  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    2.127927E-17    0.000000E+00              9.00000E+100
-        156  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -2.590520E-17    0.000000E+00              9.00000E+100
-        157  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    3.700743E-18    0.000000E+00              9.00000E+100
-        158  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.295260E-17    0.000000E+00              9.00000E+100
-        159  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    2.627528E-16    0.000000E+00              9.00000E+100
-        160  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -6.522560E-17    0.000000E+00              9.00000E+100
-        161  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.161108E-16    0.000000E+00              9.00000E+100
-        162  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.938264E-16    0.000000E+00              9.00000E+100
-        163  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -2.312965E-17    0.000000E+00              9.00000E+100
-        164  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    4.302114E-17    0.000000E+00              9.00000E+100
-        165  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.082467E-16    0.000000E+00              9.00000E+100
-        166  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    2.544261E-17    0.000000E+00              9.00000E+100
-        167  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    8.789266E-18    0.000000E+00              9.00000E+100
-        168  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -9.159340E-17    0.000000E+00              9.00000E+100
-        169  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -6.245005E-18    0.000000E+00              9.00000E+100
-        170  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    3.099373E-17    0.000000E+00              9.00000E+100
-        171  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.202742E-17    0.000000E+00              9.00000E+100
-        172  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.688464E-17    0.000000E+00              9.00000E+100
-        173  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -5.898060E-17    0.000000E+00              9.00000E+100
-        174  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -4.926615E-17    0.000000E+00              9.00000E+100
-        175  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -4.267420E-17    0.000000E+00              9.00000E+100
-        176  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -2.972160E-17    0.000000E+00              9.00000E+100
-        177  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    8.997432E-17    0.000000E+00              9.00000E+100
-        178  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    6.534125E-18    0.000000E+00              9.00000E+100
-        179  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    9.913945E-17    0.000000E+00              9.00000E+100
+        109  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -6.476301E-18    0.000000E+00              9.00000E+100
+        110  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -4.625929E-19    0.000000E+00              9.00000E+100
+        111  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -4.625929E-18    0.000000E+00              9.00000E+100
+        112  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    5.088522E-18    0.000000E+00              9.00000E+100
+        113  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -3.700743E-18    0.000000E+00              9.00000E+100
+        114  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.850372E-18    0.000000E+00              9.00000E+100
+        115  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.480297E-17    0.000000E+00              9.00000E+100
+        116  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.110223E-17    0.000000E+00              9.00000E+100
+        117  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.572816E-17    0.000000E+00              9.00000E+100
+        118  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.202742E-17    0.000000E+00              9.00000E+100
+        119  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -9.251859E-18    0.000000E+00              9.00000E+100
+        120  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -3.330669E-17    0.000000E+00              9.00000E+100
+        121  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.017704E-17    0.000000E+00              9.00000E+100
+        122  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    3.053113E-17    0.000000E+00              9.00000E+100
+        123  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.295260E-17    0.000000E+00              9.00000E+100
+        124  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -4.625929E-18    0.000000E+00              9.00000E+100
+        125  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    2.775558E-17    0.000000E+00              9.00000E+100
+        126  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    2.775558E-18    0.000000E+00              9.00000E+100
+        127  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.757853E-17    0.000000E+00              9.00000E+100
+        128  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.202742E-17    0.000000E+00              9.00000E+100
+        129  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.942890E-17    0.000000E+00              9.00000E+100
+        130  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -9.251859E-18    0.000000E+00              9.00000E+100
+        131  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    2.405483E-17    0.000000E+00              9.00000E+100
+        132  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -9.251859E-18    0.000000E+00              9.00000E+100
+        133  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -2.405483E-17    0.000000E+00              9.00000E+100
+        134  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    8.326673E-18    0.000000E+00              9.00000E+100
+        135  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.073216E-16    0.000000E+00              9.00000E+100
+        136  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.110223E-17    0.000000E+00              9.00000E+100
+        137  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.850372E-18    0.000000E+00              9.00000E+100
+        138  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.591320E-16    0.000000E+00              9.00000E+100
+        139  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -4.625929E-17    0.000000E+00              9.00000E+100
+        140  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.850372E-17    0.000000E+00              9.00000E+100
+        141  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    8.326673E-17    0.000000E+00              9.00000E+100
+        142  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -2.868076E-17    0.000000E+00              9.00000E+100
+        143  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    4.070818E-17    0.000000E+00              9.00000E+100
+        144  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -6.198745E-17    0.000000E+00              9.00000E+100
+        145  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -3.145632E-17    0.000000E+00              9.00000E+100
+        146  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -4.810966E-17    0.000000E+00              9.00000E+100
+        147  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.286008E-16    0.000000E+00              9.00000E+100
+        148  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -8.326673E-18    0.000000E+00              9.00000E+100
+        149  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    3.145632E-17    0.000000E+00              9.00000E+100
+        150  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -7.123931E-17    0.000000E+00              9.00000E+100
+        151  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.480297E-17    0.000000E+00              9.00000E+100
+        152  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -5.551115E-17    0.000000E+00              9.00000E+100
+        153  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.017704E-17    0.000000E+00              9.00000E+100
+        154  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.387779E-17    0.000000E+00              9.00000E+100
+        155  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -2.868076E-17    0.000000E+00              9.00000E+100
+        156  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    1.471046E-16    0.000000E+00              9.00000E+100
+        157  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    4.625929E-18    0.000000E+00              9.00000E+100
+        158  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.156482E-17    0.000000E+00              9.00000E+100
+        159  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    2.063164E-16    0.000000E+00              9.00000E+100
+        160  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.110223E-17    0.000000E+00              9.00000E+100
+        161  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -5.412337E-17    0.000000E+00              9.00000E+100
+        162  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -8.743006E-17    0.000000E+00              9.00000E+100
+        163  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    8.234154E-17    0.000000E+00              9.00000E+100
+        164  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.896631E-17    0.000000E+00              9.00000E+100
+        165  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.188864E-16    0.000000E+00              9.00000E+100
+        166  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -3.238150E-18    0.000000E+00              9.00000E+100
+        167  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    9.714451E-18    0.000000E+00              9.00000E+100
+        168  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -3.654484E-17    0.000000E+00              9.00000E+100
+        169  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -3.839521E-17    0.000000E+00              9.00000E+100
+        170  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -8.650488E-17    0.000000E+00              9.00000E+100
+        171  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -7.008283E-17    0.000000E+00              9.00000E+100
+        172  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.225871E-17    0.000000E+00              9.00000E+100
+        173  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -5.620504E-17    0.000000E+00              9.00000E+100
+        174  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -1.038521E-16    0.000000E+00              9.00000E+100
+        175  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -4.579670E-17    0.000000E+00              9.00000E+100
+        176  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -3.388493E-17    0.000000E+00              9.00000E+100
+        177  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -2.243576E-17    0.000000E+00              9.00000E+100
+        178  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00    3.694961E-17    0.000000E+00              9.00000E+100
+        179  traj.phase0.collocation_constraint.defects:x    e   0.000000E+00   -7.271383E-18    0.000000E+00              9.00000E+100
         180  traj.phase0.continuity_comp.defect_states:v     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
         181  traj.phase0.continuity_comp.defect_states:v     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
         182  traj.phase0.continuity_comp.defect_states:v     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
@@ -1663,8 +1701,8 @@ Coloring created on: 2024-08-14 15:36:19
         208  traj.phase0.continuity_comp.defect_states:v     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
         209  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
         210  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
-        211  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
-        212  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    1.734723E-18    0.000000E+00              9.00000E+100
+        211  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00   -8.673617E-19    0.000000E+00              9.00000E+100
+        212  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
         213  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
         214  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
         215  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
@@ -1674,9 +1712,9 @@ Coloring created on: 2024-08-14 15:36:19
         219  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
         220  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
         221  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
-        222  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
+        222  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    1.387779E-17    0.000000E+00              9.00000E+100
         223  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
-        224  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
+        224  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    2.775558E-17    0.000000E+00              9.00000E+100
         225  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
         226  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
         227  traj.phase0.continuity_comp.defect_states:x     e   0.000000E+00    0.000000E+00    0.000000E+00              9.00000E+100
@@ -1698,73 +1736,12 @@ Coloring created on: 2024-08-14 15:36:19
 --------------------------------------------------------------------------------
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.11/site-packages/openmdao/visualization/opt_report/opt_report.py:625: UserWarning: Attempting to set identical low and high ylims makes transformation singular; automatically expanding.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/usr/share/miniconda/envs/test/lib/python3.11/site-packages/openmdao/visualization/opt_report/opt_report.py:619: UserWarning: Attempting to set identical low and high ylims makes transformation singular; automatically expanding.
   ax.set_ylim([ymin_plot, ymax_plot])
-/usr/share/miniconda/envs/test/lib/python3.11/site-packages/openmdao/core/group.py:1101: DerivativesWarning:Constraints or objectives [ode_eval.control_interp.control_rates:u_rate2] cannot be impacted by the design variables of the problem because no partials were defined for them in their parent component(s).
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking out_of_order
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking system
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking solvers
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking dup_inputs
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking missing_recorders
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The Problem has no recorder of any kind attached
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking unserializable_options
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking comp_has_no_outputs
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The following Components do not have any outputs:
-   traj.phases.phase0.ode
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
+/usr/share/miniconda/envs/test/lib/python3.11/site-packages/openmdao/core/group.py:1166: DerivativesWarning:Constraints or objectives [ode_eval.control_interp.control_rates:u_rate, ode_eval.control_interp.control_rates:u_rate2, ode_eval.control_interp.control_values:u] cannot be impacted by the design variables of the problem because no partials were defined for them in their parent component(s).
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulating trajectory traj
-Model viewer data has already been recorded for Driver.
-INFO: checking out_of_order
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking system
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking solvers
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking dup_inputs
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking missing_recorders
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The Problem has no recorder of any kind attached
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking unserializable_options
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking comp_has_no_outputs
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: The following Components do not have any outputs:
-   traj.phases.phase0.ode
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: checking auto_ivc_warnings
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Done simulating trajectory traj
@@ -1774,11 +1751,11 @@ INFO: checking out_of_order
 Driver:  pyOptSparseDriver
   success     : True
   iterations  : 21
-  runtime     : 2.5820E+00 s
+  runtime     : 2.8989E+00 s
   model_evals : 21
-  model_time  : 1.2119E-02 s
+  model_time  : 1.3111E-02 s
   deriv_evals : 20
-  deriv_time  : 7.4320E-02 s
+  deriv_time  : 7.4385E-02 s
   exit_status : SUCCESS
 </pre></div>
 </div>
@@ -1786,8 +1763,8 @@ Driver:  pyOptSparseDriver
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sol</span> <span class="o">=</span> <span class="n">om</span><span class="o">.</span><span class="n">CaseReader</span><span class="p">(</span><span class="s1">&#39;dymos_solution.db&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get_case</span><span class="p">(</span><span class="s1">&#39;final&#39;</span><span class="p">)</span>
-<span class="n">sim</span> <span class="o">=</span> <span class="n">om</span><span class="o">.</span><span class="n">CaseReader</span><span class="p">(</span><span class="s1">&#39;dymos_simulation.db&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get_case</span><span class="p">(</span><span class="s1">&#39;final&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sol</span> <span class="o">=</span> <span class="n">om</span><span class="o">.</span><span class="n">CaseReader</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">get_outputs_dir</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;dymos_solution.db&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get_case</span><span class="p">(</span><span class="s1">&#39;final&#39;</span><span class="p">)</span>
+<span class="n">sim</span> <span class="o">=</span> <span class="n">om</span><span class="o">.</span><span class="n">CaseReader</span><span class="p">(</span><span class="n">traj</span><span class="o">.</span><span class="n">sim_prob</span><span class="o">.</span><span class="n">get_outputs_dir</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;dymos_simulation.db&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get_case</span><span class="p">(</span><span class="s1">&#39;final&#39;</span><span class="p">)</span>
 
 <span class="n">plot_results</span><span class="p">([(</span><span class="s1">&#39;traj.phase0.timeseries.time&#39;</span><span class="p">,</span> <span class="s1">&#39;traj.phase0.timeseries.x&#39;</span><span class="p">,</span>
                <span class="s1">&#39;time (s)&#39;</span><span class="p">,</span> <span class="s1">&#39;x $(m)$&#39;</span><span class="p">),</span>
@@ -1803,7 +1780,7 @@ Driver:  pyOptSparseDriver
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/df9835ef3afb565dff44a81b5593e452da3be63c334f360705e7ca30ee00ef57.png" src="../../_images/df9835ef3afb565dff44a81b5593e452da3be63c334f360705e7ca30ee00ef57.png" />
+<img alt="../../_images/c6a5114fed8808d00fc674962218a5964957b0ec6fba8a632520906b395398c0.png" src="../../_images/c6a5114fed8808d00fc674962218a5964957b0ec6fba8a632520906b395398c0.png" />
 </div>
 </div>
 </section>
