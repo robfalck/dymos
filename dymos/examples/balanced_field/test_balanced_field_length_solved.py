@@ -9,7 +9,7 @@ from dymos.utils.misc import om_version
 SHOW_PLOTS = True
 
 
-@use_tempdirs
+# @use_tempdirs
 class TestBalancedFieldLengthSolved(unittest.TestCase):
 
     @require_pyoptsparse(optimizer='IPOPT')
@@ -44,8 +44,9 @@ class TestBalancedFieldLengthSolved(unittest.TestCase):
         br_to_v1.add_state('r', fix_initial=True, lower=0, ref=1000.0, defect_ref=1000.0)
         br_to_v1.add_state('v', fix_initial=True, lower=0, ref=100.0, defect_ref=100.0)
         br_to_v1.add_parameter('alpha', val=0.0, opt=False, units='deg')
+        br_to_v1.add_parameter('m', val=1.0, opt=False, units='lbm')
         br_to_v1.add_timeseries_output('*')
-        # br_to_v1.add_boundary_balance(param='t_duration', name='v')
+        # br_to_v1.add_boundary_balance(param='t_duration', name='v_to_go')
 
 
         traj.add_phase('br_to_v1', br_to_v1)
@@ -99,15 +100,20 @@ class TestBalancedFieldLengthSolved(unittest.TestCase):
         # traj.add_phase('rotate', rotate)
         # traj.add_phase('climb', climb)
 
-        # Add parameters common to multiple phases to the trajectory
-        traj.add_parameter('m', val=174200., opt=False, units='lbm',
-                           desc='aircraft mass',
-                           targets={'br_to_v1': ['m']})
-        #, 'v1_to_vr': ['m'], 'rto': ['m'], 'rotate': ['m'], 'climb': ['m']})
+        # # Add parameters common to multiple phases to the trajectory
+        # traj.add_parameter('m', val=174200., opt=False, units='lbm',
+        #                    desc='aircraft mass',
+        #                    targets={'br_to_v1': ['m']})
+        # , 'v1_to_vr': ['m'], 'rto': ['m'], 'rotate': ['m'], 'climb': ['m']})
+
+        # traj.promotes('phases.br_to_v1', inputs=['parameters:m'])
+        traj.promote_parameter('m', from_phases='br_to_v1', units='lbm', val=174200, opt=False)
 
         traj.add_parameter('T_nominal', val=27000 * 2, opt=False, units='lbf', static_target=True,
                            desc='nominal aircraft thrust',
                            targets={'br_to_v1': ['T']})
+
+        # traj.promotes('phases.br_to_v1', inputs=['parameters:m'])
 
         # traj.add_parameter('T_engine_out', val=27000, opt=False, units='lbf', static_target=True,
         #                    desc='thrust under a single engine',
@@ -216,7 +222,11 @@ class TestBalancedFieldLengthSolved(unittest.TestCase):
         br_to_v1.set_state_val('v', [0.0, 100.0])
         br_to_v1.set_parameter_val('alpha', 0.0, units='deg')
 
-        p.run_model()
+        dm.run_problem(p, run_driver=False, simulate=True, make_plots=True)
+
+        print(p.get_reports_dir())
+
+        om.n2(p.model)
 
         # v1_to_vr.set_time_val(initial=35.0, duration=35.0)
         # v1_to_vr.set_state_val('r', [2500, 300.0])

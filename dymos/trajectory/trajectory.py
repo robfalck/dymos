@@ -10,6 +10,7 @@ import networkx as nx
 
 import openmdao.api as om
 from openmdao.utils.mpi import MPI
+from openmdao.core.constants import _UNDEFINED
 
 from ..utils.constants import INF_BOUND
 
@@ -49,6 +50,8 @@ class Trajectory(om.Group):
         A dictionary containing phase linkage information for the Trajectory.
     _phases : dict
         A dictionary of phase names as keys with the Phase objects being their associated values.
+    _promoted_params : dict
+        A dictioanry to track parameters which should be promoted from constituent phases.
     _phase_graph : nx.DiGraph
         A graph of linked phases.
     """
@@ -59,6 +62,7 @@ class Trajectory(om.Group):
         self._phases = {}
         self._phase_graph = nx.DiGraph()
         self._has_connected_phases = False
+        self._promoted_params = {}
         self.sim_prob = None
 
         self.phases = om.ParallelGroup() if self.options['parallel_phases'] else om.Group()
@@ -222,6 +226,63 @@ class Trajectory(om.Group):
                              f"specified for parameter '{name}'. "
                              f"Going forward, please use only option static_targets.  Option "
                              f"'dynamic' will be removed in Dymos 2.0.0.")
+
+    def promote_parameter(self, name, from_phases=None, units=_UNDEFINED,
+                          val=_UNDEFINED, opt=False, lower=None, upper=None,
+                          scaler=None, adder=None, ref0=None, ref=None):
+        """
+        Specify a parameter in one or more phases to be promoted to a trajectory parameter.
+
+        Note that the trajectory parameters generated created by this method will not
+        be available in `trajectory.parameter_options`
+
+        Parameters
+        ----------
+        name : str
+            The name of the phase parameter to be promoted. This may be a tuple
+            of the form (from_name, to_name) for promotion. Dymos will format
+            the trajectory name as 'parameters:{to_name}'.
+        from_phases : str, list[str] or None:
+            A list of one or more phase names from which the given parameter
+            name should be promoted. If None, promote it from all phases
+            in which the given name is a parameter.
+        units : str or None
+            The default units of the promoted variable, to be specified for set_input_defaults.
+        val : float, array-like, or None
+            The default value of the promoted variable, to be specified for set_input_defaults.
+        opt : bool
+            If True, make this variable a design variable.
+        lower : float, array-like, or None
+            If opt is True, the lower bound of the design variable.
+        upper : float, array-like, or None
+            If opt is True, the upper bound of the design variable.
+        scaler : float, array-like, or None
+            If opt is True, the scaler design variable.
+        adder : float, array-like, or None
+            If opt is True, the adder of the design variable.
+        ref0 : float, array-like, or None
+            If opt is True, the zero-reference of the design variable.
+        ref : float, array-like, or None
+            If opt is True, the one-reference of the design variable.
+        """
+        if isinstance(name, (tuple, list)):
+            from_name, to_name = name
+        elif isinstance(name, str):
+            from_name = to_name = name
+        from_name = f'parameters:{from_name}'
+        to_name = f'parameters:{to_name}'
+        _from_phases = [from_phases] if isinstance(from_phases, str) else from_phases
+        self._promoted_params[to_name] = ({'from_name': from_name,
+                                           'from_phase': _from_phases,
+                                           'units': units,
+                                           'val': val,
+                                           'opt': opt,
+                                           'lower': lower,
+                                           'upper': upper,
+                                           'scaler': scaler,
+                                           'adder': adder,
+                                           'ref0': ref0,
+                                           'ref': ref})
 
     def add_parameter(self, name, units=_unspecified, val=_unspecified, desc=_unspecified, opt=False,
                       targets=_unspecified, lower=_unspecified, upper=_unspecified,
@@ -412,7 +473,7 @@ class Trajectory(om.Group):
         """
         super(Trajectory, self).setup()
 
-        if self.parameter_options:
+        if self.parameter_options or self._promoted_params:
             self._setup_parameters()
 
         # This will override the existing phases attribute with the same thing.
@@ -1055,6 +1116,23 @@ class Trajectory(om.Group):
             if warn:
                 om.issue_warning(msg)
 
+    def _configure_promoted_params(self):
+        """
+        Configure parameters promoted up from phases.
+        """
+        _phases = self._get_subsystem('phases')
+        for to_name, options in self._promoted_params.items():
+            from_name = options['from_name']
+            for phase in _phases.system_iter(include_self=False, recurse=False):
+                if options['from_phase'] is None or phase.name in options['from_phase']:
+                    _phases.promotes(phase.name, inputs=[(from_name, to_name)])
+                    self.promotes('phases', inputs=[(from_name, to_name)])
+                    self.set_input_defaults(to_name, val=options['val'], units=options['units'])
+                    if options['opt']:
+                        self.add_design_var(to_name, lower=options['lower'], upper=options['upper'],
+                                            ref0=options['ref0'], ref=options['ref'],
+                                            scaler=options['scaler'], adder=options['adder'])
+
     def configure(self):
         """
         Configure the Trajectory Group.
@@ -1063,8 +1141,15 @@ class Trajectory(om.Group):
         setup has already been called on all children of the Trajectory, we can query them for
         variables at this point.
         """
+
+        # promote everything else out of phases
+        self.promotes('phases', inputs=['*'], outputs=['*'])
+
         if MPI:
             self._configure_phase_options_dicts()
+
+        if self._promoted_params:
+            self._configure_promoted_params()
 
         if self.parameter_options:
             self._configure_parameters()
@@ -1073,9 +1158,6 @@ class Trajectory(om.Group):
             self._configure_linkages()
 
         self._configure_solvers()
-
-        # promote everything else out of phases
-        self.promotes('phases', inputs=['*'], outputs=['*'])
 
     def add_linkage_constraint(self, phase_a, phase_b, var_a, var_b, loc_a='final', loc_b='initial',
                                sign_a=_unspecified, sign_b=_unspecified,
