@@ -44,12 +44,16 @@ class TestBalancedFieldLengthForDocs(unittest.TestCase):
         br_to_v1.add_state('r', fix_initial=True, lower=0, ref=1000.0, defect_ref=1000.0)
         br_to_v1.add_state('v', fix_initial=True, lower=0, ref=100.0, defect_ref=100.0)
         br_to_v1.add_parameter('alpha', val=0.0, opt=False, units='deg')
-        # br_to_v1.add_parameter('v1', val=100.0, opt=False, units='kn')
+        br_to_v1.add_parameter('v1', val=100.0, opt=False, units='kn')
         br_to_v1.add_calc_expr('v_to_go = v - v1',
                                v={'shape': (1,), 'units': 'kn'},
                                v1={'shape': (1,), 'tags':['dymos.static_target'], 'units': 'kn'},
                                v_to_go={'shape': (1,), 'units': 'kn'})
-        # br_to_v1.add_timeseries_output('*')
+        br_to_v1.add_boundary_balance(param='t_duration', name='v_to_go', tgt_val=0.0, loc='final')
+        br_to_v1.add_timeseries_output('*')
+
+        br_to_v1.nonlinear_solver = om.NewtonSolver(solve_subsystems=True)
+        br_to_v1.linear_solver = om.DirectSolver()
 
         # # Second Phase: Rejected takeoff at V1 - no engines operable
         # rto = dm.Phase(ode_class=BalancedFieldODEComp, transcription=dm.Radau(num_segments=3),
