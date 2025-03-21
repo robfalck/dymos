@@ -271,9 +271,6 @@ class TestBalancedFieldLengthForDocs(unittest.TestCase):
         climb_to_obstacle_clearance.set_parameter_val('gam_rate', 0.00, units='deg/s')
         climb_to_obstacle_clearance.set_parameter_val('mu_r', 0.0, units=None)
 
-        g = om.Group()
-
-
         dm.run_problem(p, run_driver=False, simulate=True, make_plots=True)
 
         print(p.get_val('traj.v1', units='kn'))
