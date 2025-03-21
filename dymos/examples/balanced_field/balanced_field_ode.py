@@ -74,7 +74,8 @@ class BalancedFieldODEComp(om.ExplicitComponent):
         self.add_output('gam_dot', shape=(nn,), desc='rate of change of flight path angle')
         self.add_output('h_dot', shape=(nn,), desc='rate of change of altitude', units='m/s')
 
-        self.declare_coloring(wrt='*', method='cs')
+        # self.declare_coloring(wrt='*', method='cs')
+        self.declare_partials(of='*', wrt='*', method='cs')
 
     def compute(self, inputs, outputs, discrete_inputs=None, discrete_outputs=None):
         g = self.options['g']
