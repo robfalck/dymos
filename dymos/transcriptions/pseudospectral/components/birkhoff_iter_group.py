@@ -83,30 +83,28 @@ class BirkhoffIterGroup(om.Group):
 
         num_nodes = self.options['grid_data'].subset_num_nodes['col']
 
-        ib = (None, None) if options['initial_bounds'] is None else options['initial_bounds']
-        fb = (None, None) if options['final_bounds'] is None else options['final_bounds']
+        ib = [None, None] if options['initial_bounds'] is None else options['initial_bounds']
+        fb = [None, None] if options['final_bounds'] is None else options['final_bounds']
         lower = options['lower']
         upper = options['upper']
+        ib[0] = ib[0] or lower
+        ib[1] = ib[1] or upper
+        fb[0] = fb[0] or lower
+        fb[1] = fb[1] or upper
         scaler = options['scaler']
         adder = options['adder']
         ref0 = options['ref0']
         ref = options['ref']
-        fix_initial = options['fix_initial']
-        fix_final = options['fix_final']
-        input_initial = options['input_initial']
-        input_final = options['input_final']
+        opt_initial = options['opt_initial']
+        opt_final = options['opt_final']
         shape = options['shape']
 
-        if solve_segs == 'forward' and fix_final:
-            raise ValueError(f"Option fix_final on state {name} may not "
-                             f"be used with `solve_segments='forward'`.\n Use "
-                             f"a boundary constraint to constrain the final "
-                             f"state value instead.")
-        elif solve_segs == 'backward' and fix_initial:
-            raise ValueError(f"Option fix_final on state {name} may not "
-                             f"be used with `solve_segments='forward'`.\n Use "
-                             f"a boundary constraint to constrain the initial "
-                             f"state value instead.")
+        if solve_segs == 'forward' and opt_final:
+            raise ValueError(f"Option opt_final on state {name} may not "
+                             f"be used with `solve_segments='forward'`.")
+        elif solve_segs == 'backward' and opt_initial:
+            raise ValueError(f"Option opt_initial on state {name} may not "
+                             f"be used with `solve_segments='backward'`.")
 
         if not np.isscalar(ref0) and ref0 is not None:
             ref0 = np.asarray(ref0)
@@ -140,9 +138,9 @@ class BirkhoffIterGroup(om.Group):
 
         free_vars = free_vars - implicit_outputs
 
-        if fix_initial or input_initial:
+        if not opt_initial:
             free_vars = free_vars - {initial_state_name}
-        if fix_final or input_final:
+        if not opt_final:
             free_vars = free_vars - {final_state_name}
 
         if opt:

@@ -104,7 +104,7 @@ class TranscriptionBase(object):
         """
         time_options = phase.time_options
 
-        if not (time_options['input_initial'] or time_options['fix_initial']):
+        if time_options['opt_initial']:
             lb, ub = time_options['initial_bounds']
             lb = -INF_BOUND if lb is None else lb
             ub = INF_BOUND if ub is None else ub
@@ -117,7 +117,7 @@ class TranscriptionBase(object):
                                  ref0=time_options['initial_ref0'],
                                  ref=time_options['initial_ref'])
 
-        if not (time_options['input_duration'] or time_options['fix_duration']):
+        if time_options['opt_duration']:
             lb, ub = time_options['duration_bounds']
             lb = -INF_BOUND if lb is None else lb
             ub = INF_BOUND if ub is None else ub

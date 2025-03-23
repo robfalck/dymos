@@ -91,7 +91,7 @@ class Phase(om.Group):
         super(Phase, self).__init__(**_kwargs)
 
     def duplicate(self, transcription=None, boundary_constraints=False, path_constraints=False, objectives=False,
-                  fix_initial_time=False, fix_initial_states=None, fix_final_states=None):
+                  opt_initial_time=True, opt_initial_states=None, opt_final_states=None):
         """
         Create a copy of this phase where most options and attributes are deep copies of those in the original.
 
@@ -111,12 +111,12 @@ class Phase(om.Group):
             If True, retain all path constraints from the phase to be copied.
         objectives : bool
             If True, retain all objectives from the phase to be copied.
-        fix_initial_time : bool
-            If True, fix the initial time of the returned phase.
-        fix_initial_states : Sequence of str or None
-            If given, set fix_initial=True for the given state names. Otherwise, all states will have fix_initial=False.
-        fix_final_states : Sequence of str or None
-            If given, set fix_final=True for the given state names. Otherwise, all states will have fix_final=False.
+        opt_initial_time : bool
+            If True, add the initial time as a design variable of the returned phase.
+        opt_initial_states : Sequence of str or None
+            If given, set opt_initial=True for the given state names. Otherwise, all states will have opt_initial=False.
+        opt_final_states : Sequence of str or None
+            If given, set opt_final=True for the given state names. Otherwise, all states will have opt_final=False.
 
         Returns
         -------
@@ -143,21 +143,14 @@ class Phase(om.Group):
         for control_name, control_options in self.control_options.items():
             p.control_options[control_name] = deepcopy(control_options)
 
-        p.time_options['fix_initial'] = fix_initial_time
+        p.time_options['opt_initial'] = opt_initial_time
 
-        _fis = [] if fix_initial_states is None else fix_initial_states
-        _ffs = [] if fix_final_states is None else fix_final_states
+        _ois = [] if opt_initial_states is None else opt_initial_states
+        _ofs = [] if opt_final_states is None else opt_final_states
 
         for state_name, state_options in p.state_options.items():
-            if state_name in _fis:
-                state_options['fix_initial'] = True
-            else:
-                state_options['fix_initial'] = False
-
-            if state_name in _ffs:
-                state_options['fix_final'] = True
-            else:
-                state_options['fix_final'] = False
+            state_options['opt_intial'] = state_name in _ois
+            state_options['opt_intial'] = state_name in _ofs
 
         p._timeseries = deepcopy(self._timeseries)
         p.refine_options = deepcopy(self.refine_options)
@@ -335,6 +328,7 @@ class Phase(om.Group):
     def set_state_options(self, name, units=_unspecified, shape=_unspecified,
                           rate_source=_unspecified, targets=_unspecified,
                           val=_unspecified, fix_initial=_unspecified, fix_final=_unspecified,
+                          opt_initial=_unspecified, opt_final=_unspecified,
                           lower=_unspecified, upper=_unspecified, scaler=_unspecified, adder=_unspecified,
                           ref0=_unspecified, ref=_unspecified, defect_scaler=_unspecified,
                           defect_ref=_unspecified, continuity_scaler=_unspecified, continuity_ref=_unspecified,
@@ -372,6 +366,12 @@ class Phase(om.Group):
         fix_final : bool(False)
             If True, omit the final value of the state from the design variables (prevent the
             optimizer from changing it).
+        opt_initial : bool(False)
+            If True, make the initial value of the state in the phase a design variable.
+            This option is invalid if solve_segments is "backward" for the state.
+        opt_final : bool(False)
+            If True, make the final value of the state in the phase a design variable.
+            This option is invalid if solve_segments is "forward" for the state.
         lower : float or ndarray or None (None)
             The lower bound of the state at the nodes of the phase.
         upper : float or ndarray or None (None)
@@ -441,10 +441,16 @@ class Phase(om.Group):
             self.state_options[name]['val'] = val
 
         if fix_initial is not _unspecified:
-            self.state_options[name]['fix_initial'] = fix_initial
+            self.state_options[name]['opt_initial'] = not fix_initial
 
         if fix_final is not _unspecified:
-            self.state_options[name]['fix_final'] = fix_final
+            self.state_options[name]['opt_final'] = not fix_final
+
+        if opt_initial is not _unspecified:
+            self.state_options[name]['opt_initial'] = opt_initial
+
+        if opt_final is not _unspecified:
+            self.state_options[name]['opt_final'] = opt_final
 
         if lower is not _unspecified:
             self.state_options[name]['lower'] = lower
@@ -1767,7 +1773,8 @@ class Phase(om.Group):
 
     def set_time_options(self, units=_unspecified, fix_initial=_unspecified,
                          fix_duration=_unspecified, input_initial=_unspecified,
-                         input_duration=_unspecified, initial_val=_unspecified,
+                         input_duration=_unspecified, opt_initial=_unspecified,
+                         opt_duration=_unspecified, initial_val=_unspecified,
                          initial_bounds=_unspecified, initial_scaler=_unspecified,
                          initial_adder=_unspecified, initial_ref0=_unspecified,
                          initial_ref=_unspecified, duration_val=_unspecified,
@@ -1792,11 +1799,11 @@ class Phase(om.Group):
             If True, the duration of the phase is not treated as a design variable for the
             optimization problem.
         input_initial : bool
-            If True, the user is expected to link phase.t_initial to an external output source.
-            Providing input_initial=True makes all initial time optimization settings irrelevant.
+            Deprecated. Variable `phase.t_initial` is always an input. If `opt_initial` is
+            set to True, it will be marked as a design variable.
         input_duration : bool
-            If True, the user is expected to link phase.t_duration to an external output source.
-            Providing input_duration=True makes all time duration optimization settings irrelevant.
+            Deprecated. Variable `phase.t_duration` is always an input. If `opt_initial` is
+            set to True, it will be marked as a design variable.
         initial_val : float
             Default value of the time at the start of the phase.
         initial_bounds : iterable of (float, float)
@@ -1836,16 +1843,16 @@ class Phase(om.Group):
             self.time_options['units'] = units
 
         if fix_initial is not _unspecified:
-            self.time_options['fix_initial'] = fix_initial
+            self.time_options['opt_initial'] = not fix_initial
 
         if fix_duration is not _unspecified:
-            self.time_options['fix_duration'] = fix_duration
+            self.time_options['opt_duration'] = not fix_duration
 
-        if input_initial is not _unspecified:
-            self.time_options['input_initial'] = input_initial
+        if opt_initial is not _unspecified:
+            self.time_options['opt_initial'] = opt_initial
 
-        if input_duration is not _unspecified:
-            self.time_options['input_duration'] = input_duration
+        if opt_duration is not _unspecified:
+            self.time_options['opt_duration'] = opt_duration
 
         if initial_val is not _unspecified:
             self.time_options['initial_val'] = initial_val
@@ -2306,41 +2313,25 @@ class Phase(om.Group):
         RuntimeWarning
             RuntimeWarning is issued in the case of one or more invalid time options.
         """
-        phase_name = self.pathname
-
-        if self.time_options['fix_initial'] or self.time_options['input_initial']:
+        if not self.time_options['opt_initial']:
             invalid_options = []
-            init_bounds = self.time_options['initial_bounds']
-            if init_bounds is not None and init_bounds != (None, None):
-                invalid_options.append('initial_bounds')
             for opt in 'initial_scaler', 'initial_adder', 'initial_ref', 'initial_ref0':
                 if self.time_options[opt] is not None:
                     invalid_options.append(opt)
             if invalid_options:
                 str_invalid_opts = ', '.join(invalid_options)
-                warnings.warn(f'Phase time options have no effect because fix_initial=True '
-                              f'or input_initial=True for phase \'{phase_name}\': {str_invalid_opts}')
+                warnings.warn(f'{self.msginfo}: Phase time options have no effect '
+                              f'because opt_initial=False {str_invalid_opts}')
 
-        if self.time_options['input_initial'] and self.time_options['fix_initial']:
-            warnings.warn(f'Phase \'{self.name}\' initial time is an externally-connected input, '
-                          'therefore fix_initial has no effect.', RuntimeWarning)
-
-        if self.time_options['fix_duration'] or self.time_options['input_duration']:
+        if not self.time_options['opt_duration']:
             invalid_options = []
-            duration_bounds = self.time_options['duration_bounds']
-            if duration_bounds is not None and duration_bounds != (None, None):
-                invalid_options.append('duration_bounds')
             for opt in 'duration_scaler', 'duration_adder', 'duration_ref', 'duration_ref0':
                 if self.time_options[opt] is not None:
                     invalid_options.append(opt)
             if invalid_options:
                 str_invalid_opts = ', '.join(invalid_options)
-                warnings.warn(f'Phase time options have no effect because fix_duration=True '
-                              f'or input_duration=True for phase \'{phase_name}\': {str_invalid_opts}')
-
-        if self.time_options['input_duration'] and self.time_options['fix_duration']:
-            warnings.warn(f'Phase \'{self.name}\' time duration is an externally-connected input, '
-                          'therefore fix_duration has no effect.', RuntimeWarning)
+                warnings.warn(f'{self.msginfo}: Phase time options have no effect '
+                              f'because opt_duration=False {str_invalid_opts}')
 
     def _check_control_options(self):
         """
@@ -2594,15 +2585,14 @@ class Phase(om.Group):
                                     ode_init_kwargs=ode_init_kwargs)
 
         sim_phase.time_options.update(self.time_options)
-        sim_phase.time_options['fix_initial'] = True
-        sim_phase.time_options['fix_duration'] = True
+        sim_phase.time_options['opt_initial'] = False
+        sim_phase.time_options['opt_duration'] = False
         sim_phase.time_options['initial_bounds'] = (None, None)
         sim_phase.time_options['duration_bounds'] = (None, None)
 
         for state_name, state_options in self.state_options.items():
             sim_phase.state_options[state_name] = deepcopy(state_options)
-            sim_phase.state_options[state_name]['fix_final'] = False
-            sim_phase.state_options[state_name]['input_initial'] = False
+            sim_phase.state_options[state_name]['opt_initial'] = False
 
         for param_name, param_options in self.parameter_options.items():
             sim_phase.parameter_options[param_name] = deepcopy(param_options)
@@ -2611,6 +2601,9 @@ class Phase(om.Group):
         for control_name, control_options in self.control_options.items():
             sim_phase.control_options[control_name] = deepcopy(control_options)
             sim_phase.control_options[control_name]['opt'] = False
+            sim_phase.control_options[control_name]['continuity'] = False
+            sim_phase.control_options[control_name]['rate_continuity'] = False
+            sim_phase.control_options[control_name]['rate2_continuity'] = False
 
         sim_phase._timeseries = {ts_name: ts_options for ts_name, ts_options in self._timeseries.items()
                                  if ts_name == 'timeseries'}

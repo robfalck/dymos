@@ -290,9 +290,13 @@ class ODEEvaluationGroup(om.Group):
 
                 self._ivc.add_output(uhat_name, shape=(num_control_input_nodes,) + shape, units=units)
                 self.add_design_var(uhat_name)
-                self.add_constraint(u_name)
-                self.add_constraint(u_rate_name)
-                self.add_constraint(u_rate2_name)
+
+                if options['continuity']:
+                    self.add_constraint(u_name)
+                if options['rate_continuity']:
+                    self.add_constraint(u_rate_name)
+                if options['rate2_continuity']:
+                    self.add_constraint(u_rate2_name)
 
                 self.promotes('control_interp', inputs=[uhat_name],
                               outputs=[u_name, u_rate_name, u_rate2_name])

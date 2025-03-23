@@ -412,7 +412,7 @@ class AnalyticPhase(Phase):
         raise NotImplementedError('Method set_simulate_options is not available for AnalyticPhase.')
 
     def duplicate(self, num_nodes=None, boundary_constraints=False, path_constraints=False, objectives=False,
-                  fix_initial_time=False):
+                  opt_initial_time=True):
         """
         Create a copy of this phase where most options and attributes are deep copies of those in the original.
 
@@ -449,7 +449,7 @@ class AnalyticPhase(Phase):
                           auto_solvers=auto_solvers)
 
         p.time_options.update(deepcopy(self.time_options))
-        p.time_options['fix_initial'] = fix_initial_time
+        p.time_options['opt_initial'] = opt_initial_time
 
         for state_name, state_options in self.state_options.items():
             p.state_options[state_name] = deepcopy(state_options)

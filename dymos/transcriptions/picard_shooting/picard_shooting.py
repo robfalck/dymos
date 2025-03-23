@@ -160,17 +160,57 @@ class PicardShooting(TranscriptionBase):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-        self.any_solved_segs = False
-        self.any_connected_opt_segs = False
+        self.any_solved_segs = True
+        self.any_connected_opt_segs = True
         for options in phase.state_options.values():
             # Transcription solve_segments overrides state solve_segments if its not set
             if options['solve_segments'] in (None, False):
                 options['solve_segments'] = self.options['solve_segments']
 
-            if options['solve_segments']:
-                self.any_solved_segs = True
-            elif options['input_initial']:
-                self.any_connected_opt_segs = True
+            if options['solve_segments'] == 'forward':
+                options['opt_final'] = False
+            elif options['solve_semgnets'] == 'backward':
+                options['opt_initial'] = False
+
+
+    def configure_states(self, phase):
+        # Add the appropriate design variables
+        super().configure_states(phase)
+        for state_name, options in phase.state_options.items():
+            if options['opt'] and options['opt_initial']:
+                if options['solve_segments'] == 'backward':
+                    err_msg = (f'Incompatible options for state {state_name} using the '
+                    'PicardShooting transcription. Option `opt_initial` '
+                    'cannot be True for a the state because option '
+                    '`solve_segments="backward"`.')
+                    raise ValueError(f'{phase.msginfo}: {err_msg}')
+                lower, upper = options['initial_bounds']
+                lower = lower or options['bounds'][0]
+                upper = upper or options['bounds'][1]
+                phase.add_design_var(name=f'initial_states:{state_name}',
+                                     lower=lower,
+                                     upper=upper,
+                                     scaler=options['scaler'],
+                                     adder=options['adder'],
+                                     ref0=options['ref0'],
+                                     ref=options['ref'])
+            if options['opt'] and options['opt_final']:
+                if options['solve_segments'] == 'forward':
+                    err_msg = (f'Incompatible options for state {state_name} using the '
+                    'PicardShooting transcription. Option `opt_final` '
+                    'cannot be True for a the state because option '
+                    '`solve_segments="forward"`.')
+                    raise ValueError(f'{phase.msginfo}: {err_msg}')
+                lower, upper = options['final_bounds']
+                lower = lower or options['bounds'][0]
+                upper = upper or options['bounds'][1]
+                phase.add_design_var(name=f'final_states:{state_name}',
+                                     lower=lower,
+                                     upper=upper,
+                                     scaler=options['scaler'],
+                                     adder=options['adder'],
+                                     ref0=options['ref0'],
+                                     ref=options['ref'])
 
     def setup_controls(self, phase):
         """

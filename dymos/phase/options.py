@@ -300,13 +300,33 @@ class StateOptionsDictionary(om.OptionsDictionary):
                      desc='If True, the initial value of this state is fixed and not a '
                           'design variable. If the state variable has a non-scalar shape, '
                           'this may be an iterable of bool for each index. '
-                          'This option is invalid if opt=False.')
+                          'This option is invalid if opt=False.',
+                     deprecation='phase.initial_states:{name} is always an input unless '
+                                 'option solve_segments is "backward". Use '
+                                 'opt_initial to make phase.initial_states:{name} a '
+                                 'design variable.')
 
         self.declare(name='fix_final', types=(bool, Iterable), default=False,
                      desc='If True, the final value of this state is fixed and not a '
                           'design variable. If the state variable has a non-scalar shape, '
                           'this may be an iterable of bool for each index. This option is '
-                          'invalid if opt=False.')
+                          'invalid if opt=False.',
+                     deprecation='phase.final_states:{name} is always an input unless option '
+                                 'solve_segments is "forward". Use '
+                                 'opt_final to make phase.final_states:{name} a '
+                                 'design variable.')
+
+        self.declare(name='opt_initial', types=(bool, Iterable), default=True,
+                     desc='If True, the initial value of this state is a '
+                          'design variable. If the state variable has a non-scalar shape, '
+                          'this may be an iterable of bool for each index. '
+                          'This option is overridden if opt=False.')
+
+        self.declare(name='opt_final', types=(bool, Iterable), default=True,
+                     desc='If True, the final value of this state is a '
+                          'design variable. If the state variable has a non-scalar shape, '
+                          'this may be an iterable of bool for each index. This option is '
+                          'overridden if opt=False.')
 
         self.declare(name='initial_bounds', types=Iterable, default=None, allow_none=True,
                      desc='Bounds on the value of the state at the start of the phase. This '
@@ -440,19 +460,31 @@ class TimeOptionsDictionary(om.OptionsDictionary):
         self.declare('units', types=str, allow_none=True,
                      default='s', desc='Units for the integration variable')
 
-        self.declare(name='fix_initial', types=bool, default=False,
-                     desc='If True, the initial value of time is not a design variable.')
+     #    self.declare(name='fix_initial', types=bool, default=False,
+     #                 desc='If True, the initial value of time is not a design variable.',
+     #                 deprecation='Use opt_initial, with the opposite meaning of fix_initial.')
 
-        self.declare(name='fix_duration', types=bool, default=False,
-                     desc='If True, the  phase duration is not a design variable.')
+     #    self.declare(name='fix_duration', types=bool, default=False,
+     #                 desc='If True, the  phase duration is not a design variable.',
+     #                 deprecation='Use opt_duration, with the opposite meaning of fix_duration.')
 
-        self.declare(name='input_initial', types=bool, default=False,
-                     desc='If True, the initial value of time (t_initial) is expected to be '
-                          'connected to an external output source.')
+        self.declare(name='opt_initial', types=bool, default=True,
+                     desc='If True, the initial value of time is a design variable.')
 
-        self.declare(name='input_duration', types=bool, default=False,
-                     desc='If True, the phase duration (t_duration) is expected to be '
-                          'connected to an external output source.')
+        self.declare(name='opt_duration', types=bool, default=True,
+                     desc='If True, the  phase duration is a design variable.')
+
+     #    self.declare(name='input_initial', types=bool, default=False,
+     #                 desc='If True, the initial value of time (t_initial) is expected to be '
+     #                      'connected to an external output source.',
+     #                 deprecation='t_initial is always available as an input. '
+     #                             'Time option `input_initial` is deprecated')
+
+     #    self.declare(name='input_duration', types=bool, default=False,
+     #                 desc='If True, the phase duration (t_duration) is expected to be '
+     #                      'connected to an external output source.',
+     #                 deprecation='t_duration is always available as an input. '
+     #                             'Time option `input_duration` is deprecated')
 
         self.declare('initial_val', types=Number, default=0.0,
                      desc='Value of the integration variable at the start of the phase.')
