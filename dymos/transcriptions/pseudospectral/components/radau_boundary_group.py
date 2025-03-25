@@ -2,6 +2,7 @@ import numpy as np
 import openmdao.api as om
 
 from dymos._options import options as dymos_options
+from dymos.utils.ode_utils import _make_ode_system
 
 
 class RadauBoundaryMuxComp(om.ExplicitComponent):
@@ -104,6 +105,8 @@ class RadauBoundaryGroup(om.Group):
                              recordable=False)
         self.options.declare('ode_init_kwargs', types=dict, default={}, recordable=False,
                              desc='Keyword arguments provided when initializing the ODE System')
+        self.options.declare('calc_exprs', types=dict, default={}, recordable=False,
+                             desc='Calculation expressions of the parent phase.')
         self.options.declare('initial_boundary_constraints', types=list, recordable=False,
                              desc='Initial boundary constraints from the containing phase.')
         self.options.declare('final_boundary_constraints', types=list, recordable=False,
@@ -118,10 +121,15 @@ class RadauBoundaryGroup(om.Group):
         ode_class = self.options['ode_class']
         ode_init_kwargs = self.options['ode_init_kwargs']
 
+        ode_sys = _make_ode_system(ode_class=ode_class,
+                                   num_nodes=2,
+                                   ode_init_kwargs=ode_init_kwargs,
+                                   calc_exprs=self.options['calc_exprs'])
+
         self.add_subsystem('boundary_mux', subsys=RadauBoundaryMuxComp(),
                            promotes_inputs=['*'], promotes_outputs=['*'])
 
-        self.add_subsystem('boundary_ode', subsys=ode_class(num_nodes=2, **ode_init_kwargs),
+        self.add_subsystem('boundary_ode', subsys=ode_sys,
                            promotes_inputs=['*'], promotes_outputs=['*'])
 
     def configure_io(self, phase):

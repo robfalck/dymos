@@ -8,7 +8,7 @@ from .components.radau_iter_group import RadauIterGroup
 from .components.radau_boundary_group import RadauBoundaryGroup
 
 from ..grid_data import RadauGrid
-from dymos.utils.misc import get_rate_units
+from dymos.utils.misc import get_rate_units, _format_phase_constraint_alias
 from dymos.utils.introspection import get_promoted_vars, get_source_metadata
 from dymos.utils.indexing import get_constraint_flat_idxs, get_src_indices_by_row
 
@@ -247,6 +247,7 @@ class RadauNew(TranscriptionBase):
         phase.add_subsystem('boundary_vals',
                             subsys=RadauBoundaryGroup(ode_class=ODEClass,
                                                       ode_init_kwargs=ode_init_kwargs,
+                                                      calc_exprs=phase._calc_exprs,
                                                       initial_boundary_constraints=ibcs,
                                                       final_boundary_constraints=fbcs,
                                                       objectives=phase._objectives),
@@ -410,7 +411,6 @@ class RadauNew(TranscriptionBase):
         num_nodes = self._get_num_timeseries_nodes()
 
         constraint_kwargs = {key: options for key, options in options.items()}
-        con_name = constraint_kwargs.pop('constraint_name')
 
         # Determine the path to the variable which we will be constraining
         var = options['name']
@@ -449,15 +449,13 @@ class RadauNew(TranscriptionBase):
 
                 constraint_kwargs['indices'] = path_idxs
 
-        alias_map = {'path': 'path_constraint',
-                     'initial': 'initial_boundary_constraint',
-                     'final': 'final_boundary_constraint'}
-
-        str_idxs = '' if options['indices'] is None else f'{options["indices"]}'
-
-        constraint_kwargs['alias'] = f'{phase.pathname}->{alias_map[constraint_type]}->{con_name}{str_idxs}'
-        constraint_kwargs.pop('name')
         con_path = constraint_kwargs.pop('constraint_path')
+        con_name = constraint_kwargs.pop('constraint_name')
+
+        constraint_kwargs['alias'] = _format_phase_constraint_alias(phase, con_name,
+                                                                    constraint_type,
+                                                                    options['indices'])
+        constraint_kwargs.pop('name')
         constraint_kwargs.pop('shape')
         constraint_kwargs['flat_indices'] = True
 
