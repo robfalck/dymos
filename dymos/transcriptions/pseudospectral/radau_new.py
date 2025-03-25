@@ -30,7 +30,7 @@ class RadauNew(TranscriptionBase):
     """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._rhs_source = 'ode_all'
+        self._rhs_source = 'ode_iter_group.ode_all'
 
     def initialize(self):
         """
@@ -179,7 +179,6 @@ class RadauNew(TranscriptionBase):
             phase.add_subsystem('control_comp',
                                 subsys=ControlInterpComp(time_units=time_units,
                                                          grid_data=gd,
-                                                         compressed=False,
                                                          control_options=control_options),
                                 promotes_inputs=['*controls*'],
                                 promotes_outputs=['control_values:*', 'control_rates:*'])
@@ -346,7 +345,7 @@ class RadauNew(TranscriptionBase):
         nsin = gd.subset_num_nodes['state_input']
         state_options = phase.state_options
         for timeseries_name, timeseries_options in phase._timeseries.items():
-            timeseries_comp = phase._get_subsystem(f'{timeseries_name}.timeseries_comp')
+            timeseries_comp = phase._get_subsystem(timeseries_name)
             ts_inputs_to_promote = []
             for input_name, src, src_idxs in timeseries_comp._configure_io(timeseries_options):
                 # If the src was added, promote it if it was a state,
@@ -414,7 +413,7 @@ class RadauNew(TranscriptionBase):
         con_name = constraint_kwargs.pop('constraint_name')
 
         # Determine the path to the variable which we will be constraining
-        var = con_name if options['is_expr'] else options['name']
+        var = options['name']
         var_type = phase.classify_var(var)
 
         # These are the flat indices at a single point in time used
@@ -461,7 +460,6 @@ class RadauNew(TranscriptionBase):
         con_path = constraint_kwargs.pop('constraint_path')
         constraint_kwargs.pop('shape')
         constraint_kwargs['flat_indices'] = True
-        constraint_kwargs.pop('is_expr')
 
         return con_path, constraint_kwargs
 

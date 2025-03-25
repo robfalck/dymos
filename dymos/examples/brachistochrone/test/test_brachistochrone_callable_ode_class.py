@@ -30,6 +30,9 @@ class TestBrachExecCompODE(unittest.TestCase):
             t = dm.Radau(num_segments=num_segments,
                          order=transcription_order,
                          compressed=compressed)
+        elif transcription == 'radau-new':
+            t = dm.RadauNew(num_segments=num_segments,
+                            order=transcription_order)
         elif transcription == 'birkhoff':
             t = dm.Birkhoff(num_nodes=transcription_order+1,
                             grid_type='cgl')
@@ -147,6 +150,10 @@ class TestBrachExecCompODE(unittest.TestCase):
 
     def test_ex_brachistochrone_picard_shooting(self):
         p = self._make_problem(transcription='picard-cgl', run_driver=True)
+        self.run_asserts(p)
+
+    def test_ex_brachistochrone_radau_new(self):
+        p = self._make_problem(transcription='radau-new', run_driver=True)
         self.run_asserts(p)
 
 

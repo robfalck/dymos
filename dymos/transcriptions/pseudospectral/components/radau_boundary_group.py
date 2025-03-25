@@ -117,19 +117,12 @@ class RadauBoundaryGroup(om.Group):
         """
         ode_class = self.options['ode_class']
         ode_init_kwargs = self.options['ode_init_kwargs']
-        ibcs = self.options['initial_boundary_constraints']
-        fbcs = self.options['final_boundary_constraints']
-        objs = [meta for meta in self.options['objectives'].values()]
 
         self.add_subsystem('boundary_mux', subsys=RadauBoundaryMuxComp(),
                            promotes_inputs=['*'], promotes_outputs=['*'])
 
         self.add_subsystem('boundary_ode', subsys=ode_class(num_nodes=2, **ode_init_kwargs),
                            promotes_inputs=['*'], promotes_outputs=['*'])
-
-        if any([response['is_expr'] for response in ibcs + fbcs + objs]):
-            self.add_subsystem('boundary_constraint_exec_comp', subsys=om.ExecComp(),
-                               promotes_inputs=['*'], promotes_outputs=['*'])
 
     def configure_io(self, phase):
         """

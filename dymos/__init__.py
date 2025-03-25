@@ -3,7 +3,7 @@ __version__ = '1.12.1-dev'
 
 from .phase import Phase, AnalyticPhase
 from .transcriptions import GaussLobatto, Radau, ExplicitShooting, Analytic, \
-    Birkhoff, PicardShooting
+    Birkhoff, PicardShooting, RadauNew
 from .transcriptions.grid_data import GaussLobattoGrid, ChebyshevGaussLobattoGrid, \
     RadauGrid, UniformGrid, BirkhoffGrid
 from .trajectory.trajectory import Trajectory
