@@ -234,8 +234,6 @@ class RadauNew(TranscriptionBase):
         grid_data = self.grid_data
 
         ode_init_kwargs = phase.options['ode_init_kwargs']
-        ibcs = phase._initial_boundary_constraints
-        fbcs = phase._final_boundary_constraints
 
         phase.add_subsystem('ode_iter_group',
                             subsys=RadauIterGroup(grid_data=grid_data, state_options=phase.state_options,
@@ -247,12 +245,8 @@ class RadauNew(TranscriptionBase):
         phase.add_subsystem('boundary_vals',
                             subsys=RadauBoundaryGroup(ode_class=ODEClass,
                                                       ode_init_kwargs=ode_init_kwargs,
-                                                      calc_exprs=phase._calc_exprs,
-                                                      initial_boundary_constraints=ibcs,
-                                                      final_boundary_constraints=fbcs,
-                                                      objectives=phase._objectives),
+                                                      calc_exprs=phase._calc_exprs),
                             promotes_inputs=['initial_states:*', 'final_states:*'])
-
     def configure_ode(self, phase):
         """
         Create connections to the introspected states.
@@ -461,16 +455,16 @@ class RadauNew(TranscriptionBase):
 
         return con_path, constraint_kwargs
 
-    def _get_objective_src(self, var, loc, phase, ode_outputs=None):
+    def _get_response_src(self, var, loc, phase, ode_outputs=None):
         """
-        Return the path to the variable that will be used as the objective.
+        Return the path to the variable that will be used as a response..
 
         Parameters
         ----------
         var : str
-            Name of the variable to be used as the objective.
+            Name of the variable to be used as the response.
         loc : str
-            The location of the objective in the phase ['initial', 'final'].
+            The location of the response in the phase ['initial', 'final'].
         phase : dymos.Phase
             Phase object containing in which the objective resides.
         ode_outputs : dict or None
@@ -485,7 +479,7 @@ class RadauNew(TranscriptionBase):
         units : str
             Source units.
         linear : bool
-            True if the objective quantity1 is linear.
+            True if the objective quantity is linear.
         """
         time_units = phase.time_options['units']
         var_type = phase.classify_var(var)
@@ -507,23 +501,11 @@ class RadauNew(TranscriptionBase):
             shape = phase.state_options[var]['shape']
             units = phase.state_options[var]['units']
             linear = False
-            constraint_path = f'boundary_vals.{var}'
-        elif var_type == 'indep_control':
-            shape = phase.control_options[var]['shape']
-            units = phase.control_options[var]['units']
-            linear = True
-            constraint_path = f'control_values:{var}'
-        elif var_type == 'input_control':
-            shape = phase.control_options[var]['shape']
-            units = phase.control_options[var]['units']
-            linear = False
-            constraint_path = f'control_values:{var}'
-        elif var_type == 'indep_polynomial_control':
-            shape = phase.control_options[var]['shape']
-            units = phase.control_options[var]['units']
-            linear = True
-            constraint_path = f'control_values:{var}'
-        elif var_type == 'input_polynomial_control':
+            if loc == 'path':
+                constraint_path = f'states:{var}'
+            else:
+                constraint_path = f'boundary_vals.{var}'
+        elif var_type == 'control':
             shape = phase.control_options[var]['shape']
             units = phase.control_options[var]['units']
             linear = False
@@ -542,23 +524,12 @@ class RadauNew(TranscriptionBase):
             units = control_rate_units
             linear = False
             constraint_path = f'control_rates:{var}'
-        elif var_type in ('polynomial_control_rate', 'polynomial_control_rate2'):
-            control_var = var[:-5]
-            shape = phase.control_options[control_var]['shape']
-            control_units = phase.control_options[control_var]['units']
-            d = 2 if var_type == 'polynomial_control_rate2' else 1
-            control_rate_units = get_rate_units(control_units, time_units, deriv=d)
-            units = control_rate_units
-            linear = False
-            constraint_path = f'control_rates:{var}'
-        elif var_type == 'timeseries_exec_comp_output':
-            shape = (1,)
-            units = None
-            constraint_path = f'timeseries.timeseries_exec_comp.{var}'
-            linear = False
         else:
             # Failed to find variable, assume it is in the ODE. This requires introspection.
-            constraint_path = f'boundary_vals.{var}'
+            if loc == 'path':
+                constraint_path = f'ode_all.{var}'
+            else:
+                constraint_path = f'boundary_vals.{var}'
             meta = get_source_metadata(ode_outputs, var, user_units=None, user_shape=None)
             shape = meta['shape']
             units = meta['units']
@@ -611,24 +582,12 @@ class RadauNew(TranscriptionBase):
             rate_path = 't_phase'
         elif var_type == 'state':
             rate_path = f'states:{var}'
-        elif var_type == 'indep_control':
-            rate_path = f'control_values:{var}'
-        elif var_type == 'input_control':
+        elif var_type == 'control':
             rate_path = f'control_values:{var}'
         elif var_type == 'control_rate':
             control_name = var[:-5]
             rate_path = f'control_rates:{control_name}_rate'
         elif var_type == 'control_rate2':
-            control_name = var[:-6]
-            rate_path = f'control_rates:{control_name}_rate2'
-        elif var_type == 'indep_polynomial_control':
-            rate_path = f'control_values:{var}'
-        elif var_type == 'input_polynomial_control':
-            rate_path = f'control_values:{var}'
-        elif var_type == 'polynomial_control_rate':
-            control_name = var[:-5]
-            rate_path = f'control_rates:{control_name}_rate'
-        elif var_type == 'polynomial_control_rate2':
             control_name = var[:-6]
             rate_path = f'control_rates:{control_name}_rate2'
         elif var_type == 'parameter':
@@ -687,23 +646,24 @@ class RadauNew(TranscriptionBase):
             src_units = phase.state_options[var]['units']
             src_shape = phase.state_options[var]['shape']
 
-            # Find the state_input indices which occur at segment endpoints, and repeat them twice
-            state_input_idxs = gd.subset_node_indices['state_input']
-            repeat_idxs = np.ones_like(state_input_idxs)
-            if self.options['compressed']:
-                segment_end_idxs = gd.subset_node_indices['segment_ends'][1:-1]
-                # Repeat nodes that are on segment bounds (but not the first or last nodes in the phase)
-                nodes_to_repeat = list(set(state_input_idxs).intersection(set(segment_end_idxs)))
-                # Now find these nodes in the state input indices
-                idxs_of_ntr_in_state_inputs = np.where(np.isin(state_input_idxs, nodes_to_repeat))[0]
-                # All state input nodes are used once, but nodes_to_repeat are used twice
-                repeat_idxs[idxs_of_ntr_in_state_inputs] = 2
-            # Now we have a way of mapping the state input indices to all nodes
-            map_input_node_idxs_to_all = np.repeat(np.arange(gd.subset_num_nodes['state_input'],
-                                                   dtype=int), repeats=repeat_idxs)
-            # Now select the subset of nodes we want to use.
-            node_idxs = map_input_node_idxs_to_all[gd.subset_node_indices['all']]
-        elif var_type in ['indep_control', 'input_control']:
+            if gd.transcription == 'radau-ps':
+                # Find the state_input indices which occur at segment endpoints, and repeat them twice
+                state_input_idxs = gd.subset_node_indices['state_input']
+                repeat_idxs = np.ones_like(state_input_idxs)
+                if self.options['compressed']:
+                    segment_end_idxs = gd.subset_node_indices['segment_ends'][1:-1]
+                    # Repeat nodes that are on segment bounds (but not the first or last nodes in the phase)
+                    nodes_to_repeat = list(set(state_input_idxs).intersection(set(segment_end_idxs)))
+                    # Now find these nodes in the state input indices
+                    idxs_of_ntr_in_state_inputs = np.where(np.isin(state_input_idxs, nodes_to_repeat))[0]
+                    # All state input nodes are used once, but nodes_to_repeat are used twice
+                    repeat_idxs[idxs_of_ntr_in_state_inputs] = 2
+                # Now we have a way of mapping the state input indices to all nodes
+                map_input_node_idxs_to_all = np.repeat(np.arange(gd.subset_num_nodes['state_input'],
+                                                                 dtype=int), repeats=repeat_idxs)
+                # Now select the subset of nodes we want to use.
+                node_idxs = map_input_node_idxs_to_all[gd.subset_node_indices['all']]
+        elif var_type == 'control':
             path = f'control_values:{var}'
             src_units = phase.control_options[var]['units']
             src_shape = phase.control_options[var]['shape']
@@ -718,22 +678,6 @@ class RadauNew(TranscriptionBase):
             path = f'control_rates:{control_name}_rate2'
             src_units = get_rate_units(phase.control_options[control_name]['units'], time_units, deriv=2)
             src_shape = phase.control_options[control_name]['shape']
-        elif var_type in ['indep_polynomial_control', 'input_polynomial_control']:
-            path = f'control_values:{var}'
-            src_units = phase.control_options[var]['units']
-            src_shape = phase.control_options[var]['shape']
-        elif var_type == 'polynomial_control_rate':
-            control_name = var[:-5]
-            path = f'control_rates:{control_name}_rate'
-            control = phase.control_options[control_name]
-            src_units = get_rate_units(control['units'], time_units, deriv=1)
-            src_shape = control['shape']
-        elif var_type == 'polynomial_control_rate2':
-            control_name = var[:-6]
-            path = f'control_rates:{control_name}_rate2'
-            control = phase.control_options[control_name]
-            src_units = get_rate_units(control['units'], time_units, deriv=2)
-            src_shape = control['shape']
         elif var_type == 'parameter':
             path = f'parameter_vals:{var}'
             # Timeseries are never a static_target

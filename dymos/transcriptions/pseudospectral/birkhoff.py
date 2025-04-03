@@ -472,7 +472,10 @@ class Birkhoff(TranscriptionBase):
             shape = phase.state_options[var]['shape']
             units = phase.state_options[var]['units']
             linear = False
-            constraint_path = f'boundary_vals.{var}'
+            if loc == 'path':
+                constraint_path = f'ode_all.{var}'
+            else:
+                constraint_path = f'boundary_vals.{var}'
         elif var_type == 'control':
             shape = phase.control_options[var]['shape']
             units = phase.control_options[var]['units']
@@ -494,7 +497,10 @@ class Birkhoff(TranscriptionBase):
             constraint_path = f'control_rates:{var}'
         else:
             # Failed to find variable, assume it is in the ODE. This requires introspection.
-            constraint_path = f'boundary_vals.{var}'
+            if loc == 'path':
+                constraint_path = f'ode_all.{var}'
+            else:
+                constraint_path = f'boundary_vals.{var}'
             meta = get_source_metadata(ode_outputs, var, user_units=None, user_shape=None)
             shape = meta['shape']
             units = meta['units']

@@ -107,12 +107,12 @@ class RadauBoundaryGroup(om.Group):
                              desc='Keyword arguments provided when initializing the ODE System')
         self.options.declare('calc_exprs', types=dict, default={}, recordable=False,
                              desc='Calculation expressions of the parent phase.')
-        self.options.declare('initial_boundary_constraints', types=list, recordable=False,
-                             desc='Initial boundary constraints from the containing phase.')
-        self.options.declare('final_boundary_constraints', types=list, recordable=False,
-                             desc='Final boundary constraints from the containing phase.')
-        self.options.declare('objectives', types=dict, recordable=False,
-                             desc='Objectives from the containing phase.')
+        # self.options.declare('initial_boundary_constraints', types=list, recordable=False,
+        #                      desc='Initial boundary constraints from the containing phase.')
+        # self.options.declare('final_boundary_constraints', types=list, recordable=False,
+        #                      desc='Final boundary constraints from the containing phase.')
+        # self.options.declare('objectives', types=dict, recordable=False,
+        #                      desc='Objectives from the containing phase.')
 
     def setup(self):
         """
