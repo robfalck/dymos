@@ -7,6 +7,7 @@ from .radau_defect_comp import RadauDefectComp
 
 from dymos.transcriptions.grid_data import GridData
 from dymos.phase.options import TimeOptionsDictionary
+from dymos.utils.ode_utils import _make_ode_system
 
 
 class RadauIterGroup(om.Group):
@@ -37,6 +38,10 @@ class RadauIterGroup(om.Group):
                              recordable=False)
         self.options.declare('ode_init_kwargs', types=dict, default={},
                              desc='Keyword arguments provided when initializing the ODE System')
+        self.options.declare('calc_exprs', types=dict, default={}, recordable=False,
+                             desc='Calculation expressions of the parent phase.')
+        self.options.declare('parameter_options', types=dict, default={},
+                             desc='Parameter options for the phase.')
 
     def setup(self):
         """
@@ -49,7 +54,13 @@ class RadauIterGroup(om.Group):
         ode_class = self.options['ode_class']
         ode_init_kwargs = self.options['ode_init_kwargs']
 
-        self.add_subsystem('ode_all', subsys=ode_class(num_nodes=nn, **ode_init_kwargs))
+        ode = _make_ode_system(ode_class=ode_class,
+                               num_nodes=nn,
+                               ode_init_kwargs=ode_init_kwargs,
+                               calc_exprs=self.options['calc_exprs'],
+                               parameter_options=self.options['parameter_options'])
+
+        self.add_subsystem('ode_all', subsys=ode)
 
         self.add_subsystem('defects',
                            subsys=RadauDefectComp(grid_data=gd,

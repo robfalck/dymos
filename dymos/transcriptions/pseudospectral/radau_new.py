@@ -239,7 +239,9 @@ class RadauNew(TranscriptionBase):
                             subsys=RadauIterGroup(grid_data=grid_data, state_options=phase.state_options,
                                                   time_options=phase.time_options,
                                                   ode_class=ODEClass,
-                                                  ode_init_kwargs=ode_init_kwargs),
+                                                  ode_init_kwargs=ode_init_kwargs,
+                                                  calc_exprs=phase._calc_exprs,
+                                                  parameter_options=phase.parameter_options),
                             promotes=['*'])
 
         phase.add_subsystem('boundary_vals',
@@ -486,16 +488,17 @@ class RadauNew(TranscriptionBase):
 
         if ode_outputs is None:
             ode_outputs = get_promoted_vars(phase._get_subsystem(self._rhs_source), 'output')
+            print(ode_outputs)
 
         if var_type == 't':
             shape = (1,)
             units = time_units
-            linear = True
+            linear = False
             constraint_path = 't'
         elif var_type == 't_phase':
             shape = (1,)
             units = time_units
-            linear = True
+            linear = False
             constraint_path = 't_phase'
         elif var_type == 'state':
             shape = phase.state_options[var]['shape']
@@ -513,7 +516,7 @@ class RadauNew(TranscriptionBase):
         elif var_type == 'parameter':
             shape = phase.parameter_options[var]['shape']
             units = phase.parameter_options[var]['units']
-            linear = True
+            linear = False
             constraint_path = f'parameter_vals:{var}'
         elif var_type in ('control_rate', 'control_rate2'):
             control_var = var[:-5] if var_type == 'control_rate' else var[:-6]

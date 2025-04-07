@@ -8,13 +8,13 @@ from openmdao.utils.assert_utils import assert_near_equal
 from openmdao.utils.testing_utils import use_tempdirs, require_pyoptsparse
 
 import dymos as dm
-from dymos import Trajectory, GaussLobatto, Phase, Radau, ExplicitShooting, PicardShooting
+from dymos import Trajectory, GaussLobatto, Phase, Radau, ExplicitShooting, PicardShooting, RadauNew
 from dymos.examples.hull_problem.hull_ode import HullProblemODE
 
 c = 5
 
 
-# @use_tempdirs
+@use_tempdirs
 class TestHull(unittest.TestCase):
 
     @staticmethod
@@ -76,6 +76,20 @@ class TestHull(unittest.TestCase):
 
     def test_hull_radau(self):
         p = self.make_problem(transcription=Radau(num_segments=30, order=3))
+        dm.run_problem(p, simulate=True)
+
+        xf, uf = self.solution(1.5, 10)
+
+        assert_near_equal(p.get_val('traj.phase.timeseries.x')[-1],
+                          xf,
+                          tolerance=1e-4)
+
+        assert_near_equal(p.get_val('traj.phase.timeseries.u')[-1],
+                          uf,
+                          tolerance=1e-4)
+
+    def test_hull_radau_new(self):
+        p = self.make_problem(transcription=RadauNew(num_segments=30, order=3))
         dm.run_problem(p, simulate=True)
 
         xf, uf = self.solution(1.5, 10)
