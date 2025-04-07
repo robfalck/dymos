@@ -813,106 +813,24 @@ def _configure_constraint_introspection(phase):
     phase : Phase
         The phase object whose boundary and path constraints are to be introspected.
     """
-    from ..transcriptions import Birkhoff, RadauNew
-    birkhoff = isinstance(phase.options['transcription'], Birkhoff)
-    radau_new = isinstance(phase.options['transcription'], RadauNew)
+    tx = phase.options['transcription']
+    ode = tx._get_ode(phase)
+    ode_outputs = get_promoted_vars(ode, 'output')
 
     for constraint_type, constraints in [('initial', phase._initial_boundary_constraints),
                                          ('final', phase._final_boundary_constraints),
                                          ('path', phase._path_constraints)]:
 
-        time_units = phase.time_options['units']
-        time_name = phase.time_options['name']
-
         for con in constraints:
-            # Determine the path to the variable which we will be constraining
             var = con['name']
-            var_type = phase.classify_var(var)
+            path, shape, units, linear = tx._get_response_src(var, loc=constraint_type,
+                                                              phase=phase, ode_outputs=ode_outputs)
 
-            if var != con['constraint_name'] is not None and var_type != 'ode':
-                om.issue_warning(f"Option 'constraint_name' on {constraint_type} constraint {var} is only "
-                                 f"valid for ODE outputs. The option is being ignored.", om.UnusedOptionWarning)
-
-            if var_type == 't':
-                con['shape'] = (1,)
-                con['units'] = time_units if con['units'] is None else con['units']
-                con['constraint_path'] = f'timeseries.{time_name}'
-
-            elif var_type == 't_phase':
-                con['shape'] = (1,)
-                con['units'] = time_units if con['units'] is None else con['units']
-                con['constraint_path'] = f'timeseries.{time_name}_phase'
-
-            elif var_type == 'state':
-                prefix = 'states:' if phase.timeseries_options['use_prefix'] else ''
-                state_shape = phase.state_options[var]['shape']
-                state_units = phase.state_options[var]['units']
-                con['shape'] = state_shape
-                con['units'] = state_units if con['units'] is None else con['units']
-                if birkhoff and constraint_type in ('initial', 'final'):
-                    con['constraint_path'] = f'boundary_vals.{var}'
-                else:
-                    con['constraint_path'] = f'timeseries.{prefix}{var}'
-
-            elif var_type == 'parameter':
-                param_shape = phase.parameter_options[var]['shape']
-                param_units = phase.parameter_options[var]['units']
-                con['shape'] = param_shape
-                con['units'] = param_units if con['units'] is None else con['units']
-                con['constraint_path'] = f'parameter_vals:{var}'
-
-            elif var_type == 'control':
-                prefix = 'controls:' if phase.timeseries_options['use_prefix'] else ''
-                control_shape = phase.control_options[var]['shape']
-                control_units = phase.control_options[var]['units']
-
-                con['shape'] = control_shape
-                con['units'] = control_units if con['units'] is None else con['units']
-                if birkhoff and constraint_type in ('initial', 'final'):
-                    con['constraint_path'] = f'boundary_vals.{var}'
-                else:
-                    con['constraint_path'] = f'timeseries.{prefix}{var}'
-
-            elif var_type == 'control_rate':
-                prefix = 'control_rates:' if phase.timeseries_options['use_prefix'] else ''
-                control_name = var[:-5]
-                control_shape = phase.control_options[control_name]['shape']
-                control_units = phase.control_options[control_name]['units']
-                con['shape'] = control_shape
-                con['units'] = get_rate_units(control_units, time_units, deriv=1) \
-                    if con['units'] is None else con['units']
-                if birkhoff and constraint_type in ('initial', 'final'):
-                    con['constraint_path'] = f'boundary_vals.{var}'
-                else:
-                    con['constraint_path'] = f'timeseries.{prefix}{var}'
-
-            elif var_type == 'control_rate2':
-                prefix = 'control_rates:' if phase.timeseries_options['use_prefix'] else ''
-                control_name = var[:-6]
-                control_shape = phase.control_options[control_name]['shape']
-                control_units = phase.control_options[control_name]['units']
-                con['shape'] = control_shape
-                con['units'] = get_rate_units(control_units, time_units, deriv=2) \
-                    if con['units'] is None else con['units']
-                if birkhoff and constraint_type in ('initial', 'final'):
-                    con['constraint_path'] = f'boundary_vals.{var}'
-                else:
-                    con['constraint_path'] = f'timeseries.{prefix}{var}'
-
-            else:
-                # Failed to find variable, assume it is in the ODE. This requires introspection.
-                ode = phase.options['transcription']._get_ode(phase)
-
-                meta = get_source_metadata(ode, src=var, user_units=con['units'], user_shape=con['shape'])
-
-                con['shape'] = meta['shape']
-                con['units'] = meta['units']
-
-                if (birkhoff or radau_new) and constraint_type in ('initial', 'final'):
-                    con['constraint_path'] = f'boundary_vals.{var}'
-                else:
-                    con['constraint_path'] = f'timeseries.{con["constraint_name"]}'
-
+            con['constraint_path'] = path
+            con['units'] = units if con['units'] is None else con['units']
+            con['shape'] = shape
+            # Don't override linear because we no longer can accurately tell if the response is linear
+            # wrt the design variables.
 
 def _get_targets_metadata(ode, name, user_targets=_unspecified):
     """

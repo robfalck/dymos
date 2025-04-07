@@ -488,7 +488,6 @@ class RadauNew(TranscriptionBase):
 
         if ode_outputs is None:
             ode_outputs = get_promoted_vars(phase._get_subsystem(self._rhs_source), 'output')
-            print(ode_outputs)
 
         if var_type == 't':
             shape = (1,)
