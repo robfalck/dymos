@@ -76,6 +76,7 @@ class TestHull(unittest.TestCase):
 
     def test_hull_radau(self):
         p = self.make_problem(transcription=Radau(num_segments=30, order=3))
+
         dm.run_problem(p, simulate=True)
 
         xf, uf = self.solution(1.5, 10)
@@ -90,6 +91,7 @@ class TestHull(unittest.TestCase):
 
     def test_hull_radau_new(self):
         p = self.make_problem(transcription=RadauNew(num_segments=30, order=3))
+
         dm.run_problem(p, simulate=True)
 
         xf, uf = self.solution(1.5, 10)
