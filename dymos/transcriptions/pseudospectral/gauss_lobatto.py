@@ -525,6 +525,93 @@ class GaussLobatto(PseudospectralBase):
 
         return meta
 
+    def _get_response_src(self, var, loc, phase, ode_outputs=None):
+        """
+        Return the path to the variable that will be used as a response..
+
+        Parameters
+        ----------
+        var : str
+            Name of the variable to be used as the response.
+        loc : str
+            The location of the response in the phase ['initial', 'final'].
+        phase : dymos.Phase
+            Phase object containing in which the objective resides.
+        ode_outputs : dict or None
+            A dictionary of ODE outputs as returned by get_promoted_vars.
+
+        Returns
+        -------
+        obj_path : str
+            Path to the source.
+        shape : tuple
+            Source shape.
+        units : str
+            Source units.
+        linear : bool
+            True if the objective quantity is linear.
+        """
+        time_units = phase.time_options['units']
+        var_type = phase.classify_var(var)
+
+        if ode_outputs is None:
+            ode_outputs = get_promoted_vars(phase._get_subsystem(self._rhs_source), 'output')
+
+        if var_type == 't':
+            shape = (1,)
+            units = time_units
+            linear = True
+            constraint_path = 't'
+        elif var_type == 't_phase':
+            shape = (1,)
+            units = time_units
+            linear = True
+            constraint_path = 't_phase'
+        elif var_type == 'state':
+            shape = phase.state_options[var]['shape']
+            units = phase.state_options[var]['units']
+            solve_segments = phase.state_options[var]['solve_segments']
+            connected_initial = phase.state_options[var]['input_initial']
+            if not solve_segments and not connected_initial:
+                linear = True
+            elif solve_segments in {'forward'} and not connected_initial and loc == 'initial':
+                linear = True
+            elif solve_segments == 'backward' and loc == 'final':
+                linear = True
+            else:
+                linear = False
+            constraint_path = f'interleave_comp.all_values:states:{var}'
+        elif var_type == 'control':
+            shape = phase.control_options[var]['shape']
+            units = phase.control_options[var]['units']
+            linear = False
+            constraint_path = f'control_values:{var}'
+        elif var_type == 'parameter':
+            shape = phase.parameter_options[var]['shape']
+            units = phase.parameter_options[var]['units']
+            linear = True
+            constraint_path = f'parameter_vals:{var}'
+        elif var_type in ('control_rate', 'control_rate2'):
+            control_var = var[:-5] if var_type == 'control_rate' else var[:-6]
+            shape = phase.control_options[control_var]['shape']
+            control_units = phase.control_options[control_var]['units']
+            d = 2 if var_type == 'control_rate2' else 1
+            control_rate_units = get_rate_units(control_units, time_units, deriv=d)
+            units = control_rate_units
+            linear = False
+            constraint_path = f'control_rates:{var}'
+        else:
+            # Failed to find variable, assume it is in the ODE. This requires introspection.
+            constraint_path = f'{self._rhs_source}.{var}'
+            meta = get_source_metadata(ode_outputs, var, user_units=None, user_shape=None)
+            shape = meta['shape']
+            units = meta['units']
+            linear = False
+
+        linear = False
+
+        return constraint_path, shape, units, linear
+
     def get_parameter_connections(self, name, phase):
         """
         Returns info about a parameter's target connections in the phase.
