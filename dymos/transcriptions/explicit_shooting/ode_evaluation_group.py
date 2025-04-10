@@ -252,10 +252,7 @@ class ODEEvaluationGroup(om.Group):
 
             # Promote targets from the ODE
             for tgt in targets:
-                if tgt in options['static_targets']:
-                    shape = None
-                self.promotes('ode', inputs=[(tgt, var_name)],
-                              src_shape=shape)
+                self.promotes('ode', inputs=[(tgt, var_name)])
             if targets:
                 self.set_input_defaults(name=var_name,
                                         val=1.0,

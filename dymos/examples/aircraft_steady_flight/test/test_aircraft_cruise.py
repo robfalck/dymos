@@ -175,7 +175,7 @@ class TestAircraftCruise(unittest.TestCase):
 
         p.model.linear_solver = om.DirectSolver()
 
-        p.setup()
+        p.setup(check=None)
 
         phase.set_time_val(initial=0.0, duration=3600)
         phase.set_state_val('range', (0, 1296.4))

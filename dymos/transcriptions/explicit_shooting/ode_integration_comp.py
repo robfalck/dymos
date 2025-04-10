@@ -117,14 +117,26 @@ class ODEIntegrationComp(om.ExplicitComponent):
                               promotes_inputs=['*'],
                               promotes_outputs=['*'])
 
-        # Support model options
-        p.model_options = self._problem_meta['model_options']
-
         if om_version()[0] <= (3, 34, 2):
             p.setup(check=None)
         else:
             p.setup(check=None, parent=self)
         p.final_setup()
+
+    def _set_solver_print(self, level=2, depth=1e99, type_='all'):
+        """
+        Apply the given print settings to the child solvers in the subproblem.
+
+        Args:
+            level (int, optional): _description_. Defaults to 2.
+            depth (_type_, optional): _description_. Defaults to 1e99.
+            type_ (str, optional): _description_. Defaults to 'all'.
+        """
+        print('SETTING SOLVER IPRINT')
+        super()._set_solver_print(level=level, depth=depth, type_=type_)
+        # if self.pathname.count('.') + 1 >= depth:
+        #     return
+        self._eval_subprob.set_solver_print(level=level, depth=depth, type_=type_)
 
     def _set_segment_index(self, idx):
         """

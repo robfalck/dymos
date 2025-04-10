@@ -15,7 +15,7 @@ expected_results = {'constrained': {'time': 2198.67, 'theta': 30.6255},
                     'unconstrained': {'time': 2008.59, 'theta': 34.1412}}
 
 
-@use_tempdirs
+# @use_tempdirs
 class TestReentry(unittest.TestCase):
 
     def make_problem(self, constrained=True, transcription=dm.GaussLobatto, optimizer='SLSQP',):
@@ -94,7 +94,7 @@ class TestReentry(unittest.TestCase):
 
     @require_pyoptsparse(optimizer='IPOPT')
     def test_reentry_constrained_radau(self):
-        tx = dm.Radau(num_segments=50, order=3)
+        tx = dm.RadauNew(num_segments=50, order=3)
         p = self.make_problem(constrained=True, transcription=tx, optimizer='IPOPT')
 
         p.run_driver()
@@ -105,6 +105,8 @@ class TestReentry(unittest.TestCase):
         assert_near_equal(p.get_val('traj.phase0.timeseries.theta', units='deg')[-1],
                           expected_results['constrained']['theta'],
                           tolerance=1e-2)
+
+        om.n2(p.model)
 
     @require_pyoptsparse(optimizer='IPOPT')
     def test_reentry_constrained_gauss_lobatto(self):

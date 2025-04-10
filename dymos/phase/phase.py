@@ -2672,9 +2672,9 @@ class Phase(om.Group):
             sim_prob.add_recorder(rec)
 
         if om_version()[0] <= (3, 42, 2):
-            sim_prob.setup(check=True)
+            sim_prob.setup(check=None)
         else:
-            sim_prob.setup(check=True, parent=self)
+            sim_prob.setup(check=None, parent=self)
         sim_prob.final_setup()
 
         sim_phase.set_vals_from_phase(from_phase=self)

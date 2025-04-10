@@ -617,11 +617,10 @@ class TranscriptionBase(object):
                 raise ValueError('Invalid value for objective loc: {0}. Must be '
                                  'one of \'initial\' or \'final\'.'.format(loc))
 
-            from ..phase import Phase
-            super(Phase, phase).add_objective(obj_path, ref=options['ref'], ref0=options['ref0'],
-                                              index=obj_index, flat_indices=True, adder=options['adder'],
-                                              scaler=options['scaler'],
-                                              parallel_deriv_color=options['parallel_deriv_color'])
+            super(type(phase), phase).add_objective(obj_path, ref=options['ref'], ref0=options['ref0'],
+                                                    index=obj_index, flat_indices=True, adder=options['adder'],
+                                                    scaler=options['scaler'],
+                                                    parallel_deriv_color=options['parallel_deriv_color'])
 
     def _get_response_src(self, name, loc, phase, ode_outputs=None):
         """
