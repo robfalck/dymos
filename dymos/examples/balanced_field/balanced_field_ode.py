@@ -205,62 +205,6 @@ def ground_effect(h, pitch, CD_min, CL, CD, AR, wing_height, span):
     return CL_out, CD_out
 
 
-
-#       SUBROUTINE GEFECT ( ALPHA, H, GAM, ATB, CLT, CDT, CDM, CL, CDG,
-#      1                    AR, WHGT, SPAN, NALP )
-
-# C IMPLEMENTATION OF THE JOHN DEYOUNG GROUND EFFECTS EQUATIONS
-
-# C     ALPHA   ANGLE OF ATTACK
-# C     H       ALTITUDE
-# C     GAM     FLIGHT PATH ANGLE
-# C     ATB     ANGLE OF ATTACK TABLES
-# C     CLT     LIFT COEFFICIENT TABLES
-# C     CDT     DRAG COEFFICIENT TABLES
-# C     CDM     MINIMUM DRAG COEFFICIENT
-# C     CL      LIFT COEFFICIENT IN GROUND EFFECT
-# C     CDG     DRAG COEFFICIENT IN GROUND EFFECT
-# C     AR      WING ASPECT RATIO
-# C     WHGT    WING HEIGHT ABOVE GROUND AT ZERO ALTITUDE
-# C     SPAN    WING SPAN
-# C     NALP    NUMBER OF POINTS IN AERODYNAMIC TABLES
-
-#       IMPLICIT DOUBLE PRECISION ( A-H, O-Z )
-#       COMMON /GEFSW / INCGEF
-#       DIMENSION ATB(30), CLT(30), CDT(30)
-
-#       CL  = XINT1( ALPHA, ATB, NALP, CLT )
-#       CDG = XINT1( ALPHA, ATB, NALP, CDT )
-#       IF ( INCGEF .LE. 0 ) RETURN
-#       HF  = (H + WHGT) / SPAN
-
-# C  CHECK FOR OUT OF GROUND EFFECT
-
-#       IF ( HF .GE. 1.1D0 ) RETURN
-
-# C  10 PERCENT RAMP TO PREVENT DISCONTINUITY IN GROUND EFFECTS
-
-#       HFACT = 1.0
-#       IF ( HF .GT. 1.0 ) HFACT = 10.0 * (1.1D0 - HF)
-
-# C  PREVENT RIDICULOUS VALUES IF HF IS NEGATIVE
-
-#       IF ( HF .LT. 0.0 ) HF = 0.0
-#       A      = (6.0+ AR) ** 2 / (36.0 + AR)
-#       B      = 32.0 * (HF * A) ** 2 + 1.0
-#       D      = (ALPHA + GAM) * 0.0174533D0
-#       DENOM  = B - 0.5D0 + 4.0 * HF * A * SQRT(B)
-#       cl_fact = 1.0 + HFACT / DENOM
-#       B      = 1.0 + 32.0 * HF ** 2
-#       DENOM  = 4.0 * HF * SQRT(B) + B
-#       PHII   = 1.0 - HFACT / DENOM
-#       CDG    = CDM + cl_fact * PHII * (CDG-CDM) + D * CL * (cl_fact-1.0)
-#       CL     = CL * cl_fact
-
-#       RETURN
-#       END
-
-
 class BalancedFieldJaxODEComp(om.JaxExplicitComponent):
     """
     The ODE System for an aircraft takeoff climb.
