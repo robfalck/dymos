@@ -9,7 +9,7 @@ from .explicit_shooting_continuity_comp import ExplicitShootingContinuityComp
 from ..transcription_base import TranscriptionBase
 from ..grid_data import BirkhoffGrid, GaussLobattoGrid, RadauGrid, UniformGrid, ChebyshevGaussLobattoGrid
 from .ode_integration_comp import ODEIntegrationComp
-from ...utils.misc import get_rate_units, CoerceDesvar
+from ...utils.misc import get_rate_units, CoerceDesvar, reshape_val
 from ...utils.indexing import get_src_indices_by_row
 from ...utils.introspection import get_promoted_vars, get_source_metadata, get_targets, _get_targets_metadata
 from ...utils.constants import INF_BOUND
@@ -414,6 +414,8 @@ class ExplicitShooting(TranscriptionBase):
                 ncin = self.options['grid'].subset_num_nodes['control_input']
 
             phase.promotes('integrator', inputs=[f'controls:{control_name}'])
+            default_val = reshape_val(options['val'], options['shape'], ncin)
+            phase.set_input_defaults(f'controls:{control_name}', val=default_val)
 
             if options['opt']:
                 coerce_desvar_option = CoerceDesvar(num_input_nodes=ncin, options=options)
@@ -613,16 +615,16 @@ class ExplicitShooting(TranscriptionBase):
 
         return connection_info
 
-    def _get_objective_src(self, var, loc, phase, ode_outputs=None):
+    def _get_response_src(self, var, loc, phase, ode_outputs=None):
         """
-        Return the path to the variable that will be used as the objective.
+        Return the path to the variable that will be used as a response..
 
         Parameters
         ----------
         var : str
-            Name of the variable to be used as the objective.
+            Name of the variable to be used as the response.
         loc : str
-            The location of the objective in the phase ['initial', 'final'].
+            The location of the response in the phase ['initial', 'final'].
         phase : dymos.Phase
             Phase object containing in which the objective resides.
         ode_outputs : dict or None
@@ -637,7 +639,7 @@ class ExplicitShooting(TranscriptionBase):
         units : str
             Source units.
         linear : bool
-            True if the objective quantity1 is linear.
+            True if the objective quantity is linear.
         """
         time_units = phase.time_options['units']
         var_type = phase.classify_var(var)
@@ -657,12 +659,7 @@ class ExplicitShooting(TranscriptionBase):
             units = phase.state_options[var]['units']
             linear = loc == 'initial'
             obj_path = f'integrator.states_out:{var}'
-        elif var_type == 'indep_control':
-            shape = phase.control_options[var]['shape']
-            units = phase.control_options[var]['units']
-            linear = True
-            obj_path = f'control_values:{var}'
-        elif var_type == 'input_control':
+        elif var_type == 'control':
             shape = phase.control_options[var]['shape']
             units = phase.control_options[var]['units']
             linear = False
@@ -681,11 +678,6 @@ class ExplicitShooting(TranscriptionBase):
             units = control_rate_units
             linear = False
             obj_path = f'control_rates:{var}'
-        elif var_type == 'timeseries_exec_comp_output':
-            shape = (1,)
-            units = None
-            obj_path = f'timeseries.timeseries_exec_comp.{var}'
-            linear = False
         else:
             # Failed to find variable, assume it is in the ODE. This requires introspection.
             obj_path = f'{self._rhs_source}.{var}'
@@ -718,6 +710,11 @@ class ExplicitShooting(TranscriptionBase):
         control_rate_continuity : bool
             True if any control rate continuity is required to be enforced.
         """
+        if not self.options['propagate_derivs']:
+            # We're not propagating derivatives because we're just doing a simulation run_model.
+            # No continuity is needed.
+            return False, False, False
+
         num_seg = self.options['grid'].num_segments
         compressed = self.options['grid'].compressed
         transcription = self.options['grid'].transcription
@@ -788,7 +785,7 @@ class ExplicitShooting(TranscriptionBase):
             path = f'integrator.states_out:{var}'
             src_units = phase.state_options[var]['units']
             src_shape = phase.state_options[var]['shape']
-        elif var_type in ['indep_control', 'input_control']:
+        elif var_type in ['control']:
             path = f'control_values:{var}'
             src_units = phase.control_options[var]['units']
             src_shape = phase.control_options[var]['shape']
