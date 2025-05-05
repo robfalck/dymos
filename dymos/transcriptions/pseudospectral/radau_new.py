@@ -413,6 +413,9 @@ class RadauNew(TranscriptionBase):
         constraint_kwargs : dict
             Keyword arguments for the OpenMDAO add_constraint method.
         """
+        gd = self.grid_data
+        nsin = gd.subset_num_nodes['state_input']
+        ncin = gd.subset_num_nodes['control_input']
         num_nodes = self._get_num_timeseries_nodes()
 
         constraint_kwargs = {key: options for key, options in options.items()}
@@ -447,9 +450,15 @@ class RadauNew(TranscriptionBase):
             elif constraint_type == 'final':
                 constraint_kwargs['indices'] = size + flat_idxs
             else:
-                # Path
+                # Path constraint
+                if var_type == 'state':
+                    nn = nsin
+                elif var_type == 'control':
+                    nn = ncin
+                else:
+                    nn = num_nodes
                 path_idxs = []
-                for i in range(num_nodes):
+                for i in range(nn):
                     path_idxs.extend(size * i + flat_idxs)
 
                 constraint_kwargs['indices'] = path_idxs
@@ -466,7 +475,7 @@ class RadauNew(TranscriptionBase):
 
         return con_path, constraint_kwargs
 
-    def _get_response_src(self, var, loc, phase, ode_outputs=None):
+    def _get_response_src(self, var, loc, phase, ode_outputs=None, response_name=None):
         """
         Return the path to the variable that will be used as a response..
 
@@ -480,6 +489,8 @@ class RadauNew(TranscriptionBase):
             Phase object containing in which the objective resides.
         ode_outputs : dict or None
             A dictionary of ODE outputs as returned by get_promoted_vars.
+        response_name : dict or None
+            The name of the variable used for the response for disambiuation.
 
         Returns
         -------

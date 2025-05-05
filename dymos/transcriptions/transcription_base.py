@@ -592,7 +592,7 @@ class TranscriptionBase(object):
             index = options['index']
             loc = options['loc']
 
-            obj_path, shape, _, _ = self._get_response_src(name, loc, phase)
+            obj_path, shape, _, _ = self._get_response_src(name, loc, phase, response_name=options['objective_name'])
 
             shape = options['shape'] if shape is None else shape
 
@@ -622,7 +622,7 @@ class TranscriptionBase(object):
                                                     scaler=options['scaler'],
                                                     parallel_deriv_color=options['parallel_deriv_color'])
 
-    def _get_response_src(self, name, loc, phase, ode_outputs=None):
+    def _get_response_src(self, var, loc, phase, ode_outputs=None, response_name=None):
         """
         Return the path to the variable that will be used as a response..
 
@@ -636,6 +636,8 @@ class TranscriptionBase(object):
             Phase object containing in which the objective resides.
         ode_outputs : dict or None
             A dictionary of ODE outputs as returned by get_promoted_vars.
+        response_name : dict or None
+            The name of the variable used for the response for disambiuation.
 
         Returns
         -------

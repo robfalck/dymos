@@ -1669,7 +1669,7 @@ class Phase(om.Group):
                                   'outputs': {}}
 
     def add_objective(self, name, loc='final', index=None, shape=(1,), units=None, ref=None, ref0=None,
-                      adder=None, scaler=None, parallel_deriv_color=None):
+                      adder=None, scaler=None, parallel_deriv_color=None, objective_name=None):
         """
         Add an objective in the phase.
 
@@ -1706,12 +1706,17 @@ class Phase(om.Group):
         parallel_deriv_color : str
             If specified, this design var will be grouped for parallel derivative
             calculations with other variables sharing the same parallel_deriv_color.
+        objective_name : str or None
+            If specified, a name to use for the objective variable to prevent name collisions.
         """
         if '=' in name:
-            obj_name = name.split('=')[0].strip()
+            _name = objective_name = name.split('=')[0].strip()
             self.add_calc_expr(name)
+        elif objective_name is None:
+            _name = name
+            objective_name = name.rpartition('.')[-1]
         else:
-            obj_name = name
+            _name = name
 
         obj_dict = {'name': name,
                     'loc': loc,
@@ -1722,8 +1727,10 @@ class Phase(om.Group):
                     'ref0': ref0,
                     'adder': adder,
                     'scaler': scaler,
-                    'parallel_deriv_color': parallel_deriv_color}
-        self._objectives[obj_name] = obj_dict
+                    'parallel_deriv_color': parallel_deriv_color,
+                    'objective_name': _name}
+
+        self._objectives[name] = obj_dict
 
     def add_calc_expr(self, expr, add_timeseries=True, **kwargs):
         """

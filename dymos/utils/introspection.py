@@ -824,7 +824,8 @@ def _configure_constraint_introspection(phase):
         for con in constraints:
             var = con['name']
             path, shape, units, linear = tx._get_response_src(var, loc=constraint_type,
-                                                              phase=phase, ode_outputs=ode_outputs)
+                                                              phase=phase, ode_outputs=ode_outputs,
+                                                              response_name=con['constraint_name'])
 
             con['constraint_path'] = path
             con['units'] = units if con['units'] is None else con['units']

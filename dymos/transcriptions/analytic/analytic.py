@@ -442,7 +442,7 @@ class Analytic(TranscriptionBase):
         """
         return self.options['order']
 
-    def _get_response_src(self, var, loc, phase, ode_outputs=None):
+    def _get_response_src(self, var, loc, phase, ode_outputs=None, response_name=None):
         """
         Return the path to the variable that will be used as a response..
 
@@ -456,6 +456,8 @@ class Analytic(TranscriptionBase):
             Phase object containing in which the objective resides.
         ode_outputs : dict or None
             A dictionary of ODE outputs as returned by get_promoted_vars.
+        response_name : dict or None
+            The name of the variable used for the response for disambiuation.
 
         Returns
         -------

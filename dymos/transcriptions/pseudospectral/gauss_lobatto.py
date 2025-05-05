@@ -525,7 +525,7 @@ class GaussLobatto(PseudospectralBase):
 
         return meta
 
-    def _get_response_src(self, var, loc, phase, ode_outputs=None):
+    def _get_response_src(self, var, loc, phase, ode_outputs=None, response_name=None):
         """
         Return the path to the variable that will be used as a response..
 
@@ -539,6 +539,8 @@ class GaussLobatto(PseudospectralBase):
             Phase object containing in which the objective resides.
         ode_outputs : dict or None
             A dictionary of ODE outputs as returned by get_promoted_vars.
+        response_name : dict or None
+            The name of the variable used for the response for disambiuation.
 
         Returns
         -------
@@ -561,7 +563,12 @@ class GaussLobatto(PseudospectralBase):
             shape = (1,)
             units = time_units
             linear = True
-            constraint_path = 't'
+            if loc == 'initial':
+                constraint_path = 't_initial'
+            elif loc == 'final':
+                constraint_path = 't_final'
+            else:
+                constraint_path = 't'
         elif var_type == 't_phase':
             shape = (1,)
             units = time_units
@@ -604,7 +611,8 @@ class GaussLobatto(PseudospectralBase):
             # Failed to find variable, assume it is in the ODE. This requires introspection.
             # Gauss-Lobatto adds all constraints as timeseries, so the output in question
             # will be in the timeseries.
-            constraint_path = f'interleave_comp.all_values:{var}'
+            resp_name = var if response_name is None else response_name
+            constraint_path = f'interleave_comp.all_values:{resp_name}'
             meta = get_source_metadata(ode_outputs, var, user_units=None, user_shape=None)
             shape = meta['shape']
             units = meta['units']
