@@ -105,20 +105,20 @@ class TestControlRateComp(unittest.TestCase):
 
                 if control_type == 'polynomial':
                     ivc.add_output('controls:a',
-                                val=np.zeros((controls['a']['order'] + 1, 1)),
-                                units='m')
+                                   val=np.zeros((controls['a']['order'] + 1, 1)),
+                                   units='m')
 
                     ivc.add_output('controls:b',
-                                val=np.zeros((controls['b']['order'] + 1, 1)),
-                                units='m')
+                                   val=np.zeros((controls['b']['order'] + 1, 1)),
+                                   units='m')
                 else:
                     ivc.add_output('controls:a',
-                                val=np.zeros((gd.subset_num_nodes['control_input'], 1)),
-                                units='m')
+                                   val=np.zeros((gd.subset_num_nodes['control_input'], 1)),
+                                   units='m')
 
                     ivc.add_output('controls:b',
-                                val=np.zeros((gd.subset_num_nodes['control_input'], 1)),
-                                units='m')
+                                   val=np.zeros((gd.subset_num_nodes['control_input'], 1)),
+                                   units='m')
 
                 ivc.add_output('t_initial', val=0.0, units='s')
                 ivc.add_output('t_duration', val=10.0, units='s')
@@ -207,7 +207,8 @@ class TestControlRateComp(unittest.TestCase):
                                     np.atleast_2d(b_rate2_expected).T[(0, -1), ...])
 
                 cpd = p.check_partials(compact_print=False, show_only_incorrect=True,
-                                       abs_err_tol=1.0E-8, rel_err_tol=1.0E-8, method='cs')#, out_stream=None)
+                                       abs_err_tol=1.0E-8, rel_err_tol=1.0E-8, method='cs',
+                                       out_stream=None)
                 assert_check_partials(cpd)
 
     def test_control_interp_vector(self, transcription='gauss-lobatto', compressed=True):
@@ -305,6 +306,33 @@ class TestControlRateComp(unittest.TestCase):
 
                 assert_almost_equal(p['control_interp_comp.control_rates:a_rate2'][:, 2],
                                     a2_rate2_expected)
+
+                assert_almost_equal(p['control_interp_comp.control_boundary_values:a'][:, 0],
+                                    a0_value_expected.T[(0, -1), ...])
+
+                assert_almost_equal(p['control_interp_comp.control_boundary_values:a'][:, 1],
+                                    a1_value_expected.T[(0, -1), ...])
+
+                assert_almost_equal(p['control_interp_comp.control_boundary_values:a'][:, 2],
+                                    a2_value_expected.T[(0, -1), ...])
+
+                assert_almost_equal(p['control_interp_comp.control_boundary_rates:a_rate'][:, 0],
+                                    a0_rate_expected.T[(0, -1), ...])
+
+                assert_almost_equal(p['control_interp_comp.control_boundary_rates:a_rate'][:, 1],
+                                    a1_rate_expected.T[(0, -1), ...])
+
+                assert_almost_equal(p['control_interp_comp.control_boundary_rates:a_rate'][:, 2],
+                                    a2_rate_expected.T[(0, -1), ...])
+
+                assert_almost_equal(p['control_interp_comp.control_boundary_rates:a_rate2'][:, 0],
+                                    a0_rate2_expected.T[(0, -1), ...])
+
+                assert_almost_equal(p['control_interp_comp.control_boundary_rates:a_rate2'][:, 1],
+                                    a1_rate2_expected.T[(0, -1), ...])
+
+                assert_almost_equal(p['control_interp_comp.control_boundary_rates:a_rate2'][:, 2],
+                                    a2_rate2_expected.T[(0, -1), ...])
 
                 np.set_printoptions(linewidth=1024)
                 cpd = p.check_partials(compact_print=True, method='cs', out_stream=None)

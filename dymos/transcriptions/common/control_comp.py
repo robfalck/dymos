@@ -319,7 +319,11 @@ class ControlInterpComp(om.ExplicitComponent):
 
     def configure_io(self):
         """
+<<<<<<< HEAD
         I/O creation is delayed until configure so we can determine shape and units for the controls
+=======
+        I/O creation is delayed until configure so we can determine shape and units for the controls.
+>>>>>>> control_refactor
         """
         time_units = self.options['time_units']
         gd = self.options['grid_data']
