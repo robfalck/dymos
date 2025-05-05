@@ -29,6 +29,7 @@ class Birkhoff(TranscriptionBase):
     def __init__(self, **kwargs):
         super(Birkhoff, self).__init__(**kwargs)
         self._rhs_source = 'ode_iter_group.ode_all'
+        self._prom_rhs_source = 'ode_all'
 
     def initialize(self):
         """

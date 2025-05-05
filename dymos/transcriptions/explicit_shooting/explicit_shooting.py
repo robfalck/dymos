@@ -43,6 +43,7 @@ class ExplicitShooting(TranscriptionBase):
     def __init__(self, **kwargs):
         super(ExplicitShooting, self).__init__(**kwargs)
         self._rhs_source = 'ode'
+        self._prom_rhs_source = 'ode'
 
     def initialize(self):
         """

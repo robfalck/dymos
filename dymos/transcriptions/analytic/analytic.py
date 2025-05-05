@@ -25,6 +25,7 @@ class Analytic(TranscriptionBase):
     def __init__(self, **kwargs):
         super(Analytic, self).__init__(**kwargs)
         self._rhs_source = 'rhs'
+        self._prom_rhs_source = 'rhs'
 
     def init_grid(self):
         """

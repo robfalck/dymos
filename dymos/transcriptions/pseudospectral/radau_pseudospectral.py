@@ -28,6 +28,7 @@ class Radau(PseudospectralBase):
     def __init__(self, **kwargs):
         super(Radau, self).__init__(**kwargs)
         self._rhs_source = 'rhs_all'
+        self._prom_rhs_source = 'rhs_all'
 
     def init_grid(self):
         """

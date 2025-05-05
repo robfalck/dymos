@@ -30,6 +30,7 @@ class GaussLobatto(PseudospectralBase):
     def __init__(self, **kwargs):
         super(GaussLobatto, self).__init__(**kwargs)
         self._rhs_source = 'rhs_disc'
+        self._prom_rhs_source = 'rhs_disc'
 
     def init_grid(self):
         """

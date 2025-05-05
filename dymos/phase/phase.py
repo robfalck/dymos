@@ -452,16 +452,16 @@ class Phase(om.Group):
             self.state_options[name]['upper'] = upper
 
         if scaler is not _unspecified:
-            self.state_options[name]['scaler'] = scaler
+            self.state_options[name]['scaler'] = np.asarray(scaler)
 
         if adder is not _unspecified:
-            self.state_options[name]['adder'] = adder
+            self.state_options[name]['adder'] = np.asarray(adder)
 
         if ref0 is not _unspecified:
-            self.state_options[name]['ref0'] = ref0
+            self.state_options[name]['ref0'] = np.asarray(ref0)
 
         if ref is not _unspecified:
-            self.state_options[name]['ref'] = ref
+            self.state_options[name]['ref'] = np.asarray(ref)
 
         if defect_scaler is not _unspecified:
             self.state_options[name]['defect_scaler'] = defect_scaler

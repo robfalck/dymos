@@ -252,6 +252,10 @@ class RadauIterGroup(om.Group):
                 ref0 = -adder
                 ref = (1.0 / scaler) - adder
 
+                _ref0 = ref0 if np.isscalar(ref0) else np.reshape(np.repeat(ref0, nn), (nn,) + shape)
+                _ref = ref if np.isscalar(ref) else np.reshape(np.repeat(ref, nn), (nn,) + shape)
+                _defect_ref = defect_ref if np.isscalar(defect_ref) else np.reshape(np.repeat(defect_ref, nn), (nn,) + shape)
+
                 if ns > 1 and not gd.compressed:
                     states_resids_comp.add_input(f'state_cnty_defects:{name}',
                                                  shape=(ns - 1,) + shape,
@@ -262,9 +266,9 @@ class RadauIterGroup(om.Group):
                                                   shape=(nn,) + shape,
                                                   lower=options['lower'],
                                                   upper=options['upper'],
-                                                  ref0=ref0,
-                                                  ref=ref,
-                                                  res_ref=defect_ref,
+                                                  ref0=_ref0,
+                                                  ref=_ref,
+                                                  res_ref=_defect_ref,
                                                   units=units)
                 else:
                     # For compressed transcirption, resids comp provides values at input nodes.
@@ -273,9 +277,9 @@ class RadauIterGroup(om.Group):
                                                   shape=(nin,) + shape,
                                                   lower=options['lower'],
                                                   upper=options['upper'],
-                                                  ref0=ref0,
-                                                  ref=ref,
-                                                  res_ref=defect_ref,
+                                                  ref0=_ref0,
+                                                  ref=_ref,
+                                                  res_ref=_defect_ref,
                                                   units=units)
 
             if options['initial_bounds'] is None:
@@ -293,16 +297,16 @@ class RadauIterGroup(om.Group):
             if f'initial_states:{name}' in self._implicit_outputs:
                 states_resids_comp.add_output(f'initial_states:{name}', shape=(1,) + shape, units=units,
                                               lower=initial_lb, upper=initial_ub,
-                                              ref0=ref0,
-                                              ref=ref,
-                                              res_ref=defect_ref,)
+                                              ref0=_ref0,
+                                              ref=_ref,
+                                              res_ref=_defect_ref,)
 
             if f'final_states:{name}' in self._implicit_outputs:
                 states_resids_comp.add_output(f'final_states:{name}', shape=(1,) + shape, units=units,
                                               lower=final_lb, upper=final_ub,
-                                              ref0=ref0,
-                                              ref=ref,
-                                              res_ref=defect_ref,)
+                                              ref0=_ref0,
+                                              ref=_ref,
+                                              res_ref=_defect_ref,)
 
             try:
                 rate_source_var = options['rate_source']
