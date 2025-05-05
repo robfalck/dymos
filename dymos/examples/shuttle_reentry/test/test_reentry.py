@@ -106,8 +106,6 @@ class TestReentry(unittest.TestCase):
                           expected_results['constrained']['theta'],
                           tolerance=1e-2)
 
-        om.n2(p.model)
-
     @require_pyoptsparse(optimizer='IPOPT')
     def test_reentry_constrained_gauss_lobatto(self):
         tx = dm.GaussLobatto(num_segments=50, order=3)

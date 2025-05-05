@@ -78,7 +78,7 @@ class TestVanderpolDelayMPI(unittest.TestCase):
         traj = dm.Trajectory()
         p.model.add_subsystem('traj', subsys=traj)
 
-        t = dm.Radau(num_segments=30, order=3)
+        t = dm.RadauNew(num_segments=30, order=3)
 
         # define a Phase as specified above and add to Phase
         phase = dm.Phase(ode_class=VanderpolODE, transcription=t,

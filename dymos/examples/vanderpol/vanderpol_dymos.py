@@ -34,10 +34,10 @@ def vanderpol(transcription='gauss-lobatto', num_segments=40, transcription_orde
                             compressed=compressed,
                             solve_segments=solve_segments)
     elif transcription == 'radau-ps':
-        t = dm.Radau(num_segments=num_segments,
-                     order=transcription_order,
-                     compressed=compressed,
-                     solve_segments=solve_segments)
+        t = dm.RadauNew(num_segments=num_segments,
+                        order=transcription_order,
+                        compressed=compressed,
+                        solve_segments=solve_segments)
 
     # define a Phase as specified above and add to Phase
     phase = dm.Phase(ode_class=VanderpolODE, transcription=t,
