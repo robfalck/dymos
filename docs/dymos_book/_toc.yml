@@ -42,7 +42,7 @@ parts:
     - file: examples/water_rocket/water_rocket
     - file: examples/cart_pole/cart_pole
     - file: examples/brachistochrone/brachistochrone_tandem_phases
-    - file: examples/cannonball_implicit_duration/cannonball_implicit_duration
+    - file: examples/implicit_duration/brachistochrone_implicit_duration
 - caption: Feature Reference
   chapters:
   - file: features/phases/phases_list
@@ -54,6 +54,7 @@ parts:
     - file: features/phases/constraints
     - file: features/phases/objective
     - file: features/phases/timeseries
+    - file: features/phases/calc_expressions
   - file: features/trajectories/trajectories
   - file: features/exploiting_sparsity
   - file: features/plotting
