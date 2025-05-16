@@ -380,7 +380,6 @@ def configure_states_introspection(state_options, time_options, control_options,
         # Automatically determine targets of state if left _unspecified
         targets = _get_targets_metadata(ode_inputs, state_name,
                                         user_targets=options['targets'])
-
         options['targets'] = list(targets.keys())
         if targets:
             if options['units'] is _unspecified:

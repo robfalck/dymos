@@ -308,3 +308,17 @@ def om_version():
         numeric = openmdao.__version__
         rel = 'release'
     return tuple([int(s) for s in numeric.split('.')]), rel
+
+
+def is_scalar_or_singleton(x):
+    """
+    Returns True if x is a scalar, is an instance of np.generic, or is an array of length 1.
+
+    Args:
+        x (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    return np.isscalar(x) or isinstance(x, np.generic) or \
+        (hasattr(x, 'shape') and x.shape == (1,))

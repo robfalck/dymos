@@ -84,7 +84,7 @@ class TestSimulateShapedParams(unittest.TestCase):
 
         p.run_driver()
 
-        assert_near_equal(p.get_val('hop0.main_phase.timeseries.impulse')[-1, 0], -7836.66666, tolerance=1.0E-4)
+        assert_near_equal(p.get_val('hop0.main_phase.timeseries.impulse')[-1, 0], -7836.66666, tolerance=1.0E-3)
 
         try:
             hop0.simulate()

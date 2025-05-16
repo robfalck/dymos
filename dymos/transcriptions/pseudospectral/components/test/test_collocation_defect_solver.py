@@ -149,7 +149,7 @@ class TestCollocationBalanceIndex(unittest.TestCase):
         Of input nodes, solver nodes for fix_initial are: {1, 2, 3}
         The indep node is just the first one: {0}
         """
-        p = brach(transcription='radau-ps', num_segments=1, transcription_order=3,
+        p = brach(transcription='radau-legacy', num_segments=1, transcription_order=3,
                   compressed=True, solve_segments='forward', run_driver=True)
 
         state_indeps_comp = p.model.traj0.phases.phase0.indep_states
@@ -168,7 +168,7 @@ class TestCollocationBalanceIndex(unittest.TestCase):
         Of input nodes, solver nodes for fix_initial are: {1, 2, 3, 4, 5}
         The indep node is just the first one: {0}
         """
-        p = brach(transcription='radau-ps', num_segments=1, transcription_order=5,
+        p = brach(transcription='radau-legacy', num_segments=1, transcription_order=5,
                   compressed=True, solve_segments='forward', run_driver=True)
 
         state_indeps_comp = p.model.traj0.phases.phase0.indep_states
@@ -187,7 +187,7 @@ class TestCollocationBalanceIndex(unittest.TestCase):
         Of input nodes, solver nodes for fix_initial are: {1, 2, 3, 4, 5, 6}
         The indep node is just the first one: {0}
         """
-        p = brach(transcription='radau-ps', num_segments=2, transcription_order=3,
+        p = brach(transcription='radau-legacy', num_segments=2, transcription_order=3,
                   compressed=True, solve_segments='forward', run_driver=True)
 
         state_indeps_comp = p.model.traj0.phases.phase0.indep_states
@@ -206,7 +206,7 @@ class TestCollocationBalanceIndex(unittest.TestCase):
         Of input nodes, solver nodes for fix_initial are: {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
         The indep node is just the first one: {0}
         """
-        p = brach(transcription='radau-ps', num_segments=2, transcription_order=5,
+        p = brach(transcription='radau-legacy', num_segments=2, transcription_order=5,
                   compressed=True, solve_segments='forward', run_driver=True)
 
         state_indeps_comp = p.model.traj0.phases.phase0.indep_states
@@ -225,7 +225,7 @@ class TestCollocationBalanceIndex(unittest.TestCase):
         Of input nodes, solver nodes for fix_initial are: {1, 2, 3, 5, 6, 7}
         The indep node is just the first one: {0, 4}
         """
-        p = brach(transcription='radau-ps', num_segments=2, transcription_order=3,
+        p = brach(transcription='radau-legacy', num_segments=2, transcription_order=3,
                   compressed=False, solve_segments='forward', run_driver=True)
 
         state_indeps_comp = p.model.traj0.phases.phase0.indep_states
@@ -244,7 +244,7 @@ class TestCollocationBalanceIndex(unittest.TestCase):
         Of input nodes, solver nodes for fix_initial are: {1, 2, 3, 4, 5, 7, 8, 9, 10, 11}
         The indep node is just the first one: {0, 6}
         """
-        p = brach(transcription='radau-ps', num_segments=2, transcription_order=5,
+        p = brach(transcription='radau-legacy', num_segments=2, transcription_order=5,
                   compressed=False, solve_segments='forward', run_driver=True)
 
         state_indeps_comp = p.model.traj0.phases.phase0.indep_states
@@ -267,10 +267,10 @@ class TestCollocationBalanceApplyNL(unittest.TestCase):
             t = dm.GaussLobatto(num_segments=num_segments,
                                 order=transcription_order,
                                 compressed=compressed,)
-        elif transcription == 'radau-ps':
-            t = dm.Radau(num_segments=num_segments,
-                         order=transcription_order,
-                         compressed=compressed)
+        elif transcription == 'radau-legacy':
+            t = dm.RadauLegacy(num_segments=num_segments,
+                               order=transcription_order,
+                               compressed=compressed)
 
         traj = dm.Trajectory()
         phase = dm.Phase(ode_class=BrachistochroneODE, transcription=t)
@@ -326,7 +326,7 @@ class TestCollocationBalanceApplyNL(unittest.TestCase):
 
     def test_apply_nonlinear_radau(self):
         dm.options['include_check_partials'] = True
-        p = self.make_prob(transcription='radau-ps', num_segments=3, transcription_order=3,
+        p = self.make_prob(transcription='radau-legacy', num_segments=3, transcription_order=3,
                            compressed=True)
 
         p.final_setup()
@@ -362,7 +362,7 @@ class TestCollocationBalanceApplyNL(unittest.TestCase):
 
     def test_partials_radau(self):
         dm.options['include_check_partials'] = True
-        p = self.make_prob(transcription='radau-ps', num_segments=3, transcription_order=3,
+        p = self.make_prob(transcription='radau-legacy', num_segments=3, transcription_order=3,
                            compressed=True)
 
         def assert_partials(data):
