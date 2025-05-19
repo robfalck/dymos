@@ -220,6 +220,18 @@ class RadauIterGroup(om.Group):
             units = options['units']
             rate_source = options['rate_source']
             shape = options['shape']
+            ref0 = None if options['ref0'] is None else np.asarray(options['ref0'])
+            ref = None if options['ref'] is None else np.asarray(options['ref'])
+            scaler = None if options['scaler'] is None else np.asarray(options['scaler'])
+            adder = None if options['adder'] is None else np.asarray(options['adder'])
+
+            if options['defect_ref'] is not None:
+                defect_ref = options['defect_ref']
+            else:
+                if options['defect_scaler'] is None:
+                    defect_ref = 1.0
+                else:
+                    defect_ref = 1. / options['defect_scaler']
 
             for tgt in options['targets']:
                 self.promotes('ode_all', [(tgt, f'states:{name}')],
@@ -238,22 +250,14 @@ class RadauIterGroup(om.Group):
                 states_resids_comp.add_input(f'final_state_defects:{name}', shape=(1,) + shape, units=units)
                 states_resids_comp.add_input(f'state_rate_defects:{name}', shape=(ncn,) + shape, units=units)
 
-                if options['defect_ref'] is not None:
-                    defect_ref = options['defect_ref']
-                else:
-                    if options['defect_scaler'] is None:
-                        defect_ref = 1.0
-                    else:
-                        defect_ref = 1. / options['defect_scaler']
+                adder, scaler = determine_adder_scaler(ref0, ref, adder, scaler)
 
-                adder, scaler = determine_adder_scaler(options['ref0'], options['ref'],
-                                                       options['adder'], options['scaler'])
                 ref0 = -adder
                 ref = (1.0 / scaler) - adder
 
-                _ref0 = ref0 if np.isscalar(ref0) else np.reshape(np.repeat(ref0, nn), (nn,) + shape)
-                _ref = ref if np.isscalar(ref) else np.reshape(np.repeat(ref, nn), (nn,) + shape)
-                _defect_ref = defect_ref if np.isscalar(defect_ref) else np.reshape(np.repeat(defect_ref, nn), (nn,) + shape)
+                _ref0 = ref0 if np.isscalar(ref0) else np.reshape(np.repeat(ref0, nin), (nin,) + shape)
+                _ref = ref if np.isscalar(ref) else np.reshape(np.repeat(ref, nin), (nin,) + shape)
+                _defect_ref = defect_ref if np.isscalar(defect_ref) else np.reshape(np.repeat(defect_ref, nin), (nin,) + shape)
 
                 if ns > 1 and not gd.compressed:
                     states_resids_comp.add_input(f'state_cnty_defects:{name}',
@@ -293,12 +297,16 @@ class RadauIterGroup(om.Group):
             else:
                 final_lb, final_ub = options['final_bounds']
 
+            _ref0 = ref0 if np.isscalar(ref0) or ref0 is None else np.reshape(ref0, (1,) + shape)
+            _ref = ref if np.isscalar(ref) or ref is None else np.reshape(ref, (1,) + shape)
+            _defect_ref = defect_ref if np.isscalar(defect_ref) or defect_ref is None else np.reshape(defect_ref, (1,) + shape)
+
             if f'initial_states:{name}' in self._implicit_outputs:
                 states_resids_comp.add_output(f'initial_states:{name}', shape=(1,) + shape, units=units,
                                               lower=initial_lb, upper=initial_ub,
                                               ref0=_ref0,
                                               ref=_ref,
-                                              res_ref=_defect_ref,)
+                                              res_ref=_defect_ref)
 
             if f'final_states:{name}' in self._implicit_outputs:
                 states_resids_comp.add_output(f'final_states:{name}', shape=(1,) + shape, units=units,

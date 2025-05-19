@@ -119,9 +119,7 @@ class TestParameterConnections(unittest.TestCase):
 
         phase.add_parameter('m', val=[[1, 2], [3, 4]], units='kg', targets='sum.m', static_target=True)
 
-        p.model.linear_solver = om.DirectSolver()
-
-        p.setup(check=True, force_alloc_complex=True)
+        p.setup()
 
         phase.set_time_val(initial=0.0, duration=100.0)
         phase.set_state_val('h', [20, 0])

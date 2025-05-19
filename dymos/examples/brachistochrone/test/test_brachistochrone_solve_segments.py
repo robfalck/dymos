@@ -23,7 +23,7 @@ def _make_problem(transcription='gauss-lobatto', num_segments=8, transcription_o
                   compressed=True, optimizer='SLSQP', force_alloc_complex=False,
                   solve_segments=False, y_bounds=None, phase_nonlinear_solver=None,
                   phase_linear_solver=None):
-    p = om.Problem(model=om.Group())
+    p = om.Problem(reports=False)
 
     p.driver = om.pyOptSparseDriver()
     p.driver.options['optimizer'] = optimizer
@@ -139,9 +139,10 @@ class TestBrachistochroneVectorStatesExampleSolveSegments(unittest.TestCase):
     def test_ex_brachistochrone_vs_radau_compressed(self):
         ex_brachistochrone_vs.SHOW_PLOTS = False
         p = ex_brachistochrone_vs.brachistochrone_min_time(transcription='radau-ps',
+                                                           optimizer='SNOPT',
                                                            compressed=True,
                                                            force_alloc_complex=True,
-                                                           solve_segments='forward',
+                                                        #    solve_segments='forward',
                                                            num_segments=10,
                                                            transcription_order=3)
         self.assert_results(p)
