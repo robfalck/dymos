@@ -48,8 +48,6 @@ class TranscriptionBase(object):
 
         # Where to query var info.
         self._rhs_source = None
-
-        # Does this transcription have a separate ODE for the phase boundaries?
         self._has_boundary_ode = False
 
     def _declare_options(self):
@@ -796,18 +794,3 @@ class TranscriptionBase(object):
         """
         raise NotImplementedError(f'Transcription {self.__class__.__name__} does not implement method '
                                   '_get_num_timeseries_nodes.')
-
-    def _get_linkage_source_ode(self, promoted=False):
-        """
-        Returns the path of the ODE system providing sources for linkage constraints.
-
-        Nominally this is the _rhs_source but will need to be overridden in transcriptions
-        with boundary ODEs or ODEs that are in a promoted path.
-
-        Parameters
-        ----------
-        promoted : bool
-            If True, return the promoted name of the system from the context of the Phase.
-            Otherwise, return the full path of the system from the context of the Phase.
-        """
-        return self._rhs_source
