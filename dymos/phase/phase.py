@@ -2671,7 +2671,7 @@ class Phase(om.Group):
             rec = om.SqliteRecorder(record_file)
             sim_prob.add_recorder(rec)
 
-        if om_version()[0] <= (3, 42, 2):
+        if om_version()[0] <= (3, 34, 2):
             sim_prob.setup(check=True)
         else:
             sim_prob.setup(check=True, parent=self)
