@@ -1,3 +1,4 @@
+from functools import lru_cache
 import numpy as np
 import scipy.sparse as sp
 from scipy.linalg import block_diag
@@ -73,6 +74,9 @@ class ControlInterpComp(om.ExplicitComponent):
         self._output_boundary_val_names = {}
         self._output_boundary_rate_names = {}
         self._output_boundary_rate2_names = {}
+        self._output_val_cnty_defect_names = {}
+        self._output_rate_cnty_defect_names = {}
+        self._output_rate2_cnty_defect_names = {}
         self._matrices = {}
 
     def setup(self):
@@ -88,12 +92,81 @@ class ControlInterpComp(om.ExplicitComponent):
                                f'\n{gd.segment_ends}\n and the output grid segment ends are \n'
                                f'{ogd.segment_ends}.')
 
+    @lru_cache
+    def _is_val_cnty(self, control_name):
+        """
+        Return a flag indicating if control value continuity should be computed.
+
+        Parameters
+        ----------
+        control_name : str
+            The name of the control.
+
+        Returns
+        -------
+        bool
+            True if value continuity should be computed.
+        """
+        gd = self.options['grid_data']
+        ogd = self.options['output_grid_data'] or gd
+        options = self.options['control_options'][control_name]
+        return (options['control_type'] == 'full' and
+                not gd.compressed and
+                ogd.num_segments > 1 and
+                options['continuity'])
+
+    @lru_cache
+    def _is_rate_cnty(self, control_name):
+        """
+        Return a flag indicating if control rate continuity should be computed.
+
+        Parameters
+        ----------
+        control_name : str
+            The name of the control.
+
+        Returns
+        -------
+        bool
+            True if rate continuity should be computed.
+        """
+        gd = self.options['grid_data']
+        ogd = self.options['output_grid_data'] or gd
+        options = self.options['control_options'][control_name]
+        return (options['control_type'] == 'full' and
+                ogd.num_segments > 1 and
+                options['rate_continuity'])
+
+    @lru_cache
+    def _is_rate2_cnty(self, control_name):
+        """
+        Return a flag indicating if control rate2 continuity should be computed.
+
+        Parameters
+        ----------
+        control_name : str
+            The name of the control.
+
+        Returns
+        -------
+        bool
+            True if rate2 continuity should be computed.
+        """
+        gd = self.options['grid_data']
+        ogd = self.options['output_grid_data'] or gd
+        options = self.options['control_options'][control_name]
+        return (options['control_type'] == 'full' and
+                ogd.num_segments > 1 and
+                options['rate2_continuity'])
+
     def _configure_controls(self):
         gd = self.options['grid_data']
         ogd = self.options['output_grid_data'] or gd
         eval_nodes = ogd.node_ptau
         control_options = self.options['control_options']
+        num_input_nodes = gd.subset_num_nodes['control_input']
         num_output_nodes = ogd.num_nodes
+        num_output_segs = ogd.num_segments
 
         for name, options in control_options.items():
             if 'control_type' not in options:
@@ -108,19 +181,41 @@ class ControlInterpComp(om.ExplicitComponent):
             rate2_units = get_rate_units(units, self.options['time_units'], deriv=2)
 
             self._input_names[name] = f'controls:{name}'
+
             self._output_val_names[name] = f'control_values:{name}'
             self._output_rate_names[name] = f'control_rates:{name}_rate'
             self._output_rate2_names[name] = f'control_rates:{name}_rate2'
+
             self._output_boundary_val_names[name] = f'control_boundary_values:{name}'
             self._output_boundary_rate_names[name] = f'control_boundary_rates:{name}_rate'
             self._output_boundary_rate2_names[name] = f'control_boundary_rates:{name}_rate2'
 
+            self._output_val_cnty_defect_names[name] = f'control_continuity_defects:{name}'
+            self._output_rate_cnty_defect_names[name] = f'control_rate_continuity_defects:{name}'
+            self._output_rate2_cnty_defect_names[name] = f'control_rate2_continuity_defects:{name}'
+
             self.add_output(self._output_val_names[name], shape=output_shape, units=units)
             self.add_output(self._output_rate_names[name], shape=output_shape, units=rate_units)
             self.add_output(self._output_rate2_names[name], shape=output_shape, units=rate2_units)
+
             self.add_output(self._output_boundary_val_names[name], shape=(2,) + shape, units=units)
             self.add_output(self._output_boundary_rate_names[name], shape=(2,) + shape, units=rate_units)
             self.add_output(self._output_boundary_rate2_names[name], shape=(2,) + shape, units=rate2_units)
+
+            if self._is_val_cnty(name):
+                self.add_output(self._output_val_cnty_defect_names[name],
+                                shape=(num_output_segs - 1,) + shape,
+                                units=units)
+
+            if self._is_rate_cnty(name):
+                self.add_output(self._output_rate_cnty_defect_names[name],
+                                shape=(num_output_segs - 1,) + shape,
+                                units=rate_units)
+
+            if self._is_rate2_cnty(name):
+                self.add_output(self._output_rate2_cnty_defect_names[name],
+                                shape=(num_output_segs - 1,) + shape,
+                                units=rate2_units)
 
             if options['control_type'] == 'polynomial':
                 num_input_nodes = options['order'] + 1
@@ -187,7 +282,7 @@ class ControlInterpComp(om.ExplicitComponent):
                                       rows=rs, cols=cs)
 
             else:
-                L_de, D_de, D2_de = self._matrices['full']
+                L_de, D_de, D2_de, S = self._matrices['full']
                 num_control_input_nodes = gd.subset_num_nodes['control_input']
                 default_val = reshape_val(options['val'], shape, num_control_input_nodes)
 
@@ -198,8 +293,8 @@ class ControlInterpComp(om.ExplicitComponent):
                 # The partial of interpolated value wrt the control input values is linear
                 # and can be computed as the kronecker product of the interpolation matrix (L)
                 # and eye(size).
-                J_val = sp.kron(L_de, sp_eye, format='csr')
-                rs, cs, data = sp.find(J_val)
+                d_ua_d_uin = sp.kron(L_de, sp_eye, format='csr')
+                rs, cs, data = sp.find(d_ua_d_uin)
                 self.declare_partials(of=self._output_val_names[name],
                                       wrt=self._input_names[name],
                                       rows=rs, cols=cs, val=data)
@@ -231,6 +326,38 @@ class ControlInterpComp(om.ExplicitComponent):
                                       wrt='dt_dstau',
                                       rows=np.arange(2 * size, dtype=int),
                                       cols=np.concatenate((cs[:size], cs[-size:])))
+
+                # The val continuity defects are dependent upon the control input values.
+                # The calculation of the continuity defects can be expressed as
+                # val_defects = ([S]@[U_a]) @ 1_n
+                # where S is the defect selection matrix and 1_n is a column vector of ones at each
+                # segment start/end involved in the calculation.
+                # This is used for derivatives wrt dt_dstau
+                self._d_cnty_d_node_vals = S.dot(sp.kron(sp.eye(num_output_nodes), np.ones((1, num_output_segs - 1))))
+
+                # This is used for derivatives wrt to sized variables
+                self._d_cnty_d_node_vals2 = sp.kron(self._d_cnty_d_node_vals, sp.eye(size), format='csr')
+
+                if self._is_val_cnty(name):
+                    d_val_cnty_d_uin = self._d_cnty_d_node_vals2.dot(d_ua_d_uin)
+                    rs, cs, data = sp.find(d_val_cnty_d_uin)
+
+                    self.declare_partials(of=self._output_val_cnty_defect_names[name],
+                                        wrt=self._input_names[name],
+                                        rows=rs, cols=cs,
+                                        val=data)
+
+                if self._is_rate_cnty(name):
+                    rs, cs, data = sp.find(sp.kron(self._d_cnty_d_node_vals, np.ones((size, 1))))
+                    self.declare_partials(of=self._output_rate_cnty_defect_names[name],
+                                          wrt='dt_dstau',
+                                          rows=rs, cols=cs)
+
+                if self._is_rate2_cnty(name):
+                    rs, cs, data = sp.find(sp.kron(self._d_cnty_d_node_vals, np.ones((size, 1))))
+                    self.declare_partials(of=self._output_rate2_cnty_defect_names[name],
+                                          wrt='dt_dstau',
+                                          rows=rs, cols=cs)
 
                 # The partials of the rates and second derivatives are nonlinear but the sparsity
                 # pattern is obtained from the kronecker product of the 1st and 2nd differentiation
@@ -326,6 +453,7 @@ class ControlInterpComp(om.ExplicitComponent):
         ogd = self.options['output_grid_data'] or gd
         output_num_nodes = ogd.subset_num_nodes['all']
         num_seg = gd.num_segments
+        output_num_seg = ogd.num_segments
 
         self.add_input('dt_dstau', shape=output_num_nodes, units=time_units)
 
@@ -379,7 +507,16 @@ class ControlInterpComp(om.ExplicitComponent):
         # Matrix D2 provides second derivatives at all nodes given values at input nodes.
         D2 = D_da.dot(D_dd.dot(L_id))
 
-        self._matrices['full'] = L, D, D2
+        # Matrix S provides a selection matrix_ that selects the segment start and end rows for
+        # the continuity defects.
+        seg_start_idxs = ogd.subset_node_indices['segment_ends'][2:-1:2]
+        seg_end_idxs = ogd.subset_node_indices['segment_ends'][1:-1:2]
+        selected_rows = sorted(seg_start_idxs.tolist() + seg_end_idxs.tolist())  # the rows being selected
+        signs = [-1, 1] * (ogd.num_segments - 1)
+        S = sp.coo_matrix((signs, (np.repeat(np.arange(output_num_seg - 1, dtype=int), 2), selected_rows)),
+                          shape=(output_num_seg - 1, output_num_nodes))
+
+        self._matrices['full'] = L, D, D2, S
 
         self._configure_controls()
         self._configure_desvars()
@@ -405,7 +542,7 @@ class ControlInterpComp(om.ExplicitComponent):
                 num_control_input_nodes = options['order'] + 1
                 dt_dtau = 0.5 * inputs['t_duration']
             else:
-                L_de, D_de, D2_de = self._matrices['full']
+                L_de, D_de, D2_de, S = self._matrices['full']
                 num_control_input_nodes = gd.subset_num_nodes['control_input']
                 dt_dtau = inputs['dt_dstau'][:, np.newaxis]
 
@@ -414,16 +551,14 @@ class ControlInterpComp(om.ExplicitComponent):
             u_flat = np.reshape(inputs[self._input_names[name]],
                                 (num_control_input_nodes, size))
 
-            a = D_de.dot(u_flat)
-            b = D2_de.dot(u_flat)
+            val_flat = L_de.dot(u_flat)
+            val = np.reshape(val_flat, (num_output_nodes,) + shape)
 
-            val = np.reshape(L_de.dot(u_flat), (num_output_nodes,) + shape)
+            rate_flat = D_de.dot(u_flat) / dt_dtau
+            rate = np.reshape(rate_flat, (num_output_nodes,) + shape)
 
-            rate = a / dt_dtau
-            rate = np.reshape(rate, (num_output_nodes,) + shape)
-
-            rate2 = b / dt_dtau ** 2
-            rate2 = np.reshape(rate2, (num_output_nodes,) + shape)
+            rate2_flat = D2_de.dot(u_flat) / dt_dtau ** 2
+            rate2 = np.reshape(rate2_flat, (num_output_nodes,) + shape)
 
             outputs[self._output_val_names[name]] = val
             outputs[self._output_rate_names[name]] = rate
@@ -432,6 +567,13 @@ class ControlInterpComp(om.ExplicitComponent):
             outputs[self._output_boundary_val_names[name]] = val[[0, -1], ...]
             outputs[self._output_boundary_rate_names[name]] = rate[[0, -1], ...]
             outputs[self._output_boundary_rate2_names[name]] = rate2[[0, -1], ...]
+
+            if self._is_val_cnty(name):
+                outputs[self._output_val_cnty_defect_names[name]] = S.dot(val_flat)
+            if self._is_rate_cnty(name):
+                outputs[self._output_rate_cnty_defect_names[name]] = S.dot(rate_flat)
+            if self._is_rate2_cnty(name):
+                outputs[self._output_rate2_cnty_defect_names[name]] = S.dot(rate2_flat)
 
     def compute_partials(self, inputs, partials):
         """
@@ -454,6 +596,8 @@ class ControlInterpComp(om.ExplicitComponent):
             rate2_name = self._output_rate2_names[name]
             boundary_rate_name = self._output_boundary_rate_names[name]
             boundary_rate2_name = self._output_boundary_rate2_names[name]
+            rate_cnty_name = self._output_rate_cnty_defect_names[name]
+            rate2_cnty_name = self._output_rate2_cnty_defect_names[name]
 
             sp_eye = sp.eye(size)
 
@@ -462,7 +606,7 @@ class ControlInterpComp(om.ExplicitComponent):
                 num_control_input_nodes = options['order'] + 1
                 dt_dtau = 0.5 * inputs['t_duration']
             else:
-                _, D_de, D2_de = self._matrices['full']
+                _, D_de, D2_de, S = self._matrices['full']
                 num_control_input_nodes = self.options['grid_data'].subset_num_nodes['control_input']
                 dt_dtau = inputs['dt_dstau']
 
@@ -472,12 +616,12 @@ class ControlInterpComp(om.ExplicitComponent):
             dtau_dt2 = (dtau_dt ** 2)
             dtau_dt3 = (dtau_dt ** 3)
 
-            d_udot_ddt_dtau = (-D_de.dot(u_flat) * dtau_dt2[:, np.newaxis]).ravel()
-            d_udotdot_ddt_dtau = -2.0 * (D2_de.dot(u_flat) * dtau_dt3[:, np.newaxis]).ravel()
+            d_udot_ddt_dtau = -D_de.dot(u_flat) * dtau_dt2[:, np.newaxis]
+            d_udotdot_ddt_dtau = -2.0 * (D2_de.dot(u_flat) * dtau_dt3[:, np.newaxis])
 
             if control_type == 'polynomial':
-                partials[rate_name, 't_duration'] = 0.5 * d_udot_ddt_dtau
-                partials[rate2_name, 't_duration'] = 0.5 * d_udotdot_ddt_dtau
+                partials[rate_name, 't_duration'] = 0.5 * d_udot_ddt_dtau.ravel()
+                partials[rate2_name, 't_duration'] = 0.5 * d_udotdot_ddt_dtau.ravel()
 
                 partials[boundary_rate_name, 't_duration'][:size] = partials[rate_name, 't_duration'][:size]
                 partials[boundary_rate_name, 't_duration'][-size:] = partials[rate_name, 't_duration'][-size:]
@@ -485,14 +629,30 @@ class ControlInterpComp(om.ExplicitComponent):
                 partials[boundary_rate2_name, 't_duration'][:size] = partials[rate2_name, 't_duration'][:size]
                 partials[boundary_rate2_name, 't_duration'][-size:] = partials[rate2_name, 't_duration'][-size:]
             else:
-                partials[rate_name, 'dt_dstau'] = d_udot_ddt_dtau
-                partials[rate2_name, 'dt_dstau'] = d_udotdot_ddt_dtau
+                partials[rate_name, 'dt_dstau'] = d_udot_ddt_dtau.ravel()
+                partials[rate2_name, 'dt_dstau'] = d_udotdot_ddt_dtau.ravel()
 
                 partials[boundary_rate_name, 'dt_dstau'][:size] = partials[rate_name, 'dt_dstau'][:size]
                 partials[boundary_rate_name, 'dt_dstau'][-size:] = partials[rate_name, 'dt_dstau'][-size:]
 
                 partials[boundary_rate2_name, 'dt_dstau'][:size] = partials[rate2_name, 'dt_dstau'][:size]
                 partials[boundary_rate2_name, 'dt_dstau'][-size:] = partials[rate2_name, 'dt_dstau'][-size:]
+
+
+                if self._is_rate_cnty(name):
+                    # TODO: Remove duplicate A
+                    A = sp.kron(self._d_cnty_d_node_vals, sp.eye(size), format='csr')
+                    result = A.dot(sp.diags(d_udot_ddt_dtau.ravel()))
+                    result.sort_indices()
+                    partials[rate_cnty_name, 'dt_dstau'] = result.data
+
+                if self._is_rate2_cnty(name):
+
+                    A = sp.kron(self._d_cnty_d_node_vals, sp.eye(size), format='csr')
+                    result = A.dot(sp.diags(d_udotdot_ddt_dtau.ravel()))
+                    result.sort_indices()
+                    partials[rate2_cnty_name, 'dt_dstau'] = result.data
+
 
             partials[rate_name, control_name] = sp.kron(D_de, sp_eye, format='csr').multiply(
                 np.repeat(dtau_dt.ravel(), size)[:, np.newaxis]).data

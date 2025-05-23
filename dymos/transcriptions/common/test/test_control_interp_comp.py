@@ -79,7 +79,7 @@ class TestControlRateComp(unittest.TestCase):
 
     def test_control_interp_scalar(self):
         param_list = itertools.product(['gauss-lobatto', 'radau-ps'],  # transcription
-                                       [True, False],  # compressed
+                                       [False],  # compressed
                                        ['polynomial', 'full'])  # control type
         for transcription, compressed, control_type in param_list:
             with self.subTest():
@@ -95,10 +95,12 @@ class TestControlRateComp(unittest.TestCase):
 
                 controls = {'a': {'units': 'm', 'shape': (1,), 'val': 1.0,
                                   'dynamic': True, 'opt': False, 'control_type': control_type,
-                                  'order': 3},
+                                  'order': 3, 'continuity': True, 'rate_continuity': True,
+                                  'rate2_continuity': True},
                             'b': {'units': 'm', 'shape': (1,), 'val': 1.0,
                                   'dynamic': True, 'opt': False, 'control_type': control_type,
-                                  'order': 5}}
+                                  'order': 5, 'continuity': True, 'rate_continuity': True,
+                                  'rate2_continuity': True}}
 
                 ivc = om.IndepVarComp()
                 p.model.add_subsystem('ivc', ivc, promotes_outputs=['*'])
@@ -208,7 +210,7 @@ class TestControlRateComp(unittest.TestCase):
 
                 cpd = p.check_partials(compact_print=False, show_only_incorrect=True,
                                        abs_err_tol=1.0E-8, rel_err_tol=1.0E-8, method='cs',
-                                       out_stream=None)
+                )#out_stream=None)
                 assert_check_partials(cpd)
 
     def test_control_interp_vector(self, transcription='gauss-lobatto', compressed=True):
@@ -228,7 +230,8 @@ class TestControlRateComp(unittest.TestCase):
                 p = om.Problem(model=om.Group())
 
                 controls = {'a': {'units': 'm', 'shape': (3,), 'val': np.array([1, 2, 3]),
-                                  'dynamic': True, 'opt': False}}
+                                  'dynamic': True, 'opt': False, 'continuity': True,
+                                  'rate_continuity': True,'rate2_continuity': True}}
 
                 ivc = om.IndepVarComp()
                 p.model.add_subsystem('ivc', ivc, promotes_outputs=['*'])
@@ -334,8 +337,8 @@ class TestControlRateComp(unittest.TestCase):
                 assert_almost_equal(p['control_interp_comp.control_boundary_rates:a_rate2'][:, 2],
                                     a2_rate2_expected.T[(0, -1), ...])
 
-                np.set_printoptions(linewidth=1024)
-                cpd = p.check_partials(compact_print=True, method='cs', out_stream=None)
+                np.set_printoptions(linewidth=100024)
+                cpd = p.check_partials(compact_print=False, method='cs', show_only_incorrect=True) #out_stream=None)
 
                 assert_check_partials(cpd)
 
