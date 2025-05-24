@@ -50,6 +50,9 @@ class TranscriptionBase(object):
         self._rhs_source = None
         self._has_boundary_ode = False
 
+        # Does this transcription have a separate ODE for the phase boundaries?
+        self._has_boundary_ode = False
+
     def _declare_options(self):
         pass
 
