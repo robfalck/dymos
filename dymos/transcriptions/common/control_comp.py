@@ -353,11 +353,29 @@ class ControlInterpComp(om.ExplicitComponent):
                                           wrt='dt_dstau',
                                           rows=rs, cols=cs)
 
+                    d_urate_d_uin = sp.kron(D_de, sp_eye, format='csr')
+                    d_rate_cnty_d_uin = self._d_cnty_d_node_vals2.dot(d_urate_d_uin)
+                    rs, cs, data = sp.find(d_rate_cnty_d_uin)
+
+                    self.declare_partials(of=self._output_rate_cnty_defect_names[name],
+                                        wrt=self._input_names[name],
+                                        rows=rs, cols=cs,
+                                        val=1.0)
+
                 if self._is_rate2_cnty(name):
                     rs, cs, data = sp.find(sp.kron(self._d_cnty_d_node_vals, np.ones((size, 1))))
                     self.declare_partials(of=self._output_rate2_cnty_defect_names[name],
                                           wrt='dt_dstau',
                                           rows=rs, cols=cs)
+
+                    d_urate2_d_uin = sp.kron(D2_de, sp_eye, format='csr')
+                    d_rate2_cnty_d_uin = self._d_cnty_d_node_vals2.dot(d_urate2_d_uin)
+                    rs, cs, data = sp.find(d_rate2_cnty_d_uin)
+
+                    self.declare_partials(of=self._output_rate2_cnty_defect_names[name],
+                                        wrt=self._input_names[name],
+                                        rows=rs, cols=cs,
+                                        val=1.0)
 
                 # The partials of the rates and second derivatives are nonlinear but the sparsity
                 # pattern is obtained from the kronecker product of the 1st and 2nd differentiation
@@ -619,6 +637,14 @@ class ControlInterpComp(om.ExplicitComponent):
             d_udot_ddt_dtau = -D_de.dot(u_flat) * dtau_dt2[:, np.newaxis]
             d_udotdot_ddt_dtau = -2.0 * (D2_de.dot(u_flat) * dtau_dt3[:, np.newaxis])
 
+            drate_duin = sp.kron(D_de, sp_eye, format='csr').multiply(
+                np.repeat(dtau_dt.ravel(), size)[:, np.newaxis])
+            partials[rate_name, control_name] = drate_duin.data
+
+            drate2_duin = sp.kron(D2_de, sp_eye, format='csr').multiply(
+                np.repeat(dtau_dt2.ravel(), size)[:, np.newaxis])
+            partials[rate2_name, control_name] = drate2_duin.data
+
             if control_type == 'polynomial':
                 partials[rate_name, 't_duration'] = 0.5 * d_udot_ddt_dtau.ravel()
                 partials[rate2_name, 't_duration'] = 0.5 * d_udotdot_ddt_dtau.ravel()
@@ -646,6 +672,10 @@ class ControlInterpComp(om.ExplicitComponent):
                     result.sort_indices()
                     partials[rate_cnty_name, 'dt_dstau'] = result.data
 
+                    result = A.dot(drate_duin)
+                    result.sort_indices()
+                    partials[rate_cnty_name, control_name] = result.data
+
                 if self._is_rate2_cnty(name):
 
                     A = sp.kron(self._d_cnty_d_node_vals, sp.eye(size), format='csr')
@@ -653,11 +683,10 @@ class ControlInterpComp(om.ExplicitComponent):
                     result.sort_indices()
                     partials[rate2_cnty_name, 'dt_dstau'] = result.data
 
+                    result = A.dot(drate2_duin)
+                    result.sort_indices()
+                    partials[rate2_cnty_name, control_name] = result.data
 
-            partials[rate_name, control_name] = sp.kron(D_de, sp_eye, format='csr').multiply(
-                np.repeat(dtau_dt.ravel(), size)[:, np.newaxis]).data
-            partials[rate2_name, control_name] = sp.kron(D2_de, sp_eye, format='csr').multiply(
-                np.repeat(dtau_dt2.ravel(), size)[:, np.newaxis]).data
 
             par_size = partials[boundary_rate_name, control_name].size // 2
             partials[boundary_rate_name, control_name][:par_size] = partials[rate_name, control_name][:par_size]
