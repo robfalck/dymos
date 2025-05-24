@@ -79,7 +79,7 @@ class TestControlRateComp(unittest.TestCase):
 
     def test_control_interp_scalar(self):
         param_list = itertools.product(['gauss-lobatto', 'radau-ps'],  # transcription
-                                       [False],  # compressed
+                                       [False, True],  # compressed
                                        ['polynomial', 'full'])  # control type
         for transcription, compressed, control_type in param_list:
             with self.subTest():
@@ -96,11 +96,17 @@ class TestControlRateComp(unittest.TestCase):
                 controls = {'a': {'units': 'm', 'shape': (1,), 'val': 1.0,
                                   'dynamic': True, 'opt': False, 'control_type': control_type,
                                   'order': 3, 'continuity': True, 'rate_continuity': True,
-                                  'rate2_continuity': True},
+                                  'rate2_continuity': True, 'continuity_scaler': 1.,
+                                  'continuity_ref': None, 'rate_continuity_scaler': 1.,
+                                  'rate_continuity_ref': None, 'rate2_continuity_scaler': 1.,
+                                  'rate2_continuity_ref': None},
                             'b': {'units': 'm', 'shape': (1,), 'val': 1.0,
                                   'dynamic': True, 'opt': False, 'control_type': control_type,
                                   'order': 5, 'continuity': True, 'rate_continuity': True,
-                                  'rate2_continuity': True}}
+                                  'rate2_continuity': True, 'continuity_scaler': None,
+                                  'continuity_ref': 1., 'rate_continuity_scaler': None,
+                                  'rate_continuity_ref': 1., 'rate2_continuity_scaler': None,
+                                  'rate2_continuity_ref': 1.}}
 
                 ivc = om.IndepVarComp()
                 p.model.add_subsystem('ivc', ivc, promotes_outputs=['*'])
@@ -134,7 +140,9 @@ class TestControlRateComp(unittest.TestCase):
                 p.model.add_subsystem('control_interp_comp',
                                       subsys=ControlInterpComp(grid_data=gd,
                                                                control_options=controls,
-                                                               time_units='s'),
+                                                               time_units='s',
+                                                               compute_continuity=True,
+                                                               enforce_continuity=True),
                                       promotes_inputs=['controls:*', 't_duration'])
 
                 p.model.connect('dt_dstau', 'control_interp_comp.dt_dstau')
@@ -208,6 +216,30 @@ class TestControlRateComp(unittest.TestCase):
                 assert_almost_equal(p['control_interp_comp.control_boundary_rates:b_rate2'],
                                     np.atleast_2d(b_rate2_expected).T[(0, -1), ...])
 
+                if p.model.control_interp_comp._is_val_cnty('a'):
+                    assert_almost_equal(p['control_interp_comp.control_continuity_defects:a'],
+                                        0.0)
+
+                if p.model.control_interp_comp._is_val_cnty('b'):
+                    assert_almost_equal(p['control_interp_comp.control_continuity_defects:b'],
+                                        0.0)
+
+                if p.model.control_interp_comp._is_rate_cnty('a'):
+                    assert_almost_equal(p['control_interp_comp.control_rate_continuity_defects:a'],
+                                        0.0)
+
+                if p.model.control_interp_comp._is_rate_cnty('b'):
+                    assert_almost_equal(p['control_interp_comp.control_rate_continuity_defects:b'],
+                                        0.0)
+
+                if p.model.control_interp_comp._is_rate2_cnty('a'):
+                    assert_almost_equal(p['control_interp_comp.control_rate2_continuity_defects:a'],
+                                        0.0)
+
+                if p.model.control_interp_comp._is_rate2_cnty('b'):
+                    assert_almost_equal(p['control_interp_comp.control_rate2_continuity_defects:b'],
+                                        0.0)
+
                 cpd = p.check_partials(compact_print=True, show_only_incorrect=True,
                                        abs_err_tol=1.0E-8, rel_err_tol=1.0E-8, method='cs',
                                        out_stream=None)
@@ -231,7 +263,10 @@ class TestControlRateComp(unittest.TestCase):
 
                 controls = {'a': {'units': 'm', 'shape': (3,), 'val': np.array([1, 2, 3]),
                                   'dynamic': True, 'opt': False, 'continuity': True,
-                                  'rate_continuity': True,'rate2_continuity': True}}
+                                  'rate_continuity': True,'rate2_continuity': True,
+                                  'continuity_scaler': 1., 'continuity_ref': None,
+                                  'rate_continuity_scaler': 1., 'rate_continuity_ref': None,
+                                  'rate2_continuity_scaler': 1., 'rate2_continuity_ref': None}}
 
                 ivc = om.IndepVarComp()
                 p.model.add_subsystem('ivc', ivc, promotes_outputs=['*'])
@@ -250,7 +285,9 @@ class TestControlRateComp(unittest.TestCase):
                 p.model.add_subsystem('control_interp_comp',
                                       subsys=ControlInterpComp(grid_data=gd,
                                                                control_options=controls,
-                                                               time_units='s'),
+                                                               time_units='s',
+                                                               compute_continuity=True,
+                                                               enforce_continuity=True),
                                       promotes_inputs=['controls:*'])
 
                 p.model.connect('dt_dstau', 'control_interp_comp.dt_dstau')
@@ -337,6 +374,19 @@ class TestControlRateComp(unittest.TestCase):
                 assert_almost_equal(p['control_interp_comp.control_boundary_rates:a_rate2'][:, 2],
                                     a2_rate2_expected.T[(0, -1), ...])
 
+
+                if p.model.control_interp_comp._is_val_cnty('a'):
+                    assert_almost_equal(p['control_interp_comp.control_continuity_defects:a'],
+                                        0.0)
+
+                if p.model.control_interp_comp._is_rate_cnty('a'):
+                    assert_almost_equal(p['control_interp_comp.control_rate_continuity_defects:a'],
+                                        0.0)
+
+                if p.model.control_interp_comp._is_rate2_cnty('a'):
+                    assert_almost_equal(p['control_interp_comp.control_rate2_continuity_defects:a'],
+                                        0.0)
+
                 np.set_printoptions(linewidth=1024)
                 cpd = p.check_partials(compact_print=True, method='cs', out_stream=None)
 
@@ -378,7 +428,9 @@ class TestControlRateComp(unittest.TestCase):
                 p.model.add_subsystem('control_interp_comp',
                                       subsys=ControlInterpComp(grid_data=gd,
                                                                control_options=controls,
-                                                               time_units='s'),
+                                                               time_units='s',
+                                                               compute_continuity=True,
+                                                               enforce_continuity=True),
                                       promotes_inputs=['controls:*'])
 
                 p.model.connect('dt_dstau', 'control_interp_comp.dt_dstau')

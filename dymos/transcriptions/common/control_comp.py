@@ -4,14 +4,15 @@ import scipy.sparse as sp
 from scipy.linalg import block_diag
 
 import openmdao.api as om
+from openmdao.utils.general_utils import determine_adder_scaler
 
-from ..grid_data import GridData
-from ...utils.misc import get_rate_units, CoerceDesvar, reshape_val
-from ...utils.lgl import lgl
-from ...utils.lagrange import lagrange_matrices
-from ...utils.indexing import get_desvar_indices
-from ...utils.constants import INF_BOUND
-from ..._options import options as dymos_options
+from dymos.transcriptions.grid_data import GridData
+from dymos.utils.misc import get_rate_units, CoerceDesvar, reshape_val
+from dymos.utils.lgl import lgl
+from dymos.utils.lagrange import lagrange_matrices
+from dymos.utils.indexing import get_desvar_indices
+from dymos.utils.constants import INF_BOUND
+from dymos._options import options as dymos_options
 
 
 class ControlInterpComp(om.ExplicitComponent):
@@ -56,15 +57,18 @@ class ControlInterpComp(om.ExplicitComponent):
         """
         Declare component options.
         """
-        self.options.declare(
-            'control_options', types=dict,
-            desc='Dictionary of options for the dynamic controls')
-        self.options.declare(
-            'time_units', default=None, allow_none=True, types=str,
-            desc='Units of time')
-        self.options.declare('grid_data', types=GridData, desc='Container object for grid info for the control inputs.')
+        self.options.declare( 'control_options', types=dict,
+                             desc='Dictionary of options for the dynamic controls')
+        self.options.declare( 'time_units', default=None, allow_none=True, types=str,
+                             desc='Units of time')
+        self.options.declare('grid_data', types=GridData,
+                             desc='Container object for grid info for the control inputs.')
         self.options.declare('output_grid_data', types=GridData, allow_none=True, default=None,
                              desc='GridData object for the output grid. If None, use the same grid_data as the inputs.')
+        self.options.declare('compute_continuity', types=bool, default=False,
+                             desc='Switch to enable calculation of segment continuity if necessary.')
+        self.options.declare('enforce_continuity', types=bool, default=False,
+                             desc='Switch to enable constraint of segment continuity.')
 
         # Save the names of the dynamic controls/parameters
         self._input_names = {}
@@ -77,7 +81,8 @@ class ControlInterpComp(om.ExplicitComponent):
         self._output_val_cnty_defect_names = {}
         self._output_rate_cnty_defect_names = {}
         self._output_rate2_cnty_defect_names = {}
-        self._matrices = {}
+        self._matrices = {}  # Interpolation, differentiation, selection matrices
+        self._dcnty_dnode_vals_kron_eye = {}  # Used in partials
 
     def setup(self):
         """
@@ -113,7 +118,8 @@ class ControlInterpComp(om.ExplicitComponent):
         return (options['control_type'] == 'full' and
                 not gd.compressed and
                 ogd.num_segments > 1 and
-                options['continuity'])
+                options['continuity'] and
+                self.options['compute_continuity'])
 
     @lru_cache
     def _is_rate_cnty(self, control_name):
@@ -135,7 +141,8 @@ class ControlInterpComp(om.ExplicitComponent):
         options = self.options['control_options'][control_name]
         return (options['control_type'] == 'full' and
                 ogd.num_segments > 1 and
-                options['rate_continuity'])
+                options['rate_continuity'] and
+                self.options['compute_continuity'])
 
     @lru_cache
     def _is_rate2_cnty(self, control_name):
@@ -157,7 +164,8 @@ class ControlInterpComp(om.ExplicitComponent):
         options = self.options['control_options'][control_name]
         return (options['control_type'] == 'full' and
                 ogd.num_segments > 1 and
-                options['rate2_continuity'])
+                options['rate2_continuity'] and
+                self.options['compute_continuity'])
 
     def _configure_controls(self):
         gd = self.options['grid_data']
@@ -336,10 +344,11 @@ class ControlInterpComp(om.ExplicitComponent):
                 self._d_cnty_d_node_vals = S.dot(sp.kron(sp.eye(num_output_nodes), np.ones((1, num_output_segs - 1))))
 
                 # This is used for derivatives wrt to sized variables
-                self._d_cnty_d_node_vals2 = sp.kron(self._d_cnty_d_node_vals, sp.eye(size), format='csr')
+                dcmat = self._dcnty_dnode_vals_kron_eye[size] = sp.kron(self._d_cnty_d_node_vals, sp_eye, format='csr')
+                # self._d_cnty_d_node_vals2 = sp.kron(self._d_cnty_d_node_vals, sp.eye(size), format='csr')
 
                 if self._is_val_cnty(name):
-                    d_val_cnty_d_uin = self._d_cnty_d_node_vals2.dot(d_ua_d_uin)
+                    d_val_cnty_d_uin = dcmat.dot(d_ua_d_uin)
                     rs, cs, data = sp.find(d_val_cnty_d_uin)
 
                     self.declare_partials(of=self._output_val_cnty_defect_names[name],
@@ -354,7 +363,7 @@ class ControlInterpComp(om.ExplicitComponent):
                                           rows=rs, cols=cs)
 
                     d_urate_d_uin = sp.kron(D_de, sp_eye, format='csr')
-                    d_rate_cnty_d_uin = self._d_cnty_d_node_vals2.dot(d_urate_d_uin)
+                    d_rate_cnty_d_uin = dcmat.dot(d_urate_d_uin)
                     rs, cs, data = sp.find(d_rate_cnty_d_uin)
 
                     self.declare_partials(of=self._output_rate_cnty_defect_names[name],
@@ -369,7 +378,7 @@ class ControlInterpComp(om.ExplicitComponent):
                                           rows=rs, cols=cs)
 
                     d_urate2_d_uin = sp.kron(D2_de, sp_eye, format='csr')
-                    d_rate2_cnty_d_uin = self._d_cnty_d_node_vals2.dot(d_urate2_d_uin)
+                    d_rate2_cnty_d_uin = dcmat.dot(d_urate2_d_uin)
                     rs, cs, data = sp.find(d_rate2_cnty_d_uin)
 
                     self.declare_partials(of=self._output_rate2_cnty_defect_names[name],
@@ -462,6 +471,34 @@ class ControlInterpComp(om.ExplicitComponent):
                                             indices=desvar_indices,
                                             flat_indices=True)
 
+    def _configure_constraints(self):
+        if self.options['enforce_continuity']:
+            control_options = self.options['control_options']
+            for name, options in control_options.items():
+                if self._is_val_cnty(name):
+                    _, scaler = determine_adder_scaler(None if options['continuity_ref'] is None else 0.0,
+                                                       options['continuity_ref'],
+                                                       None if options['continuity_scaler'] is None else 0.0,
+                                                       options['continuity_scaler'])
+                    val_cnty_name = self._output_val_cnty_defect_names[name]
+                    self.add_constraint(val_cnty_name, equals=0.0, scaler=scaler)
+
+                if self._is_rate_cnty(name):
+                    _, scaler = determine_adder_scaler(None if options['rate_continuity_ref'] is None else 0.0,
+                                                       options['rate_continuity_ref'],
+                                                       None if options['rate_continuity_scaler'] is None else 0.0,
+                                                       options['rate_continuity_scaler'])
+                    rate_cnty_name = self._output_rate_cnty_defect_names[name]
+                    self.add_constraint(rate_cnty_name, equals=0.0, scaler=scaler)
+
+                if self._is_rate2_cnty(name):
+                    _, scaler = determine_adder_scaler(None if options['rate2_continuity_ref'] is None else 0.0,
+                                                       options['rate2_continuity_ref'],
+                                                       None if options['rate2_continuity_scaler'] is None else 0.0,
+                                                       options['rate2_continuity_scaler'])
+                    rate2_cnty_name = self._output_rate2_cnty_defect_names[name]
+                    self.add_constraint(rate2_cnty_name, equals=0.0, scaler=options['rate2_continuity_scaler'])
+
     def configure_io(self):
         """
         I/O creation is delayed until configure so we can determine shape and units for the controls.
@@ -538,6 +575,7 @@ class ControlInterpComp(om.ExplicitComponent):
 
         self._configure_controls()
         self._configure_desvars()
+        self._configure_constraints()
 
     def compute(self, inputs, outputs):
         """
@@ -666,27 +704,25 @@ class ControlInterpComp(om.ExplicitComponent):
 
 
                 if self._is_rate_cnty(name):
-                    # TODO: Remove duplicate A
-                    A = sp.kron(self._d_cnty_d_node_vals, sp.eye(size), format='csr')
-                    result = A.dot(sp.diags(d_udot_ddt_dtau.ravel()))
+                    dcmat = self._dcnty_dnode_vals_kron_eye[size]
+                    result = dcmat.dot(sp.diags(d_udot_ddt_dtau.ravel()))
                     result.sort_indices()
                     partials[rate_cnty_name, 'dt_dstau'] = result.data
 
-                    result = A.dot(drate_duin)
+                    result = dcmat.dot(drate_duin)
                     result.sort_indices()
                     partials[rate_cnty_name, control_name] = result.data
 
                 if self._is_rate2_cnty(name):
+                    dcmat = self._dcnty_dnode_vals_kron_eye[size]
 
-                    A = sp.kron(self._d_cnty_d_node_vals, sp.eye(size), format='csr')
-                    result = A.dot(sp.diags(d_udotdot_ddt_dtau.ravel()))
+                    result = dcmat.dot(sp.diags(d_udotdot_ddt_dtau.ravel()))
                     result.sort_indices()
                     partials[rate2_cnty_name, 'dt_dstau'] = result.data
 
-                    result = A.dot(drate2_duin)
+                    result = dcmat.dot(drate2_duin)
                     result.sort_indices()
                     partials[rate2_cnty_name, control_name] = result.data
-
 
             par_size = partials[boundary_rate_name, control_name].size // 2
             partials[boundary_rate_name, control_name][:par_size] = partials[rate_name, control_name][:par_size]
