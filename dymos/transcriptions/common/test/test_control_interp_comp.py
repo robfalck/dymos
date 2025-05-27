@@ -9,7 +9,7 @@ from dymos.utils.testing_utils import assert_check_partials
 import dymos as dm
 from dymos.transcriptions.common import TimeComp
 from dymos.transcriptions.common import ControlInterpComp
-from dymos.transcriptions.grid_data import GridData
+from dymos.transcriptions.grid_data import RadauGrid, GaussLobattoGrid
 from dymos.utils.lgl import lgl
 
 # Modify class so we can run it standalone.
@@ -85,11 +85,16 @@ class TestControlRateComp(unittest.TestCase):
             with self.subTest():
                 segends = np.array([0.0, 3.0, 10.0])
 
-                gd = GridData(num_segments=2,
-                              transcription_order=5,
-                              segment_ends=segends,
-                              transcription=transcription,
-                              compressed=compressed)
+                if transcription == 'gauss-lobatto':
+                    gd = dm.GaussLobattoGrid(num_segments=2,
+                                             nodes_per_seg=5,
+                                             segment_ends=segends,
+                                             compressed=compressed)
+                elif transcription == 'radau-ps':
+                    gd = dm.RadauGrid(num_segments=2,
+                                      nodes_per_seg=5,
+                                      segment_ends=segends,
+                                      compressed=compressed)
 
                 p = om.Problem(model=om.Group())
 
@@ -240,7 +245,7 @@ class TestControlRateComp(unittest.TestCase):
                     assert_almost_equal(p['control_interp_comp.control_rate2_continuity_defects:b'],
                                         0.0)
 
-                cpd = p.check_partials(compact_print=True, show_only_incorrect=True,
+                cpd = p.check_partials(compact_print=False, show_only_incorrect=True,
                                        abs_err_tol=1.0E-8, rel_err_tol=1.0E-8, method='cs',
                                        out_stream=None)
                 assert_check_partials(cpd)
@@ -253,11 +258,16 @@ class TestControlRateComp(unittest.TestCase):
             with self.subTest():
                 segends = np.linspace(0., 10., 11)
 
-                gd = GridData(num_segments=10,
-                              transcription_order=5,
-                              segment_ends=segends,
-                              transcription=transcription,
-                              compressed=compressed)
+                if transcription == 'gauss-lobatto':
+                    gd = dm.GaussLobattoGrid(num_segments=10,
+                                             nodes_per_seg=5,
+                                             segment_ends=segends,
+                                             compressed=compressed)
+                elif transcription == 'radau-ps':
+                    gd = dm.RadauGrid(num_segments=10,
+                                      nodes_per_seg=5,
+                                      segment_ends=segends,
+                                      compressed=compressed)
 
                 p = om.Problem(model=om.Group())
 
@@ -419,13 +429,18 @@ class TestControlRateComp(unittest.TestCase):
                                        )
         for transcription, compressed in param_list:
             with self.subTest():
-                segends = np.array([0.0, 3.0, 10.0])
+                segends = np.array([0.0, 3.0, 7.0, 10.0])
 
-                gd = GridData(num_segments=2,
-                              transcription_order=5,
-                              segment_ends=segends,
-                              transcription=transcription,
-                              compressed=compressed)
+                if transcription == 'gauss-lobatto':
+                    gd = dm.GaussLobattoGrid(num_segments=3,
+                                             nodes_per_seg=5,
+                                             segment_ends=segends,
+                                             compressed=compressed)
+                elif transcription == 'radau-ps':
+                    gd = dm.RadauGrid(num_segments=3,
+                                      nodes_per_seg=5,
+                                      segment_ends=segends,
+                                      compressed=compressed)
 
                 p = om.Problem(model=om.Group())
 
@@ -556,7 +571,7 @@ class TestControlRateComp(unittest.TestCase):
                                         0.0)
 
                 np.set_printoptions(linewidth=1024)
-                cpd = p.check_partials(compact_print=True, method='cs', out_stream=None)
+                cpd = p.check_partials(compact_print=False, method='cs', show_only_incorrect=True, out_stream=None)
 
                 assert_check_partials(cpd)
 
@@ -568,11 +583,16 @@ class TestControlRateComp(unittest.TestCase):
             with self.subTest():
                 segends = np.array([0.0, 3.0, 10.0])
 
-                gd = GridData(num_segments=2,
-                              transcription_order=5,
-                              segment_ends=segends,
-                              transcription=transcription,
-                              compressed=compressed)
+                if transcription == 'gauss-lobatto':
+                    gd = dm.GaussLobattoGrid(num_segments=2,
+                                             nodes_per_seg=5,
+                                             segment_ends=segends,
+                                             compressed=compressed)
+                elif transcription == 'radau-ps':
+                    gd = dm.RadauGrid(num_segments=2,
+                                      nodes_per_seg=5,
+                                      segment_ends=segends,
+                                      compressed=compressed)
 
                 p = om.Problem(model=om.Group())
 
@@ -665,7 +685,7 @@ class TestControlRateComp(unittest.TestCase):
 
                 assert_check_partials(cpd)
 
-    def test_control_interp_matrix_2x2(self, transcription='gauss-lobatto', compressed=True):
+    def test_control_interp_matrix_2x2(self):
         param_list = itertools.product(['gauss-lobatto', 'radau-ps'],  # transcription
                                        [True, False],  # compressed
                                        )
@@ -673,11 +693,16 @@ class TestControlRateComp(unittest.TestCase):
             with self.subTest():
                 segends = np.array([0.0, 3.0, 10.0])
 
-                gd = GridData(num_segments=2,
-                              transcription_order=5,
-                              segment_ends=segends,
-                              transcription=transcription,
-                              compressed=compressed)
+                if transcription == 'gauss-lobatto':
+                    gd = dm.GaussLobattoGrid(num_segments=2,
+                                             nodes_per_seg=5,
+                                             segment_ends=segends,
+                                             compressed=compressed)
+                elif transcription == 'radau-ps':
+                    gd = dm.RadauGrid(num_segments=2,
+                                      nodes_per_seg=5,
+                                      segment_ends=segends,
+                                      compressed=compressed)
 
                 p = om.Problem(model=om.Group())
 

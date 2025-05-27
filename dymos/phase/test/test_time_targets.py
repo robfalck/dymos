@@ -220,15 +220,15 @@ class TestPhaseTimeTargets(unittest.TestCase):
 
                 time_phase_all = p[f'phase0.timeseries.{time_name}_phase'].ravel()
 
-                assert_near_equal(p['phase0.rhs_all.time_phase'][-1], 1.8016, tolerance=1.0E-3)
+                assert_near_equal(p['phase0.ode_all.time_phase'][-1], 1.8016, tolerance=1.0E-3)
 
-                assert_near_equal(p['phase0.rhs_all.t_initial'], p['phase0.t_initial'])
+                assert_near_equal(p['phase0.ode_all.t_initial'], p['phase0.t_initial'])
 
-                assert_near_equal(p['phase0.rhs_all.t_duration'], p['phase0.t_duration'])
+                assert_near_equal(p['phase0.ode_all.t_duration'], p['phase0.t_duration'])
 
-                assert_near_equal(p['phase0.rhs_all.time_phase'], time_phase_all)
+                assert_near_equal(p['phase0.ode_all.time_phase'], time_phase_all)
 
-                assert_near_equal(p['phase0.rhs_all.time'], time_all)
+                assert_near_equal(p['phase0.ode_all.time'], time_all)
 
                 exp_out = p.model.phase0.simulate()
 
@@ -354,15 +354,15 @@ class TestPhaseTimeTargets(unittest.TestCase):
 
         time_phase_all = p['phase0.t_phase']
 
-        assert_near_equal(p['phase0.rhs_all.time_phase'][-1], 1.8016, tolerance=1.0E-3)
+        assert_near_equal(p['phase0.ode_all.time_phase'][-1], 1.8016, tolerance=1.0E-3)
 
-        assert_near_equal(p['phase0.rhs_all.t_initial'], p['phase0.t_initial'])
+        assert_near_equal(p['phase0.ode_all.t_initial'], p['phase0.t_initial'])
 
-        assert_near_equal(p['phase0.rhs_all.t_duration'], p['phase0.t_duration'])
+        assert_near_equal(p['phase0.ode_all.t_duration'], p['phase0.t_duration'])
 
-        assert_near_equal(p['phase0.rhs_all.time_phase'], time_phase_all)
+        assert_near_equal(p['phase0.ode_all.time_phase'], time_phase_all)
 
-        assert_near_equal(p['phase0.rhs_all.time'], time_all)
+        assert_near_equal(p['phase0.ode_all.time'], time_all)
 
         exp_out = p.model._get_subsystem('phase0').simulate()
 

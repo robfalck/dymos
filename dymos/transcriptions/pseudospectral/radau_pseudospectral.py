@@ -7,7 +7,7 @@ from ...utils.misc import get_rate_units
 from ...utils.introspection import get_promoted_vars, get_targets, get_source_metadata
 from ...utils.indexing import get_src_indices_by_row
 from ...utils.ode_utils import _make_ode_system
-from ..grid_data import GridData
+from ..grid_data import RadauGrid
 
 
 class Radau(PseudospectralBase):
@@ -33,11 +33,10 @@ class Radau(PseudospectralBase):
         """
         Setup the GridData object for the Transcription.
         """
-        self.grid_data = GridData(num_segments=self.options['num_segments'],
-                                  transcription='radau-ps',
-                                  transcription_order=self.options['order'],
-                                  segment_ends=self.options['segment_ends'],
-                                  compressed=self.options['compressed'])
+        self.grid_data = RadauGrid(num_segments=self.options['num_segments'],
+                                   nodes_per_seg=self.options['order'] + 1,
+                                   segment_ends=self.options['segment_ends'],
+                                   compressed=self.options['compressed'])
 
     def configure_time(self, phase):
         """

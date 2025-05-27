@@ -703,7 +703,17 @@ class ControlInterpComp(om.ExplicitComponent):
 
 
                 if self._is_rate_cnty(name):
-                    partials[rate_cnty_name, 'dt_dstau'] = d_udot_ddt_dtau[S.shape[0], ...]
+                    Srs, Scs = S.nonzero()
+                    num_output_seg_minus_one = S.shape[0]
+
+                    rs = np.reshape(Scs, (-1, 2))
+                    rs = np.repeat(rs, size, axis=0)
+                    rs = rs.ravel()
+
+                    cs = np.tile(np.repeat(np.arange(size, dtype=int), 2), num_output_seg_minus_one)
+
+                    partials[rate_cnty_name, 'dt_dstau'] = d_udot_ddt_dtau[rs, cs]
+                    partials[rate_cnty_name, 'dt_dstau'][::2] *= -1
 
                     dcmat = self._dcnty_dnode_vals_kron_eye[size]
                     result = dcmat.dot(drate_duin)
@@ -711,7 +721,17 @@ class ControlInterpComp(om.ExplicitComponent):
                     partials[rate_cnty_name, control_name] = result.data
 
                 if self._is_rate2_cnty(name):
-                    partials[rate2_cnty_name, 'dt_dstau'] = d_udotdot_ddt_dtau[S.shape[0], ...]
+                    Srs, Scs = S.nonzero()
+                    num_output_seg_minus_one = S.shape[0]
+
+                    rs = np.reshape(Scs, (-1, 2))
+                    rs = np.repeat(rs, size, axis=0)
+                    rs = rs.ravel()
+
+                    cs = np.tile(np.repeat(np.arange(size, dtype=int), 2), num_output_seg_minus_one)
+
+                    partials[rate2_cnty_name, 'dt_dstau'] = d_udotdot_ddt_dtau[rs, cs]
+                    partials[rate2_cnty_name, 'dt_dstau'][::2] *= -1
 
                     dcmat = self._dcnty_dnode_vals_kron_eye[size]
                     result = dcmat.dot(drate2_duin)

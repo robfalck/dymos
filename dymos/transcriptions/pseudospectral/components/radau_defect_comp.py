@@ -315,8 +315,8 @@ class RadauDefectComp(om.ExplicitComponent):
             # But scipy.sparse only handles 2D matrices, so we need to force x to be 2D
             # and then change the product back to the proper shape.
 
-            x_flat = np.reshape(x, newshape=(num_disc_nodes, size))
-            f_approx = np.reshape(D.dot(x_flat), newshape=(num_col_nodes,) + shape)
+            x_flat = np.reshape(x, (num_disc_nodes, size))
+            f_approx = np.reshape(D.dot(x_flat), (num_col_nodes,) + shape)
 
             outputs[var_names['rate_defect']] = f_approx - (f_ode.T * dt_dstau).T
             outputs[var_names['initial_defect']] = x_0 - x[0, ...]

@@ -27,9 +27,9 @@ class TestBrachExecCompODE(unittest.TestCase):
                                 order=transcription_order,
                                 compressed=compressed)
         elif transcription == 'radau-ps':
-            t = dm.RadauNew(num_segments=num_segments,
-                            order=transcription_order,
-                            compressed=compressed)
+            t = dm.Radau(num_segments=num_segments,
+                         order=transcription_order,
+                         compressed=compressed)
         elif transcription == 'birkhoff':
             t = dm.Birkhoff(num_nodes=transcription_order+1,
                             grid_type='cgl')
