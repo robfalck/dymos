@@ -116,7 +116,7 @@ class ControlInterpComp(om.ExplicitComponent):
         ogd = self.options['output_grid_data'] or gd
         options = self.options['control_options'][control_name]
         return (options['control_type'] == 'full' and
-                not gd.compressed and
+                (gd.grid_type == 'lgr' or not gd.compressed) and
                 ogd.num_segments > 1 and
                 options['continuity'] and
                 self.options['compute_continuity'])
@@ -341,11 +341,10 @@ class ControlInterpComp(om.ExplicitComponent):
                 # where S is the defect selection matrix and 1_n is a column vector of ones at each
                 # segment start/end involved in the calculation.
                 # This is used for derivatives wrt dt_dstau
-                self._d_cnty_d_node_vals = S.dot(sp.kron(sp.eye(num_output_nodes), np.ones((1, num_output_segs - 1))))
+                self._d_cnty_d_node_vals = S.dot(sp.eye(num_output_nodes))
 
                 # This is used for derivatives wrt to sized variables
                 dcmat = self._dcnty_dnode_vals_kron_eye[size] = sp.kron(self._d_cnty_d_node_vals, sp_eye, format='csr')
-                # self._d_cnty_d_node_vals2 = sp.kron(self._d_cnty_d_node_vals, sp.eye(size), format='csr')
 
                 if self._is_val_cnty(name):
                     d_val_cnty_d_uin = dcmat.dot(d_ua_d_uin)
@@ -704,22 +703,17 @@ class ControlInterpComp(om.ExplicitComponent):
 
 
                 if self._is_rate_cnty(name):
-                    dcmat = self._dcnty_dnode_vals_kron_eye[size]
-                    result = dcmat.dot(sp.diags(d_udot_ddt_dtau.ravel()))
-                    result.sort_indices()
-                    partials[rate_cnty_name, 'dt_dstau'] = result.data
+                    partials[rate_cnty_name, 'dt_dstau'] = d_udot_ddt_dtau[S.shape[0], ...]
 
+                    dcmat = self._dcnty_dnode_vals_kron_eye[size]
                     result = dcmat.dot(drate_duin)
                     result.sort_indices()
                     partials[rate_cnty_name, control_name] = result.data
 
                 if self._is_rate2_cnty(name):
+                    partials[rate2_cnty_name, 'dt_dstau'] = d_udotdot_ddt_dtau[S.shape[0], ...]
+
                     dcmat = self._dcnty_dnode_vals_kron_eye[size]
-
-                    result = dcmat.dot(sp.diags(d_udotdot_ddt_dtau.ravel()))
-                    result.sort_indices()
-                    partials[rate2_cnty_name, 'dt_dstau'] = result.data
-
                     result = dcmat.dot(drate2_duin)
                     result.sort_indices()
                     partials[rate2_cnty_name, control_name] = result.data
