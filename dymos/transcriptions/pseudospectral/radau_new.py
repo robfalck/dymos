@@ -255,7 +255,8 @@ class RadauNew(TranscriptionBase):
         phase.add_subsystem('boundary_vals',
                             subsys=RadauBoundaryGroup(ode_class=ODEClass,
                                                       ode_init_kwargs=ode_init_kwargs,
-                                                      calc_exprs=phase._calc_exprs),
+                                                      calc_exprs=phase._calc_exprs,
+                                                      parameter_options=phase.parameter_options),
                             promotes_inputs=['initial_states:*', 'final_states:*'])
     def configure_ode(self, phase):
         """
@@ -735,7 +736,7 @@ class RadauNew(TranscriptionBase):
 
     def get_parameter_connections(self, name, phase):
         """
-        Return info about a parameter's target connections in the phase.
+        Returns info about a parameter's target connections in the phase.
 
         Parameters
         ----------
@@ -751,26 +752,23 @@ class RadauNew(TranscriptionBase):
             given design variable is to be connected.
         """
         connection_info = []
-
         if name in phase.parameter_options:
             options = phase.parameter_options[name]
             for tgt in options['targets']:
                 if tgt in options['static_targets']:
                     src_idxs = np.squeeze(get_src_indices_by_row([0], options['shape']), axis=0)
-                    boundary_src_idxs = np.squeeze(get_src_indices_by_row([0], options['shape']), axis=0)
+                    endpoint_src_idxs = om.slicer[:, ...]
                 else:
                     src_idxs_raw = np.zeros(self.grid_data.subset_num_nodes['all'], dtype=int)
                     src_idxs = get_src_indices_by_row(src_idxs_raw, options['shape'])
+                    endpoint_src_idxs_raw = np.zeros(2, dtype=int)
+                    endpoint_src_idxs = get_src_indices_by_row(endpoint_src_idxs_raw, options['shape'])
                     if options['shape'] == (1,):
                         src_idxs = src_idxs.ravel()
-
-                    boundary_src_idxs_raw = np.zeros(2, dtype=int)
-                    boundary_src_idxs = get_src_indices_by_row(boundary_src_idxs_raw, options['shape'])
-                    if options['shape'] == (1,):
-                        boundary_src_idxs = boundary_src_idxs.ravel()
+                        endpoint_src_idxs = endpoint_src_idxs.ravel()
 
                 connection_info.append((f'ode_all.{tgt}', (src_idxs,)))
-                connection_info.append((f'boundary_vals.{tgt}', (boundary_src_idxs,)))
+                connection_info.append((f'boundary_vals.{tgt}', (endpoint_src_idxs,)))
 
         return connection_info
 

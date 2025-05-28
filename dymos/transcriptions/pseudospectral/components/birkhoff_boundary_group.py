@@ -1,7 +1,6 @@
 import numpy as np
 import openmdao.api as om
 
-from ...grid_data import GridData
 from ....utils.ode_utils import _make_ode_system
 from dymos._options import options as dymos_options
 
@@ -108,7 +107,6 @@ class BirkhoffBoundaryGroup(om.Group):
         """
         Declare group options.
         """
-        self.options.declare('grid_data', types=GridData, desc='Container object for grid info.')
         self.options.declare('ode_class', default=None,
                              desc='Callable that instantiates the ODE system.',
                              recordable=False)

@@ -224,8 +224,7 @@ class Birkhoff(TranscriptionBase):
                             promotes=['*'])
 
         phase.add_subsystem('boundary_vals',
-                            subsys=BirkhoffBoundaryGroup(grid_data=grid_data,
-                                                         ode_class=ODEClass,
+                            subsys=BirkhoffBoundaryGroup(ode_class=ODEClass,
                                                          ode_init_kwargs=ode_init_kwargs,
                                                          calc_exprs=phase._calc_exprs,
                                                          parameter_options=phase.parameter_options),
