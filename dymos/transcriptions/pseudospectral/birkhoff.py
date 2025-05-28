@@ -787,3 +787,21 @@ class Birkhoff(TranscriptionBase):
             input_data[f'final_states:{name}'] = vals[-1]
 
         return input_data
+
+    def _get_linkage_source_ode(self, promoted=False):
+        """
+        Returns the path of the ODE system providing sources for linkage constraints.
+
+        Nominally this is the _rhs_source but will need to be overridden in transcriptions
+        with boundary ODEs or ODEs that are in a promoted path.
+
+        Parameters
+        ----------
+        promoted : bool
+            If True, return the promoted name of the system from the context of the Phase.
+            Otherwise, return the full path of the system from the context of the Phase.
+        """
+        if promoted:
+            return 'boundary_ode'
+        else:
+            return 'boundary_vals.boundary_ode'
