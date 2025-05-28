@@ -32,7 +32,7 @@ class TranscriptionBase(object):
         self.options.declare('segment_ends', default=None, types=(Sequence, np.ndarray),
                              allow_none=True, desc='Locations of segment ends or None for equally '
                              'spaced segments')
-        self.options.declare('order', default=3, types=(int, Sequence, np.ndarray),
+        self.options.declare('order', default=3, types=(int, np.integer, Sequence, np.ndarray),
                              desc='Order of the state transcription. The order of the control '
                                   'transcription is `order - 1`.')
         self.options.declare('compressed', default=True, types=bool,
@@ -48,7 +48,6 @@ class TranscriptionBase(object):
 
         # Where to query var info.
         self._rhs_source = None
-        self._has_boundary_ode = False
 
         # Does this transcription have a separate ODE for the phase boundaries?
         self._has_boundary_ode = False
@@ -67,6 +66,13 @@ class TranscriptionBase(object):
         Setup the GridData object for the Transcription.
         """
         raise NotImplementedError(f'Transcription {self.__class__.__name__} does not implement method init_grid.')
+
+    def _get_refinement_error_transcription(self):
+        """
+        Create a new transcriptoin instance to be used for error estimation.
+        This is usually a matter of increasing the order (number of nodes per segment).
+        """
+        raise NotImplementedError(f'{self.__class__.__name__} does not implement _get_refinement_error_transcription.')
 
     def setup_time(self, phase):
         """

@@ -72,6 +72,11 @@ class RadauNew(TranscriptionBase):
                                    segment_ends=self.options['segment_ends'],
                                    compressed=self.options['compressed'])
 
+    def _get_refinement_error_transcription(self):
+        new_tx = deepcopy(self)
+        new_tx.options['order'] = np.asarray(self.options['order'], dtype=int) + 1
+        return new_tx
+
     def setup_time(self, phase):
         """
         Set up the time component.

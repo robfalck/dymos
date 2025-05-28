@@ -1,3 +1,4 @@
+from copy import deepcopy
 import numpy as np
 
 import openmdao.api as om
@@ -35,7 +36,7 @@ class Birkhoff(TranscriptionBase):
         """
         Declare transcription options.
         """
-        self.options.declare('num_nodes', types=int, default=3,
+        self.options.declare('num_nodes', types=(int, np.integer), default=3,
                              desc='The number of nodes in the grid')
 
         self.options.declare('grid_type', values=('cgl', 'lgl'), default='cgl',
@@ -61,6 +62,11 @@ class Birkhoff(TranscriptionBase):
         """
         self.grid_data = BirkhoffGrid(num_nodes=self.options['num_nodes'],
                                       grid_type=self.options['grid_type'])
+
+    def _get_refinement_error_transcription(self):
+        new_tx = deepcopy(self)
+        new_tx.options['num_nodes'] = np.asarray(self.options['num_nodes'], dtype=int) + 5
+        return new_tx
 
     def setup_time(self, phase):
         """
