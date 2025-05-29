@@ -320,5 +320,42 @@ def is_scalar_or_singleton(x):
     Returns:
         _type_: _description_
     """
-    return np.isscalar(x) or isinstance(x, np.generic) or \
-        (hasattr(x, 'shape') and x.shape == (1,))
+    return (np.isscalar(x) or
+            isinstance(x, np.generic) or
+            hasattr(x, 'shape') and x.shape == (1,))
+
+
+def broadcast_to_nodes(a, shape, num_nodes, force_array=False):
+    """
+    Broadcast a to an array that is of shape (num_nodes,) + shape.
+
+    Parameters
+    ----------
+    a : array_like
+        The array to be broadcast.  If given as an array-like object,
+        it should have the specified shape.
+    shape : tuple
+        The shape of the variable at each node.
+    num_nodes : int
+        The number of nodes to which the values of a should be broadcast.
+
+    Returns
+    -------
+    array_like or float
+        The value of a broadcast to a (num_nodes,) + shape array if it is not a scalar,
+        otherwise the scalr value of a.)
+
+    Raises
+    ------
+    ValueError
+        If the shape of the given a is neither a scalar or the shape of
+    """
+    if (not is_scalar_or_singleton(a) and a is not None) or (force_array and a is not None):
+        _a = np.asarray(a)
+        if _a.shape == shape:
+            result = np.broadcast_to(_a, (num_nodes,) + shape)
+        else:
+            raise ValueError('array-valued scaler/ref must length equal to state-size')
+    else:
+        result = a
+    return result

@@ -865,6 +865,6 @@ class RadauNew(TranscriptionBase):
             Otherwise, return the full path of the system from the context of the Phase.
         """
         if promoted:
-            return 'boundary_ode'
+            return 'boundary_vals'
         else:
             return 'boundary_vals.boundary_ode'

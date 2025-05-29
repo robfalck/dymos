@@ -142,7 +142,7 @@ class TestBrachistochroneVectorStatesExampleSolveSegments(unittest.TestCase):
                                                            optimizer='SNOPT',
                                                            compressed=True,
                                                            force_alloc_complex=True,
-                                                        #    solve_segments='forward',
+                                                           solve_segments='forward',
                                                            num_segments=10,
                                                            transcription_order=3)
         self.assert_results(p)
