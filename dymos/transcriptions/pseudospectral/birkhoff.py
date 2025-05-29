@@ -498,7 +498,10 @@ class Birkhoff(TranscriptionBase):
             control_rate_units = get_rate_units(control_units, time_units, deriv=d)
             units = control_rate_units
             linear = False
-            constraint_path = f'control_rates:{var}'
+            if loc == 'path':
+                constraint_path = f'control_rates:{var}'
+            else:
+                constraint_path = f'control_boundary_rates:{var}'
         else:
             # Failed to find variable, assume it is in the ODE. This requires introspection.
             constraint_path = f'boundary_vals.{var}'

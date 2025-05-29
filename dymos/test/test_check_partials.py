@@ -395,8 +395,8 @@ class TestCheckPartials(unittest.TestCase):
         """
         with dm.options.temporary(include_check_partials=False):
             cases = [self.brach_explicit_partials,
-                    self.balanced_field_partials_radau,
-                    self.min_time_climb_partials_gl]
+                     self.balanced_field_partials_radau,
+                     self.min_time_climb_partials_gl]
 
             partials = {}
             for c in cases:

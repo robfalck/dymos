@@ -127,5 +127,6 @@ class TestSimulateShapedParams(unittest.TestCase):
         dm.run_problem(p, run_driver=True, simulate=True, make_plots=False)
         assert_near_equal(p.get_val('hop0.main_phase.timeseries.impulse')[-1, 0], -7836.66666, tolerance=1.0E-4)
 
+
 if __name__ == '__main__':  # pragma: no cover
     unittest.main()

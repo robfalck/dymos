@@ -274,11 +274,11 @@ class RadauIterGroup(om.Group):
                                                   shape=(nn,) + shape,
                                                   lower=options['lower'],
                                                   upper=options['upper'],
-                                                # TODO: scaling is avoided because of what seems to be an OpenMDAO bug.
-                                                #       Apply same logic to BirkhoffIterGroup once fixed.
-                                                #   ref0=ref0_at_nodes,
-                                                #   ref=ref_at_nodes,
-                                                #   res_ref=defect_ref_at_nodes,
+                                                  # TODO: scaling is avoided because of what seems to be an OpenMDAO bug.
+                                                  #       Apply same logic to BirkhoffIterGroup once fixed.
+                                                  #   ref0=ref0_at_nodes,
+                                                  #   ref=ref_at_nodes,
+                                                  #   res_ref=defect_ref_at_nodes,
                                                   units=units)
                 else:
                     # For compressed transcirption, resids comp provides values at input nodes.
@@ -290,11 +290,11 @@ class RadauIterGroup(om.Group):
                                                   shape=(nin,) + shape,
                                                   lower=options['lower'],
                                                   upper=options['upper'],
-                                                # TODO: scaling is avoided because of what seems to be an OpenMDAO bug.
-                                                #       Apply same logic to BirkhoffIterGroup once fixed.
-                                                #   ref0=ref0_at_nodes,
-                                                #   ref=ref_at_nodes,
-                                                #   res_ref=defect_ref_at_nodes,
+                                                  # TODO: scaling is avoided because of what seems to be an OpenMDAO bug.
+                                                  #       Apply same logic to BirkhoffIterGroup once fixed.
+                                                  #   ref0=ref0_at_nodes,
+                                                  #   ref=ref_at_nodes,
+                                                  #   res_ref=defect_ref_at_nodes,
                                                   units=units)
 
             if options['initial_bounds'] is None:

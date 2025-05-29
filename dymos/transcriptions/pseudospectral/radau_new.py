@@ -263,6 +263,7 @@ class RadauNew(TranscriptionBase):
                                                       calc_exprs=phase._calc_exprs,
                                                       parameter_options=phase.parameter_options),
                             promotes_inputs=['initial_states:*', 'final_states:*'])
+
     def configure_ode(self, phase):
         """
         Create connections to the introspected states.
@@ -418,9 +419,6 @@ class RadauNew(TranscriptionBase):
         constraint_kwargs : dict
             Keyword arguments for the OpenMDAO add_constraint method.
         """
-        gd = self.grid_data
-        nsin = gd.subset_num_nodes['state_input']
-        ncin = gd.subset_num_nodes['control_input']
         num_nodes = self._get_num_timeseries_nodes()
 
         constraint_kwargs = {key: options for key, options in options.items()}
@@ -456,12 +454,7 @@ class RadauNew(TranscriptionBase):
                 constraint_kwargs['indices'] = size + flat_idxs
             else:
                 # Path constraint
-                if var_type == 'state':
-                    nn = nsin
-                elif var_type == 'control':
-                    nn = ncin
-                else:
-                    nn = num_nodes
+                nn = num_nodes
                 path_idxs = []
                 for i in range(nn):
                     path_idxs.extend(size * i + flat_idxs)
@@ -558,7 +551,10 @@ class RadauNew(TranscriptionBase):
             control_rate_units = get_rate_units(control_units, time_units, deriv=d)
             units = control_rate_units
             linear = False
-            constraint_path = f'control_rates:{var}'
+            if loc == 'path':
+                constraint_path = f'control_rates:{var}'
+            else:
+                constraint_path = f'control_boundary_rates:{var}'
         else:
             # Failed to find variable, assume it is in the ODE. This requires introspection.
             if loc == 'path':

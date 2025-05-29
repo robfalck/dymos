@@ -142,6 +142,7 @@ def get_targets(ode, name, user_targets):
             return user_targets
     return []
 
+
 def configure_controls_introspection(control_options, ode, time_units='s'):
     """
     Modify control options in-place using introspection of the user-provided ODE.
@@ -865,7 +866,7 @@ def _configure_constraint_introspection(phase):
                 con['shape'] = control_shape
                 con['units'] = control_units if con['units'] is None else con['units']
                 if has_boundary_ode and constraint_type in ('initial', 'final'):
-                    con['constraint_path'] = f'boundary_vals.{var}'
+                    con['constraint_path'] = f'control_boundary_vals:{var}'
                 else:
                     con['constraint_path'] = f'timeseries.{prefix}{var}'
 
@@ -878,7 +879,7 @@ def _configure_constraint_introspection(phase):
                 con['units'] = get_rate_units(control_units, time_units, deriv=1) \
                     if con['units'] is None else con['units']
                 if has_boundary_ode and constraint_type in ('initial', 'final'):
-                    con['constraint_path'] = f'boundary_vals.{var}'
+                    con['constraint_path'] = f'control_boundary_rates:{var}'
                 else:
                     con['constraint_path'] = f'timeseries.{prefix}{var}'
 
@@ -891,7 +892,7 @@ def _configure_constraint_introspection(phase):
                 con['units'] = get_rate_units(control_units, time_units, deriv=2) \
                     if con['units'] is None else con['units']
                 if has_boundary_ode and constraint_type in ('initial', 'final'):
-                    con['constraint_path'] = f'boundary_vals.{var}'
+                    con['constraint_path'] = f'control_boundary_rates:{var}'
                 else:
                     con['constraint_path'] = f'timeseries.{prefix}{var}'
 

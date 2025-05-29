@@ -446,7 +446,7 @@ class TestControlRateComp(unittest.TestCase):
 
                 controls = {'a': {'units': 'm', 'shape': (3,), 'val': np.array([1, 2, 3]),
                                   'dynamic': True, 'opt': False, 'continuity': True,
-                                  'rate_continuity': True,'rate2_continuity': True,
+                                  'rate_continuity': True, 'rate2_continuity': True,
                                   'continuity_scaler': 1., 'continuity_ref': None,
                                   'rate_continuity_scaler': 1., 'rate_continuity_ref': None,
                                   'rate2_continuity_scaler': 1., 'rate2_continuity_ref': None}}
@@ -556,7 +556,6 @@ class TestControlRateComp(unittest.TestCase):
 
                 assert_almost_equal(p['control_interp_comp.control_boundary_rates:a_rate2'][:, 2],
                                     a2_rate2_expected.T[(0, -1), ...])
-
 
                 if p.model.control_interp_comp._is_val_cnty('a'):
                     assert_almost_equal(p['control_interp_comp.control_continuity_defects:a'],

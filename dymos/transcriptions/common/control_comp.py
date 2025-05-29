@@ -57,9 +57,9 @@ class ControlInterpComp(om.ExplicitComponent):
         """
         Declare component options.
         """
-        self.options.declare( 'control_options', types=dict,
+        self.options.declare('control_options', types=dict,
                              desc='Dictionary of options for the dynamic controls')
-        self.options.declare( 'time_units', default=None, allow_none=True, types=str,
+        self.options.declare('time_units', default=None, allow_none=True, types=str,
                              desc='Units of time')
         self.options.declare('grid_data', types=GridData,
                              desc='Container object for grid info for the control inputs.')
@@ -351,9 +351,9 @@ class ControlInterpComp(om.ExplicitComponent):
                     rs, cs, data = sp.find(d_val_cnty_d_uin)
 
                     self.declare_partials(of=self._output_val_cnty_defect_names[name],
-                                        wrt=self._input_names[name],
-                                        rows=rs, cols=cs,
-                                        val=data)
+                                          wrt=self._input_names[name],
+                                          rows=rs, cols=cs,
+                                          val=data)
 
                 if self._is_rate_cnty(name):
                     rs, cs, data = sp.find(sp.kron(self._d_cnty_d_node_vals, np.ones((size, 1))))
@@ -366,9 +366,9 @@ class ControlInterpComp(om.ExplicitComponent):
                     rs, cs, data = sp.find(d_rate_cnty_d_uin)
 
                     self.declare_partials(of=self._output_rate_cnty_defect_names[name],
-                                        wrt=self._input_names[name],
-                                        rows=rs, cols=cs,
-                                        val=1.0)
+                                          wrt=self._input_names[name],
+                                          rows=rs, cols=cs,
+                                          val=1.0)
 
                 if self._is_rate2_cnty(name):
                     rs, cs, data = sp.find(sp.kron(self._d_cnty_d_node_vals, np.ones((size, 1))))
@@ -381,9 +381,9 @@ class ControlInterpComp(om.ExplicitComponent):
                     rs, cs, data = sp.find(d_rate2_cnty_d_uin)
 
                     self.declare_partials(of=self._output_rate2_cnty_defect_names[name],
-                                        wrt=self._input_names[name],
-                                        rows=rs, cols=cs,
-                                        val=1.0)
+                                          wrt=self._input_names[name],
+                                          rows=rs, cols=cs,
+                                          val=1.0)
 
                 # The partials of the rates and second derivatives are nonlinear but the sparsity
                 # pattern is obtained from the kronecker product of the 1st and 2nd differentiation
@@ -700,7 +700,6 @@ class ControlInterpComp(om.ExplicitComponent):
 
                 partials[boundary_rate2_name, 'dt_dstau'][:size] = partials[rate2_name, 'dt_dstau'][:size]
                 partials[boundary_rate2_name, 'dt_dstau'][-size:] = partials[rate2_name, 'dt_dstau'][-size:]
-
 
                 if self._is_rate_cnty(name):
                     Srs, Scs = S.nonzero()

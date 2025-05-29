@@ -83,8 +83,8 @@ class TestTimeComp(unittest.TestCase):
     def test_results_radau(self):
 
         gd = RadauGrid(num_segments=3,
-                      nodes_per_seg=[5+1, 3+1, 3+1],
-                      segment_ends=_segends)
+                       nodes_per_seg=[5+1, 3+1, 3+1],
+                       segment_ends=_segends)
 
         p = om.Problem(model=om.Group())
 
