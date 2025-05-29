@@ -119,8 +119,8 @@ class TestBrachistochroneControlRateTargets(unittest.TestCase):
         import dymos as dm
 
         transcriptions = {'gauss-lobatto': dm.GaussLobatto(num_segments=10),
-                         'radau': dm.Radau(num_segments=10),
-                         'birkhoff': dm.Birkhoff(num_nodes=30)}
+                          'radau': dm.Radau(num_segments=10),
+                          'birkhoff': dm.Birkhoff(num_nodes=30)}
 
         for tx_name, tx in transcriptions.items():
             for control_target_method in ('implicit', 'explicit'):

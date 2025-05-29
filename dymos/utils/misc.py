@@ -314,11 +314,15 @@ def is_scalar_or_singleton(x):
     """
     Returns True if x is a scalar, is an instance of np.generic, or is an array of length 1.
 
-    Args:
-        x (_type_): _description_
+    Parameters
+    ----------
+    x : float or array_like
+        The variable being tested for numpy scalar-like behavior.
 
-    Returns:
-        _type_: _description_
+    Returns
+    -------
+    bool
+        True if x is a scalr or numpy generic, or a shape=(1,) array.
     """
     return (np.isscalar(x) or
             isinstance(x, np.generic) or
@@ -338,12 +342,14 @@ def broadcast_to_nodes(a, shape, num_nodes, force_array=False):
         The shape of the variable at each node.
     num_nodes : int
         The number of nodes to which the values of a should be broadcast.
+    force_array : bool
+        Return a in the shape (num_nodes,) + shape even if it is scalar-like.
 
     Returns
     -------
     array_like or float
         The value of a broadcast to a (num_nodes,) + shape array if it is not a scalar,
-        otherwise the scalr value of a.)
+        otherwise the scalr value of a).
 
     Raises
     ------
