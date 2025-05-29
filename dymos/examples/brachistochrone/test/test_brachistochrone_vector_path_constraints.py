@@ -11,7 +11,7 @@ from dymos.examples.brachistochrone.brachistochrone_vector_states_ode \
     import BrachistochroneVectorStatesODE
 
 
-# @use_tempdirs
+@use_tempdirs
 class TestBrachistochroneVectorPathConstraints(unittest.TestCase):
 
     def test_brachistochrone_vector_state_path_constraints_radau_partial_indices(self):

@@ -53,7 +53,7 @@ class TestRunProblem(unittest.TestCase):
         phase0.set_time_options(fix_initial=True, fix_duration=True)
         phase0.add_state('x', fix_initial=True, fix_final=False, rate_source='x_dot', targets=['x'])
         phase0.add_state('xL', fix_initial=True, fix_final=False, rate_source='L', targets=['xL'])
-        phase0.add_control('u', opt=True, targets=['u'], rate_continuity=False)
+        phase0.add_control('u', opt=True, targets=['u'], continuity=True, rate_continuity=True)
 
         phase0.add_boundary_constraint('x', loc='final', equals=1)
 
@@ -65,12 +65,12 @@ class TestRunProblem(unittest.TestCase):
 
         tf = 20.0
 
-        p.set_val('traj.phase0.states:x', phase0.interp('x', [1.5, 1]))
-        p.set_val('traj.phase0.states:xL', phase0.interp('xL', [0, 1]))
-        p.set_val('traj.phase0.t_initial', 0)
-        p.set_val('traj.phase0.t_duration', tf)
-        p.set_val('traj.phase0.controls:u', phase0.interp('u', [-0.6, 2.4]))
-        dm.run_problem(p, refine_method='hp', refine_iteration_limit=10)
+        phase0.set_time_val(initial=0.0, duration=tf)
+        phase0.set_state_val('x', [1.5, 1])
+        phase0.set_state_val('xL', [0, 1])
+        phase0.set_control_val('u', [-0.6, 2.4])
+
+        dm.run_problem(p, refine_method='hp', refine_iteration_limit=10, make_plots=True)
 
         sqrt_two = np.sqrt(2)
         val = sqrt_two * tf
@@ -132,11 +132,11 @@ class TestRunProblem(unittest.TestCase):
 
         tf = 20.0
 
-        p.set_val('traj.phase0.states:x', phase0.interp('x', [1.5, 1]))
-        p.set_val('traj.phase0.states:xL', phase0.interp('xL', [0, 1]))
-        p.set_val('traj.phase0.t_initial', 0)
-        p.set_val('traj.phase0.t_duration', tf)
-        p.set_val('traj.phase0.controls:u', phase0.interp('u', [-0.6, 2.4]))
+        phase0.set_time_val(initial=0.0, duration=tf)
+        phase0.set_state_val('x', [1.5, 1])
+        phase0.set_state_val('xL', [0, 1])
+        phase0.set_control_val('u', [-0.6, 2.4])
+
         dm.run_problem(p, refine_method='ph', refine_iteration_limit=10)
 
         sqrt_two = np.sqrt(2)
