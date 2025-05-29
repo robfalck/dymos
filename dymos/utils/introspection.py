@@ -866,7 +866,7 @@ def _configure_constraint_introspection(phase):
                 con['shape'] = control_shape
                 con['units'] = control_units if con['units'] is None else con['units']
                 if has_boundary_ode and constraint_type in ('initial', 'final'):
-                    con['constraint_path'] = f'control_boundary_vals:{var}'
+                    con['constraint_path'] = f'control_boundary_values:{var}'
                 else:
                     con['constraint_path'] = f'timeseries.{prefix}{var}'
 
