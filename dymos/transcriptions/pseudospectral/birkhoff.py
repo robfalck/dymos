@@ -8,7 +8,7 @@ from ..common import TimeComp, TimeseriesOutputComp
 from .components import BirkhoffIterGroup, BirkhoffBoundaryGroup
 
 from ..grid_data import BirkhoffGrid
-from dymos.utils.misc import get_rate_units, _format_phase_constraint_alias
+from dymos.utils.misc import get_rate_units, _format_phase_constraint_alias, is_scalar_or_singleton
 from dymos.utils.introspection import get_promoted_vars, get_source_metadata
 from dymos.utils.indexing import get_constraint_flat_idxs, get_src_indices_by_row
 
@@ -777,7 +777,7 @@ class Birkhoff(TranscriptionBase):
 
         """
         input_data = {}
-        if np.isscalar(vals):
+        if is_scalar_or_singleton(vals):
             input_data[f'states:{name}'] = vals
             input_data[f'initial_states:{name}'] = vals
             input_data[f'final_states:{name}'] = vals
@@ -786,8 +786,8 @@ class Birkhoff(TranscriptionBase):
                                        nodes='state_input',
                                        kind=interpolation_kind)
             input_data[f'states:{name}'] = interp_vals
-            input_data[f'initial_states:{name}'] = vals[0]
-            input_data[f'final_states:{name}'] = vals[-1]
+            input_data[f'initial_states:{name}'] = interp_vals[0, ...]
+            input_data[f'final_states:{name}'] = interp_vals[-1, ...]
 
         return input_data
 

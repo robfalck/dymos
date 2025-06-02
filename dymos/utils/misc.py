@@ -365,3 +365,65 @@ def broadcast_to_nodes(a, shape, num_nodes, force_array=False):
     else:
         result = a
     return result
+
+def determine_ref_ref0(ref0, ref, adder, scaler):
+    r"""
+    Determine proper values of adder and scaler based on user arguments.
+
+    Adder and Scaler are used internally because the transformation is
+    slightly more efficient.
+
+    Parameters
+    ----------
+    ref0 : float or ndarray, optional
+        Value of response variable that scales to 0.0 in the driver.
+    ref : float or ndarray, optional
+        Value of response variable that scales to 1.0 in the driver.
+    adder : float or ndarray, optional
+        Value to add to the model value to get the scaled value. Adder
+        is first in precedence.
+    scaler : float or ndarray, optional
+        Value to multiply the model value to get the scaled value. Scaler
+        is second in precedence.
+
+    Returns
+    -------
+    tuple
+        ref0 and ref, properly formatted and based on scaler/adder/ref/ref0 if provided.
+
+    Raises
+    ------
+    ValueError
+        If both ref/ref0 and adder/scaler were provided.
+
+    Notes
+    -----
+    The response can be scaled using ref and ref0.
+    The argument :code:`ref0` represents the physical value when the scaled value is 0.
+    The argument :code:`ref` represents the physical value when the scaled value is 1.
+    """
+    from openmdao.utils.general_utils import format_as_float_or_array
+    # Affine scaling cannot be used with scalers/adders
+    if scaler is not None or adder is not None:
+        if ref0 is not None or ref is not None:
+            raise ValueError('ref/ref0 are mutually exclusive '
+                             'with scaler/adder')
+        if ref is None:
+            ref = 1.0
+        if ref0 is None:
+            ref0 = 0.0
+
+        # Convert scaler/adder to ref/ref0 to so we can scale an output
+        ref0 = -adder
+        ref = 1.0 / scaler - adder
+
+    else:
+        if ref is None:
+            ref = 1.0
+        if ref0 is None:
+            ref0 = 0.0
+
+    ref0 = format_as_float_or_array('ref0', ref0, val_if_none=0.0, flatten=True)
+    ref = format_as_float_or_array('ref', ref, val_if_none=1.0, flatten=True)
+
+    return ref0, ref

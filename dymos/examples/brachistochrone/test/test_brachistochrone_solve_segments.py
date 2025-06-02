@@ -139,7 +139,6 @@ class TestBrachistochroneVectorStatesExampleSolveSegments(unittest.TestCase):
     def test_ex_brachistochrone_vs_radau_compressed(self):
         ex_brachistochrone_vs.SHOW_PLOTS = False
         p = ex_brachistochrone_vs.brachistochrone_min_time(transcription='radau-ps',
-                                                           optimizer='SNOPT',
                                                            compressed=True,
                                                            force_alloc_complex=True,
                                                            solve_segments='forward',

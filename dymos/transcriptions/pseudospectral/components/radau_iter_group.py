@@ -8,7 +8,7 @@ from .radau_defect_comp import RadauDefectComp
 from dymos.transcriptions.grid_data import GridData
 from dymos.phase.options import TimeOptionsDictionary
 from dymos.utils.ode_utils import _make_ode_system
-from dymos.utils.misc import broadcast_to_nodes
+from dymos.utils.misc import broadcast_to_nodes, determine_ref_ref0
 
 
 class RadauIterGroup(om.Group):
@@ -82,16 +82,20 @@ class RadauIterGroup(om.Group):
         solve_segs = options['solve_segments']
         opt = options['opt']
 
-        num_nodes = self.options['grid_data'].subset_num_nodes['col']
+        num_input_nodes = self.options['grid_data'].subset_num_nodes['state_input']
 
         ib = (None, None) if options['initial_bounds'] is None else options['initial_bounds']
         fb = (None, None) if options['final_bounds'] is None else options['final_bounds']
         lower = options['lower']
         upper = options['upper']
+
         scaler = options['scaler']
         adder = options['adder']
         ref0 = options['ref0']
         ref = options['ref']
+
+        ref0, ref = determine_ref_ref0(ref0, ref, adder, scaler)
+
         fix_initial = options['fix_initial']
         fix_final = options['fix_final']
         input_initial = options['input_initial']
@@ -118,43 +122,10 @@ class RadauIterGroup(om.Group):
                              f"a boundary constraint to constrain the initial "
                              f"state value instead.")
 
-        ref0_at_nodes = broadcast_to_nodes(ref0, shape, num_nodes)
-        ref_at_nodes = broadcast_to_nodes(ref, shape, num_nodes)
-        scaler_at_nodes = broadcast_to_nodes(scaler, shape, num_nodes)
-        adder_at_nodes = broadcast_to_nodes(adder, shape, num_nodes)
-
-        # if not is_scalar_or_singleton(ref0) and ref0 is not None:
-        #     _ref0 = np.as_array(ref0)
-        #     if _ref0.shape == shape:
-        #         ref0_state = np.tile(_ref0.flatten(), num_nodes)
-        #     else:
-        #         raise ValueError('array-valued scaler/ref must length equal to state-size')
-        # else:
-        #     ref0_state = ref0
-        # if not is_scalar_or_singleton(ref) and ref is not None:
-        #     _ref = np.asarray(ref)
-        #     if _ref.shape == shape:
-        #         ref_state = np.tile(_ref.flatten(), num_nodes)
-        #     else:
-        #         raise ValueError('array-valued scaler/ref must length equal to state-size')
-        # else:
-        #     ref_state = ref
-        # if not is_scalar_or_singleton(scaler) and scaler is not None:
-        #     _scaler = np.as_array(scaler)
-        #     if _scaler.shape == shape:
-        #         scaler_state = np.tile(_scaler.flatten(), num_nodes)
-        #     else:
-        #         raise ValueError('array-valued scaler/ref must length equal to state-size')
-        # else:
-        #     scaler_state = scaler
-        # if not is_scalar_or_singleton(adder) and adder is not None:
-        #     _adder = np.asarray(adder)
-        #     if _adder.shape == shape:
-        #         adder_state = np.tile(_adder.flatten(), num_nodes)
-        #     else:
-        #         raise ValueError('array-valued scaler/ref must length equal to state-size')
-        # else:
-        #     adder_state = adder
+        ref0_at_input_nodes = broadcast_to_nodes(ref0, shape, num_input_nodes)
+        ref_at_input_nodes = broadcast_to_nodes(ref, shape, num_input_nodes)
+        scaler_at_input_nodes = broadcast_to_nodes(scaler, shape, num_input_nodes)
+        adder_at_input_nodes = broadcast_to_nodes(adder, shape, num_input_nodes)
 
         free_vars = {state_name, initial_state_name, final_state_name}
 
@@ -178,17 +149,17 @@ class RadauIterGroup(om.Group):
                 self.add_design_var(name=state_name,
                                     lower=lower,
                                     upper=upper,
-                                    scaler=scaler_at_nodes,
-                                    adder=adder_at_nodes,
-                                    ref0=ref0_at_nodes,
-                                    ref=ref_at_nodes)
+                                    scaler=scaler_at_input_nodes,
+                                    adder=adder_at_input_nodes,
+                                    ref0=ref0_at_input_nodes,
+                                    ref=ref_at_input_nodes)
 
             if state_rate_name in free_vars:
                 self.add_design_var(name=state_rate_name,
-                                    scaler=scaler_at_nodes,
-                                    adder=adder_at_nodes,
-                                    ref0=ref0_at_nodes,
-                                    ref=ref_at_nodes)
+                                    scaler=scaler_at_input_nodes,
+                                    adder=adder_at_input_nodes,
+                                    ref0=ref0_at_input_nodes,
+                                    ref=ref_at_input_nodes)
 
             if initial_state_name in free_vars:
                 self.add_design_var(name=initial_state_name,
@@ -256,6 +227,8 @@ class RadauIterGroup(om.Group):
             self._implicit_outputs = self._configure_desvars(name, options)
 
             if f'states:{name}' in self._implicit_outputs:
+                # ref0 = options['ref0'] if options['ref0'] is not None else 0.0
+                # ref = options['ref'] if options['ref'] is not None else 1.0
 
                 states_resids_comp.add_input(f'initial_state_defects:{name}', shape=(1,) + shape, units=units)
                 states_resids_comp.add_input(f'final_state_defects:{name}', shape=(1,) + shape, units=units)
@@ -265,36 +238,37 @@ class RadauIterGroup(om.Group):
                     states_resids_comp.add_input(f'state_cnty_defects:{name}',
                                                  shape=(ns - 1,) + shape,
                                                  units=units)
-                    # ref0_at_nodes = broadcast_to_nodes(ref0, shape, nn)
-                    # ref_at_nodes = broadcast_to_nodes(ref, shape, nn)
-                    # defect_ref_at_nodes = broadcast_to_nodes(defect_ref, shape, nn)
                     # For noncompressed transcription, resids provides values at overlapping
                     # segment boundaries.
+                    # TODO: Something is wrong with providing ref at all the nodes for this output in OpenMDAO.
+                    # ref0_at_nodes = broadcast_to_nodes(ref0, shape, nn)
+                    # ref_at_nodes = broadcast_to_nodes(ref, shape, nn)
+                    # defect_ref_at_nodes = ref_at_nodes
+
                     states_resids_comp.add_output(f'states:{name}',
                                                   shape=(nn,) + shape,
                                                   lower=options['lower'],
                                                   upper=options['upper'],
-                                                  # TODO: scaling is avoided because of what seems to be an OpenMDAO bug.
-                                                  #       Apply same logic to BirkhoffIterGroup once fixed.
                                                   #   ref0=ref0_at_nodes,
                                                   #   ref=ref_at_nodes,
                                                   #   res_ref=defect_ref_at_nodes,
                                                   units=units)
                 else:
-                    # For compressed transcirption, resids comp provides values at input nodes.
+                    # For compressed transcription, resids comp provides values at input nodes.
                     nin = gd.subset_num_nodes['state_input']
-                    # ref0_at_nodes = broadcast_to_nodes(ref0, shape, nin)
-                    # ref_at_nodes = broadcast_to_nodes(ref, shape, nin)
-                    # defect_ref_at_nodes = broadcast_to_nodes(defect_ref, shape, nin)
+
+                    # TODO: Something is wrong with providing ref at all the nodes for this output in OpenMDAO.
+                    # ref0_at_input_nodes = broadcast_to_nodes(ref0, shape, nin)
+                    # ref_at_input_nodes = broadcast_to_nodes(ref, shape, nin)
+                    # defect_ref_at_input_nodes = ref_at_input_nodes
+
                     states_resids_comp.add_output(f'states:{name}',
                                                   shape=(nin,) + shape,
                                                   lower=options['lower'],
                                                   upper=options['upper'],
-                                                  # TODO: scaling is avoided because of what seems to be an OpenMDAO bug.
-                                                  #       Apply same logic to BirkhoffIterGroup once fixed.
-                                                  #   ref0=ref0_at_nodes,
-                                                  #   ref=ref_at_nodes,
-                                                  #   res_ref=defect_ref_at_nodes,
+                                                  #   ref0=ref0_at_input_nodes,
+                                                  #   ref=ref_at_input_nodes,
+                                                  #   res_ref=defect_ref_at_input_nodes,
                                                   units=units)
 
             if options['initial_bounds'] is None:

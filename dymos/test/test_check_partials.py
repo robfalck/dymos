@@ -267,7 +267,7 @@ class TestCheckPartials(unittest.TestCase):
 
         cpd = p.check_partials(compact_print=True, method='fd', out_stream=None)
 
-        # Filter out those that include rhs_all in the path
+        # Filter out those that include ode_all in the path
         cpd = {path: data for path, data in cpd.items() if 'ode_all' not in path}
 
         return cpd
