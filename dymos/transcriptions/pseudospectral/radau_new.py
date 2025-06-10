@@ -447,6 +447,15 @@ class RadauNew(TranscriptionBase):
                                    f'or path constraints.\nParameters are single values that do not change in '
                                    f'time, and may only be used in a single boundary or path constraint.')
             constraint_kwargs['indices'] = flat_idxs
+        elif var_type == 'state':
+            if constraint_type in ('initial', 'final'):
+                constraint_kwargs['indices'] = flat_idxs
+            else:
+                path_idxs = []
+                for i in range(num_nodes):
+                    path_idxs.extend(size * i + flat_idxs)
+
+                constraint_kwargs['indices'] = path_idxs
         else:
             if constraint_type == 'initial':
                 constraint_kwargs['indices'] = flat_idxs
