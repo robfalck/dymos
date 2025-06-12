@@ -10,7 +10,7 @@ from dymos.examples.finite_burn_orbit_raise.finite_burn_orbit_raise_problem impo
 
 @require_pyoptsparse(optimizer='IPOPT')
 @unittest.skipUnless(MPI, "MPI is required.")
-# @use_tempdirs
+@use_tempdirs
 class TestExampleTwoBurnOrbitRaiseMPI(unittest.TestCase):
     N_PROCS = 3
 
