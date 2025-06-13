@@ -21,7 +21,7 @@ class TestExampleTwoBurnOrbitRaiseMPI(unittest.TestCase):
 
         p = two_burn_orbit_raise_problem(transcription='radau', transcription_order=3,
                                          compressed=False, optimizer=optimizer, simulate=True,
-                                         connected=CONNECTED, show_output=True)
+                                         connected=CONNECTED, show_output=True,)
 
         if MPI.COMM_WORLD.rank == 0:
             sol_db = p.get_outputs_dir() / 'dymos_solution.db'
@@ -40,11 +40,14 @@ class TestExampleTwoBurnOrbitRaiseMPI(unittest.TestCase):
     def test_ex_two_burn_orbit_raise_connected_mpi(self):
         optimizer = 'IPOPT'
 
-        CONNECTED = False
+        CONNECTED = True
 
         p = two_burn_orbit_raise_problem(transcription='radau', transcription_order=3,
-                                         compressed=False, optimizer=optimizer, simulate=True,
-                                         connected=CONNECTED, show_output=True)
+                                         compressed=False, optimizer=optimizer,
+                                         run_driver=False, simulate=False,
+                                         connected=CONNECTED, show_output=True,
+                                         default_nonlinear_solver=om.NonlinearBlockJac(),
+                                         default_linear_solver=om.PETScKrylov())
 
         if MPI.COMM_WORLD.rank == 0:
             sol_db = p.get_outputs_dir() / 'dymos_solution.db'
