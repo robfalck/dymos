@@ -408,12 +408,10 @@ def broadcast_to_nodes(a, shape, num_nodes, force_array=False):
         result = a
     return result
 
+
 def determine_ref_ref0(ref0, ref, adder, scaler):
     r"""
-    Determine proper values of adder and scaler based on user arguments.
-
-    Adder and Scaler are used internally because the transformation is
-    slightly more efficient.
+    Determine proper values of ref0 and ref based on user arguments.
 
     Parameters
     ----------
@@ -447,17 +445,16 @@ def determine_ref_ref0(ref0, ref, adder, scaler):
     from openmdao.utils.general_utils import format_as_float_or_array
     # Affine scaling cannot be used with scalers/adders
     if scaler is not None or adder is not None:
+        _adder = 0.0 if adder is None else adder
+        _scaler = 1.0 if scaler is None else scaler
+
         if ref0 is not None or ref is not None:
             raise ValueError('ref/ref0 are mutually exclusive '
                              'with scaler/adder')
-        if ref is None:
-            ref = 1.0
-        if ref0 is None:
-            ref0 = 0.0
 
         # Convert scaler/adder to ref/ref0 to so we can scale an output
-        ref0 = -adder
-        ref = 1.0 / scaler - adder
+        ref0 = -_adder
+        ref = 1.0 / _scaler - _adder
 
     else:
         if ref is None:

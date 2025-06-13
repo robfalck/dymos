@@ -95,6 +95,8 @@ class RadauIterGroup(om.Group):
         ref = options['ref']
 
         ref0, ref = determine_ref_ref0(ref0, ref, adder, scaler)
+        scaler = None
+        adder = None
 
         fix_initial = options['fix_initial']
         fix_final = options['fix_final']
@@ -124,8 +126,6 @@ class RadauIterGroup(om.Group):
 
         ref0_at_input_nodes = broadcast_to_nodes(ref0, shape, num_input_nodes)
         ref_at_input_nodes = broadcast_to_nodes(ref, shape, num_input_nodes)
-        scaler_at_input_nodes = broadcast_to_nodes(scaler, shape, num_input_nodes)
-        adder_at_input_nodes = broadcast_to_nodes(adder, shape, num_input_nodes)
 
         free_vars = {state_name, initial_state_name, final_state_name}
 
@@ -149,15 +149,11 @@ class RadauIterGroup(om.Group):
                 self.add_design_var(name=state_name,
                                     lower=lower,
                                     upper=upper,
-                                    scaler=scaler_at_input_nodes,
-                                    adder=adder_at_input_nodes,
                                     ref0=ref0_at_input_nodes,
                                     ref=ref_at_input_nodes)
 
             if state_rate_name in free_vars:
                 self.add_design_var(name=state_rate_name,
-                                    scaler=scaler_at_input_nodes,
-                                    adder=adder_at_input_nodes,
                                     ref0=ref0_at_input_nodes,
                                     ref=ref_at_input_nodes)
 
@@ -165,8 +161,6 @@ class RadauIterGroup(om.Group):
                 self.add_design_var(name=initial_state_name,
                                     lower=ib[0],
                                     upper=ib[1],
-                                    scaler=scaler,
-                                    adder=adder,
                                     ref0=ref0,
                                     ref=ref)
 
@@ -174,8 +168,6 @@ class RadauIterGroup(om.Group):
                 self.add_design_var(name=final_state_name,
                                     lower=fb[0],
                                     upper=fb[1],
-                                    scaler=scaler,
-                                    adder=adder,
                                     ref0=ref0,
                                     ref=ref)
 
