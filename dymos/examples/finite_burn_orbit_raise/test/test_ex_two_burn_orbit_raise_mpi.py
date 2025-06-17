@@ -44,7 +44,7 @@ class TestExampleTwoBurnOrbitRaiseMPI(unittest.TestCase):
 
         p = two_burn_orbit_raise_problem(transcription='radau', transcription_order=3,
                                          compressed=False, optimizer=optimizer,
-                                         run_driver=False, simulate=False,
+                                         run_driver=False, simulate=True,
                                          connected=CONNECTED, show_output=True,
                                          default_nonlinear_solver=om.NonlinearBlockJac(),
                                          default_linear_solver=om.PETScKrylov())

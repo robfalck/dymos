@@ -429,7 +429,7 @@ def determine_ref_ref0(ref0, ref, adder, scaler):
     Returns
     -------
     tuple
-        ref0 and ref, properly formatted and based on scaler/adder/ref/ref0 if provided.
+        A tuple containing ref0 and ref, properly formatted and based on scaler/adder/ref/ref0 if provided.
 
     Raises
     ------
