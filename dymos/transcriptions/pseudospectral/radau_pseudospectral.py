@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import numpy as np
 import openmdao.api as om
 
@@ -37,6 +39,11 @@ class Radau(PseudospectralBase):
                                    nodes_per_seg=self.options['order'] + 1,
                                    segment_ends=self.options['segment_ends'],
                                    compressed=self.options['compressed'])
+
+    def _get_refinement_error_transcription(self):
+        new_tx = deepcopy(self)
+        new_tx.options['order'] = np.asarray(self.options['order'], dtype=int) + 1
+        return new_tx
 
     def configure_time(self, phase):
         """
