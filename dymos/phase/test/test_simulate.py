@@ -92,7 +92,7 @@ class TestSimulateShapedParams(unittest.TestCase):
 
     def test_shaped_traj_params(self):
 
-        main_tx = dm.RadauLegacy(num_segments=1, order=3, compressed=False)
+        main_tx = dm.Radau(num_segments=1, order=3, compressed=False)
 
         p = om.Problem(model=om.Group())
 

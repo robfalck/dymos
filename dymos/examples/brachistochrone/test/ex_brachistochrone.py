@@ -24,10 +24,6 @@ def brachistochrone_min_time(transcription='gauss-lobatto', num_segments=8, tran
         t = dm.GaussLobatto(num_segments=num_segments,
                             order=transcription_order,
                             compressed=compressed)
-    elif transcription == 'radau-legacy':
-        t = dm.RadauLegacy(num_segments=num_segments,
-                           order=transcription_order,
-                           compressed=compressed)
     elif transcription == 'radau-ps':
         t = dm.Radau(num_segments=num_segments,
                      order=transcription_order,
