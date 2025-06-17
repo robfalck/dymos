@@ -465,8 +465,8 @@ jobs:
           echo "   DYMOS_CHECK_PARTIALS: $DYMOS_CHECK_PARTIALS"
           echo "============================================================="
           if [[ "${{ matrix.DYMOS_2 }}" == "1" ]]; then
-            export DYMOS_2='1'
-          else
+            export DYMOS_2="1"
+          fi
           testflo -n 1 docs/dymos_book/test --pre_announce
           testflo -n 1 joss/test --pre_announce
           testflo -b benchmark --pre_announce
