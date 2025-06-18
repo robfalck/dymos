@@ -13,7 +13,7 @@ from dymos.utils.testing_utils import assert_cases_equal
 
 @require_pyoptsparse(optimizer='IPOPT')
 @unittest.skipUnless(MPI, "MPI is required.")
-@unittest.skipIf(om_version < (3, 40, 0), "Test requires OpenMDAO 3.40.0 or later.")
+@unittest.skipIf(om_version()[0] < (3, 40, 0), "Test requires OpenMDAO 3.40.0 or later.")
 @use_tempdirs
 class TestExampleTwoBurnOrbitRaiseMPI(unittest.TestCase):
     N_PROCS = 3

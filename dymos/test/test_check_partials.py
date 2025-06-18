@@ -403,7 +403,7 @@ class TestCheckPartials(unittest.TestCase):
                 partials.update(c())
 
             for pathname in set(partials.keys()):
-                self.assertIn('ode', pathname)
+                self.assertTrue('ode' in pathname or 'rhs' in pathname)
 
 
 if __name__ == '__main__':  # pragma: no cover
