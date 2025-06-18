@@ -7,11 +7,13 @@ from openmdao.utils.testing_utils import use_tempdirs, require_pyoptsparse
 from openmdao.utils.mpi import MPI, multi_proc_exception_check
 
 from dymos.examples.finite_burn_orbit_raise.finite_burn_orbit_raise_problem import two_burn_orbit_raise_problem
+from dymos.utils.misc import om_version
 from dymos.utils.testing_utils import assert_cases_equal
 
 
 @require_pyoptsparse(optimizer='IPOPT')
 @unittest.skipUnless(MPI, "MPI is required.")
+@unittest.skipIf(om_version < (3, 40, 0), "Test requires OpenMDAO 3.40.0 or later.")
 @use_tempdirs
 class TestExampleTwoBurnOrbitRaiseMPI(unittest.TestCase):
     N_PROCS = 3
