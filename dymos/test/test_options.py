@@ -21,7 +21,6 @@ class TestOptions(unittest.TestCase):
         else:
             self.assertSetEqual(set(cpd.keys()), {'traj0.phases.phase0.rhs_all'})
 
-
     @set_env_vars(CI='0')
     def test_include_check_partials_false_gl(self):
         dm.options['include_check_partials'] = False
