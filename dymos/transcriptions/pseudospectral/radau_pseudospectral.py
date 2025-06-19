@@ -36,7 +36,7 @@ class Radau(PseudospectralBase):
         Setup the GridData object for the Transcription.
         """
         self.grid_data = RadauGrid(num_segments=self.options['num_segments'],
-                                   nodes_per_seg=self.options['order'] + 1,
+                                   nodes_per_seg=np.asarray(self.options['order'], dtype=int) + 1,
                                    segment_ends=self.options['segment_ends'],
                                    compressed=self.options['compressed'])
 
