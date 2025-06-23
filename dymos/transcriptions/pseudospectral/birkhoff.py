@@ -29,6 +29,8 @@ class Birkhoff(TranscriptionBase):
     def __init__(self, **kwargs):
         super(Birkhoff, self).__init__(**kwargs)
         self._rhs_source = 'ode_iter_group.ode_all'
+        self._has_boundary_ode = True
+        self._has_initial_final_states = True
 
     def initialize(self):
         """
@@ -103,7 +105,8 @@ class Birkhoff(TranscriptionBase):
 
         # The tuples here are (name, user_specified_targets, dynamic)
         for name, targets in [('t', options['targets']),
-                              ('t_phase', options['time_phase_targets'])]:
+                              ('t_phase', options['time_phase_targets']),
+                              ('dt_dstau', options['dt_dstau_targets'])]:
             if targets:
                 src_idxs = self.grid_data.subset_node_indices['all']
                 phase.connect(name, [f'ode_all.{t}' for t in targets], src_indices=src_idxs,
@@ -173,27 +176,26 @@ class Birkhoff(TranscriptionBase):
         if phase.control_options:
             phase.control_comp.configure_io()
             phase.promotes('control_comp',
-                           any=['*controls:*', '*control_values:*', '*control_rates:*'])
+                           any=['*controls:*', 'control_values:*', 'control_rates:*', 'control_boundary*'])
 
             phase.connect('dt_dstau', 'control_comp.dt_dstau')
 
         for name, options in phase.control_options.items():
             if options['targets']:
                 phase.connect(f'control_values:{name}', [f'ode_all.{t}' for t in options['targets']])
-                phase.connect(f'control_values:{name}', [f'boundary_vals.{t}' for t in options['targets']],
-                              src_indices=om.slicer[[0, -1], ...])
+                phase.connect(f'control_boundary_values:{name}', [f'boundary_vals.{t}' for t in options['targets']])
 
             if options['rate_targets']:
                 phase.connect(f'control_rates:{name}_rate',
                               [f'ode_all.{t}' for t in options['rate_targets']])
-                phase.connect(f'control_rates:{name}_rate',
+                phase.connect(f'control_boundary_rates:{name}_rate',
                               [f'boundary_vals.{t}' for t in options['rate_targets']],
                               src_indices=om.slicer[[0, -1], ...])
 
             if options['rate2_targets']:
                 phase.connect(f'control_rates:{name}_rate2',
                               [f'ode_all.{t}' for t in options['rate2_targets']])
-                phase.connect(f'control_rates:{name}_rate2',
+                phase.connect(f'control_boundary_rates:{name}_rate2',
                               [f'boundary_vals.{t}' for t in options['rate2_targets']],
                               src_indices=om.slicer[[0, -1], ...])
 
@@ -401,6 +403,19 @@ class Birkhoff(TranscriptionBase):
                                    f'or path constraints.\nParameters are single values that do not change in '
                                    f'time, and may only be used in a single boundary or path constraint.')
             constraint_kwargs['indices'] = flat_idxs
+        elif var_type == 'state':
+            # For states, Birkhoff uses initial_states:{var} and final_states:{var}
+            if constraint_type in ('initial', 'final'):
+                constraint_kwargs['indices'] = flat_idxs
+            elif constraint_type == 'final':
+                constraint_kwargs['indices'] = flat_idxs
+            else:
+                # Path
+                path_idxs = []
+                for i in range(num_nodes):
+                    path_idxs.extend(size * i + flat_idxs)
+
+                constraint_kwargs['indices'] = path_idxs
         else:
             if constraint_type == 'initial':
                 constraint_kwargs['indices'] = flat_idxs

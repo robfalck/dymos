@@ -28,6 +28,7 @@ class PicardShooting(TranscriptionBase):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._rhs_source = 'ode_iter_group.segment_prop_group.ode_all'
+        self._has_initial_final_states = True
 
     def initialize(self):
         """
@@ -120,7 +121,8 @@ class PicardShooting(TranscriptionBase):
 
         # The tuples here are (name, user_specified_targets, dynamic)
         for name, targets in [('t', options['targets']),
-                              ('t_phase', options['time_phase_targets'])]:
+                              ('t_phase', options['time_phase_targets']),
+                              ('dt_dstau', options['dt_dstau_targets'])]:
             if targets:
                 src_idxs = self.grid_data.subset_node_indices['all']
                 phase.connect(name, [f'ode_all.{t}' for t in targets], src_indices=src_idxs,
@@ -461,6 +463,15 @@ class PicardShooting(TranscriptionBase):
                                    f'or path constraints.\nParameters are single values that do not change in '
                                    f'time, and may only be used in a single boundary or path constraint.')
             constraint_kwargs['indices'] = flat_idxs
+        elif var_type == 'state':
+            if constraint_type in ('initial', 'final'):
+                constraint_kwargs['indices'] = flat_idxs
+            else:
+                path_idxs = []
+                for i in range(num_nodes):
+                    path_idxs.extend(size * i + flat_idxs)
+
+                constraint_kwargs['indices'] = path_idxs
         else:
             if constraint_type == 'initial':
                 constraint_kwargs['indices'] = flat_idxs
@@ -532,7 +543,12 @@ class PicardShooting(TranscriptionBase):
             shape = phase.state_options[var]['shape']
             units = phase.state_options[var]['units']
             linear = False
-            constraint_path = f'timeseries.{var}'
+            if loc == 'initial':
+                constraint_path = f'initial_states:{var}'
+            elif loc == 'final':
+                constraint_path = f'final_states:{var}'
+            else:
+                constraint_path = f'states:{var}'
         elif var_type == 'control':
             shape = phase.control_options[var]['shape']
             units = phase.control_options[var]['units']

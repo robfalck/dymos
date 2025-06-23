@@ -26,7 +26,7 @@ from ..utils.indexing import get_constraint_flat_idxs
 from ..utils.introspection import configure_time_introspection, _configure_constraint_introspection, \
     configure_controls_introspection, configure_parameters_introspection, \
     configure_timeseries_output_introspection, classify_var
-from ..utils.misc import _unspecified, create_subprob, om_version
+from ..utils.misc import _unspecified, create_subprob
 from ..utils.lgl import lgl
 
 
@@ -1774,7 +1774,8 @@ class Phase(om.Group):
                          duration_adder=_unspecified, duration_ref0=_unspecified,
                          duration_ref=_unspecified, targets=_unspecified,
                          time_phase_targets=_unspecified, t_initial_targets=_unspecified,
-                         t_duration_targets=_unspecified, name=_unspecified):
+                         t_duration_targets=_unspecified, name=_unspecified,
+                         dt_dstau_targets=_unspecified):
         """
         Sets options for time in the phase.
 
@@ -1830,6 +1831,9 @@ class Phase(om.Group):
             Targets in the ODE for the value of phase time duration.
         name : str
             Name of the integration variable for this phase. Default is 'time'.
+        dt_dstau_targets : iterable of str
+            Names of targets for dt_dstau in the ODE. This is an experimental
+            capability and will not work in all transcription types.
         """
         if units is not _unspecified:
             self.time_options['units'] = units
@@ -1905,6 +1909,12 @@ class Phase(om.Group):
                 self.time_options['t_duration_targets'] = (t_duration_targets,)
             else:
                 self.time_options['t_duration_targets'] = t_duration_targets
+
+        if dt_dstau_targets is not _unspecified:
+            if isinstance(dt_dstau_targets, str):
+                self.time_options['dt_dstau_targets'] = (dt_dstau_targets,)
+            else:
+                self.time_options['dt_dstau_targets'] = dt_dstau_targets
 
         if name is not _unspecified:
             self.time_options['name'] = name
@@ -2671,10 +2681,7 @@ class Phase(om.Group):
             rec = om.SqliteRecorder(record_file)
             sim_prob.add_recorder(rec)
 
-        if om_version()[0] <= (3, 42, 2):
-            sim_prob.setup(check=True)
-        else:
-            sim_prob.setup(check=True, parent=self)
+        sim_prob.setup(check=True, parent=self)
         sim_prob.final_setup()
 
         sim_phase.set_vals_from_phase(from_phase=self)

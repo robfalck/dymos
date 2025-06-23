@@ -3,7 +3,7 @@ from numbers import Number
 import numpy as np
 
 import openmdao.api as om
-from ..utils.misc import _unspecified, _none_or_unspecified
+from dymos.utils.misc import is_none_or_unspecified, _unspecified
 
 
 class ControlOptionsDictionary(om.OptionsDictionary):
@@ -145,7 +145,7 @@ def check_valid_shape(name, value):
         Shape to check, should be a Iterable, Number, list, or tuple.
     """
     if name == 'shape':
-        if value not in _none_or_unspecified and not isinstance(value, (Iterable, Number, list, tuple)):
+        if not is_none_or_unspecified(value) and not isinstance(value, (Iterable, Number, list, tuple)):
             raise ValueError(f"Option '{name}' with value {value} is not valid.")
 
 
@@ -508,6 +508,9 @@ class TimeOptionsDictionary(om.OptionsDictionary):
 
         self.declare(name='t_final_targets', allow_none=True, default=[],
                      desc='targets in the ODE to which the final time of the phase is connected')
+
+        self.declare(name='dt_dstau_targets', allow_none=True, default=[],
+                     desc='targets in the ODE to which the ratio of segment time duration to nondim duration is connected')
 
         self.declare(name='t_duration_balance_options', default={},
                      desc='options dictionary for the duration residual')
