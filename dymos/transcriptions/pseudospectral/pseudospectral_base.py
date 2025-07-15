@@ -3,7 +3,7 @@ import numpy as np
 import openmdao.api as om
 from ..transcription_base import TranscriptionBase
 from ..common import TimeComp
-from .components import StateIndependentsComp, StateInterpComp, CollocationComp
+from .components import StateIndependentsComp, StateInterpComp, CollocationDefectComp
 from ..common.timeseries_output_comp import TimeseriesOutputComp
 from ...utils.misc import CoerceDesvar, get_rate_units, reshape_val
 from ...utils.introspection import get_promoted_vars, get_source_metadata
@@ -295,7 +295,7 @@ class PseudospectralBase(TranscriptionBase):
             The phase object to which this transcription instance applies.
         """
         phase.add_subsystem('collocation_constraint',
-                            CollocationComp(grid_data=self.grid_data,
+                            CollocationDefectComp(grid_data=self.grid_data,
                                             state_options=phase.state_options,
                                             time_units=phase.time_options['units']))
 

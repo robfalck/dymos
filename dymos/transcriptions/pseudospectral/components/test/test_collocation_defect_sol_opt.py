@@ -8,13 +8,13 @@ from openmdao.utils.testing_utils import use_tempdirs
 
 import dymos as dm
 from dymos.transcriptions.grid_data import GridData
-from dymos.transcriptions.pseudospectral.components import CollocationComp
+from dymos.transcriptions.pseudospectral.components import CollocationDefectComp
 from dymos.transcriptions.pseudospectral.components.state_independents import StateIndependentsComp
 from dymos.utils.testing_utils import assert_check_partials
 
 # Modify class so we can run it standalone.
 from dymos.utils.misc import CompWrapperConfig
-CollocationComp = CompWrapperConfig(CollocationComp)
+CollocationDefectComp = CompWrapperConfig(CollocationDefectComp)
 StateIndependentsComp = CompWrapperConfig(StateIndependentsComp)
 
 
@@ -131,7 +131,7 @@ class TestCollocationCompSolOpt(unittest.TestCase):
             val=np.zeros((gd.subset_num_nodes['col'], 3, 2)), units='m/s')
 
         p.model.add_subsystem('defect_comp',
-                              subsys=CollocationComp(grid_data=gd, state_options=state_options))
+                              subsys=CollocationDefectComp(grid_data=gd, state_options=state_options))
 
         indep = StateIndependentsComp(grid_data=gd, state_options=state_options)
         p.model.add_subsystem('state_indep', indep, promotes_outputs=['*'])

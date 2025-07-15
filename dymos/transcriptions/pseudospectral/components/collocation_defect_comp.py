@@ -8,7 +8,7 @@ from ....utils.misc import get_rate_units
 from ...._options import options as dymos_options
 
 
-class CollocationComp(om.ExplicitComponent):
+class CollocationDefectComp(om.ExplicitComponent):
     """
     Class definiton for the Collocationcomp.
 
