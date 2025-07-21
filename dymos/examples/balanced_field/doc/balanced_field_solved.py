@@ -270,6 +270,7 @@ case_gen = om.ProductGenerator({'traj.parameters:m': {'val': np.linspace(174200 
 
 p.driver = om.AnalysisDriver(case_gen)
 p.driver.add_recorder(om.SqliteRecorder("cases.sql"))
+p.driver.add_response('traj.climb_to_obstacle_clearance.final_states:r', units='ft', indices=[0, 0])
 
 #
 # Setup the problem and set the initial guess
