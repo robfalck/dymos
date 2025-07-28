@@ -4,9 +4,16 @@ import unittest
 from openmdao.utils.testing_utils import use_tempdirs
 from openmdao.utils.assert_utils import assert_near_equal
 from dymos.examples.balanced_field.balanced_field_ode import BalancedFieldODEComp
-from dymos.examples.balanced_field.balanced_field_ode import BalancedFieldJaxODEComp
 
-SHOW_PLOTS = True
+try:
+    import jax
+except ImportError:
+    jax = None
+
+if jax is not None:
+    from dymos.examples.balanced_field.balanced_field_ode import BalancedFieldJaxODEComp
+else:
+    BalancedFieldJaxODEComp is None
 
 
 @use_tempdirs
@@ -17,6 +24,9 @@ class TestBalancedFieldLengthForDocs(unittest.TestCase):
         import dymos as dm
 
         for ODE in (BalancedFieldODEComp, BalancedFieldJaxODEComp):
+
+            if BalancedFieldJaxODEComp is None:
+                self.skipTest('jax is not available')
 
             with self.subTest(msg='{ODE=}'):
 
@@ -30,7 +40,7 @@ class TestBalancedFieldLengthForDocs(unittest.TestCase):
                                      ode_init_kwargs={'mode': 'runway',
                                                      'attitude_input': 'pitch',
                                                      'control': 'gam_rate'})
-                br_to_vef.set_time_options(fix_initial=True, fix_duration=True, duration_bounds=(1, 1000))
+                br_to_vef.set_time_options(fix_initial=True, fix_duration=True,)
                 br_to_vef.add_state('r', fix_initial=True, lower=0)
                 br_to_vef.add_state('v', fix_initial=True, lower=0)
                 br_to_vef.add_parameter('pitch', val=0.0, opt=False, units='deg')
@@ -48,7 +58,7 @@ class TestBalancedFieldLengthForDocs(unittest.TestCase):
                                     ode_init_kwargs={'mode': 'runway',
                                                     'attitude_input': 'pitch',
                                                     'control': 'gam_rate'})
-                vef_to_v1.set_time_options(fix_initial=True, fix_duration=True, duration_bounds=(1, 1000))
+                vef_to_v1.set_time_options(fix_initial=True, fix_duration=True, )
                 vef_to_v1.add_state('r', fix_initial=True, lower=0)
                 vef_to_v1.add_state('v', fix_initial=True, lower=0)
                 vef_to_v1.add_parameter('pitch', val=0.0, opt=False, units='deg')
@@ -66,7 +76,7 @@ class TestBalancedFieldLengthForDocs(unittest.TestCase):
                             ode_init_kwargs={'mode': 'runway',
                                                 'attitude_input': 'pitch',
                                                 'control': 'gam_rate'})
-                rto.set_time_options(fix_initial=True, fix_duration=True, duration_bounds=(1, 1000), duration_ref=1.0)
+                rto.set_time_options(fix_initial=True, fix_duration=True)
                 rto.add_state('r', fix_initial=False, lower=0)
                 rto.add_state('v', fix_initial=False, lower=0)
                 rto.add_parameter('pitch', val=0.0, opt=False, units='deg')
@@ -79,7 +89,7 @@ class TestBalancedFieldLengthForDocs(unittest.TestCase):
                                     ode_init_kwargs={'mode': 'runway',
                                                     'attitude_input': 'pitch',
                                                     'control': 'gam_rate'})
-                v1_to_vr.set_time_options(fix_initial=True, fix_duration=True, duration_bounds=(1, 1000), duration_ref=1.0)
+                v1_to_vr.set_time_options(fix_initial=True, fix_duration=True)
                 v1_to_vr.add_state('r', fix_initial=False, lower=0)
                 v1_to_vr.add_state('v', fix_initial=False, lower=0)
                 v1_to_vr.add_parameter('pitch', val=0.0, opt=False, units='deg')
@@ -92,7 +102,7 @@ class TestBalancedFieldLengthForDocs(unittest.TestCase):
                                 ode_init_kwargs={'mode': 'runway',
                                                 'attitude_input': 'pitch',
                                                 'control': 'gam_rate'})
-                rotate.set_time_options(fix_initial=True, fix_duration=True, duration_bounds=(1.0, 10.), duration_ref=1.0)
+                rotate.set_time_options(fix_initial=True, fix_duration=True)
                 rotate.add_state('r', fix_initial=False, lower=0)
                 rotate.add_state('v', fix_initial=False, lower=0)
                 rotate.add_state('pitch', rate_source='pitch_rate', fix_initial=True, lower=0, upper=15, units='deg')
@@ -107,7 +117,7 @@ class TestBalancedFieldLengthForDocs(unittest.TestCase):
                                                     ode_init_kwargs={'mode': 'runway',
                                                                     'attitude_input': 'pitch',
                                                                     'control': 'attitude'})
-                liftoff_to_climb_gradient.set_time_options(fix_initial=True, fix_duration=True, duration_ref=1.0, duration_bounds=(0.1, 4.0))
+                liftoff_to_climb_gradient.set_time_options(fix_initial=True, fix_duration=True)
                 liftoff_to_climb_gradient.set_state_options('r', fix_initial=True, lower=0)
                 liftoff_to_climb_gradient.set_state_options('h', fix_initial=True, rate_source='h_dot', lower=0)
                 liftoff_to_climb_gradient.set_state_options('v', fix_initial=True, lower=0)
@@ -126,7 +136,7 @@ class TestBalancedFieldLengthForDocs(unittest.TestCase):
                                                     ode_init_kwargs={'mode': 'runway',
                                                                         'attitude_input': 'pitch',
                                                                         'control': 'gam_rate'})
-                climb_to_obstacle_clearance.set_time_options(fix_initial=True, fix_duration=True, duration_ref=1.0, duration_bounds=(0.01, 100.0))
+                climb_to_obstacle_clearance.set_time_options(fix_initial=True, fix_duration=True)
                 climb_to_obstacle_clearance.set_state_options('r', fix_initial=True, lower=0)
                 climb_to_obstacle_clearance.set_state_options('h', fix_initial=True, rate_source='h_dot', lower=0)
                 climb_to_obstacle_clearance.set_state_options('v', fix_initial=True, lower=0)
