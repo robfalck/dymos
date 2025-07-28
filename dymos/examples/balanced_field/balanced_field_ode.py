@@ -196,7 +196,7 @@ def ground_effect(h, pitch, CD_min, CL, CD, AR, wing_height, span):
     B = 1.0 + 32.0 * hf ** 2
     denom = 4.0 * hf * jnp.sqrt(B) + B
     PHII = 1.0 - 1.0 / denom
-    CD_ge = CD_min + cl_fact * PHII * (CD - CD_min) + pitch * CL * (cl_fact-1.0)
+    CD_ge = CD_min + cl_fact * PHII * (CD - CD_min) + pitch * CL * (cl_fact - 1.0)
     CL_ge = CL * cl_fact
 
     CL_out = act_tanh(hf, mu=0.01, z=1.05, a=CL_ge, b=CL)

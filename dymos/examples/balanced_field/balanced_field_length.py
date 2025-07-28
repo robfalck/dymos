@@ -114,7 +114,7 @@ def make_balanced_field_length_problem(ode_class, tx):
 
     traj.add_parameter('mu_r_nominal', val=0.03, opt=False, units=None, static_target=True,
                        desc='nominal runway friction coefficient',
-                       targets={'br_to_v1': ['mu_r'], 'v1_to_vr': ['mu_r'],  'rotate': ['mu_r']})
+                       targets={'br_to_v1': ['mu_r'], 'v1_to_vr': ['mu_r'], 'rotate': ['mu_r']})
 
     traj.add_parameter('mu_r_braking', val=0.3, opt=False, units=None, static_target=True,
                        desc='runway friction coefficient under braking',
