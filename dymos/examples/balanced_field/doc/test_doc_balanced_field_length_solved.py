@@ -3,6 +3,8 @@ import unittest
 
 from openmdao.utils.testing_utils import use_tempdirs
 from openmdao.utils.assert_utils import assert_near_equal
+from dymos.examples.balanced_field.balanced_field_ode import BalancedFieldODEComp
+from dymos.examples.balanced_field.balanced_field_ode import BalancedFieldJaxODEComp
 
 SHOW_PLOTS = True
 
@@ -12,9 +14,7 @@ class TestBalancedFieldLengthForDocs(unittest.TestCase):
 
     def test_balanced_field_length_solved(self):
         import openmdao.api as om
-        from openmdao.utils.general_utils import set_pyoptsparse_opt
         import dymos as dm
-        from dymos.examples.balanced_field.balanced_field_ode import BalancedFieldODEComp, BalancedFieldJaxODEComp
 
         for ODE in (BalancedFieldODEComp, BalancedFieldJaxODEComp):
 
@@ -27,9 +27,9 @@ class TestBalancedFieldLengthForDocs(unittest.TestCase):
                 # Brake release to v_ef - both engines operable
                 tx = dm.PicardShooting(num_segments=1, nodes_per_seg=NODES_PER_SEG)
                 br_to_vef = dm.Phase(ode_class=ODE, transcription=tx,
-                                    ode_init_kwargs={'mode': 'runway',
-                                                    'attitude_input': 'pitch',
-                                                    'control': 'gam_rate'})
+                                     ode_init_kwargs={'mode': 'runway',
+                                                     'attitude_input': 'pitch',
+                                                     'control': 'gam_rate'})
                 br_to_vef.set_time_options(fix_initial=True, fix_duration=True, duration_bounds=(1, 1000))
                 br_to_vef.add_state('r', fix_initial=True, lower=0)
                 br_to_vef.add_state('v', fix_initial=True, lower=0)
@@ -322,7 +322,8 @@ class TestBalancedFieldLengthForDocs(unittest.TestCase):
                 vr = p.get_val('traj.rotate.initial_states:v', units='kn')[0]
                 v2 = p.get_val('traj.climb_to_obstacle_clearance.final_states:v', units='kn')[0, 0]
                 v_over_v_stall = p.get_val('traj.climb_to_obstacle_clearance.timeseries.v_over_v_stall')[-1, 0]
-                runway_length = p.get_val('traj.rto.final_states:r', units='ft')[0, 0]
+                runway_length = p.get_val('traj.rto.final_states:r', units='m')[0, 0]
+                obstacle_dist = p.get_val('traj.climb_to_obstacle_clearance.final_states:r', units='m')[0, 0]
 
                 print(f'{'Balanced Field Length':<21}: {runway_length:6.1f} ft')
                 print(f'{'V_ef':<21}: {v_ef:6.1f} kts')
@@ -331,4 +332,8 @@ class TestBalancedFieldLengthForDocs(unittest.TestCase):
                 print(f'{'V_2':<21}: {v2:6.1f} kts ({v_over_v_stall:4.3f} * v_stall)')
                 print(f'{'Assumed Reaction Time':<21}: {t_react:6.1f} s')
 
-                assert_near_equal(runway_length, 6663.0, tolerance=0.01)
+                assert_near_equal(runway_length, obstacle_dist, tolerance=0.01)
+
+
+if __name__ == '__main__':  # pragma: no cover
+    unittest.main()
