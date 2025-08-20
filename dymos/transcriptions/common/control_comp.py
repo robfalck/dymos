@@ -183,7 +183,7 @@ class ControlInterpComp(om.ExplicitComponent):
             shape = options['shape']
             size = np.prod(shape)
             units = options['units']
-            output_shape = (num_output_nodes,) + shape
+            # output_shape = (num_output_nodes,) + shape
 
             rate_units = get_rate_units(units, self.options['time_units'], deriv=1)
             rate2_units = get_rate_units(units, self.options['time_units'], deriv=2)
@@ -202,27 +202,33 @@ class ControlInterpComp(om.ExplicitComponent):
             self._output_rate_cnty_defect_names[name] = f'control_rate_continuity_defects:{name}'
             self._output_rate2_cnty_defect_names[name] = f'control_rate2_continuity_defects:{name}'
 
-            self.add_output(self._output_val_names[name], shape=output_shape, units=units)
-            self.add_output(self._output_rate_names[name], shape=output_shape, units=rate_units)
-            self.add_output(self._output_rate2_names[name], shape=output_shape, units=rate2_units)
+            self.add_output(self._output_val_names[name], shape_by_conn=True, units_by_conn=True)
+            self.add_output(self._output_rate_names[name], shape_by_conn=True, units=rate_units)
+            self.add_output(self._output_rate2_names[name], shape_by_conn=True, units=rate2_units)
 
-            self.add_output(self._output_boundary_val_names[name], shape=(2,) + shape, units=units)
-            self.add_output(self._output_boundary_rate_names[name], shape=(2,) + shape, units=rate_units)
-            self.add_output(self._output_boundary_rate2_names[name], shape=(2,) + shape, units=rate2_units)
+            def get_boundary_shape(shapes):
+                return (2,) + shapes[self._input_names[name]][1:]
+
+            self.add_output(self._output_boundary_val_names[name], shape_by_conn=True, compute_shape=get_boundary_shape, units=units)
+            self.add_output(self._output_boundary_rate_names[name], shape_by_conn=True, compute_shape=get_boundary_shape, units=rate_units)
+            self.add_output(self._output_boundary_rate2_names[name], shape_by_conn=True, compute_shape=get_boundary_shape, units=rate2_units)
+
+            def get_continuity_shape(shapes):
+                return (num_output_segs - 1,) + shapes[self._input_names[name]][1:]
 
             if self._is_val_cnty(name):
                 self.add_output(self._output_val_cnty_defect_names[name],
-                                shape=(num_output_segs - 1,) + shape,
+                                compute_shape=get_continuity_shape,
                                 units=units)
 
             if self._is_rate_cnty(name):
                 self.add_output(self._output_rate_cnty_defect_names[name],
-                                shape=(num_output_segs - 1,) + shape,
+                                compute_shape=get_continuity_shape,
                                 units=rate_units)
 
             if self._is_rate2_cnty(name):
                 self.add_output(self._output_rate2_cnty_defect_names[name],
-                                shape=(num_output_segs - 1,) + shape,
+                                compute_shape=get_continuity_shape,
                                 units=rate2_units)
 
             if options['control_type'] == 'polynomial':
@@ -292,9 +298,263 @@ class ControlInterpComp(om.ExplicitComponent):
             else:
                 L_de, D_de, D2_de, S = self._matrices['full']
                 num_control_input_nodes = gd.subset_num_nodes['control_input']
-                default_val = reshape_val(options['val'], shape, num_control_input_nodes)
+                # default_val = reshape_val(options['val'], shape, num_control_input_nodes)
 
                 self.add_input(self._input_names[name], val=default_val, units=units)
+
+                out_var_name = self._output_val_names[name]
+
+                def get_input_shape(shapes):
+                    return (num_input_nodes,) + shapes[out_var_name][1:]
+
+                self.add_input(self._input_names[name], val=default_val, units=units, compute_shape=get_input_shape)
+
+                # sp_eye = sp.eye(size, format='csr')
+
+                # # The partial of interpolated value wrt the control input values is linear
+                # # and can be computed as the kronecker product of the interpolation matrix (L)
+                # # and eye(size).
+                # d_ua_d_uin = sp.kron(L_de, sp_eye, format='csr')
+                # rs, cs, data = sp.find(d_ua_d_uin)
+                # self.declare_partials(of=self._output_val_names[name],
+                #                       wrt=self._input_names[name],
+                #                       rows=rs, cols=cs, val=data)
+
+                # J_val = sp.kron(L_de[[0, -1], ...], sp_eye, format='csr')
+                # rs, cs, data = sp.find(J_val)
+                # self.declare_partials(of=self._output_boundary_val_names[name],
+                #                       wrt=self._input_names[name],
+                #                       rows=rs, cols=cs, val=data)
+
+                # # The partials of the output rate and second derivative wrt dt_dstau
+                # rs = np.arange(num_output_nodes * size, dtype=int)
+                # cs = np.repeat(np.arange(num_output_nodes, dtype=int), size)
+
+                # self.declare_partials(of=self._output_rate_names[name],
+                #                       wrt='dt_dstau',
+                #                       rows=rs, cols=cs)
+
+                # self.declare_partials(of=self._output_rate2_names[name],
+                #                       wrt='dt_dstau',
+                #                       rows=rs, cols=cs)
+
+                # self.declare_partials(of=self._output_boundary_rate_names[name],
+                #                       wrt='dt_dstau',
+                #                       rows=np.arange(2 * size, dtype=int),
+                #                       cols=np.concatenate((cs[:size], cs[-size:])))
+
+                # self.declare_partials(of=self._output_boundary_rate2_names[name],
+                #                       wrt='dt_dstau',
+                #                       rows=np.arange(2 * size, dtype=int),
+                #                       cols=np.concatenate((cs[:size], cs[-size:])))
+
+                # # The val continuity defects are dependent upon the control input values.
+                # # The calculation of the continuity defects can be expressed as
+                # # val_defects = ([S]@[U_a]) @ 1_n
+                # # where S is the defect selection matrix and 1_n is a column vector of ones at each
+                # # segment start/end involved in the calculation.
+                # # This is used for derivatives wrt dt_dstau
+                # self._d_cnty_d_node_vals = S.dot(sp.eye(num_output_nodes))
+
+                # # This is used for derivatives wrt to sized variables
+                # dcmat = self._dcnty_dnode_vals_kron_eye[size] = sp.kron(self._d_cnty_d_node_vals, sp_eye, format='csr')
+
+                # if self._is_val_cnty(name):
+                #     d_val_cnty_d_uin = dcmat.dot(d_ua_d_uin)
+                #     rs, cs, data = sp.find(d_val_cnty_d_uin)
+
+                #     self.declare_partials(of=self._output_val_cnty_defect_names[name],
+                #                           wrt=self._input_names[name],
+                #                           rows=rs, cols=cs,
+                #                           val=data)
+
+                # if self._is_rate_cnty(name):
+                #     rs, cs, data = sp.find(sp.kron(self._d_cnty_d_node_vals, np.ones((size, 1))))
+                #     self.declare_partials(of=self._output_rate_cnty_defect_names[name],
+                #                           wrt='dt_dstau',
+                #                           rows=rs, cols=cs)
+
+                #     d_urate_d_uin = sp.kron(D_de, sp_eye, format='csr')
+                #     d_rate_cnty_d_uin = dcmat.dot(d_urate_d_uin)
+                #     rs, cs, data = sp.find(d_rate_cnty_d_uin)
+
+                #     self.declare_partials(of=self._output_rate_cnty_defect_names[name],
+                #                           wrt=self._input_names[name],
+                #                           rows=rs, cols=cs,
+                #                           val=1.0)
+
+                # if self._is_rate2_cnty(name):
+                #     rs, cs, data = sp.find(sp.kron(self._d_cnty_d_node_vals, np.ones((size, 1))))
+                #     self.declare_partials(of=self._output_rate2_cnty_defect_names[name],
+                #                           wrt='dt_dstau',
+                #                           rows=rs, cols=cs)
+
+                #     d_urate2_d_uin = sp.kron(D2_de, sp_eye, format='csr')
+                #     d_rate2_cnty_d_uin = dcmat.dot(d_urate2_d_uin)
+                #     rs, cs, data = sp.find(d_rate2_cnty_d_uin)
+
+                #     self.declare_partials(of=self._output_rate2_cnty_defect_names[name],
+                #                           wrt=self._input_names[name],
+                #                           rows=rs, cols=cs,
+                #                           val=1.0)
+
+                # # The partials of the rates and second derivatives are nonlinear but the sparsity
+                # # pattern is obtained from the kronecker product of the 1st and 2nd differentiation
+                # # matrices (D and D2) and eye(size).
+                # # self.rate_jacs[name] = sp.kron(self.D, sp_eye, format='csr')
+                # rs, cs = sp.kron(D_de, sp_eye, format='csr').nonzero()
+                # self.declare_partials(of=self._output_rate_names[name],
+                #                       wrt=self._input_names[name],
+                #                       rows=rs, cols=cs)
+
+                # rs, cs = sp.kron(D_de[[0, -1], ...], sp_eye, format='csr').nonzero()
+                # self.declare_partials(of=self._output_boundary_rate_names[name],
+                #                       wrt=self._input_names[name],
+                #                       rows=rs, cols=cs)
+
+                # rs, cs = sp.kron(D2_de, sp_eye, format='csr').nonzero()
+                # self.declare_partials(of=self._output_rate2_names[name],
+                #                       wrt=self._input_names[name],
+                #                       rows=rs, cols=cs)
+
+                # rs, cs = sp.kron(D2_de[[0, -1], ...], sp_eye, format='csr').nonzero()
+                # self.declare_partials(of=self._output_boundary_rate2_names[name],
+                #                       wrt=self._input_names[name],
+                #                       rows=rs, cols=cs)
+
+    def setup_partials(self):
+        """
+        Using dynamic shaping, we need to specify the partials here.
+        """
+        gd = self.options['grid_data']
+        ogd = self.options['output_grid_data'] or gd
+        eval_nodes = ogd.node_ptau
+        control_options = self.options['control_options']
+        num_input_nodes = gd.subset_num_nodes['control_input']
+        num_output_nodes = ogd.num_nodes
+        num_output_segs = ogd.num_segments
+
+        for name, options in control_options.items():
+            if 'control_type' not in options:
+                options['control_type'] = 'full'
+
+            # shape = options['shape']
+            # size = np.prod(shape)
+            # units = options['units']
+            # output_shape = (num_output_nodes,) + shape
+
+            # rate_units = get_rate_units(units, self.options['time_units'], deriv=1)
+            # rate2_units = get_rate_units(units, self.options['time_units'], deriv=2)
+
+            # self._input_names[name] = f'controls:{name}'
+
+            # self._output_val_names[name] = f'control_values:{name}'
+            # self._output_rate_names[name] = f'control_rates:{name}_rate'
+            # self._output_rate2_names[name] = f'control_rates:{name}_rate2'
+
+            # self._output_boundary_val_names[name] = f'control_boundary_values:{name}'
+            # self._output_boundary_rate_names[name] = f'control_boundary_rates:{name}_rate'
+            # self._output_boundary_rate2_names[name] = f'control_boundary_rates:{name}_rate2'
+
+            # self._output_val_cnty_defect_names[name] = f'control_continuity_defects:{name}'
+            # self._output_rate_cnty_defect_names[name] = f'control_rate_continuity_defects:{name}'
+            # self._output_rate2_cnty_defect_names[name] = f'control_rate2_continuity_defects:{name}'
+
+            # self.add_output(self._output_val_names[name], shape=output_shape, units=units)
+            # self.add_output(self._output_rate_names[name], shape=output_shape, units=rate_units)
+            # self.add_output(self._output_rate2_names[name], shape=output_shape, units=rate2_units)
+
+            # self.add_output(self._output_boundary_val_names[name], shape=(2,) + shape, units=units)
+            # self.add_output(self._output_boundary_rate_names[name], shape=(2,) + shape, units=rate_units)
+            # self.add_output(self._output_boundary_rate2_names[name], shape=(2,) + shape, units=rate2_units)
+
+            # if self._is_val_cnty(name):
+            #     self.add_output(self._output_val_cnty_defect_names[name],
+            #                     shape=(num_output_segs - 1,) + shape,
+            #                     units=units)
+
+            # if self._is_rate_cnty(name):
+            #     self.add_output(self._output_rate_cnty_defect_names[name],
+            #                     shape=(num_output_segs - 1,) + shape,
+            #                     units=rate_units)
+
+            # if self._is_rate2_cnty(name):
+            #     self.add_output(self._output_rate2_cnty_defect_names[name],
+            #                     shape=(num_output_segs - 1,) + shape,
+            #                     units=rate2_units)
+
+            if options['control_type'] == 'polynomial':
+                num_input_nodes = options['order'] + 1
+                disc_nodes, _ = lgl(num_input_nodes)
+                num_control_input_nodes = len(disc_nodes)
+                default_val = reshape_val(options['val'], shape, num_input_nodes)
+
+                # L_de, D_de = lagrange_matrices(disc_nodes, eval_nodes)
+                # _, D_dd = lagrange_matrices(disc_nodes, disc_nodes)
+                # D2_de = np.dot(D_de, D_dd)
+
+                # if options['order'] not in self._matrices:
+                #     self._matrices[options['order']] = L_de, D_de, D2_de
+
+                # self.add_input(self._input_names[name], val=default_val, units=units)
+
+                L_de, D_de, D2_de = self._matrices[options['order']]
+
+                rs, cs, vals = sp.find(sp.kron(L_de, sp.eye(size), format='csr'))
+                self.declare_partials(of=self._output_val_names[name],
+                                      wrt=self._input_names[name],
+                                      rows=rs, cols=cs, val=vals)
+
+                J_val = sp.kron(L_de[[0, -1], ...], sp.eye(size), format='csr')
+                rs, cs, data = sp.find(J_val)
+                self.declare_partials(of=self._output_boundary_val_names[name],
+                                      wrt=self._input_names[name],
+                                      rows=rs, cols=cs, val=data)
+
+                rs = np.concatenate([np.arange(0, num_output_nodes * size, size, dtype=int) + i
+                                    for i in range(size)])
+
+                self.declare_partials(of=self._output_rate_names[name],
+                                      wrt='t_duration', rows=rs, cols=np.zeros_like(rs))
+
+                self.declare_partials(of=self._output_rate2_names[name],
+                                      wrt='t_duration', rows=rs, cols=np.zeros_like(rs))
+
+                rs = np.concatenate([np.arange(0, 2 * size, size, dtype=int) + i
+                                    for i in range(size)])
+
+                self.declare_partials(of=self._output_boundary_rate_names[name],
+                                      wrt='t_duration', rows=rs, cols=np.zeros_like(rs))
+
+                self.declare_partials(of=self._output_boundary_rate2_names[name],
+                                      wrt='t_duration', rows=rs, cols=np.zeros_like(rs))
+
+                rs, cs, vals = sp.find(sp.kron(D_de, sp.eye(size), format='csr'))
+                self.declare_partials(of=self._output_rate_names[name],
+                                      wrt=self._input_names[name],
+                                      rows=rs, cols=cs)
+
+                rs, cs, vals = sp.find(sp.kron(D_de[[0, -1], ...], sp.eye(size), format='csr'))
+                self.declare_partials(of=self._output_boundary_rate_names[name],
+                                      wrt=self._input_names[name],
+                                      rows=rs, cols=cs)
+
+                rs, cs, vals = sp.find(sp.kron(D2_de, sp.eye(size), format='csr'))
+                self.declare_partials(of=self._output_rate2_names[name],
+                                      wrt=self._input_names[name],
+                                      rows=rs, cols=cs)
+
+                rs, cs, vals = sp.find(sp.kron(D2_de[[0, -1], ...], sp.eye(size), format='csr'))
+                self.declare_partials(of=self._output_boundary_rate2_names[name],
+                                      wrt=self._input_names[name],
+                                      rows=rs, cols=cs)
+
+            else:
+                L_de, D_de, D2_de, S = self._matrices['full']
+                num_control_input_nodes = gd.subset_num_nodes['control_input']
+                # default_val = reshape_val(options['val'], shape, num_control_input_nodes)
+
+                # self.add_input(self._input_names[name], val=default_val, units=units)
 
                 sp_eye = sp.eye(size, format='csr')
 

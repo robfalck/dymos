@@ -2264,17 +2264,83 @@ class Phase(om.Group):
         """
         Finalize connections after sizes are known.
         """
-        # Finalize the variables if it hasn't happened already.
-        # If this phase exists within a Trajectory, the trajectory will finalize them during setup.
+        from dymos.utils.misc import is_unspecified
         transcription = self.options['transcription']
         ode = transcription._get_ode(self)
 
-        configure_time_introspection(self.time_options, ode)
+        ode._setup_global_connections()
+        connected_inputs = {ode._resolver.abs2prom(abs_tgt, 'input') for abs_tgt in ode._conn_global_abs_in2out}
 
-        # The control interpolation comp to which we'll connect controls
-        if self.control_options:
-            configure_controls_introspection(self.control_options, ode,
-                                             time_units=self.time_options['units'])
+        # Collect the inputs and outputs from the ODE
+        # Keep them in a dict by promoted name
+        ode_outputs = ode.get_io_metadata(iotypes=['output'], metadata_keys=['tags', 'units'],
+                                          get_remote=True)
+        ode_inputs = ode.get_io_metadata(iotypes=['input'], metadata_keys=['tags', 'units'],
+                                         get_remote=True)
+        prom_outputs = {meta['prom_name']: meta for meta in ode_outputs.values()}
+        prom_inputs = {meta['prom_name']: meta for meta in ode_inputs.values()}
+
+        # The unconnected inputs are those promoted inputs not involved in any
+        # connections to outputs. These are available to be targets from the phase
+        # variables.
+        unconn_inputs = set(prom_inputs.keys()) - connected_inputs
+
+        ### Configure time introspection
+        # Automatically determine targets for time
+        time_name = self.time_options['name']
+        t_phase_name = f'{time_name}_phase'
+
+        for name, key in [(time_name, 'targets'), #self.time_options['targets']],
+                          (t_phase_name, 'time_phase_targets')]: #self.time_options['time_phase_targets']]]:
+            if is_unspecified(self.time_options[key]):
+                if time_name in unconn_inputs:
+                    self.time_options[key] = [name]
+                    unconn_inputs -= {name}
+                else:
+                    self.time_options[key] = []
+            else:
+                invalid_targets = set(self.time_options[key])- unconn_inputs
+                if invalid_targets:
+                    raise ValueError(f'{self.msginfo}: One or more {name} targets is not'
+                    f' available for connection in the ODE:\n{"\n  ".join(sorted(invalid_targets))}')
+
+                if any(['dymos.static_target' in prom_inputs[target]['tags'] for target in self.time_options[key]]):
+                    listing = '\n  '.join([f'{target} - {prom_inputs[target]["tags"]}' for target in self.time_options[key]])
+                    raise ValueError(f"{self.msginfo}: '{name}' cannot be connected to its targets "
+                                     "because one or more targets are tagged with 'dymos.static_target'.\n"
+                                     f"{listing}")
+                unconn_inputs -= set(self.time_options[key])
+
+        # configure_time_introspection(self.time_options, ode)
+
+        ### Configure Control Introspection
+        for name in self.control_options:
+            for targ_name, key in [(name,'targets'),
+                                   (f'{name}_rate','rate_targets'),
+                                   (f'{name}_rate2', 'rate2_targets')]:
+                if is_unspecified(self.control_options[name][key]):
+                    if targ_name in unconn_inputs:
+                        self.control_options[name][key] = [targ_name]
+                        unconn_inputs -= {targ_name}
+                    else:
+                        self.control_options[name][key] = []
+                else:
+                    invalid_targets = set(self.control_options[name][key]) - unconn_inputs
+                    if invalid_targets:
+                        raise ValueError(f'{self.msginfo}: One or more {name} targets is not'
+                        f' available for connection in the ODE:\n{"\n  ".join(sorted(invalid_targets))}')
+
+                    if any(['dymos.static_target' in prom_inputs[target]['tags'] for target in self.control_options[name][key]]):
+                        listing = '\n  '.join([f'{target} - {prom_inputs[target]["tags"]}' for target in self.control_options[name][key]])
+                        raise ValueError(f"{self.msginfo}: '{targ_name}' cannot be connected to its targets "
+                                        "because one or more targets are tagged with 'dymos.static_target'.\n"
+                                        f"{listing}")
+                    unconn_inputs -= set(self.time_options[key])
+
+        # # The control interpolation comp to which we'll connect controls
+        # if self.control_options:
+        #     configure_controls_introspection(self.control_options, ode,
+        #                                      time_units=self.time_options['units'])
 
         if self.parameter_options:
             try:

@@ -132,9 +132,6 @@ def min_time_climb(optimizer='SLSQP', num_seg=3, transcription='gauss-lobatto',
     if transcription == 'birkhoff':
         phase.set_simulate_options(times_per_seg=200, atol=1.0E-6, rtol=1.0E-6)
 
-    if transcription == 'birkhoff':
-        phase.set_simulate_options(times_per_seg=200, atol=1.0E-6, rtol=1.0E-6)
-
     p.run_model()
     with open('check_partials.txt', 'w') as f:
         with np.printoptions(linewidth=1024, edgeitems=1024):
@@ -266,7 +263,7 @@ class TestMinTimeClimb(unittest.TestCase):
         NUM_SEG = 15
         ORDER = 3
         p = min_time_climb(optimizer='IPOPT', num_seg=NUM_SEG, transcription_order=ORDER,
-                           transcription='radau-ps', add_rate=True)
+                           transcription='radau-ps', add_rate=True, force_alloc_complex=True)
 
         self._test_results(p)
 
