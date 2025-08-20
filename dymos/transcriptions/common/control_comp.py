@@ -300,14 +300,15 @@ class ControlInterpComp(om.ExplicitComponent):
                 num_control_input_nodes = gd.subset_num_nodes['control_input']
                 # default_val = reshape_val(options['val'], shape, num_control_input_nodes)
 
-                self.add_input(self._input_names[name], val=default_val, units=units)
+
+                # self.add_input(self._input_names[name], val=default_val, units=units)
 
                 out_var_name = self._output_val_names[name]
 
                 def get_input_shape(shapes):
                     return (num_input_nodes,) + shapes[out_var_name][1:]
 
-                self.add_input(self._input_names[name], val=default_val, units=units, compute_shape=get_input_shape)
+                self.add_input(self._input_names[name], units=units, compute_shape=get_input_shape)
 
                 # sp_eye = sp.eye(size, format='csr')
 
@@ -702,33 +703,25 @@ class ControlInterpComp(om.ExplicitComponent):
                 num_input_nodes = gd.subset_num_nodes['control_input']
 
                 dvname = f'controls:{name}'
-                shape = options['shape']
-                size = np.prod(shape)
                 if options['opt']:
-                    desvar_indices = get_desvar_indices(size, num_input_nodes,
-                                                        options['fix_initial'], options['fix_final'])
+                    if options['fix_initial'] and options['fix_final']:
+                        desvar_indices = om.slicer[1:-1, ...]
+                    elif options['fix_initial']:
+                        desvar_indices = om.slicer[1, ...]
+                    elif options['fix_final']:
+                        desvar_indices = om.slicer[:-1, ...]
+                    else:
+                        desvar_indices = None
 
-                    if len(desvar_indices) > 0:
-                        coerce_desvar_option = CoerceDesvar(num_input_nodes, desvar_indices,
-                                                            options=options)
-
-                        lb = np.zeros_like(desvar_indices, dtype=float)
-                        lb[:] = -INF_BOUND if coerce_desvar_option('lower') is None else \
-                            coerce_desvar_option('lower')
-
-                        ub = np.zeros_like(desvar_indices, dtype=float)
-                        ub[:] = INF_BOUND if coerce_desvar_option('upper') is None else \
-                            coerce_desvar_option('upper')
-
-                        self.add_design_var(name=dvname,
-                                            lower=lb,
-                                            upper=ub,
-                                            scaler=coerce_desvar_option('scaler'),
-                                            adder=coerce_desvar_option('adder'),
-                                            ref0=coerce_desvar_option('ref0'),
-                                            ref=coerce_desvar_option('ref'),
-                                            indices=desvar_indices,
-                                            flat_indices=True)
+                    self.add_design_var(name=dvname,
+                                        lower=options['lower'],
+                                        upper=options['upper'],
+                                        scaler=options['scaler'],
+                                        adder=options['adder'],
+                                        ref0=options['ref0'],
+                                        ref=options['ref'],
+                                        indices=desvar_indices,
+                                        flat_indices=True)
 
     def _configure_constraints(self):
         if self.options['enforce_continuity']:
