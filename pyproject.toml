@@ -41,7 +41,7 @@ docs = [
     "jax",
     "jaxlib",
     "jupyter",
-    "jupyter-book==0.14",
+    "jupyter-book",
     "matplotlib",
     "nbconvert",
     "notebook",
@@ -92,7 +92,8 @@ line-ending = "lf"
 
 [tool.ruff.lint]
 select = ["E", "F"]
-preview = false
+ignore = ["E226", "E241"]
+preview = true
 
 [tool.ruff.lint.pycodestyle]
 max-line-length = 130
