@@ -5,7 +5,7 @@ from openmdao.components.input_resids_comp import InputResidsComp
 
 from dymos.transcriptions.pseudospectral.components.gauss_lobatto_interleave_comp import GaussLobattoInterleaveComp
 from dymos.transcriptions.pseudospectral.components.gauss_lobatto_interp_comp import GaussLobattoInterpComp
-from dymos.transcriptions.pseudospectral.components.collocation_defect_comp import CollocationDefectComp
+from dymos.transcriptions.pseudospectral.components.gauss_lobatto_defect_comp import GaussLobattoDefectComp
 
 from dymos.transcriptions.grid_data import GridData
 from dymos.phase.options import TimeOptionsDictionary
@@ -91,13 +91,13 @@ class GaussLobattoIterGroup(om.Group):
         # Defect Calculation
 
         self.add_subsystem('defects',
-                           subsys=CollocationDefectComp(grid_data=gd,
-                                                        state_options=state_options,
-                                                        time_units=time_options['units']),
+                           subsys=GaussLobattoDefectComp(grid_data=gd,
+                                                         state_options=state_options,
+                                                         time_units=time_options['units']),
                            promotes_inputs=['*'], promotes_outputs=['*'])
 
         # Interleave ODE outputs
-        self.add_subsystem('interleave_comp', GaussLobattoInterleaveComp(grid_data=self.grid_data))
+        self.add_subsystem('interleave_comp', GaussLobattoInterleaveComp(grid_data=gd))
 
         if any([opts['solve_segments'] in ('forward', 'backward') for opts in state_options.values()]):
             self.add_subsystem('states_resids_comp', subsys=InputResidsComp(),
@@ -215,9 +215,13 @@ class GaussLobattoIterGroup(om.Group):
         defect_comp = self._get_subsystem('defects')
         defect_comp.configure_io(phase)
 
+        state_interp_comp = self._get_subsystem('state_interp')
+        state_interp_comp.configure_io()
+
         gd = self.options['grid_data']
         nn = gd.subset_num_nodes['all']
         nin = gd.subset_num_nodes['state_input']
+        ndn = gd.subset_num_nodes['state_disc']
         ncn = gd.subset_num_nodes['col']
         ns = gd.num_segments
         state_src_idxs_input_to_disc = gd.input_maps['state_input_to_disc']
@@ -228,9 +232,11 @@ class GaussLobattoIterGroup(om.Group):
         state_options = self.options['state_options']
         states_resids_comp = self._get_subsystem('states_resids_comp')
 
-        self.promotes('defects', inputs=('dt_dstau',),
-                      src_indices=om.slicer[col_idxs, ...],
-                      src_shape=(nn,))
+        # self.promotes('defects', inputs=('dt_dstau',),
+        #               src_indices=om.slicer[col_idxs, ...],
+        #               src_shape=(nn,))        
+        
+        self.promotes('defects', inputs=('dt_dstau',))
 
         for name, options in state_options.items():
             units = options['units']
@@ -238,8 +244,8 @@ class GaussLobattoIterGroup(om.Group):
             shape = options['shape']
 
             for tgt in options['targets']:
-                self.promotes('ode_all', [(tgt, f'states:{name}')],
-                              src_indices=om.slicer[state_src_idxs_input_to_all, ...])
+                self.promotes('ode_disc', [(tgt, f'states:{name}')],
+                              src_indices=om.slicer[state_src_idxs_input_to_disc, ...])
 
             self.set_input_defaults(f'states:{name}', val=1.0, units=units, src_shape=(nin,) + shape)
 
@@ -268,7 +274,7 @@ class GaussLobattoIterGroup(om.Group):
                     # defect_ref_at_nodes = ref_at_nodes
 
                     states_resids_comp.add_output(f'states:{name}',
-                                                  shape=(nn,) + shape,
+                                                  shape=(ndn,) + shape,
                                                   lower=options['lower'],
                                                   upper=options['upper'],
                                                   #   ref0=ref0_at_nodes,
@@ -324,8 +330,7 @@ class GaussLobattoIterGroup(om.Group):
             var_type = phase.classify_var(rate_source_var)
 
             if var_type == 'ode':
-                self.connect(f'ode_all.{rate_source}', f'f_ode:{name}',
-                             src_indices=om.slicer[gd.subset_node_indices['col'], ...])
+                self.connect(f'ode_col.{rate_source}', f'f_ode:{name}')
 
     def _get_rate_source_path(self, state_name, nodes, phase):
         """

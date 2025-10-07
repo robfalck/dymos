@@ -33,10 +33,6 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
         super().__init__(**kwargs)
         self._no_check_partials = not dymos_options['include_check_partials']
 
-        # When a state has another state as its rate source, we have to explicitly convert
-        # from the units of that other state to the units being expected by the current state.
-        self._rate_unit_conversion = {}
-
     def initialize(self):
         """Declare component options."""
         self.options.declare('grid_data', types=GridData,
@@ -64,11 +60,7 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
         col_node_idxs = gd.subset_node_indices['col']
         time_units: str = self.options['time_units']
         state_options = self.options['state_options']
-
-        # The radau differentiation matrix
-        _, self._D = self.options['grid_data'].phase_lagrange_matrices('state_disc',
-                                                                       'col',
-                                                                       sparse=True)
+        num_seg_end_vals : int = 2 if gd.compressed else 2 * num_segs
 
         self.add_input('dt_dstau', units=time_units, shape=(num_col_nodes,))
 
@@ -77,7 +69,8 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
             var_names[state_name] = {
                 'initial_val': f'initial_states:{state_name}',
                 'final_val': f'final_states:{state_name}',
-                'val': f'states:{state_name}',
+                'seg_end_vals': f'states:{state_name}',
+                'f_approx': f'state_rate_col:{state_name}',
                 'f_ode': f'f_ode:{state_name}',
                 'rate_defect': f'state_rate_defects:{state_name}',
                 'cnty_defect': f'state_cnty_defects:{state_name}',
@@ -103,29 +96,22 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
                            units=units,
                            desc='Final value of the state at the end of the phase.')
 
-            self.add_input(var_names['val'],
-                           shape=(num_nodes,) + shape,
+            self.add_input(var_names['seg_end_vals'],
+                           shape=(num_seg_end_vals,) + shape,
                            units=units,
                            desc='state value at all nodes within the phase')
 
-            rate_source_type = phase.classify_var(options['rate_source'])
-            if rate_source_type != 'state':
-                # If the rate source type is one of the other states, we don't input it.
-                self._rate_src_idxs[state_name] = om.slicer[...]
-                self.add_input(
-                    name=var_names['f_ode'],
-                    shape=(num_col_nodes,) + shape,
-                    desc=f'Computed derivative of state {state_name} at the collocation nodes',
-                    units=rate_units)
-                self._rate_unit_conversion[state_name] = 1.0
-            else:
-                # Instead, set the rate source var name to be the name of the state values of the
-                # state serving as the rate source.
-                self._rate_src_idxs[state_name] = om.slicer[col_node_idxs, ...]
-                rate_src_state = options['rate_source']
-                rate_src_units = state_options[rate_src_state]['units']
-                var_names['f_ode'] = self.var_names[rate_src_state]['val']
-                self._rate_unit_conversion[state_name] = unit_conversion(rate_src_units, rate_units)[0]
+            self.add_input(
+                name=var_names['f_ode'],
+                shape=(num_col_nodes,) + shape,
+                desc=f'Computed derivative of state {state_name} at the collocation nodes',
+                units=rate_units)
+
+            self.add_input(
+                name=var_names['f_approx'],
+                shape=(num_col_nodes,) + shape,
+                desc=f'Computed derivative of state {state_name} at the collocation nodes',
+                units=rate_units)
 
             self.add_output(
                 name=var_names['initial_defect'],
@@ -204,24 +190,18 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
         for state_name, options in state_options.items():
             shape = options['shape']
             size = np.prod(shape)
-            rate_unit_conv = self._rate_unit_conversion[state_name]
 
             r = np.arange(num_col_nodes * size)
 
             var_names = self.var_names[state_name]
 
-            if options['rate_source'] in state_options:
-                # When the rate source is a state, the columns in the
-                # rate defect jacobian are the indices of all nodes
-                # that are collocation nodes.
-                c = np.arange(num_nodes * size).reshape((num_nodes, size))[col_node_idxs, ...].ravel()
-                self.declare_partials(of=var_names['rate_defect'],
-                                      wrt=var_names['f_ode'],
-                                      rows=r, cols=c, val=-1.0 * rate_unit_conv)
-            else:
-                self.declare_partials(of=var_names['rate_defect'],
-                                      wrt=var_names['f_ode'],
-                                      rows=r, cols=r, val=-1.0)
+            self.declare_partials(of=var_names['rate_defect'],
+                                  wrt=var_names['f_approx'],
+                                  rows=r, cols=r, val=1.0)
+
+            self.declare_partials(of=var_names['rate_defect'],
+                                    wrt=var_names['f_ode'],
+                                    rows=r, cols=r, val=-1.0)
 
             c = np.repeat(np.arange(num_col_nodes), size)
             self.declare_partials(of=var_names['rate_defect'],
@@ -230,32 +210,37 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
 
             # The state rate defects wrt the state values at the discretization nodes
             # are given by the differentiation matrix.
-            sparse_D_of_size = sp.kron(sp.csr_matrix(self._D), sp.eye(size), format='coo')
-            r, c = sparse_D_of_size.nonzero()
+            # sparse_D_of_size = sp.kron(sp.csr_matrix(self._D), sp.eye(size), format='coo')
+            # r, c = sparse_D_of_size.nonzero()
 
             self.declare_partials(of=var_names['rate_defect'],
-                                  wrt=var_names['val'],
+                                  wrt=var_names['f_approx'],
                                   rows=r,
                                   cols=c,
-                                  val=sparse_D_of_size.data)
+                                  val=1.0)
 
             # The initial value defect is just an identity matrix at the "top left" corner of the jacobian.
             ar_size = np.arange(size, dtype=int)
             self.declare_partials(of=var_names['initial_defect'],
-                                  wrt=var_names['val'],
+                                  wrt=var_names['seg_end_vals'],
                                   rows=ar_size, cols=ar_size, val=-1.0)
 
             self.declare_partials(of=var_names['initial_defect'],
                                   wrt=var_names['initial_val'],
                                   rows=ar_size, cols=ar_size, val=1.0)
 
-            # The final value defect is an identity matrix at the "bottom right" corner of the jacobian.
-            row_vec_end_1 = np.zeros((1, num_nodes))
-            row_vec_end_1[:, -1] = -1.0
-            pattern = sp.kron(row_vec_end_1, sp.eye(size), format='coo')
-            r, c = pattern.nonzero()
+            # The final defect jac has a size of (size) rows by (2 * size) cols if the 
+            # transcription is compressed, or (size) rows by (2 * num_segs * size) cols if not compressed.
+            # Only the (size) columns pertaining to the final node are nonzero.
+            r = np.arange(size, dtype=int)
+            c = r.copy()
+            if gd.num_segments > 1 and not gd.compressed:
+                c = c + size
+            else:
+                c = c + (2 * num_segs * size)
+
             self.declare_partials(of=var_names['final_defect'],
-                                  wrt=var_names['val'],
+                                  wrt=var_names['seg_end_vals'],
                                   rows=r, cols=c, val=-1.0)
 
             self.declare_partials(of=var_names['final_defect'],
@@ -263,11 +248,10 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
                                   rows=ar_size, cols=ar_size, val=1.0)
 
             if gd.num_segments > 1 and not gd.compressed:
-                idxs_se: int = gd.subset_node_indices['segment_ends']
                 seg_end_pattern = np.zeros((num_segs - 1, num_nodes), dtype=int)
                 for i_row in range(num_segs - 1):
-                    end_idx = idxs_se[1:-1][2 * i_row]
-                    start_idx = idxs_se[1:-1][2 * i_row + 1]
+                    end_idx = 2 * i_row
+                    start_idx = 2 * i_row + 1
                     seg_end_pattern[i_row, end_idx] = -1
                     seg_end_pattern[i_row, start_idx] = 1
 
@@ -276,7 +260,7 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
                 r, c = pattern.nonzero()
 
                 self.declare_partials(of=var_names['cnty_defect'],
-                                      wrt=var_names['val'], rows=r, cols=c, val=pattern[r, c])
+                                      wrt=var_names['seg_end_vals'], rows=r, cols=c, val=pattern[r, c])
 
     def compute(self, inputs, outputs):
         """
@@ -289,41 +273,29 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
         outputs : `Vector`
             `Vector` containing outputs.
         """
-        gd: GridData = self.options['grid_data']
-        num_disc_nodes: int = gd.subset_num_nodes['state_disc']
-        num_col_nodes: int = gd.subset_num_nodes['col']
-        idxs_se: int = gd.subset_node_indices['segment_ends']
-
+        grid_date = self.options['grid_data']
         state_options = self.options['state_options']
         dt_dstau: np.ndarray = inputs['dt_dstau']
-        D = self._D
 
         for state_name, state_options in state_options.items():
-            shape = state_options['shape']
-            size = np.prod(shape)
             var_names = self.var_names[state_name]
-            rate_src_idxs = self._rate_src_idxs[state_name]
-            rate_unit_conv = self._rate_unit_conversion[state_name]
 
-            f_ode = inputs[var_names['f_ode']][rate_src_idxs] * rate_unit_conv
-            x = inputs[var_names['val']]
+            f_ode = inputs[var_names['f_ode']]
+            f_approx = inputs[var_names['f_approx']]
+            x_seg_ends = inputs[var_names['seg_end_vals']]
             x_0 = inputs[var_names['initial_val']]
             x_f = inputs[var_names['final_val']]
 
             # The defect is computed as
-            # defect = D @ x - f_ode * dt_dstau  # noqa: ERA001
-            # But scipy.sparse only handles 2D matrices, so we need to force x to be 2D
-            # and then change the product back to the proper shape.
-
-            x_flat = np.reshape(x, (num_disc_nodes, size))
-            f_approx = np.reshape(D.dot(x_flat), (num_col_nodes,) + shape)
+            # the polynomial slope minus the ode rate value, but the ODEE rate value
+            # needs to be converted to segment tau space by multiplication by dt_dstau.
 
             outputs[var_names['rate_defect']] = f_approx - (f_ode.T * dt_dstau).T
-            outputs[var_names['initial_defect']] = x_0 - x[0, ...]
-            outputs[var_names['final_defect']] = x_f - x[-1, ...]
+            outputs[var_names['initial_defect']] = x_0 - x_seg_ends[0, ...]
+            outputs[var_names['final_defect']] = x_f - x_seg_ends[-1, ...]
 
-            if gd.num_segments > 1 and not gd.compressed:
-                outputs[var_names['cnty_defect']] = x[idxs_se[2::2], ...] - x[idxs_se[1:-2:2], ...]
+            if grid_date.num_segments > 1 and not grid_date.compressed:
+                outputs[var_names['cnty_defect']] = x_seg_ends[2::2, ...] - x_seg_ends[1:-2:2, ...] 
 
     def compute_partials(self, inputs, partials):
         """
@@ -340,9 +312,8 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
         for state_name, options in self.options['state_options'].items():
             size = np.prod(options['shape'])
             var_names = self.var_names[state_name]
-            rate_src_idxs = self._rate_src_idxs[state_name]
-            rate_unit_conv = self._rate_unit_conversion[state_name]
-            f_ode = inputs[var_names['f_ode']][rate_src_idxs] * rate_unit_conv
+            # rate_src_idxs = self._rate_src_idxs[state_name]
+            f_ode = inputs[var_names['f_ode']] #* rate_unit_conv
 
-            partials[var_names['rate_defect'], var_names['f_ode']] = -np.repeat(dt_dstau, size) * rate_unit_conv
+            partials[var_names['rate_defect'], var_names['f_ode']] = -np.repeat(dt_dstau, size)
             partials[var_names['rate_defect'], 'dt_dstau'] = -f_ode.ravel()

@@ -75,7 +75,7 @@ class GaussLobattoInterpComp(om.ExplicitComponent):
                 units=units)
 
             self.add_input(
-                name=f'staterate_disc:{state_name}',
+                name=f'state_rate_disc:{state_name}',
                 shape=(num_disc_nodes,) + shape,
                 units=rate_units,
                 desc='EOM time derivative of state {state_name} at discretization nodes')
@@ -86,15 +86,15 @@ class GaussLobattoInterpComp(om.ExplicitComponent):
                 desc=f'Interpolated values of state {state_name} at collocation nodes')
 
             self.add_output(
-                name=f'staterate_col:{state_name}',
+                name=f'state_rate_col:{state_name}',
                 shape=(num_col_nodes,) + shape,
                 units=rate_units,
                 desc=f'Interpolated rate of state {state_name} at collocation nodes')
 
             self.xd_str[state_name] = f'state_disc:{state_name}'
-            self.fd_str[state_name] = f'staterate_disc:{state_name}'
+            self.fd_str[state_name] = f'state_rate_disc:{state_name}'
             self.xc_str[state_name] = f'state_col:{state_name}'
-            self.xdotc_str[state_name] = f'staterate_col:{state_name}'
+            self.xdotc_str[state_name] = f'state_rate_col:{state_name}'
 
         Ai, Bi, Ad, Bd = self.options['grid_data'].phase_hermite_matrices('state_disc', 'col', sparse=True)
 
