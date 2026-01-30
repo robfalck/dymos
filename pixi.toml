@@ -1,0 +1,160 @@
+# dymos Pixi Environment Configuration
+#
+# Pixi provides reproducible development environments with both conda and pip packages.
+# This is especially useful for dependencies not available on PyPI (like MPI, PETSc).
+#
+# Quick Start:
+#   pixi install --frozen        # Install with exact CI-tested versions
+#   pixi shell                   # Activate the default environment
+#
+# Available Environments:
+#
+# - default: General development environment with JAX, numba, visualization, notebooks, and testing support, but no MPI.
+#            Good for users who don't want MPI capability.
+#            Usage: pixi shell (or pixi shell -e default)
+#
+# - py311, py312: Full environments pinned to specific Python versions.
+#          Useful for testing compatibility across Python versions.
+#          These are probably the most useful environments for ueers.
+#          Usage: pixi shell -e py312
+#
+# - dev: Comprehensive environment with all dependencies as well as documentation and packaging-related dependencies.
+#        Usage: pixi shell -e dev
+#
+# - oldest: Includes oldest supported versions of all dependencies except packaging-related ones.
+#           Usage: pixi shell -e oldest
+#
+#
+# Installation:
+#   pixi install --frozen -e <environment>    # Install specific environment
+#   pixi run -e <environment> <command>       # Run command in environment
+#
+# For more information: https://pixi.sh
+
+[workspace]
+name = "openmdao"
+description = "dymos workspace"
+authors = ["OpenMDAO Team <https://github.com/OpenMDAO>"]
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+
+###############################################
+# Base Dependencies
+###############################################
+
+[dependencies]
+python = ">=3.11"
+numpy = ">=2.0,!=2.4.0"
+scipy = ">=1.13"
+networkx = ">=3.3"
+pip = ">=25.3"
+packaging = ">=25.0"
+requests = ">=2.32.5"
+pyoptsparse = ">=2.14.0"
+cyipopt = "*"
+panel = "*"
+bokeh = "*"
+colorama = "*"
+matplotlib = "*"
+rich = "*"
+
+[pypi-dependencies]
+openmdao = { version=">=3.39" }
+jax = "*"
+dymos = { path = ".", editable = true }
+
+###############################################
+# dev environment features
+###############################################
+
+[feature.dev.dependencies]
+pre-commit = "*"
+aiounittest = "*"
+num2words = "*"
+numpydoc = "*"
+parameterized = "*"
+playwright = "*"
+pycodestyle = "*"
+pydocstyle = "*"
+testflo = "*"
+websockets = "*"
+actionlint = "*"
+ruff = "*"
+coverage = "*"
+nbdime = "*"
+
+[feature.dev.pypi-dependencies]
+openmdao = { version=">3.39" }
+
+###############################################
+# oldest environment features
+###############################################
+
+[feature.deps-oldest.dependencies]
+python = "3.11.*"
+numpy = "2.0.*"
+scipy = "1.13.*"
+networkx = "==3.3"
+
+[feature.deps-oldest.pypi-dependencies]
+openmdao = { version="==3.39" }
+
+###############################################
+# Python version features
+###############################################
+
+[feature.py311.dependencies]
+python = "3.11.*"
+
+[feature.py312.dependencies]
+python = "3.12.*"
+
+[feature.py313.dependencies]
+python = "3.13.*"
+
+# petsc isn't available for windows
+[target.linux-64.dependencies]
+openmpi = "*"
+mpi4py = "*"
+petsc = "*"
+petsc4py = "*"
+
+[target.osx-64.dependencies]
+openmpi = "*"
+mpi4py = "*"
+petsc = "*"
+petsc4py = "*"
+
+[target.osx-arm64.dependencies]
+openmpi = "*"
+mpi4py = "*"
+petsc = "*"
+petsc4py = "*"
+
+###############################################
+# Environments
+###############################################
+
+[environments]
+
+# Default - uses whatever Python solver picks
+default = { features = ["py313"], solve-group = "default" }
+dev = { features = ["py313", "dev"], solve-group = "dev" }
+
+# Oldest supported versions
+oldest = { features = ["py311", "deps-oldest"], solve-group = "oldest" }
+
+# Python version matrix
+py311 = { features = ["py311"], solve-group = "py311" }
+py312 = { features = ["py312"], solve-group = "py312" }
+
+###############################################
+# Tasks
+###############################################
+
+[tasks]
+
+# Development workflow helpers
+clean = "rm -rf packaging dist *.egg-info .pixi"
+
+test = {cmd=["testflo", "--skip_dir=.pixi"]}
