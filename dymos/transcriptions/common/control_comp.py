@@ -4,6 +4,7 @@ import scipy.sparse as sp
 from scipy.linalg import block_diag
 
 import openmdao.api as om
+from openmdao.core.constants import INF_BOUND
 from openmdao.utils.general_utils import determine_adder_scaler
 
 from dymos.transcriptions.grid_data import GridData
@@ -11,7 +12,6 @@ from dymos.utils.misc import get_rate_units, CoerceDesvar, reshape_val
 from dymos.utils.lgl import lgl
 from dymos.utils.lagrange import lagrange_matrices
 from dymos.utils.indexing import get_desvar_indices
-from dymos.utils.constants import INF_BOUND
 from dymos._options import options as dymos_options
 
 
@@ -702,7 +702,7 @@ class ControlInterpComp(om.ExplicitComponent):
                 partials[boundary_rate2_name, 'dt_dstau'][-size:] = partials[rate2_name, 'dt_dstau'][-size:]
 
                 if self._is_rate_cnty(name):
-                    Srs, Scs = S.nonzero()
+                    _, Scs = S.nonzero()
                     num_output_seg_minus_one = S.shape[0]
 
                     rs = np.reshape(Scs, (-1, 2))
@@ -720,7 +720,7 @@ class ControlInterpComp(om.ExplicitComponent):
                     partials[rate_cnty_name, control_name] = result.data
 
                 if self._is_rate2_cnty(name):
-                    Srs, Scs = S.nonzero()
+                    _, Scs = S.nonzero()
                     num_output_seg_minus_one = S.shape[0]
 
                     rs = np.reshape(Scs, (-1, 2))

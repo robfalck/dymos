@@ -9,9 +9,8 @@ from openmdao.utils.units import unit_conversion
 import networkx as nx
 
 import openmdao.api as om
+from openmdao.core.constants import INF_BOUND
 from openmdao.utils.mpi import MPI
-
-from ..utils.constants import INF_BOUND
 
 from .options import LinkageOptionsDictionary
 from .phase_linkage_comp import PhaseLinkageComp

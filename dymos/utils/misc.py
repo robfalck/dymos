@@ -4,9 +4,8 @@ import numpy as np
 
 import openmdao
 import openmdao.api as om
-from openmdao.core.constants import _ReprClass
+from openmdao.core.constants import _ReprClass, INF_BOUND
 
-from .constants import INF_BOUND
 from .indexing import get_desvar_indices
 
 
