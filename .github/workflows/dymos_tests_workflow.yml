@@ -69,6 +69,12 @@ on:
         required: false
         default: true
 
+      pep517:
+        type: boolean
+        description: "Include 'pep517' in test matrix"
+        required: false
+        default: true
+
       use_pypi:
         type: boolean
         description: 'Run tests against the published PyPI version of Dymos'
@@ -103,8 +109,17 @@ jobs:
             OPENMDAO_INSTALL_FROM: 'pypi'
             OPENMDAO: '3.41.0'
             DYMOS_2: False
-            PEP517: True
             EXCLUDE: ${{ github.event_name == 'workflow_dispatch'  && ! inputs.latest }}
+
+          # test PEP517 wheel build (no coverage)
+          - NAME: pep517
+            OPENMDAO_PIXI_ENVIRONMENT: 'py313'
+            OPENMDAO_INSTALL_FROM: 'pypi'
+            OPENMDAO: '3.41.0'
+            DYMOS_2: False
+            PEP517: True
+            SKIP_COVERAGE: True
+            EXCLUDE: ${{ github.event_name == 'workflow_dispatch'  && ! inputs.pep517 }}
 
           # baseline versions except no MPI/PETSc
           - NAME: no_mpi
@@ -188,7 +203,10 @@ jobs:
             echo "-----------------------------------------------------------"
             python -m pip install "$WHEEL"
           else
-            python -m pip install .  --no-deps
+            echo "-----------------------------------------------------------"
+            echo "Installing as editable install for coverage support"
+            echo "-----------------------------------------------------------"
+            python -m pip install -e . --no-deps
           fi
 
       - name: Install optional dependencies
@@ -274,7 +292,7 @@ jobs:
           # Run the readme test from the checked out directory.
           testflo -n 1 ./dymos/test/test_readme.py --pre_announce || HAS_ERRORS=true
           cd "$HOME"
-          if [[ "${{ matrix.NAME }}" != "latest" ]]; then
+          if [[ "${{ matrix.NAME }}" != "latest" && "${{ matrix.SKIP_COVERAGE }}" != "true" ]]; then
             testflo dymos -n 4 --pre_announce --show_skipped --durations 20 --coverage --coverpkg dymos || HAS_ERRORS=true
           else
             testflo dymos -n 4 --pre_announce --show_skipped --durations 20 || HAS_ERRORS=true
@@ -286,7 +304,7 @@ jobs:
           fi
 
       - name: Submit coverage
-        if: steps.run_tests.outcome == 'success' && github.event_name != 'workflow_dispatch'
+        if: steps.run_tests.outcome == 'success' && github.event_name != 'workflow_dispatch' && ! matrix.SKIP_COVERAGE
         continue-on-error: true
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -299,8 +317,7 @@ jobs:
           echo "============================================================="
           cp "$HOME"/.coverage .
           pip install coveralls
-          SITE_DIR=$(python -c 'import site; print(site.getsitepackages()[-1])')
-          coveralls --basedir "$SITE_DIR"
+          coveralls --basedir "."
 
       - name: Fail the workflow if tests failed
         if: steps.run_tests.outcome != 'success'
