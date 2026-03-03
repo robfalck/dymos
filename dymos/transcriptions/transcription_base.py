@@ -3,9 +3,9 @@ from collections.abc import Sequence
 import numpy as np
 
 import openmdao.api as om
+from openmdao.core.constants import INF_BOUND
 
 from .common import ControlInterpComp, ParameterComp
-from ..utils.constants import INF_BOUND
 from ..utils.indexing import get_constraint_flat_idxs
 from ..utils.introspection import configure_states_introspection, get_promoted_vars, \
     configure_states_discovery, _configure_boundary_balance_introspection

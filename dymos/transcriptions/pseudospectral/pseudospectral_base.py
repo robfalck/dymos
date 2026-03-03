@@ -1,13 +1,13 @@
 import numpy as np
 
 import openmdao.api as om
+from openmdao.core.constants import INF_BOUND
 from ..transcription_base import TranscriptionBase
 from ..common import TimeComp
 from .components import StateIndependentsComp, StateInterpComp, CollocationComp
 from ..common.timeseries_output_comp import TimeseriesOutputComp
 from ...utils.misc import CoerceDesvar, get_rate_units, reshape_val
 from ...utils.introspection import get_promoted_vars, get_source_metadata
-from ...utils.constants import INF_BOUND
 from ...utils.indexing import get_src_indices_by_row
 
 
