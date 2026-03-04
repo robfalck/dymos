@@ -314,6 +314,10 @@ jobs:
           echo "============================================================="
           echo "Submit coverage"
           echo "============================================================="
+          # IMPORTANT: This combines the .coverage.GRLAL... files into one .coverage file
+          # This happens ONLY for this specific matrix node (e.g., 'baseline')
+          coverage combine
+          coverage report -m
           pip install coveralls
           coveralls --verbose
 
