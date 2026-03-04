@@ -315,7 +315,7 @@ jobs:
           echo "Submit coverage"
           echo "============================================================="
           pip install coveralls
-          coveralls
+          coveralls --verbose
 
       - name: Fail the workflow if tests failed
         if: steps.run_tests.outcome != 'success'
