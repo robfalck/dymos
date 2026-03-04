@@ -291,7 +291,6 @@ jobs:
           testflo -b benchmark --pre_announce || HAS_ERRORS=true
           # Run the readme test from the checked out directory.
           testflo -n 1 ./dymos/test/test_readme.py --pre_announce || HAS_ERRORS=true
-          cd "$HOME"
           if [[ "${{ matrix.NAME }}" != "latest" && "${{ matrix.SKIP_COVERAGE }}" != "true" ]]; then
             testflo dymos -n 4 --pre_announce --show_skipped --durations 20 --coverage --coverpkg dymos || HAS_ERRORS=true
           else
@@ -315,9 +314,8 @@ jobs:
           echo "============================================================="
           echo "Submit coverage"
           echo "============================================================="
-          cp "$HOME"/.coverage .
           pip install coveralls
-          coveralls --basedir "."
+          coveralls
 
       - name: Fail the workflow if tests failed
         if: steps.run_tests.outcome != 'success'
