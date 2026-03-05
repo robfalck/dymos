@@ -316,10 +316,17 @@ jobs:
           echo "============================================================="
           # IMPORTANT: This combines the .coverage.GRLAL... files into one .coverage file
           # This happens ONLY for this specific matrix node (e.g., 'baseline')
+          echo "Coverage files before combine:"
+          ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
+          echo ""
           coverage combine
+          echo ""
+          echo "Coverage files after combine:"
+          ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
+          echo ""
           coverage report -m
           pip install coveralls
-          coveralls --verbose
+          coveralls --verbose --debug
 
       - name: Fail the workflow if tests failed
         if: steps.run_tests.outcome != 'success'
