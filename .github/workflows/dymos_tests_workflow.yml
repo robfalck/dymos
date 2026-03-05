@@ -326,7 +326,7 @@ jobs:
           echo ""
           coverage report -m
           pip install coveralls
-          coveralls --verbose --debug
+          coveralls debug
 
       - name: Fail the workflow if tests failed
         if: steps.run_tests.outcome != 'success'
