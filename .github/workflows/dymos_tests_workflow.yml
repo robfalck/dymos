@@ -328,6 +328,15 @@ jobs:
           pip install coveralls
           coveralls debug
 
+      - name: Upload coverage artifact
+        if: steps.run_tests.outcome == 'success' && ! matrix.SKIP_COVERAGE
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.NAME }}
+          path: .coverage
+          retention-days: 1
+
       - name: Fail the workflow if tests failed
         if: steps.run_tests.outcome != 'success'
         run: |
