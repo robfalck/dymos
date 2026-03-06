@@ -308,7 +308,7 @@ jobs:
           echo "============================================================="
           echo "Submit coverage"
           echo "============================================================="
-          # IMPORTANT: This combines the .coverage.GRLAL... files into one .coverage file
+          # IMPORTANT: This combines the .coverage.XXX... files into one .coverage file
           # This happens ONLY for this specific matrix node (e.g., 'baseline')
           echo "Coverage files before combine:"
           ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
@@ -342,6 +342,7 @@ jobs:
           path: .coverage
           retention-days: 7
           if-no-files-found: warn
+          include-hidden-files: true
 
       - name: Fail the workflow if tests failed
         if: steps.run_tests.outcome != 'success'
