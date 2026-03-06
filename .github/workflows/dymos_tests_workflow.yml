@@ -107,7 +107,7 @@ jobs:
           - NAME: baseline
             OPENMDAO_PIXI_ENVIRONMENT: 'py313'
             OPENMDAO_INSTALL_FROM: 'pypi'
-            OPENMDAO: '3.41.0'
+            OPENMDAO: 'latest'
             DYMOS_2: False
             EXCLUDE: ${{ github.event_name == 'workflow_dispatch'  && ! inputs.latest }}
 
@@ -115,7 +115,7 @@ jobs:
           - NAME: pep517
             OPENMDAO_PIXI_ENVIRONMENT: 'py313'
             OPENMDAO_INSTALL_FROM: 'pypi'
-            OPENMDAO: '3.41.0'
+            OPENMDAO: 'latest'
             DYMOS_2: False
             PEP517: True
             SKIP_COVERAGE: True
@@ -125,16 +125,9 @@ jobs:
           - NAME: no_mpi
             OPENMDAO_PIXI_ENVIRONMENT: 'default'
             OPENMDAO_INSTALL_FROM: 'pypi'
-            OPENMDAO: '3.41.0'
+            OPENMDAO: 'latest'
             DYMOS_2 : False
-            EXCLUDE: ${{ github.event_name == 'workflow_dispatch'  && ! inputs.latest }}
-
-          # latest versions
-          - NAME: latest
-            OPENMDAO_PIXI_ENVIRONMENT: 'py313'
-            OPENMDAO_INSTALL_FROM: 'github'
-            OPENMDAO: ''
-            DYMOS_2 : False
+            SKIP_COVERAGE: True
             EXCLUDE: ${{ github.event_name == 'workflow_dispatch'  && ! inputs.latest }}
 
           # latest versions dymos 2 testing
@@ -150,6 +143,7 @@ jobs:
             OPENMDAO_PIXI_ENVIRONMENT: 'oldest'
             OPENMDAO_INSTALL_FROM: 'pypi'
             OPENMDAO: '3.39.0'
+            SKIP_COVERAGE: True
             EXCLUDE: ${{ github.event_name == 'workflow_dispatch'  && ! inputs.oldest }}
 
     steps:
@@ -325,17 +319,29 @@ jobs:
           ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
           echo ""
           coverage report -m
+          coverage json -o coverage.json
           pip install coveralls
-          coveralls debug
+          coveralls debug 2>&1 | head -100
 
-      - name: Upload coverage artifact
-        if: steps.run_tests.outcome == 'success' && ! matrix.SKIP_COVERAGE
+      - name: Check for coverage file before upload
+        if: steps.run_tests.outcome == 'success' && github.event_name != 'workflow_dispatch' && ! matrix.SKIP_COVERAGE
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Contents of current directory:"
+          ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
+          echo ""
+          echo "File size of .coverage if it exists:"
+          ls -lh .coverage 2>/dev/null || echo ".coverage does not exist"
+
+      - name: Upload coverage artifacts
+        if: steps.run_tests.outcome == 'success' && github.event_name != 'workflow_dispatch' && ! matrix.SKIP_COVERAGE
         continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: coverage-${{ matrix.NAME }}
           path: .coverage
-          retention-days: 1
+          retention-days: 7
+          if-no-files-found: warn
 
       - name: Fail the workflow if tests failed
         if: steps.run_tests.outcome != 'success'
