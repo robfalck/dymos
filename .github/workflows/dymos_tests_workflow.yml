@@ -107,7 +107,7 @@ jobs:
           - NAME: baseline
             OPENMDAO_PIXI_ENVIRONMENT: 'py313'
             OPENMDAO_INSTALL_FROM: 'pypi'
-            OPENMDAO: 'latest'
+            OPENMDAO: ''
             DYMOS_2: False
             EXCLUDE: ${{ github.event_name == 'workflow_dispatch'  && ! inputs.latest }}
 
@@ -115,7 +115,7 @@ jobs:
           - NAME: pep517
             OPENMDAO_PIXI_ENVIRONMENT: 'py313'
             OPENMDAO_INSTALL_FROM: 'pypi'
-            OPENMDAO: 'latest'
+            OPENMDAO: ''
             DYMOS_2: False
             PEP517: True
             SKIP_COVERAGE: True
@@ -125,7 +125,7 @@ jobs:
           - NAME: no_mpi
             OPENMDAO_PIXI_ENVIRONMENT: 'default'
             OPENMDAO_INSTALL_FROM: 'pypi'
-            OPENMDAO: 'latest'
+            OPENMDAO: ''
             DYMOS_2 : False
             SKIP_COVERAGE: True
             EXCLUDE: ${{ github.event_name == 'workflow_dispatch'  && ! inputs.latest }}
