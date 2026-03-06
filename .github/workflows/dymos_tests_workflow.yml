@@ -286,8 +286,13 @@ jobs:
           # Run the readme test from the checked out directory.
           testflo -n 1 ./dymos/test/test_readme.py --pre_announce || HAS_ERRORS=true
           if [[ "${{ matrix.NAME }}" != "latest" && "${{ matrix.SKIP_COVERAGE }}" != "true" ]]; then
+            echo "Coverage files before moving to HOME:"
+            ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
+            cp .coveragerc $HOME
+            cd $HOME
             testflo dymos -n 4 --pre_announce --show_skipped --durations 20 --coverage --coverpkg dymos || HAS_ERRORS=true
           else
+            cd $HOME
             testflo dymos -n 4 --pre_announce --show_skipped --durations 20 || HAS_ERRORS=true
           fi
 
@@ -308,8 +313,7 @@ jobs:
           echo "============================================================="
           echo "Submit coverage"
           echo "============================================================="
-          # IMPORTANT: This combines the .coverage.XXX... files into one .coverage file
-          # This happens ONLY for this specific matrix node (e.g., 'baseline')
+          cd $HOME
           echo "Coverage files before combine:"
           ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
           echo ""
@@ -319,19 +323,14 @@ jobs:
           ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
           echo ""
           coverage report -m
-          coverage json -o coverage.json
           pip install coveralls
-          coveralls debug 2>&1 | head -100
+          REPO_DIR="$(pwd)/../dymos"
+          coveralls --basedir $REPO_DIR
 
-      - name: Check for coverage file before upload
+      - name: Copy coverage file back to repo for artifact upload
         if: steps.run_tests.outcome == 'success' && github.event_name != 'workflow_dispatch' && ! matrix.SKIP_COVERAGE
         run: |
-          echo "Current directory: $(pwd)"
-          echo "Contents of current directory:"
-          ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
-          echo ""
-          echo "File size of .coverage if it exists:"
-          ls -lh .coverage 2>/dev/null || echo ".coverage does not exist"
+          cp $HOME/.coverage .
 
       - name: Upload coverage artifacts
         if: steps.run_tests.outcome == 'success' && github.event_name != 'workflow_dispatch' && ! matrix.SKIP_COVERAGE
