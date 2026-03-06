@@ -6,9 +6,9 @@ shooting methods, and analytic.
 """
 from __future__ import annotations
 
-from typing import Literal, Annotated, TYPE_CHECKING
+from typing import Literal, Annotated, TYPE_CHECKING, Union
 import numpy as np
-from pydantic import Field, field_serializer, model_validator
+from pydantic import Field, field_serializer, model_validator, field_validator
 
 from .base_spec import DymosBaseSpec
 
@@ -100,6 +100,12 @@ class GaussLobattoSpec(TranscriptionBase):
         description="Polynomial order (must be odd). Can be scalar or per-segment."
     )
 
+    nodes_per_seg: int | list | np.ndarray | None = Field(
+        default=3,
+        ge=3,
+        description="Number of nodes in each segment (must be even)"
+    )
+
     compressed: bool = Field(
         default=False,
         description="If True, use compressed transcription for memory efficiency."
@@ -109,6 +115,13 @@ class GaussLobattoSpec(TranscriptionBase):
         default=False,
         description="If True or specified, use solver-based segment convergence."
     )
+
+    @field_validator('nodes_per_seg')
+    @classmethod
+    def check_if_odd(cls, v: int) -> int:
+        if v % 2 == 0:
+            raise ValueError('ensure this value is an odd number')
+        return v
 
     def compute_grid_data(self) -> 'GridData':
         """Compute GridData for Gauss-Lobatto transcription."""
