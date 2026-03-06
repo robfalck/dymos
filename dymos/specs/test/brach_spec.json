@@ -1,7 +1,7 @@
 {
     "type": "dymos.examples.brachistochrone.brachistochrone_ode.BrachistochroneODE",
     "num_nodes": null,
-    "static_gravity": true,
+    "static_gravity": false,
     "inputs": {
         "v": {
             "units": "m/s",
@@ -19,15 +19,18 @@
     "outputs": {
         "xdot": {
             "units": "m/s",
-            "shape": ["num_nodes", 1]
+            "shape": ["num_nodes", 1],
+            "tags": ["dymos.state_rate:x"]
         },
         "ydot": {
             "units": "m/s",
-            "shape": ["num_nodes", 1]
+            "shape": ["num_nodes", 1],
+            "tags": ["dymos.state_rate:y"]
         },
         "vdot": {
             "units": "m/s**2",
-            "shape": ["num_nodes", 1]
+            "shape": ["num_nodes", 1],
+            "tags": ["dymos.state_rate:v"]
         },
         "check": {
             "units": "m/s",
