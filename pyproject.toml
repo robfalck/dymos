@@ -108,3 +108,80 @@ convention = "numpy"
 "**/dymos_book/**" = ["E402", "E501"]
 # Ignore Test classifiers
 "test_*.py" = ["D", "E", "F"]
+
+###############################################
+# Pixi Configuration
+###############################################
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+
+[tool.pixi.dependencies]
+python = "=3.13"
+numpy = ">=2.0"
+scipy = ">=1.13"
+pip = ">=25.3"
+packaging = ">=25.0"
+compilers = ">=1.8.0,<2"
+
+[tool.pixi.pypi-dependencies]
+dymos = { path = ".", editable = true }
+
+###############################################
+# Pixi Features
+###############################################
+
+[tool.pixi.feature.docs.dependencies]
+ipyparallel = "*"
+jupyter-book = ">=1.0.3,<2"
+matplotlib = "*"
+numpydoc = "*"
+jinja2 = "*"
+tqdm = "*"
+
+[tool.pixi.feature.notebooks.dependencies]
+ipympl = "*"
+notebook = "*"
+ipython = "*"
+
+[tool.pixi.feature.numba.dependencies]
+numba = "*"
+
+[tool.pixi.feature.packaging.dependencies]
+hatchling = "*"
+
+[tool.pixi.feature.test.dependencies]
+pre-commit = "*"
+aiounittest = "*"
+numpydoc = "*"
+parameterized = "*"
+playwright = "*"
+pycodestyle = "*"
+pydocstyle = "*"
+ruff = "*"
+coverage = ">=7.6.0"
+
+[tool.pixi.feature.test.pypi-dependencies]
+testflo = "*"
+
+[tool.pixi.feature.visualization.dependencies]
+bokeh = "*"
+matplotlib = "*"
+rich = "*"
+
+###############################################
+# Pixi Environments
+###############################################
+
+[tool.pixi.environments]
+default = { features = ["numba", "notebooks", "visualization", "test"], solve-group = "default" }
+dev = { features = ["numba", "notebooks", "visualization", "test", "docs", "packaging"], solve-group = "default" }
+
+###############################################
+# Pixi Tasks
+###############################################
+
+[tool.pixi.tasks]
+test = "testflo"
+install-dymos-dev = { cmd = "pip install --no-deps -e . && pre-commit install", description = "Install Dymos in development mode" }
