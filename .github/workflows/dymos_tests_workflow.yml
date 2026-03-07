@@ -308,39 +308,32 @@ jobs:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COVERALLS_SERVICE_NAME: "github"
           COVERALLS_PARALLEL: True
+          # These three ensure the SHA and branch are NEVER empty
+          COVERALLS_GIT_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+          COVERALLS_GIT_BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           eval "$(pixi shell-hook -e ${{ matrix.OPENMDAO_PIXI_ENVIRONMENT }} --manifest-path=${{ env.PIXI_MANIFEST }})"
           echo "============================================================="
           echo "Submit coverage"
           echo "============================================================="
           cd $HOME
-          echo "Coverage files before combine:"
-          ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
-          echo ""
-          coverage combine
-          echo ""
-          echo "Coverage files after combine:"
-          ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
-          echo ""
           coverage report -m
           pip install coveralls
-          coveralls --basedir $GITHUB_WORKSPACE
-
-      - name: Copy coverage file back to repo for artifact upload
-        if: steps.run_tests.outcome == 'success' && github.event_name != 'workflow_dispatch' && ! matrix.SKIP_COVERAGE
-        run: |
+          coveralls --basedir $GITHUB_WORKSPACE/dymos
+          # Copy coverage file back to repo for artifact upload
           cp $HOME/.coverage .
 
-      - name: Upload coverage artifacts
-        if: steps.run_tests.outcome == 'success' && github.event_name != 'workflow_dispatch' && ! matrix.SKIP_COVERAGE
-        continue-on-error: true
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-${{ matrix.NAME }}
-          path: .coverage
-          retention-days: 7
-          if-no-files-found: warn
-          include-hidden-files: true
+      # Uncomment for debug if coverage isn't working as expected.
+      # - name: Upload coverage artifacts
+      #   if: steps.run_tests.outcome == 'success' && github.event_name != 'workflow_dispatch' && ! matrix.SKIP_COVERAGE
+      #   continue-on-error: true
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: coverage-${{ matrix.NAME }}
+      #     path: .coverage
+      #     retention-days: 7
+      #     if-no-files-found: warn
+      #     include-hidden-files: true
 
       - name: Fail the workflow if tests failed
         if: steps.run_tests.outcome != 'success'
