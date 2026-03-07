@@ -168,8 +168,6 @@ jobs:
       - name: Checkout code
         if: ${{ ! matrix.EXCLUDE }}
         uses: actions/checkout@v6
-        with:
-          path: 'dymos.git'
 
       - name: 'Setup OpenMDAO pixi Environment'
         id: setup_pixi_environment
