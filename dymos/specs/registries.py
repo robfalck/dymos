@@ -31,11 +31,13 @@ def _init_registries() -> None:
     )
 
     # Import actual transcription classes
-    from dymos.transcriptions.pseudospectral import GaussLobatto, Radau, Birkhoff
+    from dymos.transcriptions.pseudospectral.gauss_lobatto import GaussLobatto
+    from dymos.transcriptions.pseudospectral.radau_new import RadauNew as Radau
+    from dymos.transcriptions.pseudospectral.birkhoff import Birkhoff
     from dymos.transcriptions.pseudospectral.radau_new import RadauNew
     from dymos.transcriptions.explicit_shooting import ExplicitShooting
-    from dymos.transcriptions.picard_shooting import PicardShooting
-    from dymos.transcriptions.analytic import Analytic
+    from dymos.transcriptions.picard_shooting.picard_shooting import PicardShooting
+    from dymos.transcriptions.analytic.analytic import Analytic
 
     # Register specs
     _TRANSCRIPTION_SPECS['gauss-lobatto'] = GaussLobattoSpec

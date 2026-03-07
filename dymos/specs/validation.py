@@ -6,7 +6,7 @@ Custom validators for specs to ensure consistency and catch errors early.
 import numpy as np
 
 
-def validate_bounds(lower: any | None, upper: any | None) -> None:
+def validate_bounds(lower: float | None, upper: float | None) -> None:
     """
     Validate that lower bound is less than or equal to upper bound.
 
@@ -30,9 +30,9 @@ def validate_bounds(lower: any | None, upper: any | None) -> None:
 
 
 def validate_equals_exclusive(
-    equals: any | None,
-    lower: any | None,
-    upper: any | None
+    equals: float | list[float] | None,
+    lower: float | list[float] | None,
+    upper: float | list[float] | None
 ) -> None:
     """
     Validate that equals is mutually exclusive with lower and upper bounds.
@@ -57,9 +57,9 @@ def validate_equals_exclusive(
 
 
 def validate_constraint_has_value(
-    lower: any | None,
-    upper: any | None,
-    equals: any | None
+    equals: float | list[float] | None,
+    lower: float | list[float] | None,
+    upper: float | list[float] | None
 ) -> None:
     """
     Validate that at least one of lower, upper, or equals is specified.
@@ -84,7 +84,7 @@ def validate_constraint_has_value(
 
 def validate_control_polynomial_order(
     control_type: str,
-    order: Optional[int]
+    order: int | None
 ) -> None:
     """
     Validate that polynomial order is only specified for polynomial controls.

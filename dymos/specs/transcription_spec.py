@@ -8,82 +8,28 @@ from __future__ import annotations
 
 from typing import Literal, Annotated, TYPE_CHECKING, Union
 import numpy as np
-from pydantic import Field, field_serializer, model_validator, field_validator
+from pydantic import Field, field_serializer  # model_validator, field_validator
 
 from .base_spec import DymosBaseSpec
 
 if TYPE_CHECKING:
     from dymos.transcriptions.grid_data import GridData
-    from dymos.specs.phase_spec import PhaseSpec
-    from dymos.specs.group_structure import GroupStructure
+    # from dymos.specs.phase_spec import PhaseSpec
+    # from dymos.specs.group_structure import GroupStructure
 
 
-class TranscriptionBase(DymosBaseSpec):
+class TranscriptionSpecBase(DymosBaseSpec):
     """
     Base specification for all transcription methods.
 
     Each transcription spec computes and stores its GridData during validation.
     """
 
-    transcription_type: str = Field(
-        ...,
-        frozen=True,
-        description="Type identifier for this transcription."
-    )
-
-    grid_data: 'GridData' | None = Field(
-        default=None,
-        exclude=True,
-        description="Computed grid data for this transcription (not JSON serialized)."
-    )
-
-    def compute_grid_data(self) -> 'GridData':
-        """
-        Compute and return GridData for this transcription.
-
-        Must be implemented by each transcription subclass.
-
-        Returns
-        -------
-        GridData
-            Grid data containing node locations, weights, and subset information.
-        """
-        raise NotImplementedError(f"compute_grid_data() not implemented for {self.__class__.__name__}")
-
-    @model_validator(mode='after')
-    def _compute_grid_data(self):
-        """Compute grid_data during validation."""
-        if self.grid_data is None:
-            self.grid_data = self.compute_grid_data()
-        return self
-
-    def get_group_structure(self, phase_spec: 'PhaseSpec') -> 'GroupStructure':
-        """
-        Generate OpenMDAO group structure for this transcription.
-
-        Must be implemented by each transcription subclass.
-
-        Parameters
-        ----------
-        phase_spec : PhaseSpec
-            The complete phase specification.
-
-        Returns
-        -------
-        GroupStructure
-            Contains subsystems and connections for the phase group.
-        """
-        raise NotImplementedError(f"get_group_structure() not implemented for {self.__class__.__name__}")
-
-
-class GaussLobattoSpec(TranscriptionBase):
-    """
-    Specification for Gauss-Lobatto pseudospectral transcription.
-
-    High-order collocation method using Gauss-Lobatto quadrature.
-    """
-
-    transcription_type: Literal['gauss-lobatto'] = 'gauss-lobatto'
+    # type: str = Field(
+    #     ...,
+    #     frozen=True,
+    #     description="Type identifier for this transcription."
+    # )
 
     num_segments: int = Field(
         default=10,
@@ -116,34 +62,113 @@ class GaussLobattoSpec(TranscriptionBase):
         description="If True or specified, use solver-based segment convergence."
     )
 
-    @field_validator('nodes_per_seg')
-    @classmethod
-    def check_if_odd(cls, v: int) -> int:
-        if v % 2 == 0:
-            raise ValueError('ensure this value is an odd number')
-        return v
+    # def compute_grid_data(self) -> 'GridData':
+    #     """
+    #     Compute and return GridData for this transcription.
 
-    def compute_grid_data(self) -> 'GridData':
-        """Compute GridData for Gauss-Lobatto transcription."""
-        from dymos.transcriptions.grid_data import GaussLobattoGrid
-        return GaussLobattoGrid(
-            num_segments=self.num_segments,
-            nodes_per_seg=self.order,
-            segment_ends=self.segment_ends,
-            compressed=self.compressed
-        )
+    #     Must be implemented by each transcription subclass.
 
-    @field_serializer('segment_ends', 'order')
-    def serialize_arrays(self, value, _info):
-        """Convert numpy arrays to lists for JSON serialization."""
-        if isinstance(value, np.ndarray):
-            return value.tolist()
-        elif isinstance(value, (list, tuple)):
-            return list(value)
-        return value
+    #     Returns
+    #     -------
+    #     GridData
+    #         Grid data containing node locations, weights, and subset information.
+    #     """
+    #     raise NotImplementedError(f"compute_grid_data() not implemented for {self.__class__.__name__}")
+
+    # @model_validator(mode='after')
+    # def _compute_grid_data(self):
+    #     """Compute grid_data during validation."""
+    #     if self.grid_data is None:
+    #         self.grid_data = self.compute_grid_data()
+    #     return self
+
+    # def get_group_structure(self, phase_spec: 'PhaseSpec') -> 'GroupStructure':
+    #     """
+    #     Generate OpenMDAO group structure for this transcription.
+
+    #     Must be implemented by each transcription subclass.
+
+    #     Parameters
+    #     ----------
+    #     phase_spec : PhaseSpec
+    #         The complete phase specification.
+
+    #     Returns
+    #     -------
+    #     GroupStructure
+    #         Contains subsystems and connections for the phase group.
+    #     """
+    #     raise NotImplementedError(f"get_group_structure() not implemented for {self.__class__.__name__}")
 
 
-class RadauSpec(TranscriptionBase):
+class GaussLobattoSpec(TranscriptionSpecBase):
+    """
+    Specification for Gauss-Lobatto pseudospectral transcription.
+
+    High-order collocation method using Gauss-Lobatto quadrature.
+    """
+
+    type: Literal['gauss-lobatto'] = 'gauss-lobatto'
+
+    # num_segments: int = Field(
+    #     default=10,
+    #     description="Number of segments for the discretization."
+    # )
+
+    # segment_ends: list | np.ndarray | None = Field(
+    #     default=None,
+    #     description="Custom segment end points in normalized time [0, 1]."
+    # )
+
+    # order: int | list | np.ndarray = Field(
+    #     default=3,
+    #     description="Polynomial order (must be odd). Can be scalar or per-segment."
+    # )
+
+    # nodes_per_seg: int | list | np.ndarray | None = Field(
+    #     default=3,
+    #     ge=3,
+    #     description="Number of nodes in each segment (must be even)"
+    # )
+
+    # compressed: bool = Field(
+    #     default=False,
+    #     description="If True, use compressed transcription for memory efficiency."
+    # )
+
+    # solve_segments: bool | Literal['forward', 'backward'] = Field(
+    #     default=False,
+    #     description="If True or specified, use solver-based segment convergence."
+    # )
+
+    # @field_validator('nodes_per_seg')
+    # @classmethod
+    # def check_if_odd(cls, v: int) -> int:
+    #     if v % 2 == 0:
+    #         raise ValueError('ensure this value is an odd number')
+    #     return v
+
+    # def compute_grid_data(self) -> 'GridData':
+    #     """Compute GridData for Gauss-Lobatto transcription."""
+    #     from dymos.transcriptions.grid_data import GaussLobattoGrid
+    #     return GaussLobattoGrid(
+    #         num_segments=self.num_segments,
+    #         nodes_per_seg=self.order,
+    #         segment_ends=self.segment_ends,
+    #         compressed=self.compressed
+    #     )
+
+    # @field_serializer('segment_ends', 'order')
+    # def serialize_arrays(self, value, _info):
+    #     """Convert numpy arrays to lists for JSON serialization."""
+    #     if isinstance(value, np.ndarray):
+    #         return value.tolist()
+    #     elif isinstance(value, (list, tuple)):
+    #         return list(value)
+    #     return value
+
+
+class RadauSpec(TranscriptionSpecBase):
     """
     Specification for Radau pseudospectral transcription.
 
@@ -192,7 +217,7 @@ class RadauSpec(TranscriptionBase):
         return value
 
 
-class RadauNewSpec(TranscriptionBase):
+class RadauNewSpec(TranscriptionSpecBase):
     """
     Specification for new Radau pseudospectral transcription.
 
@@ -246,7 +271,7 @@ class RadauNewSpec(TranscriptionBase):
         return value
 
 
-class BirkhoffSpec(TranscriptionBase):
+class BirkhoffSpec(TranscriptionSpecBase):
     """
     Specification for Birkhoff pseudospectral transcription.
 
@@ -274,7 +299,7 @@ class BirkhoffSpec(TranscriptionBase):
         )
 
 
-class ExplicitShootingSpec(TranscriptionBase):
+class ExplicitShootingSpec(TranscriptionSpecBase):
     """
     Specification for explicit shooting transcription.
 
@@ -348,7 +373,7 @@ class ExplicitShootingSpec(TranscriptionBase):
         )
 
 
-class PicardShootingSpec(TranscriptionBase):
+class PicardShootingSpec(TranscriptionSpecBase):
     """
     Specification for Picard shooting transcription.
 
@@ -422,7 +447,7 @@ class PicardShootingSpec(TranscriptionBase):
         )
 
 
-class AnalyticSpec(TranscriptionBase):
+class AnalyticSpec(TranscriptionSpecBase):
     """
     Specification for analytic transcription.
 
@@ -482,5 +507,5 @@ TranscriptionSpec = Annotated[
         PicardShootingSpec,
         AnalyticSpec,
     ],
-    Field(discriminator='transcription_type')
+    Field(discriminator='type')
 ]

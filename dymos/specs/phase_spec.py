@@ -5,8 +5,11 @@ Defines the complete specification for a dymos Phase.
 """
 from __future__ import annotations
 
+import typing 
+from typing import Literal
+import json
 import numpy as np
-from pydantic import Field, field_serializer, field_validator
+from pydantic import Field, field_serializer, field_validator, model_serializer
 
 from .base_spec import DymosBaseSpec
 from .time_spec import TimeSpec
@@ -14,6 +17,7 @@ from .variable_spec import StateSpec, ControlSpec, ParameterSpec
 from .constraint_spec import BoundaryConstraintSpec, PathConstraintSpec
 from .objective_spec import ObjectiveSpec
 from .transcription_spec import TranscriptionSpec
+
 
 # Import OpenMDAO spec types
 try:
@@ -137,126 +141,167 @@ class PhaseSpec(DymosBaseSpec):
 
     Contains all configuration needed to recreate a phase through instantiation.
     """
+    type: Literal['dymos.Phase'] = 'dymos.Phase'
 
     name: str = Field(
         ...,
         description="Name of the phase."
     )
 
-    ode_spec: OMExplicitComponentSpec | dict = Field(
-        ...,
-        description=(
-            "ODE component specification. Can be either:\n"
-            "1. OMExplicitComponentSpec: Complete spec with inputs, outputs, and options. "
-            "   Use shape_by_conn=True for all variables - shapes will be inferred from "
-            "   connections during setup. Do NOT include 'num_nodes' in options.\n"
-            "2. dict (deprecated): Legacy dict format with 'path' and 'init_kwargs' keys.\n"
-            "NOTE: num_nodes is computed automatically by dymos based on the "
-            "transcription grid structure and is injected during to_group_spec()."
-        )
-    )
+    # ode: OMExplicitComponentSpec | dict = Field(
+    #     ...,
+    #     description=(
+    #         "ODE component specification. Can be either:\n"
+    #         "1. OMExplicitComponentSpec: Complete spec with inputs, outputs, and options. "
+    #         "   Use shape_by_conn=True for all variables - shapes will be inferred from "
+    #         "   connections during setup. Do NOT include 'num_nodes' in options.\n"
+    #         "2. dict (deprecated): Legacy dict format with 'path' and 'init_kwargs' keys.\n"
+    #         "NOTE: num_nodes is computed automatically by dymos based on the "
+    #         "transcription grid structure and is injected during to_group_spec()."
+    #     )
+    # )
 
     transcription: TranscriptionSpec = Field(
         ...,
         description="Transcription method specification."
     )
 
-    time_options: TimeSpec = Field(
+    time_options: TimeSpec | dict = Field(
         default_factory=TimeSpec,
         description="Time options for the phase."
     )
 
-    states: list[StateSpec] = Field(
-        default_factory=list,
+    state_options: dict[str, StateSpec | dict] = Field(
+        default_factory=dict,
         description="State variables in the phase."
     )
 
-    controls: list[ControlSpec] = Field(
-        default_factory=list,
-        description="Control variables in the phase."
-    )
+    # control_options: dict[str, ControlSpec] = Field(
+    #     default_factory=dict,
+    #     description="Control variables in the phase."
+    # )
 
-    parameters: list[ParameterSpec] = Field(
-        default_factory=list,
-        description="Parameter variables in the phase."
-    )
+    # parameter_options: dict[str, ParameterSpec] = Field(
+    #     default_factory=dict,
+    #     description="Parameter variables in the phase."
+    # )
 
-    boundary_constraints: list[BoundaryConstraintSpec] = Field(
-        default_factory=list,
-        description="Boundary constraints (initial and final)."
-    )
+    # boundary_constraints: list[BoundaryConstraintSpec] = Field(
+    #     default_factory=list,
+    #     description="Boundary constraints (initial and final)."
+    # )
 
-    path_constraints: list[PathConstraintSpec] = Field(
-        default_factory=list,
-        description="Path constraints (at all nodes)."
-    )
+    # path_constraints: list[PathConstraintSpec] = Field(
+    #     default_factory=list,
+    #     description="Path constraints (at all nodes)."
+    # )
 
-    objectives: list[ObjectiveSpec] = Field(
-        default_factory=list,
-        description="Objectives for optimization."
-    )
+    # objectives: list[ObjectiveSpec] = Field(
+    #     default_factory=list,
+    #     description="Objectives for optimization."
+    # )
 
-    timeseries_outputs: list[TimeseriesOutputSpec] = Field(
-        default_factory=list,
-        description="Variables to include in timeseries outputs."
-    )
+    # timeseries_outputs: list[TimeseriesOutputSpec] = Field(
+    #     default_factory=list,
+    #     description="Variables to include in timeseries outputs."
+    # )
 
-    refine_options: GridRefinementSpec | None = Field(
-        default=None,
-        description="Grid refinement options."
-    )
+    # refine_options: GridRefinementSpec | None = Field(
+    #     default=None,
+    #     description="Grid refinement options."
+    # )
 
-    simulate_options: SimulateSpec | None = Field(
-        default=None,
-        description="Simulation options."
-    )
+    # simulate_options: SimulateSpec | None = Field(
+    #     default=None,
+    #     description="Simulation options."
+    # )
 
-    auto_solvers: bool = Field(
-        default=True,
-        description="If True, automatically configure solvers."
-    )
+    # auto_solvers: bool = Field(
+    #     default=True,
+    #     description="If True, automatically configure solvers."
+    # )
 
-    @field_validator('ode_spec')
-    @classmethod
-    def validate_ode_spec(cls, v):
-        """Validate ode_spec and ensure num_nodes is not included."""
-        # Handle OMExplicitComponentSpec
-        if hasattr(v, 'options'):  # OMExplicitComponentSpec
-            if 'num_nodes' in v.options:
-                raise ValueError(
-                    "ode_spec.options should not contain 'num_nodes'. "
-                    "This value is computed automatically by dymos based on the "
-                    "transcription grid structure and is injected during to_group_spec()."
-                )
-            return v
+    # @field_validator('ode')
+    # @classmethod
+    # def validate_ode_spec(cls, v):
+    #     """Validate ode_spec and ensure num_nodes is not included."""
+    #     # Handle OMExplicitComponentSpec
+    #     if hasattr(v, 'options'):  # OMExplicitComponentSpec
+    #         if 'num_nodes' in v.options:
+    #             raise ValueError(
+    #                 "ode_spec.options should not contain 'num_nodes'. "
+    #                 "This value is computed automatically by dymos based on the "
+    #                 "transcription grid structure and is injected during to_group_spec()."
+    #             )
+    #         return v
 
-        # Handle dict (legacy format)
-        if isinstance(v, dict):
-            # Check for num_nodes in init_kwargs
-            init_kwargs = v.get('init_kwargs', {})
-            if isinstance(init_kwargs, dict) and 'num_nodes' in init_kwargs:
-                raise ValueError(
-                    "ode_spec['init_kwargs'] should not contain 'num_nodes'. "
-                    "This value is computed automatically by dymos based on the "
-                    "transcription grid structure (num_segments, order, etc.). "
-                    "Only ODE-specific parameters (e.g., 'static_gravity') should be in init_kwargs."
-                )
-            return v
+    #     # Handle dict (legacy format)
+    #     if isinstance(v, dict):
+    #         # Check for num_nodes in init_kwargs
+    #         init_kwargs = v.get('init_kwargs', {})
+    #         if isinstance(init_kwargs, dict) and 'num_nodes' in init_kwargs:
+    #             raise ValueError(
+    #                 "ode_spec['init_kwargs'] should not contain 'num_nodes'. "
+    #                 "This value is computed automatically by dymos based on the "
+    #                 "transcription grid structure (num_segments, order, etc.). "
+    #                 "Only ODE-specific parameters (e.g., 'static_gravity') should be in init_kwargs."
+    #             )
+    #         return v
 
-        raise ValueError(
-            f"ode_spec must be either OMExplicitComponentSpec or dict, got {type(v)}"
-        )
+    #     raise ValueError(
+    #         f"ode_spec must be either OMExplicitComponentSpec or dict, got {type(v)}"
+    #     )
 
-    @field_validator('states')
+    # Use a before model_validator
+
+    @field_validator('state_options', mode='before')
     @classmethod
     def validate_states(cls, v, info):
-        """Validate that states have rate_source (unless Analytic transcription)."""
-        transcription_type = info.data.get('transcription', {}).get('transcription_type')
-        if transcription_type and transcription_type != 'analytic':
-            for state in v:
-                if state.rate_source is None:
-                    raise ValueError(
-                        f"State '{state.name}' must have rate_source specified "
-                        f"for non-analytic transcriptions"
-                    )
+        for name, options in v.items():
+            if 'name' not in options:
+                v[name]['name'] = name
         return v
+            
+    #     transcription_type = info.data.get('transcription', {}).get('transcription_type')
+    #     if transcription_type and transcription_type != 'analytic':
+    #         for state in v:
+    #             if state.rate_source is None:
+    #                 raise ValueError(
+    #                     f"State '{state.name}' must have rate_source specified "
+    #                     f"for non-analytic transcriptions"
+    #                 )
+    #     return v
+    
+    @classmethod
+    def load(cls, source):
+        import pathlib
+        if pathlib.Path(source).exists():
+            data = json.load(source)
+        else:
+            data = json.loads(source)
+        return cls.model_validate(data)     
+
+    @model_serializer(mode='wrap')
+    def include_literals(self, next_serializer):
+        """
+        Always include literals since they're often used for discriminated unions.
+
+        See Also
+        --------
+        https://github.com/pydantic/pydantic/discussions/9108
+
+        Parameters
+        ----------
+        next_serializer : _type_
+            _description_
+
+        Returns
+        -------
+        _type_
+            _description_
+        """
+        dumped = next_serializer(self)
+        for name, field_info in type(self).model_fields.items():
+            if typing.get_origin(field_info.annotation) == typing.Literal:
+                dumped[name] = getattr(self, name)
+        return dumped

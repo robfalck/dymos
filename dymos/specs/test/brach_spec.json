@@ -1,40 +1,92 @@
 {
-    "type": "dymos.examples.brachistochrone.brachistochrone_ode.BrachistochroneODE",
-    "num_nodes": null,
-    "static_gravity": false,
-    "inputs": {
+    "type": "dymos.Phase",
+    "transcription": {
+        "type": "radau",
+        "num_segments": 10,
+        "nodes_per_seg": 4,
+        "segment_ends": null,
+        "compressed": false,
+        "solve_segments": false
+    },
+    "time_options": {
+        "fix_initial": true,
+        "duration_bounds": [0.5, 10.0]
+    },
+    "state_options": {
+        "x": {
+            "fix_initial": true,
+            "fix_final": true
+        },
+        "y": {
+            "fix_initial": true,
+            "fix_final": true
+        },
         "v": {
-            "units": "m/s",
-            "shape": ["num_nodes", 1]
-        },
-        "g": {
-            "units": "m/s/s",
-            "shape": ["num_nodes", 1]
-        },
-        "theta": {
-            "units": "rad",
-            "shape": ["num_nodes", 1]
+            "fix_initial": true,
+            "fix_final": false
         }
     },
-    "outputs": {
-        "xdot": {
-            "units": "m/s",
-            "shape": ["num_nodes", 1],
-            "tags": ["dymos.state_rate:x"]
-        },
-        "ydot": {
-            "units": "m/s",
-            "shape": ["num_nodes", 1],
-            "tags": ["dymos.state_rate:y"]
-        },
-        "vdot": {
+    "control_options": {
+        "theta": {
+            "continuity": true,
+            "rate_continuity": true,
+            "units": "deg",
+            "lower": 0.01,
+            "upper": 179.9
+        }
+    },
+    "parameter_options": {
+        "g": {
             "units": "m/s**2",
-            "shape": ["num_nodes", 1],
-            "tags": ["dymos.state_rate:v"]
+            "val": 9.80665
+        }
+    },
+    "path_constraints": {},
+    "boundary_constraints": {},
+    "objective": {
+        "time": {
+            "loc": "final",
+            "scaler": 10.0
+        }
+    },
+    "ode": {
+        "type": "dymos.examples.brachistochrone.brachistochrone_ode.BrachistochroneODE",
+        "num_nodes": null,
+        "static_gravity": false,
+        "inputs": {
+            "v": {
+                "units": "m/s",
+                "shape": ["num_nodes", 1]
+            },
+            "g": {
+                "units": "m/s/s",
+                "shape": ["num_nodes", 1]
+            },
+            "theta": {
+                "units": "rad",
+                "shape": ["num_nodes", 1]
+            }
         },
-        "check": {
-            "units": "m/s",
-            "shape": ["num_nodes", 1]
+        "outputs": {
+            "xdot": {
+                "units": "m/s",
+                "shape": ["num_nodes", 1],
+                "tags": ["dymos.state_rate:x"]
+            },
+            "ydot": {
+                "units": "m/s",
+                "shape": ["num_nodes", 1],
+                "tags": ["dymos.state_rate:y"]
+            },
+            "vdot": {
+                "units": "m/s**2",
+                "shape": ["num_nodes", 1],
+                "tags": ["dymos.state_rate:v"]
+            },
+            "check": {
+                "units": "m/s",
+                "shape": ["num_nodes", 1]
+            }
         }
     }
 }

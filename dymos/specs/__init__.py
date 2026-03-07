@@ -59,7 +59,6 @@ from .objective_spec import ObjectiveSpec
 
 # Transcription specifications
 from .transcription_spec import (
-    TranscriptionBase,
     GaussLobattoSpec,
     RadauSpec,
     RadauNewSpec,

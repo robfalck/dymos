@@ -25,7 +25,7 @@ classifiers = [
 dependencies = [
     "numpy>=2.0",
     "openmdao>=3.39.0",
-    "scipy>=1.13",
+    "scipy>=1.13", "pydantic>=2.12.5,<3",
 ]
 
 [project.optional-dependencies]
@@ -126,7 +126,9 @@ packaging = ">=25.0"
 compilers = ">=1.8.0,<2"
 
 [tool.pixi.pypi-dependencies]
+om4 = { git = "https://github.com/openmdao/om4.git" }
 dymos = { path = ".", editable = true }
+jax = "*"
 
 ###############################################
 # Pixi Features
