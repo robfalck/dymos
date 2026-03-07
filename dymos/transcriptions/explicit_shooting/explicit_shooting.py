@@ -3,6 +3,7 @@ from collections.abc import Sequence
 import numpy as np
 
 import openmdao.api as om
+from openmdao.core.constants import INF_BOUND
 from openmdao.utils.om_warnings import warn_deprecation
 
 from .explicit_shooting_continuity_comp import ExplicitShootingContinuityComp
@@ -12,7 +13,6 @@ from .ode_integration_comp import ODEIntegrationComp
 from ...utils.misc import get_rate_units, CoerceDesvar, reshape_val
 from ...utils.indexing import get_src_indices_by_row
 from ...utils.introspection import get_promoted_vars, get_source_metadata, get_targets, _get_targets_metadata
-from ...utils.constants import INF_BOUND
 
 from ...utils.ode_utils import _make_ode_system
 from ..common import TimeComp, TimeseriesOutputComp, ControlInterpComp, ParameterComp
@@ -498,7 +498,7 @@ class ExplicitShooting(TranscriptionBase):
             The phase object to which this transcription instance applies.
         """
         ogd = self._output_grid_data
-        any_state_cnty, any_control_cnty, any_rate_cnty = self._requires_continuity_constraints(phase)
+        _, any_control_cnty, any_rate_cnty = self._requires_continuity_constraints(phase)
         src_idxs = om.slicer[ogd.subset_node_indices['segment_ends'], ...]
 
         controls_to_enforce = set()
