@@ -168,6 +168,8 @@ jobs:
       - name: Checkout code
         if: ${{ ! matrix.EXCLUDE }}
         uses: actions/checkout@v6
+        with:
+          path: 'dymos.git'
 
       - name: 'Setup OpenMDAO pixi Environment'
         id: setup_pixi_environment
@@ -324,8 +326,7 @@ jobs:
           echo ""
           coverage report -m
           pip install coveralls
-          REPO_DIR="$(pwd)/../dymos"
-          coveralls --basedir $REPO_DIR
+          coveralls --basedir $GITHUB_WORKSPACE
 
       - name: Copy coverage file back to repo for artifact upload
         if: steps.run_tests.outcome == 'success' && github.event_name != 'workflow_dispatch' && ! matrix.SKIP_COVERAGE
