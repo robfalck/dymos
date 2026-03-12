@@ -69,6 +69,12 @@ on:
         required: false
         default: true
 
+      pep517:
+        type: boolean
+        description: "Include 'pep517' in test matrix"
+        required: false
+        default: true
+
       use_pypi:
         type: boolean
         description: 'Run tests against the published PyPI version of Dymos'
@@ -101,25 +107,27 @@ jobs:
           - NAME: baseline
             OPENMDAO_PIXI_ENVIRONMENT: 'py313'
             OPENMDAO_INSTALL_FROM: 'pypi'
-            OPENMDAO: '3.41.0'
+            OPENMDAO: ''
+            DYMOS_2: False
+            EXCLUDE: ${{ github.event_name == 'workflow_dispatch'  && ! inputs.latest }}
+
+          # test PEP517 wheel build (no coverage)
+          - NAME: pep517
+            OPENMDAO_PIXI_ENVIRONMENT: 'py313'
+            OPENMDAO_INSTALL_FROM: 'pypi'
+            OPENMDAO: ''
             DYMOS_2: False
             PEP517: True
-            EXCLUDE: ${{ github.event_name == 'workflow_dispatch'  && ! inputs.latest }}
+            SKIP_COVERAGE: True
+            EXCLUDE: ${{ github.event_name == 'workflow_dispatch'  && ! inputs.pep517 }}
 
           # baseline versions except no MPI/PETSc
           - NAME: no_mpi
             OPENMDAO_PIXI_ENVIRONMENT: 'default'
             OPENMDAO_INSTALL_FROM: 'pypi'
-            OPENMDAO: '3.41.0'
-            DYMOS_2 : False
-            EXCLUDE: ${{ github.event_name == 'workflow_dispatch'  && ! inputs.latest }}
-
-          # latest versions
-          - NAME: latest
-            OPENMDAO_PIXI_ENVIRONMENT: 'py313'
-            OPENMDAO_INSTALL_FROM: 'github'
             OPENMDAO: ''
             DYMOS_2 : False
+            SKIP_COVERAGE: True
             EXCLUDE: ${{ github.event_name == 'workflow_dispatch'  && ! inputs.latest }}
 
           # latest versions dymos 2 testing
@@ -135,6 +143,7 @@ jobs:
             OPENMDAO_PIXI_ENVIRONMENT: 'oldest'
             OPENMDAO_INSTALL_FROM: 'pypi'
             OPENMDAO: '3.39.0'
+            SKIP_COVERAGE: True
             EXCLUDE: ${{ github.event_name == 'workflow_dispatch'  && ! inputs.oldest }}
 
     steps:
@@ -188,7 +197,10 @@ jobs:
             echo "-----------------------------------------------------------"
             python -m pip install "$WHEEL"
           else
-            python -m pip install .  --no-deps
+            echo "-----------------------------------------------------------"
+            echo "Installing as editable install for coverage support"
+            echo "-----------------------------------------------------------"
+            python -m pip install -e . --no-deps
           fi
 
       - name: Install optional dependencies
@@ -273,10 +285,14 @@ jobs:
           testflo -b benchmark --pre_announce || HAS_ERRORS=true
           # Run the readme test from the checked out directory.
           testflo -n 1 ./dymos/test/test_readme.py --pre_announce || HAS_ERRORS=true
-          cd "$HOME"
-          if [[ "${{ matrix.NAME }}" != "latest" ]]; then
+          if [[ "${{ matrix.NAME }}" != "latest" && "${{ matrix.SKIP_COVERAGE }}" != "true" ]]; then
+            echo "Coverage files before moving to HOME:"
+            ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
+            cp .coveragerc $HOME
+            cd $HOME
             testflo dymos -n 4 --pre_announce --show_skipped --durations 20 --coverage --coverpkg dymos || HAS_ERRORS=true
           else
+            cd $HOME
             testflo dymos -n 4 --pre_announce --show_skipped --durations 20 || HAS_ERRORS=true
           fi
 
@@ -286,21 +302,38 @@ jobs:
           fi
 
       - name: Submit coverage
-        if: steps.run_tests.outcome == 'success' && github.event_name != 'workflow_dispatch'
+        if: steps.run_tests.outcome == 'success' && github.event_name != 'workflow_dispatch' && ! matrix.SKIP_COVERAGE
         continue-on-error: true
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COVERALLS_SERVICE_NAME: "github"
           COVERALLS_PARALLEL: True
+          # These three ensure the SHA and branch are NEVER empty
+          COVERALLS_GIT_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+          COVERALLS_GIT_BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           eval "$(pixi shell-hook -e ${{ matrix.OPENMDAO_PIXI_ENVIRONMENT }} --manifest-path=${{ env.PIXI_MANIFEST }})"
           echo "============================================================="
           echo "Submit coverage"
           echo "============================================================="
-          cp "$HOME"/.coverage .
+          cd $HOME
+          coverage report -m
           pip install coveralls
-          SITE_DIR=$(python -c 'import site; print(site.getsitepackages()[-1])')
-          coveralls --basedir "$SITE_DIR"
+          coveralls --basedir $GITHUB_WORKSPACE/dymos
+          # Copy coverage file back to repo for artifact upload
+          cp $HOME/.coverage .
+
+      # Uncomment for debug if coverage isn't working as expected.
+      # - name: Upload coverage artifacts
+      #   if: steps.run_tests.outcome == 'success' && github.event_name != 'workflow_dispatch' && ! matrix.SKIP_COVERAGE
+      #   continue-on-error: true
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: coverage-${{ matrix.NAME }}
+      #     path: .coverage
+      #     retention-days: 7
+      #     if-no-files-found: warn
+      #     include-hidden-files: true
 
       - name: Fail the workflow if tests failed
         if: steps.run_tests.outcome != 'success'

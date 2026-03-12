@@ -1,0 +1,6 @@
+# .coveragerc to control coverage.py
+
+[run]
+disable_warnings = module-not-measured
+relative_files = True
+source = dymos
