@@ -1,4 +1,36 @@
 ********************************
+# Release Notes for Dymos 1.15.1
+
+March 12, 2026
+
+This is a minor update with some changes to support OpenMDAO's connection graph refactor,
+as well as some other bug fixes.
+
+## Backwards Incompatible API Changes & Deprecations
+
+None
+
+## Enhancements
+
+- Birkhoff will attempt to build a guess of state rates in `set_state_vals` if given enough information (states and times).
+
+## Bug Fixes
+
+- Fixed a bug where dymos ignored the units assigned in link_phases. [#1224](https://github.com/OpenMDAO/dymos/pull/1224)
+- Birkhoff will at least report error during grid refinement now. [#1218](https://github.com/OpenMDAO/dymos/pull/1218)
+- set_state_vals can be called with `(num_state_input_nodes,) + shape` set of state values. [#1218](https://github.com/OpenMDAO/dymos/pull/1218)
+- set_control_vals can be called with `(num_control_input_nodes,) + shape` set of control values. [#1218](https://github.com/OpenMDAO/dymos/pull/1218)
+- Birkhoff state defects are now not linear if initial and final state values are not design variables. [#1218](https://github.com/OpenMDAO/dymos/pull/1218)
+
+## Miscellaneous
+
+- dymos now uses the same INF_BOUND sentinel value as OpenMDAO. [#1225](https://github.com/OpenMDAO/dymos/pull/1225)
+- Use OpenMDAO pixi environment in dymos testing. [#1220](https://github.com/OpenMDAO/dymos/pull/1220)
+- Workflow issue [#1221](https://github.com/OpenMDAO/dymos/pull/1221)
+- Changes needed to work with OpenMDAO connection graph refactor [#1222](https://github.com/OpenMDAO/dymos/pull/1222)
+
+
+********************************
 # Release Notes for Dymos 1.15.0
 
 September 30, 2025
