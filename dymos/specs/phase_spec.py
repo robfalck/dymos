@@ -5,6 +5,7 @@ Defines the complete specification for a dymos Phase.
 """
 from __future__ import annotations
 
+import pathlib
 import typing 
 from typing import Literal
 import json
@@ -12,7 +13,7 @@ import numpy as np
 from pydantic import Field, field_serializer, field_validator, model_serializer
 
 from .base_spec import DymosBaseSpec
-from .time_spec import TimeSpec
+from .variable_spec import TimeSpec
 from .variable_spec import StateSpec, ControlSpec, ParameterSpec
 from .constraint_spec import BoundaryConstraintSpec, PathConstraintSpec
 from .objective_spec import ObjectiveSpec
@@ -171,9 +172,19 @@ class PhaseSpec(DymosBaseSpec):
         description="Time options for the phase."
     )
 
-    state_options: dict[str, StateSpec | dict] = Field(
+    states: dict[str, StateSpec] = Field(
         default_factory=dict,
         description="State variables in the phase."
+    )
+
+    controls: dict[str, ControlSpec] = Field(
+        default_factory=dict,
+        description="Control variables in the phase."
+    )
+
+    parameters: dict[str, ParameterSpec] = Field(
+        default_factory=dict,
+        description="Parameter variables in the phase."
     )
 
     # control_options: dict[str, ControlSpec] = Field(
@@ -186,20 +197,20 @@ class PhaseSpec(DymosBaseSpec):
     #     description="Parameter variables in the phase."
     # )
 
-    # boundary_constraints: list[BoundaryConstraintSpec] = Field(
-    #     default_factory=list,
-    #     description="Boundary constraints (initial and final)."
-    # )
+    boundary_constraints: list[BoundaryConstraintSpec] = Field(
+        default_factory=list,
+        description="Boundary constraints (initial and final)."
+    )
 
-    # path_constraints: list[PathConstraintSpec] = Field(
-    #     default_factory=list,
-    #     description="Path constraints (at all nodes)."
-    # )
+    path_constraints: list[PathConstraintSpec] = Field(
+        default_factory=list,
+        description="Path constraints (at all nodes)."
+    )
 
-    # objectives: list[ObjectiveSpec] = Field(
-    #     default_factory=list,
-    #     description="Objectives for optimization."
-    # )
+    objectives: list[ObjectiveSpec] = Field(
+        default_factory=list,
+        description="Objectives for optimization."
+    )
 
     # timeseries_outputs: list[TimeseriesOutputSpec] = Field(
     #     default_factory=list,
@@ -254,14 +265,14 @@ class PhaseSpec(DymosBaseSpec):
 
     # Use a before model_validator
 
-    @field_validator('state_options', mode='before')
+    @field_validator('states', 'controls', 'parameters', mode='before')
     @classmethod
-    def validate_states(cls, v, info):
+    def _set_name_field(cls, v, info):
         for name, options in v.items():
             if 'name' not in options:
-                v[name]['name'] = name
+                v[name].name = name
         return v
-            
+    
     #     transcription_type = info.data.get('transcription', {}).get('transcription_type')
     #     if transcription_type and transcription_type != 'analytic':
     #         for state in v:
@@ -273,35 +284,27 @@ class PhaseSpec(DymosBaseSpec):
     #     return v
     
     @classmethod
-    def load(cls, source):
+    def load(cls, source: str | pathlib.Path):
         import pathlib
-        if pathlib.Path(source).exists():
-            data = json.load(source)
-        else:
-            data = json.loads(source)
-        return cls.model_validate(data)     
+        
+        # Check if it's a path object or a string that points to a file
+        path = pathlib.Path(source)
+        try:
+            if path.is_file():
+                with open(path, 'r') as f:
+                    data = json.load(f)
+                return cls.model_validate(data)
+        except (OSError, ValueError):
+            # Not a valid path or filename too long; treat as JSON string
+            pass
 
-    @model_serializer(mode='wrap')
-    def include_literals(self, next_serializer):
+        # Treat as raw JSON string
+        return cls.model_validate_json(source)   
+
+    
+    def build_system(self):
         """
-        Always include literals since they're often used for discriminated unions.
-
-        See Also
-        --------
-        https://github.com/pydantic/pydantic/discussions/9108
-
-        Parameters
-        ----------
-        next_serializer : _type_
-            _description_
-
-        Returns
-        -------
-        _type_
-            _description_
+        Generate an OpenMDAO GroupSpec based on this phase and its transcription.
         """
-        dumped = next_serializer(self)
-        for name, field_info in type(self).model_fields.items():
-            if typing.get_origin(field_info.annotation) == typing.Literal:
-                dumped[name] = getattr(self, name)
-        return dumped
+        self.transcription.build_system(self)
+

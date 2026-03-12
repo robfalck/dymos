@@ -5,8 +5,10 @@ This module defines the foundational Pydantic models that all dymos specs inheri
 """
 from __future__ import annotations
 
+import typing
+
 import numpy as np
-from pydantic import BaseModel, Field, field_serializer, ConfigDict
+from pydantic import BaseModel, Field, field_serializer, ConfigDict, model_serializer
 
 
 class DymosBaseSpec(BaseModel):
@@ -22,6 +24,31 @@ class DymosBaseSpec(BaseModel):
         arbitrary_types_allowed=True,  # Allow numpy types, etc.
     )
 
+    @model_serializer(mode='wrap')
+    def include_literals(self, next_serializer):
+        """
+        Always include literals since they're often used for discriminated unions.
+
+        See Also
+        --------
+        https://github.com/pydantic/pydantic/discussions/9108
+
+        Parameters
+        ----------
+        next_serializer : _type_
+            _description_
+
+        Returns
+        -------
+        _type_
+            _description_
+        """
+        dumped = next_serializer(self)
+        for name, field_info in type(self).model_fields.items():
+            if typing.get_origin(field_info.annotation) == typing.Literal:
+                dumped[name] = getattr(self, name)
+        return dumped
+
 
 class DymosVariableSpec(DymosBaseSpec):
     """
@@ -29,9 +56,8 @@ class DymosVariableSpec(DymosBaseSpec):
 
     Contains fields common to all variable types.
     """
-
-    name: str = Field(
-        ...,
+    name: str | None = Field(
+        default=None,
         description="The name of the variable."
     )
 

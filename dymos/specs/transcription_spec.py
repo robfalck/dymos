@@ -8,13 +8,17 @@ from __future__ import annotations
 
 from typing import Literal, Annotated, TYPE_CHECKING, Union
 import numpy as np
-from pydantic import Field, field_serializer  # model_validator, field_validator
+from pydantic import Field, field_serializer, field_validator
 
+from dymos.specs.phase_spec import PhaseSpec
+
+from om4.core.group import Group
 from .base_spec import DymosBaseSpec
+
 
 if TYPE_CHECKING:
     from dymos.transcriptions.grid_data import GridData
-    # from dymos.specs.phase_spec import PhaseSpec
+    from dymos.specs.phase_spec import PhaseSpec
     # from dymos.specs.group_structure import GroupStructure
 
 
@@ -32,7 +36,7 @@ class TranscriptionSpecBase(DymosBaseSpec):
     # )
 
     num_segments: int = Field(
-        default=10,
+        default=...,
         description="Number of segments for the discretization."
     )
 
@@ -49,7 +53,7 @@ class TranscriptionSpecBase(DymosBaseSpec):
     nodes_per_seg: int | list | np.ndarray | None = Field(
         default=3,
         ge=3,
-        description="Number of nodes in each segment (must be even)"
+        description="Number of nodes in each segment."
     )
 
     compressed: bool = Field(
@@ -100,6 +104,9 @@ class TranscriptionSpecBase(DymosBaseSpec):
     #     """
     #     raise NotImplementedError(f"get_group_structure() not implemented for {self.__class__.__name__}")
 
+    def build_system(self, phase_spec: 'PhaseSpec'):
+        raise NotImplementedError(f'Transcription {self.__class__} has not implemented build_system.')
+
 
 class GaussLobattoSpec(TranscriptionSpecBase):
     """
@@ -110,43 +117,12 @@ class GaussLobattoSpec(TranscriptionSpecBase):
 
     type: Literal['gauss-lobatto'] = 'gauss-lobatto'
 
-    # num_segments: int = Field(
-    #     default=10,
-    #     description="Number of segments for the discretization."
-    # )
-
-    # segment_ends: list | np.ndarray | None = Field(
-    #     default=None,
-    #     description="Custom segment end points in normalized time [0, 1]."
-    # )
-
-    # order: int | list | np.ndarray = Field(
-    #     default=3,
-    #     description="Polynomial order (must be odd). Can be scalar or per-segment."
-    # )
-
-    # nodes_per_seg: int | list | np.ndarray | None = Field(
-    #     default=3,
-    #     ge=3,
-    #     description="Number of nodes in each segment (must be even)"
-    # )
-
-    # compressed: bool = Field(
-    #     default=False,
-    #     description="If True, use compressed transcription for memory efficiency."
-    # )
-
-    # solve_segments: bool | Literal['forward', 'backward'] = Field(
-    #     default=False,
-    #     description="If True or specified, use solver-based segment convergence."
-    # )
-
-    # @field_validator('nodes_per_seg')
-    # @classmethod
-    # def check_if_odd(cls, v: int) -> int:
-    #     if v % 2 == 0:
-    #         raise ValueError('ensure this value is an odd number')
-    #     return v
+    @field_validator('nodes_per_seg')
+    @classmethod
+    def check_if_odd(cls, v: int) -> int:
+        if v % 2 == 0:
+            raise ValueError('ensure this value is an odd number')
+        return v
 
     # def compute_grid_data(self) -> 'GridData':
     #     """Compute GridData for Gauss-Lobatto transcription."""
@@ -175,46 +151,14 @@ class RadauSpec(TranscriptionSpecBase):
     High-order collocation method using Radau quadrature.
     """
 
-    transcription_type: Literal['radau'] = 'radau'
+    type: Literal['radau'] = 'radau'
 
-    num_segments: int = Field(
-        default=10,
-        description="Number of segments for the discretization."
-    )
-
-    segment_ends: list | np.ndarray | None = Field(
-        default=None,
-        description="Custom segment end points in normalized time [0, 1]."
-    )
-
-    order: int | list | np.ndarray = Field(
-        default=3,
-        description="Polynomial order (must be odd). Can be scalar or per-segment."
-    )
-
-    compressed: bool = Field(
-        default=False,
-        description="If True, use compressed transcription for memory efficiency."
-    )
-
-    def compute_grid_data(self) -> 'GridData':
-        """Compute GridData for Radau pseudospectral transcription."""
-        from dymos.transcriptions.grid_data import RadauGrid
-        return RadauGrid(
-            num_segments=self.num_segments,
-            nodes_per_seg=np.asarray(self.order, dtype=int) + 1,
-            segment_ends=self.segment_ends,
-            compressed=self.compressed
-        )
-
-    @field_serializer('segment_ends', 'order')
-    def serialize_arrays(self, value, _info):
-        """Convert numpy arrays to lists for JSON serialization."""
-        if isinstance(value, np.ndarray):
-            return value.tolist()
-        elif isinstance(value, (list, tuple)):
-            return list(value)
-        return value
+    def build_system(self, phase_spec: PhaseSpec):
+        subsystems = ['grid', 'time', 'controls', 'ode_iter_group', 'boundary_vals']
+        ode_iter_group = Group(subsystems=[''])
+        phase_group = Group(promotes_inputs=[], promotes_outputs=[], connections=[],
+                            subsystems=[], input_defaults=[], nonlinear_solver=None,
+                            linear_solver=None, auto_order=True)
 
 
 class RadauNewSpec(TranscriptionSpecBase):
@@ -224,51 +168,7 @@ class RadauNewSpec(TranscriptionSpecBase):
     Alternative Radau implementation with solver-based segment convergence.
     """
 
-    transcription_type: Literal['radau-new'] = 'radau-new'
-
-    num_segments: int = Field(
-        default=10,
-        description="Number of segments for the discretization."
-    )
-
-    segment_ends: list | np.ndarray | None = Field(
-        default=None,
-        description="Custom segment end points in normalized time [0, 1]."
-    )
-
-    order: int | list | np.ndarray = Field(
-        default=3,
-        description="Polynomial order (must be odd). Can be scalar or per-segment."
-    )
-
-    compressed: bool = Field(
-        default=False,
-        description="If True, use compressed transcription for memory efficiency."
-    )
-
-    solve_segments: bool | Literal['forward', 'backward'] = Field(
-        default=False,
-        description="If True or specified, use solver-based segment convergence."
-    )
-
-    def compute_grid_data(self) -> 'GridData':
-        """Compute GridData for Radau pseudospectral transcription (new variant)."""
-        from dymos.transcriptions.grid_data import RadauGrid
-        return RadauGrid(
-            num_segments=self.num_segments,
-            nodes_per_seg=np.asarray(self.order, dtype=int) + 1,
-            segment_ends=self.segment_ends,
-            compressed=self.compressed
-        )
-
-    @field_serializer('segment_ends', 'order')
-    def serialize_arrays(self, value, _info):
-        """Convert numpy arrays to lists for JSON serialization."""
-        if isinstance(value, np.ndarray):
-            return value.tolist()
-        elif isinstance(value, (list, tuple)):
-            return list(value)
-        return value
+    type: Literal['radau-new'] = 'radau-new'
 
 
 class BirkhoffSpec(TranscriptionSpecBase):
@@ -278,25 +178,7 @@ class BirkhoffSpec(TranscriptionSpecBase):
     High-order collocation method using Birkhoff polynomial basis.
     """
 
-    transcription_type: Literal['birkhoff'] = 'birkhoff'
-
-    num_nodes: int = Field(
-        default=25,
-        description="Total number of nodes (not segments)."
-    )
-
-    grid_type: Literal['cgl', 'lgl'] = Field(
-        default='cgl',
-        description="Grid type: 'cgl' (Chebyshev-Gauss-Lobatto) or 'lgl' (Legendre-Gauss-Lobatto)."
-    )
-
-    def compute_grid_data(self) -> 'GridData':
-        """Compute GridData for Birkhoff pseudospectral transcription."""
-        from dymos.transcriptions.grid_data import BirkhoffGrid
-        return BirkhoffGrid(
-            num_nodes=self.num_nodes,
-            grid_type=self.grid_type
-        )
+    type: Literal['birkhoff'] = 'birkhoff'
 
 
 class ExplicitShootingSpec(TranscriptionSpecBase):
@@ -306,71 +188,71 @@ class ExplicitShootingSpec(TranscriptionSpecBase):
     Uses external ODE integrator for segment propagation with multiple shooting.
     """
 
-    transcription_type: Literal['explicit-shooting'] = 'explicit-shooting'
+    type: Literal['explicit-shooting'] = 'explicit-shooting'
 
-    num_segments: int = Field(
-        default=10,
-        description="Number of segments for shooting."
-    )
+    # num_segments: int = Field(
+    #     default=10,
+    #     description="Number of segments for shooting."
+    # )
 
-    method: str = Field(
-        default='RK45',
-        description="Integration method: 'DOP853', 'RK45', 'RK23', 'BDF', 'Radau', 'LSODA'."
-    )
+    # method: str = Field(
+    #     default='RK45',
+    #     description="Integration method: 'DOP853', 'RK45', 'RK23', 'BDF', 'Radau', 'LSODA'."
+    # )
 
-    atol: float = Field(
-        default=1.0e-9,
-        description="Absolute tolerance for integration."
-    )
+    # atol: float = Field(
+    #     default=1.0e-9,
+    #     description="Absolute tolerance for integration."
+    # )
 
-    rtol: float = Field(
-        default=1.0e-6,
-        description="Relative tolerance for integration."
-    )
+    # rtol: float = Field(
+    #     default=1.0e-6,
+    #     description="Relative tolerance for integration."
+    # )
 
-    first_step: float | None = Field(
-        default=None,
-        description="First step size for integration."
-    )
+    # first_step: float | None = Field(
+    #     default=None,
+    #     description="First step size for integration."
+    # )
 
-    max_step: float | None = Field(
-        default=None,
-        description="Maximum step size for integration."
-    )
+    # max_step: float | None = Field(
+    #     default=None,
+    #     description="Maximum step size for integration."
+    # )
 
-    propagate_derivs: bool = Field(
-        default=True,
-        description="If True, propagate analytical derivatives through segments."
-    )
+    # propagate_derivs: bool = Field(
+    #     default=True,
+    #     description="If True, propagate analytical derivatives through segments."
+    # )
 
-    grid: str = Field(
-        default='uniform',
-        description="Input grid type."
-    )
+    # grid: str = Field(
+    #     default='uniform',
+    #     description="Input grid type."
+    # )
 
-    output_grid: str | None = Field(
-        default=None,
-        description="Output grid type (can differ from input grid)."
-    )
+    # output_grid: str | None = Field(
+    #     default=None,
+    #     description="Output grid type (can differ from input grid)."
+    # )
 
-    control_interp: str = Field(
-        default='cubic',
-        description="Control interpolation method: 'cubic', 'vandermonde', 'barycentric'."
-    )
+    # control_interp: str = Field(
+    #     default='cubic',
+    #     description="Control interpolation method: 'cubic', 'vandermonde', 'barycentric'."
+    # )
 
-    times_per_seg: int | None = Field(
-        default=None,
-        description="Number of times per segment for dense output."
-    )
+    # times_per_seg: int | None = Field(
+    #     default=None,
+    #     description="Number of times per segment for dense output."
+    # )
 
-    def compute_grid_data(self) -> 'GridData':
-        """Compute GridData for explicit shooting transcription."""
-        from dymos.transcriptions.grid_data import ShootingGrid
-        return ShootingGrid(
-            num_segments=self.num_segments,
-            grid_type=self.grid,
-            output_grid=self.output_grid
-        )
+    # def compute_grid_data(self) -> 'GridData':
+    #     """Compute GridData for explicit shooting transcription."""
+    #     from dymos.transcriptions.grid_data import ShootingGrid
+    #     return ShootingGrid(
+    #         num_segments=self.num_segments,
+    #         grid_type=self.grid,
+    #         output_grid=self.output_grid
+    #     )
 
 
 class PicardShootingSpec(TranscriptionSpecBase):
@@ -380,71 +262,71 @@ class PicardShootingSpec(TranscriptionSpecBase):
     Uses Picard iteration-based shooting method.
     """
 
-    transcription_type: Literal['picard-shooting'] = 'picard-shooting'
+    type: Literal['picard-shooting'] = 'picard-shooting'
 
-    num_segments: int = Field(
-        default=10,
-        description="Number of segments for shooting."
-    )
+    # num_segments: int = Field(
+    #     default=10,
+    #     description="Number of segments for shooting."
+    # )
 
-    method: str = Field(
-        default='RK45',
-        description="Integration method: 'DOP853', 'RK45', 'RK23', 'BDF', 'Radau', 'LSODA'."
-    )
+    # method: str = Field(
+    #     default='RK45',
+    #     description="Integration method: 'DOP853', 'RK45', 'RK23', 'BDF', 'Radau', 'LSODA'."
+    # )
 
-    atol: float = Field(
-        default=1.0e-9,
-        description="Absolute tolerance for integration."
-    )
+    # atol: float = Field(
+    #     default=1.0e-9,
+    #     description="Absolute tolerance for integration."
+    # )
 
-    rtol: float = Field(
-        default=1.0e-6,
-        description="Relative tolerance for integration."
-    )
+    # rtol: float = Field(
+    #     default=1.0e-6,
+    #     description="Relative tolerance for integration."
+    # )
 
-    first_step: float | None = Field(
-        default=None,
-        description="First step size for integration."
-    )
+    # first_step: float | None = Field(
+    #     default=None,
+    #     description="First step size for integration."
+    # )
 
-    max_step: float | None = Field(
-        default=None,
-        description="Maximum step size for integration."
-    )
+    # max_step: float | None = Field(
+    #     default=None,
+    #     description="Maximum step size for integration."
+    # )
 
-    propagate_derivs: bool = Field(
-        default=True,
-        description="If True, propagate analytical derivatives through segments."
-    )
+    # propagate_derivs: bool = Field(
+    #     default=True,
+    #     description="If True, propagate analytical derivatives through segments."
+    # )
 
-    grid: str = Field(
-        default='uniform',
-        description="Input grid type."
-    )
+    # grid: str = Field(
+    #     default='uniform',
+    #     description="Input grid type."
+    # )
 
-    output_grid: str | None = Field(
-        default=None,
-        description="Output grid type (can differ from input grid)."
-    )
+    # output_grid: str | None = Field(
+    #     default=None,
+    #     description="Output grid type (can differ from input grid)."
+    # )
 
-    control_interp: str = Field(
-        default='cubic',
-        description="Control interpolation method: 'cubic', 'vandermonde', 'barycentric'."
-    )
+    # control_interp: str = Field(
+    #     default='cubic',
+    #     description="Control interpolation method: 'cubic', 'vandermonde', 'barycentric'."
+    # )
 
-    times_per_seg: int | None = Field(
-        default=None,
-        description="Number of times per segment for dense output."
-    )
+    # times_per_seg: int | None = Field(
+    #     default=None,
+    #     description="Number of times per segment for dense output."
+    # )
 
-    def compute_grid_data(self) -> 'GridData':
-        """Compute GridData for Picard shooting transcription."""
-        from dymos.transcriptions.grid_data import ShootingGrid
-        return ShootingGrid(
-            num_segments=self.num_segments,
-            grid_type=self.grid,
-            output_grid=self.output_grid
-        )
+    # def compute_grid_data(self) -> 'GridData':
+    #     """Compute GridData for Picard shooting transcription."""
+    #     from dymos.transcriptions.grid_data import ShootingGrid
+    #     return ShootingGrid(
+    #         num_segments=self.num_segments,
+    #         grid_type=self.grid,
+    #         output_grid=self.output_grid
+    #     )
 
 
 class AnalyticSpec(TranscriptionSpecBase):
@@ -454,46 +336,46 @@ class AnalyticSpec(TranscriptionSpecBase):
     Used for phases with analytically-known solutions.
     """
 
-    transcription_type: Literal['analytic'] = 'analytic'
+    type: Literal['analytic'] = 'analytic'
 
-    num_segments: int = Field(
-        default=10,
-        description="Number of segments for the discretization."
-    )
+    # num_segments: int = Field(
+    #     default=10,
+    #     description="Number of segments for the discretization."
+    # )
 
-    segment_ends: list | np.ndarray | None = Field(
-        default=None,
-        description="Custom segment end points in normalized time [0, 1]."
-    )
+    # segment_ends: list | np.ndarray | None = Field(
+    #     default=None,
+    #     description="Custom segment end points in normalized time [0, 1]."
+    # )
 
-    order: int | list | np.ndarray = Field(
-        default=3,
-        description="Polynomial order (must be odd). Can be scalar or per-segment."
-    )
+    # order: int | list | np.ndarray = Field(
+    #     default=3,
+    #     description="Polynomial order (must be odd). Can be scalar or per-segment."
+    # )
 
-    compressed: bool = Field(
-        default=False,
-        description="If True, use compressed transcription for memory efficiency."
-    )
+    # compressed: bool = Field(
+    #     default=False,
+    #     description="If True, use compressed transcription for memory efficiency."
+    # )
 
-    def compute_grid_data(self) -> 'GridData':
-        """Compute GridData for analytic transcription."""
-        from dymos.transcriptions.grid_data import GaussLobattoGrid
-        return GaussLobattoGrid(
-            num_segments=self.num_segments,
-            nodes_per_seg=self.order,
-            segment_ends=self.segment_ends,
-            compressed=self.compressed
-        )
+    # def compute_grid_data(self) -> 'GridData':
+    #     """Compute GridData for analytic transcription."""
+    #     from dymos.transcriptions.grid_data import GaussLobattoGrid
+    #     return GaussLobattoGrid(
+    #         num_segments=self.num_segments,
+    #         nodes_per_seg=self.order,
+    #         segment_ends=self.segment_ends,
+    #         compressed=self.compressed
+    #     )
 
-    @field_serializer('segment_ends', 'order')
-    def serialize_arrays(self, value, _info):
-        """Convert numpy arrays to lists for JSON serialization."""
-        if isinstance(value, np.ndarray):
-            return value.tolist()
-        elif isinstance(value, (list, tuple)):
-            return list(value)
-        return value
+    # @field_serializer('segment_ends', 'order')
+    # def serialize_arrays(self, value, _info):
+    #     """Convert numpy arrays to lists for JSON serialization."""
+    #     if isinstance(value, np.ndarray):
+    #         return value.tolist()
+    #     elif isinstance(value, (list, tuple)):
+    #         return list(value)
+    #     return value
 
 
 # Discriminated union for all transcription specs

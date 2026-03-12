@@ -21,7 +21,7 @@ from .transcription_spec import (
     ExplicitShootingSpec, PicardShootingSpec, AnalyticSpec,
     TranscriptionSpec
 )
-from .time_spec import TimeSpec
+from .variable_spec import TimeSpec
 from .variable_spec import StateSpec, ControlSpec, ParameterSpec, TrajParameterSpec
 from .constraint_spec import BoundaryConstraintSpec, PathConstraintSpec
 from .objective_spec import ObjectiveSpec

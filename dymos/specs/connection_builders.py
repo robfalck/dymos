@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from dymos.transcriptions.grid_data import GridData
     from dymos.specs.variable_spec import StateSpec, ControlSpec, ParameterSpec
     from dymos.specs.phase_spec import PhaseSpec
-    from dymos.specs.time_spec import TimeSpec
+    from dymos.specs.variable_spec import TimeSpec
     from openmdao.specs.connection_spec import ConnectionSpec
 
 

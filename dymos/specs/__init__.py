@@ -43,7 +43,7 @@ Create a Trajectory from a spec::
 from .base_spec import DymosBaseSpec, DymosVariableSpec
 
 # Time specification
-from .time_spec import TimeSpec
+from .variable_spec import TimeSpec
 
 # Variable specifications
 from .variable_spec import (
