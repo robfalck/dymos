@@ -108,3 +108,47 @@ convention = "numpy"
 "**/dymos_book/**" = ["E402", "E501"]
 # Ignore Test classifiers
 "test_*.py" = ["D", "E", "F"]
+
+###############################################
+# Pixi Configuration
+###############################################
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+
+###############################################
+# Pixi Environments
+###############################################
+
+[tool.pixi.environments]
+default = { features = ["numba", "notebooks"], solve-group = "default" }
+dev = { features = ["numba", "notebooks", "test", "docs"], solve-group = "default" }
+
+###############################################
+# Pixi PyPI Dependencies
+###############################################
+
+[tool.pixi.pypi-dependencies]
+openmdao = ">=3.39.0"
+
+###############################################
+# Pixi Tasks
+###############################################
+
+[tool.pixi.tasks]
+# Run tests
+test = "testflo"
+
+# Install OpenMDAO from latest PyPI
+install-openmdao-latest = { cmd = "pip install --no-deps openmdao", description = "Install latest OpenMDAO from PyPI" }
+
+# Install OpenMDAO from GitHub master branch
+install-openmdao-master = { cmd = "pip install --no-deps git+https://github.com/OpenMDAO/OpenMDAO.git@master", description = "Install OpenMDAO from GitHub master branch" }
+
+# Install OpenMDAO in editable mode from a local directory
+[tool.pixi.tasks.install-openmdao-local]
+cmd = "pip install --no-deps -e {{openmdao_path}}"
+description = "Install OpenMDAO in editable mode from specified path. Usage: pixi run install-openmdao-local /path/to/OpenMDAO"
+args = ["openmdao_path"]
+
