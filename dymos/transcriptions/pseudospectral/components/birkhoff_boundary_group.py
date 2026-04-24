@@ -22,6 +22,7 @@ class BirkhoffBoundaryMuxComp(om.ExplicitComponent):
     **kwargs : dict
         Dictionary of optional phase arguments.
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._io_names = {}

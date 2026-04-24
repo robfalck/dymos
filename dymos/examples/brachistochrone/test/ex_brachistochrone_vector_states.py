@@ -40,7 +40,7 @@ def brachistochrone_min_time(transcription='gauss-lobatto', num_segments=8, tran
         fix_final = not solve_segments
     elif transcription == 'picard':
         transcription = dm.PicardShooting(num_segments=num_segments,
-                                          nodes_per_seg=transcription_order+1,
+                                          nodes_per_seg=transcription_order + 1,
                                           solve_segments='forward')
         fix_final = False
 

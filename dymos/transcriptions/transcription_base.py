@@ -21,6 +21,7 @@ class TranscriptionBase(object):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def __init__(self, **kwargs):
 
         self._implicit_params = False
@@ -66,20 +67,21 @@ class TranscriptionBase(object):
 
     def init_grid(self):
         """
-        Setup the GridData object for the Transcription.
+        Set up the GridData object for the Transcription.
         """
         raise NotImplementedError(f'Transcription {self.__class__.__name__} does not implement method init_grid.')
 
     def _get_refinement_error_transcription(self):
         """
         Create a new transcriptoin instance to be used for error estimation.
+        
         This is usually a matter of increasing the order (number of nodes per segment).
         """
         raise NotImplementedError(f'{self.__class__.__name__} does not implement _get_refinement_error_transcription.')
 
     def setup_time(self, phase):
         """
-        Setup up the time component and time extents for the phase.
+        Set up up the time component and time extents for the phase.
 
         Parameters
         ----------
@@ -145,7 +147,7 @@ class TranscriptionBase(object):
 
     def setup_controls(self, phase):
         """
-        Setup the control group.
+        Set up the control group.
 
         Parameters
         ----------
@@ -192,7 +194,7 @@ class TranscriptionBase(object):
 
     def setup_parameters(self, phase):
         """
-        Sets input defaults for parameters and optionally adds design variables.
+        Set input defaults for parameters and optionally adds design variables.
 
         Parameters
         ----------
@@ -244,7 +246,7 @@ class TranscriptionBase(object):
 
     def setup_states(self, phase):
         """
-        Setup the states for this transcription.
+        Set up the states for this transcription.
 
         Parameters
         ----------
@@ -310,7 +312,7 @@ class TranscriptionBase(object):
 
     def setup_ode(self, phase):
         """
-        Setup the ode for this transcription.
+        Set up the ode for this transcription.
 
         Parameters
         ----------
@@ -321,7 +323,7 @@ class TranscriptionBase(object):
 
     def setup_boundary_balance(self, phase):
         """
-        Setup the implicit computation of the phase boundary balance.
+        Set up the implicit computation of the phase boundary balance.
 
         Parameters
         ----------
@@ -391,7 +393,7 @@ class TranscriptionBase(object):
 
     def setup_solvers(self, phase):
         """
-        Setup the solvers for this transcription.
+        Set up the solvers for this transcription.
 
         Parameters
         ----------
@@ -450,7 +452,7 @@ class TranscriptionBase(object):
 
     def setup_timeseries_outputs(self, phase):
         """
-        Setup the timeseries for this transcription.
+        Set up the timeseries for this transcription.
 
         Parameters
         ----------
@@ -479,7 +481,7 @@ class TranscriptionBase(object):
 
     def configure_boundary_constraints(self, phase):
         """
-        Configures the boundary constraints.
+        Configure the boundary constraints.
 
         Adds BoundaryConstraintComp for initial and/or final boundary constraints if necessary
         and issues appropriate connections.
@@ -489,7 +491,6 @@ class TranscriptionBase(object):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-
         for ibc in phase._initial_boundary_constraints:
             con_output, constraint_kwargs = self._get_constraint_kwargs('initial', ibc, phase)
             phase.add_constraint(con_output, **constraint_kwargs)
@@ -671,7 +672,7 @@ class TranscriptionBase(object):
 
     def _get_ode(self, phase):
         """
-        Returns an instance of the ODE used in the phase that can be interrogated for IO metadata.
+        Return an instance of the ODE used in the phase that can be interrogated for IO metadata.
 
         Parameters
         ----------
@@ -691,7 +692,7 @@ class TranscriptionBase(object):
 
     def get_parameter_connections(self, name, phase):
         """
-        Returns info about a parameter's target connections in the phase.
+        Return info about a parameter's target connections in the phase.
 
         Parameters
         ----------
@@ -744,7 +745,7 @@ class TranscriptionBase(object):
 
     def _requires_continuity_constraints(self, phase):
         """
-        Tests whether state and/or control and/or control rate continuity are required.
+        Test whether state and/or control and/or control rate continuity are required.
 
         Parameters
         ----------
@@ -765,8 +766,7 @@ class TranscriptionBase(object):
 
     def _phase_set_state_val(self, phase, name, vals, time_vals, interpolation_kind):
         """
-        Method to interpolate the provided input and return the variables that need to be set
-        along with their appropriate value.
+        Interpolate the provided input and return the variables that need to be set along with their appropriate value.
 
         Parameters
         ----------
@@ -843,7 +843,7 @@ class TranscriptionBase(object):
 
     def _get_num_timeseries_nodes(self):
         """
-        Returns the number of nodes in the default timeseries for this transcription.
+        Return the number of nodes in the default timeseries for this transcription.
 
         Returns
         -------
@@ -855,7 +855,7 @@ class TranscriptionBase(object):
 
     def _get_linkage_source_ode(self, promoted=False):
         """
-        Returns the path of the ODE system providing sources for linkage constraints.
+        Return the path of the ODE system providing sources for linkage constraints.
 
         Nominally this is the _rhs_source but will need to be overridden in transcriptions
         with boundary ODEs or ODEs that are in a promoted path.

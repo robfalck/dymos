@@ -64,7 +64,7 @@ def brachistochrone_min_time(transcription='gauss-lobatto', num_segments=8, tran
     phase.add_parameter('g', targets=['g'], units='m/s**2')
 
     phase.add_timeseries('timeseries2',
-                         transcription=dm.Radau(num_segments=num_segments*5,
+                         transcription=dm.Radau(num_segments=num_segments * 5,
                                                 order=transcription_order,
                                                 compressed=compressed),
                          subset='control_input')

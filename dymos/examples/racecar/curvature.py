@@ -36,8 +36,8 @@ class Curvature(om.ExplicitComponent):
         kappa = np.zeros(len(s))
 
         for i in range(len(s)):
-            index = np.floor((s[i]/self.track_length)*num_curv_points)
-            index = np.minimum(index, num_curv_points-1)
+            index = np.floor((s[i] / self.track_length) * num_curv_points)
+            index = np.minimum(index, num_curv_points - 1)
             kappa[i] = self.curv[index.astype(int)]
 
         outputs['kappa'] = kappa

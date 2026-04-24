@@ -48,6 +48,7 @@ class ODEIntegrationComp(om.ExplicitComponent):
     This code includes the following unicode symbols:
     theta:  U+03B8
     """
+
     def __init__(self, input_grid_data, time_options, state_options, parameter_options=None, control_options=None,
                  output_grid_data=None, reports=False, standalone_mode=True, calc_exprs=None, **kwargs):
         super().__init__(**kwargs)
@@ -135,9 +136,11 @@ class ODEIntegrationComp(om.ExplicitComponent):
 
     def _configure_time(self):
         """
-        Components do not have configure methods, but since we rely on configure-time introspection to determine
-        properties of the states, times, controls, parameters, and timeseries, we need to call this method at
-        configure time in the parent ExplicitShooting transcription object.
+        Configure time inputs and outputs using configure-time introspection.
+
+        Components do not have configure methods, but since we rely on configure-time introspection
+        to determine properties of the states, times, controls, parameters, and timeseries, we need
+        to call this method at configure time in the parent ExplicitShooting transcription object.
         """
         num_output_rows = self._num_output_rows
         t_units = self.time_options['units']
@@ -162,9 +165,11 @@ class ODEIntegrationComp(om.ExplicitComponent):
 
     def _configure_states(self):
         """
-        Components do not have configure methods, but since we rely on configure-time introspection to determine
-        properties of the states, times, controls, parameters, and timeseries, we need to call this method at
-        configure time in the parent ExplicitShooting transcription object.
+        Configure state inputs and outputs using configure-time introspection.
+
+        Components do not have configure methods, but since we rely on configure-time introspection
+        to determine properties of the states, times, controls, parameters, and timeseries, we need
+        to call this method at configure time in the parent ExplicitShooting transcription object.
         """
         num_output_rows = self._num_output_rows
 
@@ -229,9 +234,11 @@ class ODEIntegrationComp(om.ExplicitComponent):
 
     def _configure_parameters(self):
         """
-        Components do not have configure methods, but since we rely on configure-time introspection to determine
-        properties of the states, times, controls, parameters, and timeseries, we need to call this method at
-        configure time in the parent ExplicitShooting transcription object.
+        Configure parameter inputs and outputs using configure-time introspection.
+
+        Components do not have configure methods, but since we rely on configure-time introspection
+        to determine properties of the states, times, controls, parameters, and timeseries, we need
+        to call this method at configure time in the parent ExplicitShooting transcription object.
         """
         # The indices of each parameter in p
         self.p_size = 0
@@ -260,9 +267,11 @@ class ODEIntegrationComp(om.ExplicitComponent):
 
     def _configure_controls(self):
         """
-        Components do not have configure methods, but since we rely on configure-time introspection to determine
-        properties of the states, times, controls, parameters, and timeseries, we need to call this method at
-        configure time in the parent ExplicitShooting transcription object.
+        Configure control inputs and outputs using configure-time introspection.
+
+        Components do not have configure methods, but since we rely on configure-time introspection
+        to determine properties of the states, times, controls, parameters, and timeseries, we need
+        to call this method at configure time in the parent ExplicitShooting transcription object.
         """
         self.u_size = 0
         self._control_idxs_in_theta = {}
@@ -583,7 +592,9 @@ class ODEIntegrationComp(om.ExplicitComponent):
 
     def _f_augmented(self, t, y, theta, dtheta_dz):
         """
-        The ODE-callable function where y is the augmented state vector, theta are the ODE parameters, and dtheta_dz
+        Evaluate the augmented ODE.
+
+        y is the augmented state vector, theta are the ODE parameters, and dtheta_dz
         are the sensitivities of the ODE parameters to the integration parameters.
 
         Parameters
@@ -630,8 +641,7 @@ class ODEIntegrationComp(om.ExplicitComponent):
 
     def _f_primal(self, t, x, theta):
         """
-        The ODE-callable function where y is the augmented state vector, theta are the ODE parameters, and dtheta_dz
-        are the sensitivities of the ODE parameters to the integration parameters.
+        Evaluate the primal ODE where x is the state vector and theta are the ODE parameters.
 
         Parameters
         ----------

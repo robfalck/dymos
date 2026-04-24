@@ -13,7 +13,7 @@ from dymos.utils.lagrange import lagrange_matrices
 
 def gauss_lobatto_subsets_and_nodes(n, seg_idx, compressed=False):
     """
-    Provides node information and the location of the nodes for n Legendre-Gauss-Lobatto nodes on the range [-1, 1].
+    Provide node information and the location of the nodes for n Legendre-Gauss-Lobatto nodes on the range [-1, 1].
 
     Parameters
     ----------
@@ -56,7 +56,7 @@ def gauss_lobatto_subsets_and_nodes(n, seg_idx, compressed=False):
         'control_disc': np.arange(n, dtype=int),
         'control_input': np.arange(n, dtype=int) if not compressed or seg_idx == 0
         else np.arange(1, n, dtype=int),
-        'segment_ends': np.array([0, n-1], dtype=int),
+        'segment_ends': np.array([0, n - 1], dtype=int),
         'col': np.arange(1, n, 2, dtype=int),
         'all': np.arange(n, dtype=int),
         'solution': np.arange(n, dtype=int),
@@ -67,7 +67,7 @@ def gauss_lobatto_subsets_and_nodes(n, seg_idx, compressed=False):
 
 def chebyshev_gauss_lobatto_subsets_and_nodes(n, seg_idx, compressed=False):
     """
-    Provides node information and the location of the nodes for n Legendre-Gauss-Lobatto nodes on the range [-1, 1].
+    Provide node information and the location of the nodes for n Legendre-Gauss-Lobatto nodes on the range [-1, 1].
 
     Parameters
     ----------
@@ -110,7 +110,7 @@ def chebyshev_gauss_lobatto_subsets_and_nodes(n, seg_idx, compressed=False):
         'control_disc': np.arange(n, dtype=int),
         'control_input': np.arange(n, dtype=int) if not compressed or seg_idx == 0
         else np.arange(1, n, dtype=int),
-        'segment_ends': np.array([0, n-1], dtype=int),
+        'segment_ends': np.array([0, n - 1], dtype=int),
         'col': np.arange(n, dtype=int),
         'all': np.arange(n, dtype=int),
         'solution': np.arange(n, dtype=int),
@@ -121,7 +121,7 @@ def chebyshev_gauss_lobatto_subsets_and_nodes(n, seg_idx, compressed=False):
 
 def radau_pseudospectral_subsets_and_nodes(n, seg_idx, compressed=False):
     """
-    Provides node information and the location of the nodes for n Radau nodes on the range [-1, 1].
+    Provide node information and the location of the nodes for n Radau nodes on the range [-1, 1].
 
     Parameters
     ----------
@@ -171,7 +171,7 @@ def radau_pseudospectral_subsets_and_nodes(n, seg_idx, compressed=False):
 
 def birkhoff_subsets_and_nodes(n, grid, seg_idx, compressed=False):
     """
-    Provides node information and the location of the nodes for n Radau nodes on the range [-1, 1].
+    Provide node information and the location of the nodes for n Radau nodes on the range [-1, 1].
 
     Parameters
     ----------
@@ -235,7 +235,7 @@ def birkhoff_subsets_and_nodes(n, grid, seg_idx, compressed=False):
 
 def uniform_subsets_and_nodes(n, *args, **kwargs):
     """
-    Provides a dict of node info and locations for a uniformly distributed set of n nodes on the range [-1, 1].
+    Provide a dict of node info and locations for a uniformly distributed set of n nodes on the range [-1, 1].
 
     This distribution is not to be used to define polynomials, since equally-spaced nodes
     result in poor polynomial fitting. Most subsets here aside from `all`, `segment_ends`, and
@@ -283,7 +283,7 @@ def uniform_subsets_and_nodes(n, *args, **kwargs):
 
 def make_subset_map(from_subset_idxs, to_subset_idxs):
     """
-    Creates a map from one subset to another using the indices of each subset within all nodes.
+    Create a map from one subset to another using the indices of each subset within all nodes.
 
     Parameters
     ----------
@@ -381,6 +381,7 @@ class GridData(object):
         Dict keyed by the map name that provides a mapping for src_indices to
         and from "compressed" form.
     """
+
     def __init__(self, num_segments, transcription, transcription_order=None,
                  segment_ends=None, compressed=False, num_steps_per_segment=1):
         if segment_ends is None:
@@ -589,7 +590,7 @@ class GridData(object):
             (np.abs(self.segment_ends - other.segment_ends) <= tol).all()
 
     def phase_lagrange_matrices(self, given_set_name, eval_set_name, sparse=False):
-        """
+        r"""
         Compute the matrices mapping values at some nodes to values and derivatives at new nodes.
 
         Parameters
@@ -650,7 +651,7 @@ class GridData(object):
         return L, D
 
     def phase_hermite_matrices(self, given_set_name, eval_set_name, sparse=False):
-        """
+        r"""
         Compute the matrices mapping values at some nodes to values and derivatives at new nodes.
 
         Parameters
@@ -748,6 +749,7 @@ class GaussLobattoGrid(GridData):
         nodes of adjacent segments are only specified once, and then broadcast
         to the appropriate indices.
     """
+
     def __init__(self, num_segments, nodes_per_seg, segment_ends=None, compressed=False):
         self.grid_type = 'lgl'
         super().__init__(num_segments=num_segments, transcription='gauss-lobatto',
@@ -774,6 +776,7 @@ class ChebyshevGaussLobattoGrid(GridData):
         nodes of adjacent segments are only specified once, and then broadcast
         to the appropriate indices.
     """
+
     def __init__(self, num_segments, nodes_per_seg, segment_ends=None, compressed=False):
         self.grid_type = 'cgl'
         super().__init__(num_segments=num_segments, transcription='chebyshev-gauss-lobatto',
@@ -792,6 +795,7 @@ class BirkhoffGrid(GridData):
     grid_type : str
         The type of Gaussian grid used for the transcription. May be 'lgl' or 'cgl'.
     """
+
     def __init__(self, num_nodes, grid_type='cgl'):
         self.grid_type = grid_type
         super().__init__(num_segments=1, transcription='birkhoff',
@@ -817,6 +821,7 @@ class RadauGrid(GridData):
         nodes of adjacent segments are only specified once, and then broadcast
         to the appropriate indices.
     """
+
     def __init__(self, num_segments, nodes_per_seg, segment_ends=None, compressed=False):
         self.grid_type = 'lgr'
         super().__init__(num_segments=num_segments, transcription='radau-ps',
@@ -843,6 +848,7 @@ class UniformGrid(GridData):
         nodes of adjacent segments are only specified once, and then broadcast
         to the appropriate indices.
     """
+
     def __init__(self, num_segments, nodes_per_seg, segment_ends=None, compressed=False):
         self.grid_type = 'uniform'
         super().__init__(num_segments=num_segments, transcription='uniform',

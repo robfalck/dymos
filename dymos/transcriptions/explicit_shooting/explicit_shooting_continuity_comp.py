@@ -15,6 +15,7 @@ class ExplicitShootingContinuityComp(ContinuityCompBase):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._controls_to_enforce = set()
@@ -46,7 +47,7 @@ class ExplicitShootingContinuityComp(ContinuityCompBase):
     def _configure_control_continuity(self, controls_to_enforce=None, control_rates_to_enforce=None,
                                       control_rates2_to_enforce=None):
         """
-        Configures control continuity.
+        Configure control continuity.
 
         Each argument contains the names of those variables which require continuity.
 
@@ -59,7 +60,6 @@ class ExplicitShootingContinuityComp(ContinuityCompBase):
         control_rates2 : set or Sequence of str or None
             The names of controls whose second derivatives are to be enforced at the segment boundaries.
         """
-
         control_options = self.options['control_options']
         num_segend_nodes = self.options['grid_data'].subset_num_nodes['segment_ends']
         num_segments = self.options['grid_data'].num_segments
@@ -114,7 +114,7 @@ class ExplicitShootingContinuityComp(ContinuityCompBase):
 
                 self.add_output(
                     name=f'defect_controls:{control_name}',
-                    val=5*np.ones((num_segments - 1,) + shape),
+                    val=5 * np.ones((num_segments - 1,) + shape),
                     desc=f'Continuity constraint values for control {control_name}',
                     units=units)
 
@@ -204,7 +204,7 @@ class ExplicitShootingContinuityComp(ContinuityCompBase):
     def configure_io(self, controls_to_enforce=None, control_rates_to_enforce=None,
                      control_rates2_to_enforce=None):
         """
-        Configures control continuity.
+        Configure control continuity.
 
         Each argument contains the names of those variables which require continuity.
 

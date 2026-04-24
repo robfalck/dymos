@@ -13,6 +13,7 @@ BOOK_DIR = pathlib.Path(REPO_ROOT, 'dymos_book')
 def build_book(book_dir=BOOK_DIR, clean=True, ignore_warnings=False):
     """
     Clean (if requested), build, and copy over necessary files for the JupyterBook to be created.
+
     Parameters
     ----------
     book_dir

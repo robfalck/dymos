@@ -22,13 +22,14 @@ class Analytic(TranscriptionBase):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def __init__(self, **kwargs):
         super(Analytic, self).__init__(**kwargs)
         self._rhs_source = 'rhs'
 
     def init_grid(self):
         """
-        Setup the GridData object for the Transcription.
+        Set up the GridData object for the Transcription.
         """
         self.grid_data = GaussLobattoGrid(num_segments=1,
                                           nodes_per_seg=self.options['order'],
@@ -37,7 +38,7 @@ class Analytic(TranscriptionBase):
 
     def setup_time(self, phase):
         """
-        Setup the time component.
+        Set up the time component.
 
         Parameters
         ----------
@@ -108,7 +109,7 @@ class Analytic(TranscriptionBase):
 
     def setup_controls(self, phase):
         """
-        Setup the inputs/outputs for the controls.
+        Set up the inputs/outputs for the controls.
 
         Parameters
         ----------
@@ -130,7 +131,7 @@ class Analytic(TranscriptionBase):
 
     def setup_polynomial_controls(self, phase):
         """
-        Setup the inputs/outputs for the controls.
+        Set up the inputs/outputs for the controls.
 
         Parameters
         ----------
@@ -141,7 +142,7 @@ class Analytic(TranscriptionBase):
 
     def setup_states(self, phase):
         """
-        Setup the states for this transcription.
+        Set up the states for this transcription.
 
         Parameters
         ----------
@@ -200,7 +201,7 @@ class Analytic(TranscriptionBase):
 
     def setup_ode(self, phase):
         """
-        Setup the ode for this transcription.
+        Set up the ode for this transcription.
 
         Parameters
         ----------
@@ -230,7 +231,7 @@ class Analytic(TranscriptionBase):
 
     def setup_defects(self, phase):
         """
-        Setup the defects for this transcription. The AnalyticTranscription has no defect constraints.
+        Set up the defects for this transcription. The AnalyticTranscription has no defect constraints.
 
         Parameters
         ----------
@@ -241,7 +242,7 @@ class Analytic(TranscriptionBase):
 
     def setup_solvers(self, phase):
         """
-        Setup the solvers for this transcription.
+        Set up the solvers for this transcription.
 
         Parameters
         ----------
@@ -263,7 +264,7 @@ class Analytic(TranscriptionBase):
 
     def setup_timeseries_outputs(self, phase):
         """
-        Setup the timeseries for this transcription.
+        Set up the timeseries for this transcription.
 
         Parameters
         ----------
@@ -368,7 +369,7 @@ class Analytic(TranscriptionBase):
 
     def get_parameter_connections(self, name, phase):
         """
-        Returns info about a parameter's target connections in the phase.
+        Return info about a parameter's target connections in the phase.
 
         Parameters
         ----------
@@ -403,7 +404,7 @@ class Analytic(TranscriptionBase):
 
     def _requires_continuity_constraints(self, phase):
         """
-        Tests whether state and/or control and/or control rate continuity are required.
+        Test whether state and/or control and/or control rate continuity are required.
 
         Parameters
         ----------
@@ -433,7 +434,7 @@ class Analytic(TranscriptionBase):
 
     def _get_num_timeseries_nodes(self):
         """
-        Returns the number of nodes in the default timeseries for this transcription.
+        Return the number of nodes in the default timeseries for this transcription.
 
         Returns
         -------

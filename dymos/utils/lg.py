@@ -3,7 +3,7 @@ import numpy as np
 
 def lg(n, tol=1.0E-15):
     """
-    Returns the Legendre-Gauss nodes and weights for a Jacobi Polynomial with n abscissae.
+    Return the Legendre-Gauss nodes and weights for a Jacobi Polynomial with n abscissae.
 
     The nodes are on the range (-1, 1).
 

@@ -6,8 +6,10 @@ import openmdao.api as om
 class LiftDragForceComp(om.ExplicitComponent):
     """
     Compute the aerodynamic forces on the vehicle in the wind axis frame
+    
     (lift, drag, cross) force.
     """
+
     def initialize(self):
         self.options.declare('num_nodes', types=int)
 

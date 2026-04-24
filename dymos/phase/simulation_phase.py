@@ -17,6 +17,7 @@ class SimulationPhase(Phase):
     **kwargs : dict
         Dictionary of optional phase arguments.
     """
+
     def __init__(self, transcription=None, **kwargs):
         if not isinstance(transcription, ExplicitShooting):
             raise ValueError('The transcription for a SimulationPhase must be '

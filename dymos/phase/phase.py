@@ -58,6 +58,7 @@ class Phase(om.Group):
         The OpenMDAO problem used for trajectory simulation.
         This is None unless the simulate method has been called.
     """
+
     def __init__(self, from_phase=None, **kwargs):
         _kwargs = kwargs.copy()
 
@@ -501,7 +502,7 @@ class Phase(om.Group):
 
     def check_parameter(self, name):
         """
-        Checks that the parameter of the given name is valid.
+        Check that the parameter of the given name is valid.
 
         First name is checked against all existing states, controls, input parameters, and
         parameters.  If it has already been assigned to one of those, ValueError is raised.
@@ -539,7 +540,7 @@ class Phase(om.Group):
                     rate2_continuity=_unspecified, rate2_continuity_scaler=_unspecified,
                     rate2_continuity_ref=_unspecified, control_type=_unspecified):
         """
-        Adds a dynamic control variable to be tied to a parameter in the ODE.
+        Add a dynamic control variable to be tied to a parameter in the ODE.
 
         Parameters
         ----------
@@ -846,7 +847,7 @@ class Phase(om.Group):
                                ref=_unspecified, targets=_unspecified, rate_targets=_unspecified,
                                rate2_targets=_unspecified, shape=_unspecified):
         """
-        Adds a polynomial control variable to be tied to a parameter in the ODE.
+        Add a polynomial control variable to be tied to a parameter in the ODE.
 
         Polynomial controls are defined by values at the Legendre-Gauss-Lobatto nodes of a
         single polynomial, defined on [-1, 1] in phase tau space.
@@ -1651,7 +1652,7 @@ class Phase(om.Group):
 
     def add_timeseries(self, name, transcription, subset='all'):
         r"""
-        Adds a new timeseries output upon which outputs can be provided.
+        Add a new timeseries output upon which outputs can be provided.
 
         Parameters
         ----------
@@ -1727,7 +1728,7 @@ class Phase(om.Group):
 
     def add_calc_expr(self, expr, add_timeseries=True, **kwargs):
         """
-        Adds an expression to be computed immediately after the user-given ODE.
+        Add an expression to be computed immediately after the user-given ODE.
 
         Internally, dymos will wrap the user-given ODE in a group along with
         an ExecComp that evalutes the expressions given.
@@ -1783,7 +1784,7 @@ class Phase(om.Group):
                          t_duration_targets=_unspecified, name=_unspecified,
                          dt_dstau_targets=_unspecified):
         """
-        Sets options for time in the phase.
+        Set options for time in the phase.
 
         Only those options which are specified in the arguments will be updated.
 
@@ -2162,7 +2163,7 @@ class Phase(om.Group):
 
     def set_duration_balance(self, name, val=0.0, index=None, units=None, mult_val=None, normalize=False):
         """
-        Adds a condition for the duration of the phase. This is satisfied using a nonlinear solver.
+        Add a condition for the duration of the phase. This is satisfied using a nonlinear solver.
 
         Parameters
         ----------
@@ -2394,6 +2395,7 @@ class Phase(om.Group):
     def _check_parameter_options(self):
         """
         Check that parameter options are valid and issue warnings if invalid
+        
         options are provided.
 
         Warns
@@ -2884,7 +2886,7 @@ class Phase(om.Group):
 
     def _indices_in_constraints(self, name, loc):
         """
-        Returns a set of the C-order flattened indices involving constraint of the given name at the given loc.
+        Return a set of the C-order flattened indices involving constraint of the given name at the given loc.
 
         Parameters
         ----------
