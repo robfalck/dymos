@@ -107,6 +107,7 @@ ignore = [
     'D200',  # One-line docstring should fit on one line
     'D210',  # Allow whitespace around docstring text.
     'D400',  # Sometimes you just don't need a period.
+    'D420',  # Section order varies across ruff versions (preview rule); suppress to avoid CI churn.
     'E741',  # Allow ambiguous variable names (I)
 ]
 exclude = [

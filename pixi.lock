@@ -6946,7 +6946,7 @@ packages:
 - pypi: ./
   name: dymos
   version: 1.15.2.dev0
-  sha256: 1f7bb01592417b24c5085cb399bbc7cbad6f51d0bd851c11c13e2f2df5895014
+  sha256: 859c9d67fa892616c3fdea0ca680a4eb4c234df9c024908636016d536ae7b27c
   requires_dist:
   - numpy>=2.0
   - openmdao>=3.39.0
