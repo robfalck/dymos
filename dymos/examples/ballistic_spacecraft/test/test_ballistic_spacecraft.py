@@ -64,14 +64,6 @@ from openmdao.utils.general_utils import env_truthy
 from openmdao.utils.testing_utils import require_pyoptsparse
 import dymos as dm
 
-from dymos.examples.ballistic_spacecraft.ephem_comp import EphemerisComp, KMPAU, MU_SUN
-from dymos.examples.ballistic_spacecraft.ballistic_ode_comp import BallisticODEComp
-
-# Add our specific DU and TU to OpenMDAO's recognized units.
-om_units.add_unit('DU_sun', f'{KMPAU}*1000*m')
-period = 2 * np.pi * np.sqrt(KMPAU ** 3 / MU_SUN)
-om_units.add_unit('TU_sun', f'{period}*s')
-
 
 class C3Comp(om.JaxExplicitComponent):
 
@@ -95,6 +87,14 @@ class TestBallisticSpacecraft(unittest.TestCase):
     @unittest.skipIf(jax is None, 'requires jax and jaxlib')
     @require_pyoptsparse('IPOPT')
     def test_ballistic_spacecraft(self):
+        from dymos.examples.ballistic_spacecraft.ephem_comp import EphemerisComp, KMPAU, MU_SUN
+        from dymos.examples.ballistic_spacecraft.ballistic_ode_comp import BallisticODEComp
+
+        # Add our specific DU and TU to OpenMDAO's recognized units.
+        om_units.add_unit('DU_sun', f'{KMPAU}*1000*m')
+        period = 2 * np.pi * np.sqrt(KMPAU ** 3 / MU_SUN)
+        om_units.add_unit('TU_sun', f'{period}*s')
+
         txs = {'birkhoff': dm.Birkhoff(num_nodes=20)}
 
         if env_truthy('DYMOS_2'):

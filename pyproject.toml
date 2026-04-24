@@ -186,6 +186,9 @@ sphinx-sitemap = "*"
 jinja2 = "*"
 tqdm = "*"
 
+[tool.pixi.feature.docs.pypi-dependencies]
+jax = "*"
+
 [tool.pixi.feature.notebooks.dependencies]
 ipympl = "*"
 notebook = "*"
