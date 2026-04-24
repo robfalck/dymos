@@ -6,7 +6,7 @@ from openmdao.utils.general_utils import env_truthy as _env_truthy
 
 from dymos.phase import Phase, AnalyticPhase
 from dymos.transcriptions import GaussLobatto, ExplicitShooting, Analytic, \
-    Birkhoff, PicardShooting
+    Birkhoff, PicardShooting, GaussLobattoNew
 
 if _env_truthy('DYMOS_2'):
     from dymos.transcriptions import RadauNew as Radau

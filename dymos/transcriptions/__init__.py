@@ -3,5 +3,6 @@ from .explicit_shooting import ExplicitShooting
 from .pseudospectral.gauss_lobatto import GaussLobatto
 from .pseudospectral.radau_pseudospectral import Radau
 from .pseudospectral.radau_new import RadauNew
+from .pseudospectral.gauss_lobatto_new import GaussLobattoNew
 from .pseudospectral.birkhoff import Birkhoff
 from .picard_shooting.picard_shooting import PicardShooting

@@ -6,3 +6,6 @@ from .gauss_lobatto_interleave_comp import GaussLobattoInterleaveComp
 from .birkhoff_defect_comp import BirkhoffDefectComp
 from .birkhoff_iter_group import BirkhoffIterGroup
 from .birkhoff_boundary_group import BirkhoffBoundaryGroup
+from .gauss_lobatto_defect_comp import GaussLobattoDefectComp
+from .gauss_lobatto_interp_comp import GaussLobattoInterpComp
+from .gauss_lobatto_iter_group import GaussLobattoIterGroup
