@@ -14,6 +14,28 @@ ORDER = 3
 
 
 def plot_tangent(x, y, slope, ax, dx=1, scale=1.0, *args, **kwargs):
+    """
+    Plot a short tangent line segment at each (x, y) point with the given slope.
+
+    Parameters
+    ----------
+    x : array_like
+        x-coordinates of the points.
+    y : array_like
+        y-coordinates of the points.
+    slope : array_like
+        Slopes of the tangent lines at each point.
+    ax : matplotlib.axes.Axes
+        The axes on which to plot the tangent segments.
+    dx : float
+        Half-width of the tangent segment in x before scaling.
+    scale : float
+        Scale factor applied to the tangent segment length.
+    *args
+        Additional positional arguments passed to ax.plot.
+    **kwargs
+        Additional keyword arguments passed to ax.plot.
+    """
     x = x.ravel()
     y = y.ravel()
     slope = slope.ravel()

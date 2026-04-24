@@ -643,7 +643,7 @@ class TranscriptionBase(object):
 
         Parameters
         ----------
-        var : str
+        name : str
             Name of the variable to be used as the response.
         loc : str
             The location of the response in the phase ['initial', 'final'].
@@ -776,7 +776,7 @@ class TranscriptionBase(object):
             The name of the phase variable to be set.
         vals : ndarray or Sequence or float
             Array of control/state/parameter values.
-        times : ndarray or Sequence or None
+        time_vals : ndarray or Sequence or None
             Array of integration variable values.
         interpolation_kind : str
             Specifies the kind of interpolation, as per the scipy.interpolate package.

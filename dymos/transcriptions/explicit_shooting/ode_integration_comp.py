@@ -468,9 +468,6 @@ class ODEIntegrationComp(om.ExplicitComponent):
         linearize : bool
             If True, linearize the model after calling run_model.
 
-        Returns
-        -------
-
         """
         subprob = self._eval_subprob
         t_units = self.time_options['units']

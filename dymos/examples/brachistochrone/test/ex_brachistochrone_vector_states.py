@@ -9,6 +9,41 @@ def brachistochrone_min_time(transcription='gauss-lobatto', num_segments=8, tran
                              dynamic_simul_derivs=True, force_alloc_complex=False,
                              solve_segments=False, run_driver=True, simulate=False,
                              make_plots=False):
+    """
+    Build and run the brachistochrone minimum-time problem with vector states.
+
+    Parameters
+    ----------
+    transcription : str
+        One of 'gauss-lobatto', 'radau-ps', 'birkhoff', or 'picard'.
+    num_segments : int
+        Number of segments in the transcription.
+    transcription_order : int
+        Polynomial order of the transcription.
+    grid_type : str
+        Grid type for the Birkhoff transcription ('lgl' or 'cgl').
+    compressed : bool
+        If True, use a compressed transcription.
+    optimizer : str
+        The optimizer to use.
+    dynamic_simul_derivs : bool
+        If True, declare coloring for simultaneous derivatives.
+    force_alloc_complex : bool
+        If True, force allocation of complex arrays for complex-step derivative checking.
+    solve_segments : bool
+        If True, use a Newton solver to enforce defect constraints within segments.
+    run_driver : bool
+        If True, run the optimization driver.
+    simulate : bool
+        If True, run a forward simulation after optimization.
+    make_plots : bool
+        If True, generate plots of the solution.
+
+    Returns
+    -------
+    p : om.Problem
+        The OpenMDAO Problem instance after the run.
+    """
     p = om.Problem(reports=True)
 
     if optimizer == 'SNOPT':

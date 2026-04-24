@@ -17,7 +17,8 @@ def _create_model_data(traj):
 
     Parameters
     ----------
-    traj : A dymos Trajectory object.
+    traj : Trajectory
+        A dymos Trajectory object.
 
     Returns
     -------

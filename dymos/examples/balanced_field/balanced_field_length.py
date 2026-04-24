@@ -10,13 +10,13 @@ def make_balanced_field_length_problem(ode_class, tx):
     ----------
     ode_class : System class
         The Dymos ODE System class.
-    tx_class : Transcription
-        Transcription to use.
+    tx : Transcription
+        The Dymos transcription instance to use.
 
     Returns
     -------
-    _type_
-        _description_
+    p : om.Problem
+        The configured OpenMDAO Problem instance.
     """
     p = om.Problem()
 

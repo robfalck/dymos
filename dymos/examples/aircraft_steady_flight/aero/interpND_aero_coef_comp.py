@@ -8,6 +8,21 @@ from openmdao.components.interp_util.interp import InterpND
 
 
 def setup_surrogates_all(model_name='CRM'):
+    """
+    Build N-dimensional interpolators for lift, drag, and moment coefficients.
+
+    Parameters
+    ----------
+    model_name : str
+        The name of the aerodynamic model data files to load (default 'CRM').
+
+    Returns
+    -------
+    list
+        A list containing [interpND_CL, interpND_CD, interpND_CM, nums] where each
+        interpolator maps (Mach, alpha, altitude, elevator) to the corresponding
+        aerodynamic coefficient, and nums is a dict of grid dimension sizes.
+    """
     data_dir = os.path.split(os.path.realpath(__file__))[0]
     raw = np.loadtxt(os.path.join(data_dir, 'data', '{0}_aero_inputs.dat'.format(model_name)))
     [CL, CD, CM] = np.loadtxt(os.path.join(data_dir, 'data',

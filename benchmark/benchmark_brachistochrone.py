@@ -11,6 +11,29 @@ from dymos.examples.brachistochrone import BrachistochroneODE
 
 def brachistochrone_min_time(transcription='gauss-lobatto', num_segments=8, transcription_order=3,
                              compressed=True, optimizer='SLSQP', simul_derivs=True):
+    """
+    Build and solve the brachistochrone minimum-time problem for benchmarking.
+
+    Parameters
+    ----------
+    transcription : str
+        One of 'gauss-lobatto' or 'radau-ps'.
+    num_segments : int
+        Number of segments in the transcription.
+    transcription_order : int
+        Polynomial order of the transcription.
+    compressed : bool
+        If True, use a compressed transcription.
+    optimizer : str
+        The optimizer to use (e.g. 'SLSQP', 'SNOPT').
+    simul_derivs : bool
+        If True, declare coloring for simultaneous derivatives.
+
+    Returns
+    -------
+    p : om.Problem
+        The OpenMDAO Problem instance after solving.
+    """
     p = om.Problem(model=om.Group())
 
     p.driver = om.pyOptSparseDriver()

@@ -27,6 +27,21 @@ c = 10
 
 
 def y_wire(x):
+    """
+    Evaluate the parabolic wire height and slope at position x.
+
+    Parameters
+    ----------
+    x : float or array_like
+        Horizontal position along the wire.
+
+    Returns
+    -------
+    y : float or array_like
+        Vertical height of the wire at x.
+    dydx : float or array_like
+        Slope of the wire at x.
+    """
     return a * x**2 + b * x + c, 2 * a * x + b
 
 

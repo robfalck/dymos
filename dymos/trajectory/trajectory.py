@@ -572,15 +572,9 @@ class Trajectory(om.Group):
 
         Parameters
         ----------
-        phases : Sequence of (str, str)
-            The names of the phases involved in the linkage.
-        vars : Sequence of (str, str)
-            The paths of the variables involved in the linkage.
-        options : dict
-            The linkage options set during `add_linkage_constraint`.
-
-        Returns
-        -------
+        linkage_options : LinkageOptionsDictionary
+            The options dictionary for this linkage, containing phase names, variable names,
+            units, and connection metadata set during `add_linkage_constraint`.
 
         """
         phase_name_a = linkage_options['phase_a']

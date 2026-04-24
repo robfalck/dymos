@@ -238,10 +238,9 @@ class TimeseriesOutputComp(om.ExplicitComponent):
 
         Parameters
         ----------
-        phase : Phase
-            The phase to which this component belongs.
-        timeseries_name : str
-            The name of the timeseries being configured.
+        timeseries_options : dict
+            Dictionary of timeseries output options specifying the variables to include,
+            their units, shapes, and other metadata.
 
         Returns
         -------

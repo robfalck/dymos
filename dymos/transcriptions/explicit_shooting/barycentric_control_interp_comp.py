@@ -10,6 +10,21 @@ except ImportError:
     # If numba is not available, just write a dummy njit wrapper.
     # Code will still run at a significant performance hit.
     def njit(*args, **kwargs):
+        """
+        Stub decorator that replaces numba.njit when numba is not available.
+
+        Parameters
+        ----------
+        *args : tuple
+            Positional arguments (ignored).
+        **kwargs : dict
+            Keyword arguments (ignored).
+
+        Returns
+        -------
+        callable
+            A decorator that wraps the function without JIT compilation.
+        """
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
@@ -466,12 +481,10 @@ class BarycentricControlInterpComp(om.ExplicitComponent):
         ----------
         inputs : `Vector`
             `Vector` containing inputs.
-        outputs : `Vector`
-            `Vector` containing outputs.
+        partials : `Jacobian`
+            `Jacobian` containing partial derivatives.
         discrete_inputs : `Vector`
-            `Vector` containing discrete_inputs.
-        discrete_outputs : `Vector`
-            `Vector` containing discrete_outputs.
+            `Vector` containing discrete inputs.
         """
         if self._control_options:
             gd = self._grid_data

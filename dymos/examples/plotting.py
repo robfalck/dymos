@@ -10,8 +10,10 @@ def plot_results(axes, title, figsize=(10, 8), p_sol=None, p_sim=None):
         The figure title
     figsize : tuple of (int, int)
         The size of the created figure, in inches
-    p_sol : The solution problem instance.
-    p_sim : The simulation problem instance.
+    p_sol : om.Problem or None
+        The solution problem instance.
+    p_sim : om.Problem or None
+        The simulation problem instance.
 
     Returns
     -------

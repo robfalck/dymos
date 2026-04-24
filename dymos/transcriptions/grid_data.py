@@ -549,6 +549,7 @@ class GridData(object):
         Parameters
         ----------
         other : GridData
+            The GridData object to compare against.
 
         Returns
         -------
@@ -566,6 +567,14 @@ class GridData(object):
             return False
 
     def __repr__(self):
+        """
+        Return a string representation of this GridData object.
+
+        Returns
+        -------
+        str
+            A string showing the class name, number of segments, transcription order, and object id.
+        """
         return f'{self.__class__.__name__}(num_seg={self.num_segments}, order={self.transcription_order}) at <{id(self)}>'
 
     def is_aligned_with(self, other, tol=1.0E-12):

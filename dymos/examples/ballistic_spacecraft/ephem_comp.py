@@ -64,8 +64,8 @@ def ephemeris(elements: jnp.ndarray, t: jnp.ndarray, mu=MU_SUN) -> tuple[jnp.nda
         - right ascension of ascending node (radians)
         - argument of periapsis (radians)
         - mean anomaly at the year 0 epoch (radians)
-    time : float
-        The time at which the cartesian state is requested.
+    t : jnp.ndarray
+        The time at which the Cartesian state is requested.
     mu : float
         The gravitational parameter of the central body.
 
