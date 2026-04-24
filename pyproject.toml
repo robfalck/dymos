@@ -133,21 +133,34 @@ convention = "numpy"
 
 [tool.pixi.workspace]
 channels = ["conda-forge"]
-platforms = ["osx-arm64"]
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
 
 [tool.pixi.dependencies]
+python = ">=3.11"
 pip = "*"
 compilers = ">=1.8.0,<2"
 networkx = ">=3.3"
 packaging = ">=25.0"
 requests = ">=2.32.5"
 
+[tool.pixi.pypi-dependencies]
+dymos = { path = ".", editable = true }
+
 [tool.pixi.feature.opt.dependencies]
 pyoptsparse = ">=2.14.0"
 cyipopt = "*"
 
-[tool.pixi.pypi-dependencies]
-dymos = { path = ".", editable = true }
+[tool.pixi.feature.mpi.target.linux-64.dependencies]
+openmpi = "*"
+mpi4py = "*"
+petsc = "*"
+petsc4py = "*"
+
+[tool.pixi.feature.mpi.target.osx-64.dependencies]
+openmpi = "*"
+mpi4py = "*"
+petsc = "*"
+petsc4py = "*"
 
 [tool.pixi.feature.mpi.target.osx-arm64.dependencies]
 openmpi = "*"
@@ -156,7 +169,30 @@ petsc = "*"
 petsc4py = "*"
 
 [tool.pixi.feature.test.dependencies]
+pre-commit = "*"
 ruff = "*"
+coverage = ">=7.6.0"
+numpydoc = "*"
+matplotlib = "*"
+
+[tool.pixi.feature.test.pypi-dependencies]
+testflo = "*"
+
+[tool.pixi.feature.docs.dependencies]
+jupyter-book = ">=1.0.3,<2"
+matplotlib = "*"
+numpydoc = "*"
+sphinx-sitemap = "*"
+jinja2 = "*"
+tqdm = "*"
+
+[tool.pixi.feature.notebooks.dependencies]
+ipympl = "*"
+notebook = "*"
+idna = "*"
+
+[tool.pixi.feature.numba.dependencies]
+numba = "*"
 
 [tool.pixi.feature.oldest.dependencies]
 python = "3.11.*"
@@ -176,9 +212,9 @@ install-local-openmdao = { cmd = "pip install --no-deps -e $OPENMDAO_SRC", env =
 install-local-pyoptsparse = { cmd = "pip install --no-build-isolation -e $PYOPTSPARSE_SRC", env = { PYOPTSPARSE_SRC = "../pyoptsparse.git" }, description = "Install pyoptsparse from local source in editable mode (dev-local only). Override path via PYOPTSPARSE_SRC." }
 
 [tool.pixi.environments]
-default = { features = ["opt", "mpi"], solve-group = "default" }
+default = { features = ["test", "opt", "mpi"], solve-group = "default" }
 dev = { features = ["test", "docs", "notebooks", "numba", "opt", "mpi"], solve-group = "default" }
 dev-local = { features = ["test", "docs", "notebooks", "numba", "opt", "mpi", "dev-local"], solve-group = "dev_local" }
-oldest = { features = ["oldest", "mpi"], solve-group = "oldest" }
+oldest = { features = ["test", "oldest", "mpi"], solve-group = "oldest" }
 
 [tool.pixi.tasks]
