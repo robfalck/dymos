@@ -39,7 +39,7 @@ class GaussLobattoNew(TranscriptionBase):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._rhs_source = 'ode_iter_group.ode_all'
+        self._rhs_source = 'ode_iter_group.ode_interp_group.ode'
         self._has_boundary_ode = True
 
     def initialize(self):
@@ -125,7 +125,7 @@ class GaussLobattoNew(TranscriptionBase):
                                ('t_phase', options['time_phase_targets'])]:
             if targets:
                 src_idxs = self.grid_data.subset_node_indices['all']
-                phase.connect(name, [f'ode_all.{t}' for t in targets],
+                phase.connect(name, [f'ode.{t}' for t in targets],
                               src_indices=src_idxs, flat_src_indices=True)
                 src_idxs = om.slicer[[0, -1], ...]
                 phase.connect(name, [f'boundary_vals.{t}' for t in targets],
@@ -145,7 +145,7 @@ class GaussLobattoNew(TranscriptionBase):
                     flat_src_idxs = True
                     endpoint_src_idxs = src_idxs
 
-                phase.connect(f'{name}_val', f'ode_all.{t}', src_indices=src_idxs,
+                phase.connect(f'{name}_val', f'ode.{t}', src_indices=src_idxs,
                               flat_src_indices=flat_src_idxs)
                 phase.connect(f'{name}_val', f'boundary_vals.{t}',
                               src_indices=endpoint_src_idxs,
@@ -174,7 +174,7 @@ class GaussLobattoNew(TranscriptionBase):
 
     def setup_controls(self, phase):
         """
-        Setup the control group.
+        Set up the control group.
 
         Parameters
         ----------
@@ -219,19 +219,19 @@ class GaussLobattoNew(TranscriptionBase):
         for name, options in phase.control_options.items():
             if options['targets']:
                 phase.connect(f'control_values:{name}',
-                              [f'ode_all.{t}' for t in options['targets']])
+                              [f'ode.{t}' for t in options['targets']])
                 phase.connect(f'control_boundary_values:{name}',
                               [f'boundary_vals.{t}' for t in options['targets']])
 
             if options['rate_targets']:
                 phase.connect(f'control_rates:{name}_rate',
-                              [f'ode_all.{t}' for t in options['rate_targets']])
+                              [f'ode.{t}' for t in options['rate_targets']])
                 phase.connect(f'control_boundary_rates:{name}_rate',
                               [f'boundary_vals.{t}' for t in options['rate_targets']])
 
             if options['rate2_targets']:
                 phase.connect(f'control_rates:{name}_rate2',
-                              [f'ode_all.{t}' for t in options['rate2_targets']])
+                              [f'ode.{t}' for t in options['rate2_targets']])
                 phase.connect(f'control_boundary_rates:{name}_rate2',
                               [f'boundary_vals.{t}' for t in options['rate2_targets']])
 
@@ -357,9 +357,6 @@ class GaussLobattoNew(TranscriptionBase):
         """
         ode_iter_group = phase._get_subsystem('ode_iter_group')
 
-        # Always add NLBGS on ode_iter_group for Picard iteration convergence.
-        ode_iter_group.nonlinear_solver = om.NonlinearBlockGS(maxiter=10, iprint=0)
-
         req_solvers = {'implicit outputs': False}
 
         if self.any_solved_segs:
@@ -380,8 +377,6 @@ class GaussLobattoNew(TranscriptionBase):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-        gd = self.grid_data
-        state_options = phase.state_options
         for timeseries_name, timeseries_options in phase._timeseries.items():
             timeseries_comp = phase._get_subsystem(timeseries_name)
             for input_name, src, src_idxs in timeseries_comp._configure_io(timeseries_options):
@@ -567,7 +562,7 @@ class GaussLobattoNew(TranscriptionBase):
                 constraint_path = f'control_boundary_rates:{var}'
         else:
             if loc == 'path':
-                constraint_path = f'ode_all.{var}'
+                constraint_path = f'ode.{var}'
             else:
                 constraint_path = f'boundary_vals.{var}'
             meta = get_source_metadata(ode_outputs, var, user_units=None, user_shape=None)
@@ -629,7 +624,7 @@ class GaussLobattoNew(TranscriptionBase):
         elif var_type == 'parameter':
             rate_path = f'parameter_vals:{var}'
         else:
-            rate_path = f'ode_all.{var}'
+            rate_path = f'ode.{var}'
 
         return rate_path
 
@@ -698,7 +693,7 @@ class GaussLobattoNew(TranscriptionBase):
             src_units = phase.parameter_options[var]['units']
             src_shape = phase.parameter_options[var]['shape']
         else:
-            path = f'ode_all.{var}'
+            path = f'ode.{var}'
             meta = get_source_metadata(ode_outputs, src=var)
             src_shape = meta['shape']
             src_units = meta['units']
@@ -719,7 +714,7 @@ class GaussLobattoNew(TranscriptionBase):
 
     def get_parameter_connections(self, name, phase):
         """
-        Returns info about a parameter's target connections in the phase.
+        Return info about a parameter's target connections in the phase.
 
         Parameters
         ----------
@@ -751,7 +746,7 @@ class GaussLobattoNew(TranscriptionBase):
                         src_idxs = src_idxs.ravel()
                         endpoint_src_idxs = endpoint_src_idxs.ravel()
 
-                connection_info.append((f'ode_all.{tgt}', (src_idxs,)))
+                connection_info.append((f'ode.{tgt}', (src_idxs,)))
                 connection_info.append((f'boundary_vals.{tgt}', (endpoint_src_idxs,)))
 
         return connection_info
@@ -812,6 +807,9 @@ class GaussLobattoNew(TranscriptionBase):
         input_data = super()._phase_set_state_val(phase, name, vals, time_vals, interpolation_kind)
 
         state_vals = input_data[f'states:{name}']
+        input_data[f'states_all:{name}'] = phase.interp(name, vals, time_vals,
+                                                        nodes='all',
+                                                        kind=interpolation_kind)
         input_data[f'initial_states:{name}'] = state_vals[0, ...]
         input_data[f'final_states:{name}'] = state_vals[-1, ...]
 
@@ -819,7 +817,7 @@ class GaussLobattoNew(TranscriptionBase):
 
     def _get_linkage_source_ode(self, promoted=False):
         """
-        Returns the path of the ODE system providing sources for linkage constraints.
+        Return the path of the ODE system providing sources for linkage constraints.
 
         Parameters
         ----------

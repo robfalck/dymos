@@ -78,6 +78,8 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
                 'final_defect': f'final_state_defects:{name}',
             }
 
+        se = gd.subset_node_indices['segment_ends']
+
         for name, options in state_options.items():
             shape = options['shape']
             units = options['units']
@@ -173,6 +175,35 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
             self.declare_partials(vn['final_defect'], vn['states_all'],
                                   rows=ar, cols=last_node_cols, val=-1.0)
 
+            # --- Segment continuity defects (uncompressed multi-segment only) ---
+            # cnty_defect[i] = states_all[seg_start[i+1]] - states_all[seg_end[i]]
+            # where seg_start and seg_end are the disc nodes at segment boundaries.
+            if n_segs > 1 and not gd.compressed:
+                ns_m1 = n_segs - 1
+                vn['cnty_defect'] = f'state_cnty_defects:{name}'
+
+                self.add_output(vn['cnty_defect'],
+                                shape=(ns_m1,) + shape, units=units,
+                                desc=f'Segment continuity defect of state {name}')
+
+                if not solve_segs:
+                    cnty_ref = np.tile(defect_ref, (ns_m1, 1))
+                    self.add_constraint(vn['cnty_defect'], equals=0.0, ref=cnty_ref)
+
+                # se = [seg0_start, seg0_end, seg1_start, seg1_end, ...]
+                pos_start = se[2::2]    # start node of each subsequent segment
+                neg_end = se[1:-2:2]    # end node of each preceding segment
+
+                out_r = np.arange(ns_m1 * size)
+                pos_c = np.tile(np.arange(size), ns_m1) + np.repeat(pos_start * size, size)
+                neg_c = np.tile(np.arange(size), ns_m1) + np.repeat(neg_end * size, size)
+
+                self.declare_partials(vn['cnty_defect'], vn['states_all'],
+                                      rows=np.concatenate([out_r, out_r]),
+                                      cols=np.concatenate([pos_c, neg_c]),
+                                      val=np.concatenate([np.ones(ns_m1 * size),
+                                                          -np.ones(ns_m1 * size)]))
+
     def compute(self, inputs, outputs):
         """
         Compute collocation and boundary-state defects.
@@ -186,6 +217,9 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
         """
         dt_dstau = inputs['dt_dstau']
 
+        gd = self.options['grid_data']
+        se = gd.subset_node_indices['segment_ends']
+
         for name, vn in self.var_names.items():
             f_approx = inputs[vn['f_approx']]
             f_computed = inputs[vn['f_computed']]
@@ -196,6 +230,9 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
             x = inputs[vn['states_all']]       # (n_all,)+shape
             outputs[vn['initial_defect']] = x0 - x[[0], ...]
             outputs[vn['final_defect']] = xf - x[[-1], ...]
+
+            if 'cnty_defect' in vn:
+                outputs[vn['cnty_defect']] = x[se[2::2]] - x[se[1:-2:2]]
 
     def compute_partials(self, inputs, partials):
         """

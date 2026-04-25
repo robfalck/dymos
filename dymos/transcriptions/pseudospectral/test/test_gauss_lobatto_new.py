@@ -8,6 +8,7 @@ from openmdao.utils.assert_utils import assert_near_equal
 from openmdao.utils.testing_utils import use_tempdirs
 
 import dymos as dm
+from dymos.transcriptions.pseudospectral.gauss_lobatto_new import GaussLobattoNew
 from dymos.examples.brachistochrone.brachistochrone_ode import BrachistochroneODE
 
 
@@ -27,7 +28,7 @@ class TestGaussLobattoNew(unittest.TestCase):
         p.driver.options['tol'] = 1e-8
         p.driver.options['maxiter'] = 300
 
-        tx = dm.GaussLobattoNew(num_segments=10, order=3, compressed=True)
+        tx = GaussLobattoNew(num_segments=10, order=3, compressed=True)
         phase = dm.Phase(ode_class=BrachistochroneODE, transcription=tx)
 
         traj = dm.Trajectory()
@@ -78,7 +79,7 @@ class TestGaussLobattoNew(unittest.TestCase):
         p.driver.options['tol'] = 1e-8
         p.driver.options['maxiter'] = 300
 
-        tx = dm.GaussLobattoNew(num_segments=10, order=3, compressed=True)
+        tx = GaussLobattoNew(num_segments=10, order=3, compressed=True)
         phase = dm.Phase(ode_class=BrachistochroneODE, transcription=tx)
 
         traj = dm.Trajectory()
@@ -123,7 +124,7 @@ class TestGaussLobattoNew(unittest.TestCase):
         p.driver.options['tol'] = 1e-8
         p.driver.options['maxiter'] = 300
 
-        tx = dm.GaussLobattoNew(num_segments=5, order=3, compressed=True)
+        tx = GaussLobattoNew(num_segments=5, order=3, compressed=True)
         phase = dm.Phase(ode_class=BrachistochroneODE, transcription=tx)
 
         traj = dm.Trajectory()
