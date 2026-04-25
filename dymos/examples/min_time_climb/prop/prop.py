@@ -7,6 +7,7 @@ from .thrust_comp import ThrustComp
 class PropGroup(om.Group):
     """
     The purpose of the PropGroup is to compute the propulsive forces on the
+    
     aircraft in the body frame.
 
     Parameters
@@ -28,6 +29,7 @@ class PropGroup(om.Group):
         Vehicle mass accumulation rate (kg/s)
 
     """
+
     def initialize(self):
         self.options.declare('num_nodes', types=int,
                              desc='Number of nodes to be evaluated in the RHS')

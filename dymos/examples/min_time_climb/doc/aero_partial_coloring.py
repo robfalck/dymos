@@ -13,6 +13,7 @@ from ..aero.mach_comp import MachComp
 class AeroGroup(om.Group):
     """
     The purpose of the AeroGroup is to compute the aerodynamic forces on the
+    
     aircraft in the body frame.
 
     Parameters
@@ -29,6 +30,7 @@ class AeroGroup(om.Group):
         aerodynamic reference area (m**2)
 
     """
+
     def initialize(self):
         self.options.declare('num_nodes', types=int,
                              desc='Number of nodes to be evaluated in the RHS')

@@ -2,7 +2,26 @@ import numpy as np
 
 
 def animate_cartpole(x, theta, force, interval=20, force_scaler=0.1, save_gif=False, gif_fps=20):
+    """
+    Animate the cart-pole system trajectory using matplotlib.
 
+    Parameters
+    ----------
+    x : array_like
+        Time history of cart horizontal position.
+    theta : array_like
+        Time history of pole angle (radians).
+    force : array_like
+        Time history of control input force.
+    interval : int
+        Delay between animation frames in milliseconds.
+    force_scaler : float
+        Scale factor applied to the force arrow length for display.
+    save_gif : bool
+        If True, save the animation to 'cartpole.gif'.
+    gif_fps : int
+        Frames per second for the saved GIF.
+    """
     import matplotlib.pyplot as plt
     import matplotlib.patches as patches
     from matplotlib import animation

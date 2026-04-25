@@ -485,6 +485,7 @@ class dymos_linkage_gui_test_case(_GuiTestCase):
     async def assert_element_count(self, selector, expected_found):
         """
         Count the number of elements located by the selector and make
+        
         sure it exactly matches the supplied value. Try several times
         because sometimes transition animations throw things off.
         """
@@ -538,6 +539,7 @@ class dymos_linkage_gui_test_case(_GuiTestCase):
     async def assert_arrow_count(self, expected_arrows):
         """
         Count the number of path elements in the n2arrows < div > and make
+        
         sure it matches the specified value.
         """
         await self.assert_element_count('g#n2arrows > g', expected_arrows)
@@ -557,6 +559,7 @@ class dymos_linkage_gui_test_case(_GuiTestCase):
     async def hover_and_check_arrow_count(self, options):
         """
         Hover over a matrix cell, make sure the number of expected arrows
+        
         are there, then move off and make sure the arrows go away.
         """
         await self.hover(options)
@@ -569,6 +572,7 @@ class dymos_linkage_gui_test_case(_GuiTestCase):
     async def click(self, options):
         """
         Perform a click of the type specified by options.button on the
+        
         element specified by options.selector.
         """
         self.log_test(options['desc'] if 'desc' in options else
@@ -583,6 +587,7 @@ class dymos_linkage_gui_test_case(_GuiTestCase):
     async def drag(self, options):
         """
         Hover over the element, perform a mousedown event, move the mouse to the
+        
         specified location, and perform a mouseup. Check to make sure the element
         moved in at least one direction.
         """
@@ -609,6 +614,7 @@ class dymos_linkage_gui_test_case(_GuiTestCase):
     async def resize_window(self, options):
         """
         Drag an edge/corner of a WindowResizable obj and check that the size changed
+        
         or didn't change as expected.
         """
         self.log_test(options['desc'] if 'desc' in options else
@@ -644,7 +650,6 @@ class dymos_linkage_gui_test_case(_GuiTestCase):
         """
         Left-click the home button and wait for the transition to complete.
         """
-
         self.log_test("Return to root")
         hndl = await self.get_handle("#reset-graph")
         await hndl.click()
@@ -652,6 +657,7 @@ class dymos_linkage_gui_test_case(_GuiTestCase):
     async def search_and_check_result(self, options):
         """
         Enter a string in the search textbox and check that the expected
+        
         number of elements are shown in the N2 matrix.
         """
         searchString = options['searchString']
@@ -685,9 +691,9 @@ class dymos_linkage_gui_test_case(_GuiTestCase):
     async def run_model_script(self, script):
         """
         Iterate through the supplied script array and perform each
+        
         action/test.
         """
-
         print("Running tests from model script...")
 
         for script_item in script:

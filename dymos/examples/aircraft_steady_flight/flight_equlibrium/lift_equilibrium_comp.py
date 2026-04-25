@@ -6,6 +6,7 @@ import openmdao.api as om
 class LiftEquilibriumComp(om.ExplicitComponent):
     """
     Compute the rates of TAS and flight path angle required to match a given
+    
     flight condition.
     """
 

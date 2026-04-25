@@ -21,6 +21,10 @@ def make_traj(transcription='gauss-lobatto', transcription_order=3, compressed=F
         If True, use a compressed transcription.
     connected : bool
         If True, connect the phases together, otherwise enforce continuity via constraints.
+    default_nonlinear_solver : om.NonlinearSolver or None
+        If provided, set as the default nonlinear solver on the phases group.
+    default_linear_solver : om.LinearSolver or None
+        If provided, set as the default linear solver on the phases group.
 
     Returns
     -------
@@ -196,6 +200,14 @@ def two_burn_orbit_raise_problem(transcription='gauss-lobatto', optimizer='SLSQP
         If True, connect phases for continuity.  Otherwise, enforce continuity via linkage constraints.
     restart : str or None
         The restart file to use, if available.
+    solution_record_file : str
+        Path to the file where the solution case is recorded.
+    simulation_record_file : str
+        Path to the file where the simulation case is recorded.
+    default_nonlinear_solver : om.NonlinearSolver or None
+        If provided, set as the default nonlinear solver on the phases group.
+    default_linear_solver : om.LinearSolver or None
+        If provided, set as the default linear solver on the phases group.
 
     Returns
     -------

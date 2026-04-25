@@ -6,8 +6,10 @@ from .interpND_aero_coef_comp import InterpNDAeroCoeffComp, setup_surrogates_all
 class AerodynamicsGroup(om.Group):
     """
     The purpose of the Aerodynamics is to compute the lift and
+    
     drag forces on the aircraft.
     """
+
     def initialize(self):
         self.options.declare('num_nodes', types=int)
 

@@ -28,13 +28,14 @@ class GaussLobatto(PseudospectralBase):
     High-Order Gauss-Lobatto Quadrature Rules." Journal of Guidance, Control, and
     Dynamics 19.3 (1996): 592-599.
     """
+
     def __init__(self, **kwargs):
         super(GaussLobatto, self).__init__(**kwargs)
         self._rhs_source = 'rhs_disc'
 
     def init_grid(self):
         """
-        Setup the GridData object for the Transcription.
+        Set up the GridData object for the Transcription.
         """
         num_segments = self.options['num_segments']
 
@@ -183,7 +184,7 @@ class GaussLobatto(PseudospectralBase):
 
     def setup_ode(self, phase):
         """
-        Setup the ode for this transcription.
+        Set up the ode for this transcription.
 
         Parameters
         ----------
@@ -536,7 +537,7 @@ class GaussLobatto(PseudospectralBase):
 
     def get_parameter_connections(self, name, phase):
         """
-        Returns info about a parameter's target connections in the phase.
+        Return info about a parameter's target connections in the phase.
 
         Parameters
         ----------
@@ -584,7 +585,7 @@ class GaussLobatto(PseudospectralBase):
 
     def _requires_continuity_constraints(self, phase):
         """
-        Tests whether state and/or control and/or control rate continuity are required.
+        Test whether state and/or control and/or control rate continuity are required.
 
         Parameters
         ----------

@@ -32,6 +32,7 @@ class GridRefinementODESystem(om.Group):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def initialize(self):
         """
         Declare options for this Group.

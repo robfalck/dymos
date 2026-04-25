@@ -60,8 +60,8 @@ class _MassAdder(om.ExplicitComponent):
         nn = self.options['num_nodes']
 
         self.add_input('m_empty', val=np.zeros(nn), desc='empty mass', units='kg')
-        self.add_input('V_w', val=1e-3*np.ones(nn), desc='water volume', units='m**3')
-        self.add_input('rho_w', val=1e3*np.ones(nn), desc="water density", units='kg/m**3')
+        self.add_input('V_w', val=1e-3 * np.ones(nn), desc='water volume', units='m**3')
+        self.add_input('rho_w', val=1e3 * np.ones(nn), desc="water density", units='kg/m**3')
 
         self.add_output('m', val=np.zeros(nn), desc='total mass', units='kg')
 
@@ -69,7 +69,7 @@ class _MassAdder(om.ExplicitComponent):
         self.declare_partials('*', '*', cols=ar, rows=ar)
 
     def compute(self, inputs, outputs):
-        outputs['m'] = inputs['m_empty'] + inputs['rho_w']*inputs['V_w']
+        outputs['m'] = inputs['m_empty'] + inputs['rho_w'] * inputs['V_w']
 
     def compute_partials(self, inputs, jacobian):
         jacobian['m', 'm_empty'] = 1

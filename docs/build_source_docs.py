@@ -25,7 +25,21 @@ index_top = """
 
 
 def header(filename, path):
+    """
+    Generate a JupyterBook-compatible Markdown string for an automodule reference sheet.
 
+    Parameters
+    ----------
+    filename : str
+        The name of the source file (used as the page title).
+    path : str
+        The dotted Python module path passed to automodule.
+
+    Returns
+    -------
+    str
+        A Markdown string containing an RST automodule directive for use in a notebook cell.
+    """
     header = """# %s
 
 ```{eval-rst}
@@ -78,6 +92,18 @@ def _header_cell():
 
 
 def build_src_docs(top, src_dir, project_name='dymos'):
+    """
+    Recursively build JupyterBook source-doc notebook files for all public modules in the project.
+
+    Parameters
+    ----------
+    top : str
+        The root output directory where the _srcdocs folder will be created.
+    src_dir : str
+        The root directory of the project source code.
+    project_name : str
+        The Python package name used as the top-level prefix for module paths.
+    """
     # docs_dir = os.path.dirname(src_dir)
 
     doc_dir = os.path.join(top, "_srcdocs")

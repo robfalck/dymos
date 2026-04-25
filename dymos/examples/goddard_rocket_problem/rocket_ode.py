@@ -25,7 +25,7 @@ class RocketODE(om.ExplicitComponent):
         self.declare_partials(of='v_dot', wrt='m', rows=ar, cols=ar)
         self.declare_partials(of='v_dot', wrt='T', rows=ar, cols=ar)
 
-        self.declare_partials(of='m_dot', wrt='T', rows=ar, cols=ar, val=-1/1580.9425)
+        self.declare_partials(of='m_dot', wrt='T', rows=ar, cols=ar, val=-1 / 1580.9425)
 
     def compute(self, inputs, outputs, discrete_inputs=None, discrete_outputs=None):
         h = inputs['h']
@@ -39,7 +39,7 @@ class RocketODE(om.ExplicitComponent):
         h0 = 23800
 
         outputs['h_dot'] = v
-        outputs['v_dot'] = (T - sigma * v**2 * np.exp(-h/h0))/m - g
+        outputs['v_dot'] = (T - sigma * v**2 * np.exp(-h / h0)) / m - g
         outputs['m_dot'] = -T / c
 
     def compute_partials(self, inputs, partials, discrete_inputs=None):
@@ -51,7 +51,7 @@ class RocketODE(om.ExplicitComponent):
         sigma = 5.4915e-5
         h0 = 23800
 
-        partials['v_dot', 'h'] = (sigma * v**2 * np.exp(-h/h0))/(m * h0)
-        partials['v_dot', 'v'] = -(2 * sigma * v * np.exp(-h/h0)) / m
-        partials['v_dot', 'm'] = -(T - sigma * v**2 * np.exp(-h/h0)) / (m**2)
+        partials['v_dot', 'h'] = (sigma * v**2 * np.exp(-h / h0)) / (m * h0)
+        partials['v_dot', 'v'] = -(2 * sigma * v * np.exp(-h / h0)) / m
+        partials['v_dot', 'm'] = -(T - sigma * v**2 * np.exp(-h / h0)) / (m**2)
         partials['v_dot', 'T'] = 1 / m

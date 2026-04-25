@@ -11,6 +11,7 @@ class KappaComp(om.ExplicitComponent):
         C_D = C_{D0} + \kappa C_{L\alpha} \alpha^2
 
     """
+
     def initialize(self):
         self.options.declare('num_nodes', types=int)
 

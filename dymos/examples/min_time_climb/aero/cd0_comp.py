@@ -6,6 +6,7 @@ import openmdao.api as om
 class CD0Comp(om.ExplicitComponent):
     """ Computes the zero-lift drag coefficient
     """
+
     def initialize(self):
         self.options.declare('num_nodes', types=int)
 

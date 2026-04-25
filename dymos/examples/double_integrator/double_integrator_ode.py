@@ -4,6 +4,7 @@ import openmdao.api as om
 class DoubleIntegratorODE(om.ExplicitComponent):
     """
     The double integrator is a special case where the state rates are all set to other states
+    
     or parameters.  Since we aren't computing any other outputs, the ODE doesn't actually
     need to compute anything.  OpenMDAO will warn us that the component has no outputs, but
     Dymos will solve the problem just fine.

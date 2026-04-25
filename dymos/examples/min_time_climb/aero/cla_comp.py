@@ -7,6 +7,7 @@ class CLaComp(om.ExplicitComponent):
     """ Computes the alpha lift coefficient for induced drag
 
     """
+
     def initialize(self):
         self.options.declare('num_nodes', types=int)
 

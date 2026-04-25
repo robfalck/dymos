@@ -23,6 +23,7 @@ class StateRateCollectorComp(om.ExplicitComponent):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def __init__(self, vec_size=1, **kwargs):
         super().__init__(**kwargs)
 
@@ -61,7 +62,7 @@ class StateRateCollectorComp(om.ExplicitComponent):
             self.add_input(input_name, shape=(vec_size,) + shape, units=rate_units)
             self.add_output(output_name, shape=(vec_size,) + shape, units=rate_units)
 
-            ar = np.arange(vec_size*size, dtype=int)
+            ar = np.arange(vec_size * size, dtype=int)
             self.declare_partials(of=output_name, wrt=input_name, rows=ar, cols=ar, val=1.0)
 
     def compute(self, inputs, outputs, discrete_inputs=None, discrete_outputs=None):

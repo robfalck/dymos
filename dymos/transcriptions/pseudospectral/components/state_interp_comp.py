@@ -28,6 +28,7 @@ class StateInterpComp(om.ExplicitComponent):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._no_check_partials = not dymos_options['include_check_partials']

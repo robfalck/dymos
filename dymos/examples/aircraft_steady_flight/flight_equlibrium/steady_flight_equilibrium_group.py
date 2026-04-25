@@ -38,9 +38,9 @@ class SteadyFlightEquilibriumGroup(om.Group):
         self.connect('eta', ('aero.eta'))
 
         bal.add_balance('alpha', units='rad', eq_units=None, lhs_name='CL_eq',
-                        rhs_name='CL', val=0.01*np.ones(nn), lower=-20, upper=30, res_ref=1.0)
+                        rhs_name='CL', val=0.01 * np.ones(nn), lower=-20, upper=30, res_ref=1.0)
 
-        bal.add_balance('eta', units='rad', val=0.01*np.ones(nn), eq_units=None, lhs_name='CM',
+        bal.add_balance('eta', units='rad', val=0.01 * np.ones(nn), eq_units=None, lhs_name='CM',
                         lower=-30, upper=30, res_ref=1.0)
 
         self.connect('aero.CL', 'alpha_eta_balance.CL')
