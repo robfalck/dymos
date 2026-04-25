@@ -329,7 +329,7 @@ class GaussLobattoNew(TranscriptionBase):
                 phase.connect(rate_src_path, f'f_computed:{name}',
                               src_indices=col_src_idxs)
                 phase.connect(rate_src_path,
-                              f'ode_iter_group.lgl_interp_comp.staterate_disc:{name}',
+                              f'lgl_interp_comp.staterate_disc:{name}',
                               src_indices=disc_src_idxs)
 
     def setup_solvers(self, phase):
@@ -807,9 +807,44 @@ class GaussLobattoNew(TranscriptionBase):
         input_data = super()._phase_set_state_val(phase, name, vals, time_vals, interpolation_kind)
 
         state_vals = input_data[f'states:{name}']
-        input_data[f'states_all:{name}'] = phase.interp(name, vals, time_vals,
-                                                        nodes='all',
-                                                        kind=interpolation_kind)
+
+        # Compute states_all by Hermite interpolation from state_input (disc) to all nodes.
+        # This accounts for both compressed and uncompressed grids.
+        gd = self.grid_data
+        shape = phase.state_options[name]['shape']
+        n_all = gd.num_nodes
+        n_disc = gd.subset_num_nodes['state_disc']
+
+        # Get the input_to_disc mapping to expand state_input values to state_disc
+        state_input_to_disc = gd.input_maps['state_input_to_disc']
+        disc_idxs = gd.subset_node_indices['state_disc']
+        col_idxs = gd.subset_node_indices['col']
+
+        # Get Hermite interpolation matrices
+        Ai, Bi, _, _ = gd.phase_hermite_matrices('state_disc', 'col', sparse=True)
+
+        # Expand state_input values to state_disc nodes (handles compressed grids)
+        state_disc_vals = state_vals[state_input_to_disc, ...]
+
+        # For now, assume rates are zero at disc nodes (no rate information available from user input)
+        state_rate_disc_vals = np.zeros_like(state_disc_vals)
+
+        # Reshape for Hermite interpolation
+        state_disc_flat = state_disc_vals.reshape(n_disc, -1)
+        state_rate_disc_flat = state_rate_disc_vals.reshape(n_disc, -1)
+
+        # Compute col state values via Hermite interpolation
+        # For now, we assume dt_dstau = 1.0 (unit scaling). The actual interpolation happens
+        # in the ODE/interp loop, but here we just need a reasonable initial guess.
+        dt_dstau = np.ones(len(col_idxs))
+        col_val = Bi.dot(state_rate_disc_flat) * dt_dstau[:, np.newaxis] + Ai.dot(state_disc_flat)
+
+        # Assemble states_all: disc passthrough + col interpolated
+        states_all = np.empty((n_all,) + shape, dtype=state_vals.dtype)
+        states_all[disc_idxs, ...] = state_disc_vals
+        states_all[col_idxs, ...] = col_val.reshape((len(col_idxs),) + shape)
+
+        input_data[f'states_all:{name}'] = states_all
         input_data[f'initial_states:{name}'] = state_vals[0, ...]
         input_data[f'final_states:{name}'] = state_vals[-1, ...]
 
