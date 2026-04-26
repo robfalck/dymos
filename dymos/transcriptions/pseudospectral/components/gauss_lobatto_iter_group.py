@@ -12,41 +12,158 @@ from dymos.utils.ode_utils import _make_ode_system
 from dymos.utils.misc import broadcast_to_nodes, determine_ref_ref0
 
 
+class StatesAllInitComp(om.ExplicitComponent):
+    """
+    Initialize states_col by linear interpolation from state_disc values.
+
+    This component provides initial guesses for states_col by interpolating from the
+    state values at discretization nodes. This ensures states_all has reasonable initial
+    values before the ODE runs for the first time.
+    """
+
+    def initialize(self):
+        """Declare component options."""
+        self.options.declare('grid_data', types=GridData,
+                             desc='Container object for grid info.')
+        self.options.declare('state_options', types=dict,
+                             desc='Dictionary of options for the states.')
+
+    def setup(self):
+        """Set up component - defer to configure_io for I/O setup."""
+        pass
+
+    def configure_io(self):
+        """Configure inputs and outputs."""
+        gd = self.options['grid_data']
+        state_options = self.options['state_options']
+        n_all = gd.subset_num_nodes['all']
+        n_input = gd.subset_num_nodes['state_input']
+        # n_disc = gd.subset_num_nodes['state_disc']
+        n_col = gd.subset_num_nodes['col']
+
+        for name, options in state_options.items():
+            shape = options['shape']
+            units = options['units']
+
+            # Get default value from state options
+            try:
+                default_val = options['val']
+            except (KeyError, RuntimeError):
+                default_val = 1.0
+
+            if np.isscalar(default_val):
+                default_val_all = default_val
+            else:
+                default_val_all = default_val[0] if len(default_val) > 0 else 1.0
+
+            # Input: states at disc nodes
+            self.add_input(f'states:{name}', shape=(n_input,) + shape, units=units)
+
+            # Input: states at col nodes
+            self.add_input(f'states_col:{name}', shape=(n_col,) + shape, units=units)
+
+            # Output: states at all nodes
+            self.add_output(f'states_all:{name}', shape=(n_all,) + shape, units=units,
+                           val=default_val_all)
+
+    def setup_partials(self):
+        """Set up partial derivatives - all identity for respective node sets."""
+        gd = self.options['grid_data']
+        state_options = self.options['state_options']
+
+        input_to_disc_map = gd.input_maps['state_input_to_disc']
+        disc_idxs = gd.subset_node_indices['state_disc']
+        col_idxs = gd.subset_node_indices['col']
+
+        for name, options in state_options.items():
+            shape = options['shape']
+            size = np.prod(shape, dtype=int)
+
+            output_name = f'states_all:{name}'
+            states_input_name = f'states:{name}'
+            states_col_name = f'states_col:{name}'
+
+            # Partials of states_all w.r.t. states (input nodes)
+            # Map from input node indices to disc indices
+            rows_input = []
+            cols_input = []
+            for s in range(size):
+                for i, disc_idx in enumerate(disc_idxs):
+                    input_idx = input_to_disc_map[i]
+                    rows_input.append(disc_idx * size + s)
+                    cols_input.append(input_idx * size + s)
+
+            self.declare_partials(output_name, states_input_name,
+                                  rows=rows_input, cols=cols_input, val=1.0)
+
+            # Partials of states_all w.r.t. states_col (collocation nodes)
+            # Direct identity mapping
+            rows_col = []
+            cols_col = []
+            for s in range(size):
+                for i, col_idx in enumerate(col_idxs):
+                    rows_col.append(col_idx * size + s)
+                    cols_col.append(i * size + s)
+
+            self.declare_partials(output_name, states_col_name,
+                                  rows=rows_col, cols=cols_col, val=1.0)
+
+    def compute(self, inputs, outputs, discrete_inputs=None, discrete_outputs=None):
+        """Assemble states_all from input and collocation node values."""
+        gd = self.options['grid_data']
+        state_options = self.options['state_options']
+
+        input_to_disc_map = gd.input_maps['state_input_to_disc']
+        disc_idxs = gd.subset_node_indices['state_disc']
+        col_idxs = gd.subset_node_indices['col']
+
+        for name in state_options:
+
+            state_input = inputs[f'states:{name}']
+            state_col = inputs[f'states_col:{name}']
+            state_all = outputs[f'states_all:{name}']
+
+            state_all[disc_idxs, ...] = state_input[input_to_disc_map, ...]
+            state_all[col_idxs, ...] = state_col
+
+
 class OdeInterpGroup(om.Group):
     """Inner group for ODE + Hermite interpolation with initial guess."""
+    
+    pass
 
-    def guess_nonlinear(self, inputs, outputs, residuals):
-        """
-        Provide initial guess for states_all by evaluating lgl_interp_comp.
+    # def guess_nonlinear(self, inputs, outputs, residuals):
+    #     """
+    #     Provide initial guess for states_all by evaluating lgl_interp_comp.
 
-        This ensures the ODE evaluates with proper state values on the first NLBGS iteration.
-        """
-        # Get the lgl_interp_comp subsystem
-        lgl_interp_comp = self._get_subsystem('lgl_interp_comp')
+    #     This ensures the ODE evaluates with proper state values on the first NLBGS iteration.
+    #     """
+    #     # Get the lgl_interp_comp subsystem
+    #     lgl_interp_comp = self._get_subsystem('lgl_interp_comp')
 
-        # Compute interpolated states_all from current state_disc and staterate_disc
-        interp_inputs = {}
-        interp_outputs = {}
+    #     # Compute interpolated states_all from current state_disc and staterate_disc
+    #     interp_inputs = {}
+    #     interp_outputs = {}
 
-        # Extract all state_disc and staterate_disc from inputs
-        for key in inputs._names:
-            if key.startswith('state_disc:') or key.startswith('staterate_disc:'):
-                interp_inputs[key] = inputs[key]
-        if 'dt_dstau' in inputs._names:
-            interp_inputs['dt_dstau'] = inputs['dt_dstau']
+    #     # Extract all state_disc and staterate_disc from inputs
+    #     for key in inputs._names:
+    #         if key.startswith('state_disc:') or key.startswith('staterate_disc:'):
+    #             interp_inputs[key] = inputs[key]
+    #     if 'dt_dstau' in inputs._names:
+    #         interp_inputs['dt_dstau'] = inputs['dt_dstau']
 
-        # Prepare output dict for all states_all
-        for key in outputs._names:
-            if key.startswith('states_all:'):
-                interp_outputs[key] = outputs[key]
+    #     # Prepare output dict for all states_all
+    #     for key in outputs._names:
+    #         if key.startswith('states_all:'):
+    #             interp_outputs[key] = outputs[key]
 
-        # Call lgl_interp_comp's compute to populate initial guesses for states_all
-        if interp_inputs and interp_outputs:
-            try:
-                lgl_interp_comp.compute(interp_inputs, interp_outputs)
-            except Exception:
-                # If anything goes wrong, just skip the guess
-                pass
+    #     # Call lgl_interp_comp's compute to populate initial guesses for states_all
+    #     if interp_inputs and interp_outputs:
+    #         try:
+    #             lgl_interp_comp.compute(interp_inputs, interp_outputs)
+    #         except Exception:
+    #             # If anything goes wrong, just skip the guess
+    #             pass
 
 
 class GaussLobattoIterGroup(om.Group):
@@ -106,12 +223,22 @@ class GaussLobattoIterGroup(om.Group):
         # ode evaluates xdot at all nodes using current states_all estimates.
         # lgl_interp_comp uses disc states + disc rates to update states_all via Hermite.
         # The NLBGS on this group converges the algebraic loop in ~2 iterations.
-        ode_interp_group = self.add_subsystem('ode_interp_group', OdeInterpGroup(), promotes_inputs=['*'], promotes_outputs=['*'])
+        ode_interp_group = self.add_subsystem('ode_interp_group', OdeInterpGroup(),
+                                              promotes_inputs=['*'],
+                                              promotes_outputs=['*'])
         ode_interp_group.nonlinear_solver = om.NonlinearBlockGS(maxiter=10, iprint=0)
         ode_interp_group.linear_solver = om.DirectSolver()
 
         # Store grid_data for use in guess_nonlinear
         self._gd = gd
+
+        # Add component to initialize states_all from state_disc and states_col
+        ode_interp_group.add_subsystem('states_all_init',
+                                       subsys=StatesAllInitComp(
+                                           grid_data=gd,
+                                           state_options=state_options),
+                                       promotes_inputs=['*'],
+                                       promotes_outputs=['*'])
 
         ode = _make_ode_system(ode_class=ode_class,
                                num_nodes=nn,
@@ -124,7 +251,9 @@ class GaussLobattoIterGroup(om.Group):
                                        subsys=GaussLobattoInterpComp(
                                            grid_data=gd,
                                            state_options=state_options,
-                                           time_units=time_options['units']))
+                                           time_units=time_options['units']),
+                                       promotes_inputs=['*'],
+                                       promotes_outputs=['*'])
 
         # --- 2. Collocation + boundary-state defects (outer level) ---
         # defects:{name}           = (f_approx - f_computed) * dt_dstau  (at col nodes)
@@ -177,8 +306,6 @@ class GaussLobattoIterGroup(om.Group):
 
         num_input_nodes = self.options['grid_data'].subset_num_nodes['state_input']
 
-        ib = (None, None) if options['initial_bounds'] is None else options['initial_bounds']
-        fb = (None, None) if options['final_bounds'] is None else options['final_bounds']
         lower = options['lower']
         upper = options['upper']
 
@@ -290,6 +417,9 @@ class GaussLobattoIterGroup(om.Group):
             The phase object to which this transcription instance applies.
         """
         ode_interp_group = self._get_subsystem('ode_interp_group')
+        states_all_init_comp = ode_interp_group._get_subsystem('states_all_init')
+        states_all_init_comp.configure_io()
+
         lgl_interp_comp = ode_interp_group._get_subsystem('lgl_interp_comp')
         lgl_interp_comp.configure_io()
 
@@ -332,11 +462,43 @@ class GaussLobattoIterGroup(om.Group):
 
             self._implicit_outputs |= self._configure_desvars(name, options)
 
+            # Set default values based on state options
+            try:
+                default_val = options['val']
+            except (KeyError, RuntimeError):
+                default_val = 1.0
+
+            if np.isscalar(default_val):
+                default_val_array = np.full((nin,) + shape, default_val, dtype=float)
+            else:
+                default_val_array = np.asarray(default_val, dtype=float)
+                # Ensure it has the correct shape (nin,) + shape
+                if default_val_array.shape != (nin,) + shape:
+                    # Try to reshape to (nin,) + shape if size matches
+                    if default_val_array.size == int(np.prod((nin,) + shape)):
+                        default_val_array = default_val_array.reshape((nin,) + shape)
+                    else:
+                        # Try to broadcast
+                        default_val_array = np.broadcast_to(default_val_array, (nin,) + shape).copy()
+
             # Only set input defaults for non-solve_segments states; for solve_segments,
             # states:{name} is an implicit output driven by residuals, not an external input.
             if f'states:{name}' not in self._implicit_outputs:
-                self.set_input_defaults(f'states:{name}', val=1.0, units=units,
+                self.set_input_defaults(f'states:{name}', val=default_val_array, units=units,
                                         src_shape=(nin,) + shape)
+
+            # Set defaults for states_col:{name} (collocation nodes)
+            # Simple approach: use the same scalar default for all collocation nodes
+            n_col = gd.subset_num_nodes['col']
+            if np.isscalar(default_val):
+                states_col_default = np.full((n_col,) + shape, default_val, dtype=float)
+            else:
+                # For non-scalar defaults, interpolate to col nodes
+                # Use a simple approach: repeat the default if it's a small array
+                states_col_default = np.full((n_col,) + shape, default_val[0]
+                                             if len(default_val) > 0 else default_val, dtype=float)
+
+            ode_interp_group.set_input_defaults(f'states_col:{name}', val=states_col_default, units=units)
 
             if f'states:{name}' in self._implicit_outputs:
                 # For solve_segments, defects:{name} (GL collocation residuals at col nodes)
@@ -389,22 +551,20 @@ class GaussLobattoIterGroup(om.Group):
 
             var_type = phase.classify_var(rate_source_var)
 
-            # Promote states_all:{name} from lgl_interp_comp through ode_interp_group to outer.
-            ode_interp_group.promotes('lgl_interp_comp', outputs=[f'states_all:{name}'])
+            # Promote states_col:{name} from lgl_interp_comp for automatic connection to states_all_init
+            ode_interp_group.promotes('lgl_interp_comp', outputs=[f'states_col:{name}'])
+
+            # Promote states_all:{name} output from states_all_init comp
             self.promotes('ode_interp_group', outputs=[f'states_all:{name}'])
 
             # Algebraic loop (inside ode_interp_group): states_all:{name} → ode.{target}
             for tgt in options['targets']:
                 ode_interp_group.connect(f'states_all:{name}', f'ode.{tgt}')
 
-            # Hermite-interpolated rates at col nodes → defects f_approx:{name}
-            self.connect(f'lgl_interp_comp.staterate_col:{name}',
-                         f'f_approx:{name}')
-
             if var_type == 'ode':
-                # ode_all[disc_idxs] → lgl_interp_comp staterate_disc (inside ode_interp_group)
+                # ode_all[disc_idxs] → lgl_interp_comp staterate_disc (promoted, no subsystem prefix)
                 ode_interp_group.connect(f'ode.{rate_source_var}',
-                                         f'lgl_interp_comp.staterate_disc:{name}',
+                                         f'staterate_disc:{name}',
                                          src_indices=om.slicer[disc_idxs, ...])
 
                 # ode_all[col_idxs] → defects f_computed (outer level)
@@ -412,3 +572,8 @@ class GaussLobattoIterGroup(om.Group):
                              f'f_computed:{name}',
                              src_indices=om.slicer[col_idxs, ...])
             # else: non-ODE rate sources connected by GaussLobattoNew.configure_defects.
+
+            # Connect state rates to f_approx (promoted output from lgl_interp_comp)
+            # staterate_col is promoted, so no subsystem prefix needed
+            self.connect(f'staterate_col:{name}',
+                         f'f_approx:{name}')

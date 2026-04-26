@@ -14,8 +14,10 @@ class GaussLobattoInterpComp(om.ExplicitComponent):
 
     Accepts state values and rates at discretization nodes and:
     1. Computes interpolated state values at collocation nodes via Hermite interpolation.
-    2. Assembles all-nodes state array (disc passthrough + col interpolated) for ODE feedback.
-    3. Computes interpolated state rates at collocation nodes (f_approx for defects).
+    2. Computes interpolated state rates at collocation nodes (f_approx for defects).
+
+    The output states_col:{name} is then combined with states:{name} by StatesAllInitComp
+    to form states_all:{name} for ODE evaluation.
 
     .. math:: x_c = \left[ A_i \right] x_d + \frac{dt}{d\tau_s} \left[ B_i \right] f_d
     .. math:: \dot{x}_c = \frac{d\tau_s}{dt} \left[ A_d \right] x_d + \left[ B_d \right] f_d
@@ -86,9 +88,9 @@ class GaussLobattoInterpComp(om.ExplicitComponent):
                            shape=(n_disc,) + shape, units=rate_units,
                            desc=f'State rate {name} at discretization nodes (from ODE)')
 
-            self.add_output(f'states_all:{name}',
-                            shape=(n_all,) + shape, units=units,
-                            desc=f'State {name} at all nodes (disc passthrough + col interpolated)')
+            self.add_output(f'states_col:{name}',
+                            shape=(n_col,) + shape, units=units,
+                            desc=f'Interpolated state {name} at collocation nodes')
 
             self.add_output(f'staterate_col:{name}',
                             shape=(n_col,) + shape, units=rate_units,
@@ -102,45 +104,24 @@ class GaussLobattoInterpComp(om.ExplicitComponent):
 
             self._jacs[name] = {'Ai': Ai_kron, 'Bi': Bi_kron, 'Ad': Ad_kron, 'Bd': Bd_kron}
 
-            # Flat index arrays for all-nodes output assembly
-            # disc_all_flat[k] = flat index in states_all for k-th disc element
-            disc_all_flat = (np.repeat(disc_idxs, size) * size +
-                             np.tile(np.arange(size), n_disc)).astype(int)
-            # col_all_flat[k] = flat index in states_all for k-th col element
-            col_all_flat = (np.repeat(col_idxs, size) * size +
-                            np.tile(np.arange(size), n_col)).astype(int)
+            # --- Partials for states_col ---
 
-            self._disc_all_flat = disc_all_flat
-            self._col_all_flat = col_all_flat
-
-            disc_in_flat = np.arange(n_disc * size, dtype=int)
-
-            # --- Partials for states_all ---
-
-            # states_all wrt state_disc:
-            #   - disc rows: identity passthrough
-            #   - col rows: Ai interpolation matrix
+            # states_col wrt state_disc: Ai (static)
             Ai_nz_rows, Ai_nz_cols = Ai_kron.nonzero()
             Ai_nz_vals = np.asarray(Ai_kron[Ai_nz_rows, Ai_nz_cols]).ravel()
-            sa_xd_rows = np.concatenate([disc_all_flat, col_all_flat[Ai_nz_rows]])
-            sa_xd_cols = np.concatenate([disc_in_flat, Ai_nz_cols])
-            sa_xd_vals = np.concatenate([np.ones(n_disc * size), Ai_nz_vals])
-            self.declare_partials(f'states_all:{name}', f'state_disc:{name}',
-                                  rows=sa_xd_rows, cols=sa_xd_cols, val=sa_xd_vals)
+            self.declare_partials(f'states_col:{name}', f'state_disc:{name}',
+                                  rows=Ai_nz_rows, cols=Ai_nz_cols, val=Ai_nz_vals)
 
-            # states_all wrt staterate_disc:
-            #   - disc rows: zero (disc passthrough doesn't depend on rates)
-            #   - col rows: Bi * dt_dstau (dynamic, set in compute_partials)
+            # states_col wrt staterate_disc: Bi * dt_dstau (dynamic, set in compute_partials)
             Bi_nz_rows, Bi_nz_cols = Bi_kron.nonzero()
-            self.declare_partials(f'states_all:{name}', f'staterate_disc:{name}',
-                                  rows=col_all_flat[Bi_nz_rows], cols=Bi_nz_cols)
+            self.declare_partials(f'states_col:{name}', f'staterate_disc:{name}',
+                                  rows=Bi_nz_rows, cols=Bi_nz_cols)
 
-            # states_all wrt dt_dstau:
-            #   - only col rows: d(Bi @ fd * dt_dstau[i])/d(dt_dstau[i]) = (Bi @ fd)[i, :]
-            sa_dt_rows = col_all_flat  # n_col * size elements
-            sa_dt_cols = np.repeat(np.arange(n_col), size).astype(int)
-            self.declare_partials(f'states_all:{name}', 'dt_dstau',
-                                  rows=sa_dt_rows, cols=sa_dt_cols)
+            # states_col wrt dt_dstau: Bi @ fd
+            sc_dt_rows = np.arange(n_col * size, dtype=int)
+            sc_dt_cols = np.repeat(np.arange(n_col), size).astype(int)
+            self.declare_partials(f'states_col:{name}', 'dt_dstau',
+                                  rows=sc_dt_rows, cols=sc_dt_cols)
 
             # --- Partials for staterate_col ---
 
@@ -162,7 +143,11 @@ class GaussLobattoInterpComp(om.ExplicitComponent):
 
     def compute(self, inputs, outputs):
         """
-        Compute interpolated state values and rates at collocation nodes.
+        Compute interpolated state and rate values at collocation nodes.
+
+        Outputs:
+        - states_col:{name}: interpolated state values at collocation nodes
+        - staterate_col:{name}: interpolated state rates at collocation nodes (f_approx)
 
         Parameters
         ----------
@@ -171,13 +156,10 @@ class GaussLobattoInterpComp(om.ExplicitComponent):
         outputs : Vector
             Unscaled, dimensional output variables.
         """
-        gd = self.options['grid_data']
         state_options = self.options['state_options']
 
         n_disc = self._n_disc
         n_col = self._n_col
-        disc_idxs = self._disc_idxs
-        col_idxs = self._col_idxs
 
         Ai = self._matrices['Ai']
         Bi = self._matrices['Bi']
@@ -197,13 +179,7 @@ class GaussLobattoInterpComp(om.ExplicitComponent):
             col_val = Bi.dot(fd_flat) * dt_dstau + Ai.dot(xd_flat)
             col_rate = Ad.dot(xd_flat) / dt_dstau + Bd.dot(fd_flat)
 
-            # Assemble states at all nodes: disc passthrough + col interpolated.
-            # Use xd_flat.dtype so the intermediate array is complex during complex-step.
-            states_all = np.empty((gd.num_nodes,) + shape, dtype=xd_flat.dtype)
-            states_all[disc_idxs] = xd_flat.reshape((n_disc,) + shape)
-            states_all[col_idxs] = col_val.reshape((n_col,) + shape)
-
-            outputs[f'states_all:{name}'] = states_all
+            outputs[f'states_col:{name}'] = col_val.reshape((n_col,) + shape)
             outputs[f'staterate_col:{name}'] = col_rate.reshape((n_col,) + shape)
 
     def compute_partials(self, inputs, partials):
@@ -220,7 +196,6 @@ class GaussLobattoInterpComp(om.ExplicitComponent):
         state_options = self.options['state_options']
 
         n_disc = self._n_disc
-        n_col = self._n_col
 
         Bi = self._matrices['Bi']
         Ad = self._matrices['Ad']
@@ -242,13 +217,13 @@ class GaussLobattoInterpComp(om.ExplicitComponent):
             Bi_kron = self._jacs[name]['Bi']
             Ad_kron = self._jacs[name]['Ad']
 
-            # states_all wrt staterate_disc: Bi * dt_dstau (scale each kron row by dt)
-            partials[f'states_all:{name}', f'staterate_disc:{name}'] = \
+            # states_col wrt staterate_disc: Bi * dt_dstau (scale each kron row by dt)
+            partials[f'states_col:{name}', f'staterate_disc:{name}'] = \
                 Bi_kron.multiply(dt_x_size[:, np.newaxis]).data
 
-            # states_all wrt dt_dstau: Bi @ fd at col positions
+            # states_col wrt dt_dstau: Bi @ fd
             col_val_from_Bi = Bi.dot(fd_flat)  # shape (n_col, size)
-            partials[f'states_all:{name}', 'dt_dstau'] = col_val_from_Bi.ravel()
+            partials[f'states_col:{name}', 'dt_dstau'] = col_val_from_Bi.ravel()
 
             # staterate_col wrt state_disc: Ad / dt_dstau
             partials[f'staterate_col:{name}', f'state_disc:{name}'] = \

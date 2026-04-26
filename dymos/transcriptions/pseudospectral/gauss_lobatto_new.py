@@ -235,6 +235,28 @@ class GaussLobattoNew(TranscriptionBase):
                 phase.connect(f'control_boundary_rates:{name}_rate2',
                               [f'boundary_vals.{t}' for t in options['rate2_targets']])
 
+    def configure_states(self, phase):
+        """
+        Configure states by processing user-provided initial values if given.
+
+        Parameters
+        ----------
+        phase : dymos.Phase
+            The phase object to which this transcription instance applies.
+        """
+        super().configure_states(phase)
+
+        # Store state vals for use in _post_setup_phases to set them after setup
+        phase._state_vals_for_init = {}
+        for name, options in phase.state_options.items():
+            try:
+                val = options['val']
+                if val is not None:
+                    phase._state_vals_for_init[name] = val
+            except (KeyError, TypeError):
+                # No val provided or can't access it
+                pass
+
     def setup_ode(self, phase):
         """
         Set up the ode for this transcription.
@@ -377,14 +399,25 @@ class GaussLobattoNew(TranscriptionBase):
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
+        gd = self.grid_data
+        state_options = phase.state_options
+
         for timeseries_name, timeseries_options in phase._timeseries.items():
             timeseries_comp = phase._get_subsystem(timeseries_name)
+            ts_inputs_to_promote = []
             for input_name, src, src_idxs in timeseries_comp._configure_io(timeseries_options):
-                # For GL, states are served from states_all:{name} (all nodes).
-                # Unlike Radau, we do not need special input-node handling.
-                phase.connect(src_name=src,
-                              tgt_name=f'{timeseries_name}.{input_name}',
-                              src_indices=src_idxs)
+                # If the source is a state, promote it so the timeseries gets the states_all values.
+                if src.startswith('states_all:'):
+                    state_name = src.split(':')[-1]
+                    ts_inputs_to_promote.append((input_name, src))
+                    src_shape = (gd.num_nodes,) + state_options[state_name]['shape']
+                    phase.promotes(timeseries_name,
+                                   inputs=[(input_name, src)],
+                                   src_shape=src_shape, src_indices=src_idxs)
+                else:
+                    phase.connect(src_name=src,
+                                  tgt_name=f'{timeseries_name}.{input_name}',
+                                  src_indices=src_idxs)
 
     def setup_timeseries_outputs(self, phase):
         """
@@ -808,43 +841,56 @@ class GaussLobattoNew(TranscriptionBase):
 
         state_vals = input_data[f'states:{name}']
 
-        # Compute states_all by Hermite interpolation from state_input (disc) to all nodes.
-        # This accounts for both compressed and uncompressed grids.
+        # Compute states_all by linear interpolation from state_input to all nodes.
+        # state_vals are already at state_input nodes and properly interpolated by parent class.
+        # We just need to expand them to all nodes using linear interpolation.
         gd = self.grid_data
         shape = phase.state_options[name]['shape']
-        n_all = gd.num_nodes
-        n_disc = gd.subset_num_nodes['state_disc']
+        n_input = gd.subset_num_nodes['state_input']
 
-        # Get the input_to_disc mapping to expand state_input values to state_disc
-        state_input_to_disc = gd.input_maps['state_input_to_disc']
-        disc_idxs = gd.subset_node_indices['state_disc']
-        col_idxs = gd.subset_node_indices['col']
+        # Reshape state_vals for easier handling: (n_input, ) + shape -> (n_input, size)
+        state_vals_flat = state_vals.reshape((n_input, -1))
+        state_size = state_vals_flat.shape[1]
 
-        # Get Hermite interpolation matrices
-        Ai, Bi, _, _ = gd.phase_hermite_matrices('state_disc', 'col', sparse=True)
+        # Compute states_col by interpolating from state_input nodes to col nodes
+        # This is a simple linear interpolation for initialization
+        col_indices = gd.subset_node_indices['col']
+        n_col = len(col_indices)
 
-        # Expand state_input values to state_disc nodes (handles compressed grids)
-        state_disc_vals = state_vals[state_input_to_disc, ...]
+        # For single node case, just broadcast
+        if n_input == 1:
+            states_col_flat = np.full((n_col, state_size), state_vals_flat[0, :],
+                                      dtype=state_vals.dtype)
+        else:
+            # Linear interpolation from state_input to col nodes via index mapping
+            # Use a simple approach: map indices to fractional positions
+            state_input_indices = gd.subset_node_indices['state_input']
+            ptau_at_input = gd.node_ptau[state_input_indices]
+            ptau_at_col = gd.node_ptau[col_indices]
 
-        # For now, assume rates are zero at disc nodes (no rate information available from user input)
-        state_rate_disc_vals = np.zeros_like(state_disc_vals)
+            # Simple linear interpolation (without using scipy for differentiability)
+            states_col_flat = np.empty((n_col, state_size), dtype=state_vals.dtype)
+            for i in range(state_size):
+                for j, ptau_col in enumerate(ptau_at_col):
+                    # Find bracketing input nodes
+                    idx_right = np.searchsorted(ptau_at_input, ptau_col)
+                    if idx_right >= len(ptau_at_input):
+                        # Beyond right boundary
+                        states_col_flat[j, i] = state_vals_flat[-1, i]
+                    elif idx_right == 0:
+                        # Before left boundary
+                        states_col_flat[j, i] = state_vals_flat[0, i]
+                    else:
+                        # Linear interpolation between bracketing points
+                        ptau_left = ptau_at_input[idx_right - 1]
+                        ptau_right = ptau_at_input[idx_right]
+                        val_left = state_vals_flat[idx_right - 1, i]
+                        val_right = state_vals_flat[idx_right, i]
+                        weight = (ptau_col - ptau_left) / (ptau_right - ptau_left)
+                        states_col_flat[j, i] = val_left + weight * (val_right - val_left)
 
-        # Reshape for Hermite interpolation
-        state_disc_flat = state_disc_vals.reshape(n_disc, -1)
-        state_rate_disc_flat = state_rate_disc_vals.reshape(n_disc, -1)
-
-        # Compute col state values via Hermite interpolation
-        # For now, we assume dt_dstau = 1.0 (unit scaling). The actual interpolation happens
-        # in the ODE/interp loop, but here we just need a reasonable initial guess.
-        dt_dstau = np.ones(len(col_idxs))
-        col_val = Bi.dot(state_rate_disc_flat) * dt_dstau[:, np.newaxis] + Ai.dot(state_disc_flat)
-
-        # Assemble states_all: disc passthrough + col interpolated
-        states_all = np.empty((n_all,) + shape, dtype=state_vals.dtype)
-        states_all[disc_idxs, ...] = state_disc_vals
-        states_all[col_idxs, ...] = col_val.reshape((len(col_idxs),) + shape)
-
-        input_data[f'states_all:{name}'] = states_all
+        # Set states_col in output data
+        input_data[f'states_col:{name}'] = states_col_flat.reshape((n_col,) + shape)
         input_data[f'initial_states:{name}'] = state_vals[0, ...]
         input_data[f'final_states:{name}'] = state_vals[-1, ...]
 
