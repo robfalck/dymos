@@ -127,45 +127,6 @@ class StatesAllInitComp(om.ExplicitComponent):
             state_all[col_idxs, ...] = state_col
 
 
-class OdeInterpGroup(om.Group):
-    """Inner group for ODE + Hermite interpolation with initial guess."""
-    
-    pass
-
-    # def guess_nonlinear(self, inputs, outputs, residuals):
-    #     """
-    #     Provide initial guess for states_all by evaluating lgl_interp_comp.
-
-    #     This ensures the ODE evaluates with proper state values on the first NLBGS iteration.
-    #     """
-    #     # Get the lgl_interp_comp subsystem
-    #     lgl_interp_comp = self._get_subsystem('lgl_interp_comp')
-
-    #     # Compute interpolated states_all from current state_disc and staterate_disc
-    #     interp_inputs = {}
-    #     interp_outputs = {}
-
-    #     # Extract all state_disc and staterate_disc from inputs
-    #     for key in inputs._names:
-    #         if key.startswith('state_disc:') or key.startswith('staterate_disc:'):
-    #             interp_inputs[key] = inputs[key]
-    #     if 'dt_dstau' in inputs._names:
-    #         interp_inputs['dt_dstau'] = inputs['dt_dstau']
-
-    #     # Prepare output dict for all states_all
-    #     for key in outputs._names:
-    #         if key.startswith('states_all:'):
-    #             interp_outputs[key] = outputs[key]
-
-    #     # Call lgl_interp_comp's compute to populate initial guesses for states_all
-    #     if interp_inputs and interp_outputs:
-    #         try:
-    #             lgl_interp_comp.compute(interp_inputs, interp_outputs)
-    #         except Exception:
-    #             # If anything goes wrong, just skip the guess
-    #             pass
-
-
 class GaussLobattoIterGroup(om.Group):
     """
     Class definition for the GaussLobattoIterGroup.
@@ -223,7 +184,7 @@ class GaussLobattoIterGroup(om.Group):
         # ode evaluates xdot at all nodes using current states_all estimates.
         # lgl_interp_comp uses disc states + disc rates to update states_all via Hermite.
         # The NLBGS on this group converges the algebraic loop in ~2 iterations.
-        ode_interp_group = self.add_subsystem('ode_interp_group', OdeInterpGroup(),
+        ode_interp_group = self.add_subsystem('ode_interp_group', om.Group(),
                                               promotes_inputs=['*'],
                                               promotes_outputs=['*'])
         ode_interp_group.nonlinear_solver = om.NonlinearBlockGS(maxiter=10, iprint=0)
@@ -571,7 +532,18 @@ class GaussLobattoIterGroup(om.Group):
                 self.connect(f'ode.{rate_source_var}',
                              f'f_computed:{name}',
                              src_indices=om.slicer[col_idxs, ...])
-            # else: non-ODE rate sources connected by GaussLobattoNew.configure_defects.
+            elif var_type == 'state':
+                # State-as-rate: connect states_all:{rate_source_var} inside ode_interp_group
+                # so the NLBGS inner loop iterates over the feedback.
+                ode_interp_group.connect(f'states_all:{rate_source_var}',
+                                         f'staterate_disc:{name}',
+                                         src_indices=om.slicer[disc_idxs, ...])
+
+                # f_computed:{name} is in defects, outside ode_interp_group
+                self.connect(f'states_all:{rate_source_var}',
+                             f'f_computed:{name}',
+                             src_indices=om.slicer[col_idxs, ...])
+            # else: non-ODE, non-state rate sources connected by GaussLobattoNew.configure_defects.
 
             # Connect state rates to f_approx (promoted output from lgl_interp_comp)
             # staterate_col is promoted, so no subsystem prefix needed
