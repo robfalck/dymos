@@ -154,13 +154,17 @@ class GaussLobattoNew(TranscriptionBase):
         """
         self.any_solved_segs = False
         self.any_connected_opt_segs = False
-        for options in phase.state_options.values():
+        for name, options in phase.state_options.items():
             # Transcription solve_segments overrides state solve_segments if not set
             if options['solve_segments'] is None:
                 options['solve_segments'] = self.options['solve_segments']
 
             if options['solve_segments']:
                 self.any_solved_segs = True
+                if options['lower'] or options['upper']:
+                    om.issue_warning(f'State {name} has bounds but they are not enforced when '
+                                     f'using `solve_segments.` Apply a path constraint to {name} '
+                                     f'to enforce bounds.', om.UnusedOptionWarning)
             elif options['input_initial']:
                 self.any_connected_opt_segs = True
 
