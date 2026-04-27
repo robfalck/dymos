@@ -159,6 +159,18 @@ class GaussLobattoNew(TranscriptionBase):
             if options['solve_segments'] is None:
                 options['solve_segments'] = self.options['solve_segments']
 
+            solve_segs = options['solve_segments']
+
+            # For non-solve_segments states, states:{name} at all input nodes is the DV.
+            # Setting input_initial/input_final=True prevents separate initial_states/final_states
+            # from being added as redundant DVs.
+            # For forward solve, initial_states:{name} IS the DV, so leave input_initial alone.
+            # For backward solve, final_states:{name} IS the DV, so leave input_final alone.
+            if not options['fix_initial'] and not options['input_initial'] and solve_segs != 'forward':
+                options['input_initial'] = True
+            if not options['fix_final'] and not options['input_final'] and solve_segs != 'backward':
+                options['input_final'] = True
+
             if options['solve_segments']:
                 self.any_solved_segs = True
                 if options['lower'] or options['upper']:
@@ -480,10 +492,19 @@ class GaussLobattoNew(TranscriptionBase):
                     path_idxs.extend(size * i + flat_idxs)
                 constraint_kwargs['indices'] = path_idxs
         else:
+            # Check whether this is a 2-node boundary array (control_boundary_values/rates)
+            # vs a full-node array (ode.{var}).  Control boundary arrays have exactly 2 nodes:
+            # index 0 = initial, index 1 = final.
+            raw_con_path = constraint_kwargs.get('constraint_path', '')
+            is_2node_boundary = raw_con_path.startswith(
+                ('control_boundary_values:', 'control_boundary_rates:'))
             if constraint_type == 'initial':
                 constraint_kwargs['indices'] = flat_idxs
             elif constraint_type == 'final':
-                constraint_kwargs['indices'] = (num_nodes - 1) * size + flat_idxs
+                if is_2node_boundary:
+                    constraint_kwargs['indices'] = size + flat_idxs
+                else:
+                    constraint_kwargs['indices'] = (num_nodes - 1) * size + flat_idxs
             else:
                 nn = num_nodes
                 path_idxs = []

@@ -206,6 +206,9 @@ scipy = "1.13.*"
 [tool.pixi.feature.oldest.pypi-dependencies]
 openmdao = "==3.39.0"
 
+[tool.pixi.feature.dev-tools.dependencies]
+hyperfine = ">=1.20.0,<2"
+
 [tool.pixi.feature.dev-local.dependencies]
 swig = "*"
 ninja = "*"
@@ -217,8 +220,8 @@ install-local-pyoptsparse = { cmd = "pip install --no-build-isolation -e $PYOPTS
 
 [tool.pixi.environments]
 default = { features = ["test", "opt", "mpi"], solve-group = "default" }
-dev = { features = ["test", "docs", "notebooks", "numba", "opt", "mpi"], solve-group = "default" }
-dev-local = { features = ["test", "docs", "notebooks", "numba", "opt", "mpi", "dev-local"], solve-group = "dev_local" }
+dev = { features = ["test", "docs", "notebooks", "numba", "opt", "mpi", "dev-tools"], solve-group = "default" }
+dev-local = { features = ["test", "docs", "notebooks", "numba", "opt", "mpi", "dev-local", "dev-tools"], solve-group = "dev_local" }
 oldest = { features = ["test", "oldest", "mpi"], solve-group = "oldest" }
 
 [tool.pixi.tasks]

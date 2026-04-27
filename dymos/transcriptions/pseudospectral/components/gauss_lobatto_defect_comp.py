@@ -9,7 +9,7 @@ from ...._options import options as dymos_options
 
 
 class GaussLobattoDefectComp(om.ExplicitComponent):
-    """
+    r"""
     Compute all GaussLobattoNew collocation and boundary-state defects.
 
     Collocation defects (at collocation nodes):
@@ -116,10 +116,10 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
             # --- Boundary state defect outputs ---
             self.add_output(vn['initial_defect'],
                             shape=(1,) + shape, units=units,
-                            desc=f'Initial state defect: initial_states - states_all[0]')
+                            desc='Initial state defect: initial_states - states_all[0]')
             self.add_output(vn['final_defect'],
                             shape=(1,) + shape, units=units,
-                            desc=f'Final state defect: final_states - states_all[-1]')
+                            desc='Final state defect: final_states - states_all[-1]')
 
             # --- Determine defect scaling reference ---
             if 'defect_ref' in options and options['defect_ref'] is not None:
@@ -146,8 +146,9 @@ class GaussLobattoDefectComp(om.ExplicitComponent):
             # --- Add constraints for non-solve_segments states ---
             if not solve_segs:
                 self.add_constraint(vn['defect'], equals=0.0, ref=col_defect_ref)
-                self.add_constraint(vn['initial_defect'], equals=0.0, ref=defect_ref)
-                self.add_constraint(vn['final_defect'], equals=0.0, ref=defect_ref)
+                # Boundary conditions at initial/final nodes are enforced by excluding those
+                # nodes from the states:{name} design variable in _configure_desvars.
+                # No boundary defect constraints are needed.
 
             # --- Declare partials ---
             r = np.arange(n_col * size)

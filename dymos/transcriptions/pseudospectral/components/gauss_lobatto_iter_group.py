@@ -341,11 +341,37 @@ class GaussLobattoIterGroup(om.Group):
 
         if opt:
             if state_name in free_vars:
-                self.add_design_var(name=state_name,
-                                    lower=lower,
-                                    upper=upper,
-                                    ref0=ref0_at_input_nodes,
-                                    ref=ref_at_input_nodes)
+                # When fix_initial or fix_final is True, exclude those endpoint nodes from the
+                # design variable so they stay fixed at whatever value the user specifies via
+                # set_val / set_state_val. This mirrors the old pseudospectral_base approach.
+                dv_start = 1 if (fix_initial and not solve_segs) else 0
+                dv_end = num_input_nodes - 1 if (fix_final and not solve_segs) else num_input_nodes
+
+                if dv_start == 0 and dv_end == num_input_nodes:
+                    self.add_design_var(name=state_name,
+                                        lower=lower,
+                                        upper=upper,
+                                        ref0=ref0_at_input_nodes,
+                                        ref=ref_at_input_nodes)
+                else:
+                    dv_node_idxs = np.arange(dv_start, dv_end, dtype=int)
+                    state_size = int(np.prod(shape))
+                    flat_indices = (dv_node_idxs[:, np.newaxis] * state_size +
+                                    np.arange(state_size)[np.newaxis, :]).ravel()
+                    # ref0/ref may be scalars (if user did not specify non-default refs) or arrays
+                    ref0_dv = (ref0_at_input_nodes[dv_node_idxs]
+                               if isinstance(ref0_at_input_nodes, np.ndarray)
+                               else ref0_at_input_nodes)
+                    ref_dv = (ref_at_input_nodes[dv_node_idxs]
+                              if isinstance(ref_at_input_nodes, np.ndarray)
+                              else ref_at_input_nodes)
+                    self.add_design_var(name=state_name,
+                                        lower=lower,
+                                        upper=upper,
+                                        ref0=ref0_dv,
+                                        ref=ref_dv,
+                                        indices=flat_indices,
+                                        flat_indices=True)
 
             if state_rate_name in free_vars:
                 self.add_design_var(name=state_rate_name,

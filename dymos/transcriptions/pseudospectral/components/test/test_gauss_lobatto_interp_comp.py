@@ -84,7 +84,7 @@ class TestGaussLobattoInterpComp(unittest.TestCase):
         return p
 
     def test_states_all_disc_passthrough(self):
-        """Disc-node values in states_all must equal the state_disc input exactly."""
+        """Col-node values in states_col must match Hermite interpolation from state_disc exactly."""
         segends = np.array([0.0, 3.0, 10.0])
         gd = dm.GaussLobattoGrid(num_segments=2, nodes_per_seg=3, segment_ends=segends)
 
@@ -94,6 +94,7 @@ class TestGaussLobattoInterpComp(unittest.TestCase):
         p = self._make_problem(gd, states)
 
         disc_idxs = gd.subset_node_indices['state_disc']
+        col_idxs = gd.subset_node_indices['col']
         t0, tf = segends[0], segends[-1]
         t_all = (tf - t0) / 2.0 * (gd.node_ptau + 1.0) + t0
 
@@ -103,8 +104,9 @@ class TestGaussLobattoInterpComp(unittest.TestCase):
         p.set_val('dt_dstau', _make_dt_dstau(gd, segends))
         p.run_model()
 
-        states_all = p.get_val('states_all:x')
-        assert_almost_equal(states_all[disc_idxs], xd, decimal=12)
+        states_col = p.get_val('states_col:x')
+        exact_col = x(t_all[col_idxs]).reshape(-1, 1)
+        assert_almost_equal(states_col, exact_col, decimal=8)
 
     def test_hermite_interpolation_accuracy(self):
         """Hermite interpolation should be exact for polynomials within the interpolation degree."""
@@ -129,9 +131,9 @@ class TestGaussLobattoInterpComp(unittest.TestCase):
         p.run_model()
 
         for name, func in [('x', x), ('v', v)]:
-            states_all = p.get_val(f'states_all:{name}')
+            states_col = p.get_val(f'states_col:{name}')
             exact_col = func(t_all[col_idxs]).reshape(-1, 1)
-            assert_almost_equal(states_all[col_idxs], exact_col, decimal=8,
+            assert_almost_equal(states_col, exact_col, decimal=8,
                                  err_msg=f'Interpolated col state {name} does not match exact')
 
     def test_staterate_col_accuracy(self):

@@ -1,3 +1,4 @@
+import os
 import unittest
 import numpy as np
 import openmdao.api as om
@@ -163,12 +164,18 @@ class TestParameterShapes(unittest.TestCase):
         self.assertEqual((1,), phase.parameter_options['foo']['shape'])
         assert_near_equal(p.get_val('traj.phase0.timeseries.time')[-1], 1.8016, tolerance=1.0E-5)
         assert_near_equal(p.get_val('traj.phase0.parameter_vals:foo')[-1], 5.0, tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_col.xdot_comp.foo'), 5.0*np.ones(10,), tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_col.ydot_comp.foo'), 5.0*np.ones(10,), tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_col.vdot_comp.foo'), 5.0*np.ones(10,), tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_disc.xdot_comp.foo'), 5.0*np.ones(20,), tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_disc.ydot_comp.foo'), 5.0*np.ones(20,), tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_disc.vdot_comp.foo'), 5.0*np.ones(20,), tolerance=1.0E-5)
+        if os.environ.get('DYMOS_2') == '1':
+            ode_path = 'traj.phase0.ode'
+            assert_near_equal(p.get_val(f'{ode_path}.xdot_comp.foo'), 5.0*np.ones(30,), tolerance=1.0E-5)
+            assert_near_equal(p.get_val(f'{ode_path}.ydot_comp.foo'), 5.0*np.ones(30,), tolerance=1.0E-5)
+            assert_near_equal(p.get_val(f'{ode_path}.vdot_comp.foo'), 5.0*np.ones(30,), tolerance=1.0E-5)
+        else:
+            assert_near_equal(p.get_val('traj.phase0.rhs_col.xdot_comp.foo'), 5.0*np.ones(10,), tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_col.ydot_comp.foo'), 5.0*np.ones(10,), tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_col.vdot_comp.foo'), 5.0*np.ones(10,), tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_disc.xdot_comp.foo'), 5.0*np.ones(20,), tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_disc.ydot_comp.foo'), 5.0*np.ones(20,), tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_disc.vdot_comp.foo'), 5.0*np.ones(20,), tolerance=1.0E-5)
 
     def test_invalid_params_different_target_shapes(self):
         #
@@ -407,12 +414,18 @@ class TestParameterUnits(unittest.TestCase):
         self.assertEqual((1,), phase.parameter_options['foo']['shape'])
         assert_near_equal(p.get_val('traj.phase0.timeseries.time')[-1], 1.8016, tolerance=1.0E-5)
         assert_near_equal(p.get_val('traj.phase0.parameter_vals:foo')[-1], 5.0, tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_col.xdot_comp.foo'), expected*np.ones(10,), tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_col.ydot_comp.foo'), expected*np.ones(10,), tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_col.vdot_comp.foo'), expected*np.ones(10,), tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_disc.xdot_comp.foo'), expected*np.ones(20,), tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_disc.ydot_comp.foo'), expected*np.ones(20,), tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_disc.vdot_comp.foo'), expected*np.ones(20,), tolerance=1.0E-5)
+        if os.environ.get('DYMOS_2') == '1':
+            ode_path = 'traj.phase0.ode'
+            assert_near_equal(p.get_val(f'{ode_path}.xdot_comp.foo'), expected*np.ones(30,), tolerance=1.0E-5)
+            assert_near_equal(p.get_val(f'{ode_path}.ydot_comp.foo'), expected*np.ones(30,), tolerance=1.0E-5)
+            assert_near_equal(p.get_val(f'{ode_path}.vdot_comp.foo'), expected*np.ones(30,), tolerance=1.0E-5)
+        else:
+            assert_near_equal(p.get_val('traj.phase0.rhs_col.xdot_comp.foo'), expected*np.ones(10,), tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_col.ydot_comp.foo'), expected*np.ones(10,), tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_col.vdot_comp.foo'), expected*np.ones(10,), tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_disc.xdot_comp.foo'), expected*np.ones(20,), tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_disc.ydot_comp.foo'), expected*np.ones(20,), tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_disc.vdot_comp.foo'), expected*np.ones(20,), tolerance=1.0E-5)
 
     def test_invalid_params_different_target_units_introspection_failure(self):
         #
@@ -580,12 +593,18 @@ class TestMixedStaticDynamicParameterTargets(unittest.TestCase):
         self.assertEqual((1,), phase.parameter_options['foo']['shape'])
         assert_near_equal(p.get_val('traj.phase0.timeseries.time')[-1], 1.8016, tolerance=1.0E-5)
         assert_near_equal(p.get_val('traj.phase0.parameter_vals:foo')[-1], 5.0, tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_col.xdot_comp.foo'), expected, tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_col.ydot_comp.foo'), expected, tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_col.vdot_comp.foo'), expected, tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_disc.xdot_comp.foo'), expected, tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_disc.ydot_comp.foo'), expected, tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_disc.vdot_comp.foo'), expected, tolerance=1.0E-5)
+        if os.environ.get('DYMOS_2') == '1':
+            ode_path = 'traj.phase0.ode'
+            assert_near_equal(p.get_val(f'{ode_path}.xdot_comp.foo'), expected, tolerance=1.0E-5)
+            assert_near_equal(p.get_val(f'{ode_path}.ydot_comp.foo'), expected, tolerance=1.0E-5)
+            assert_near_equal(p.get_val(f'{ode_path}.vdot_comp.foo'), expected, tolerance=1.0E-5)
+        else:
+            assert_near_equal(p.get_val('traj.phase0.rhs_col.xdot_comp.foo'), expected, tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_col.ydot_comp.foo'), expected, tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_col.vdot_comp.foo'), expected, tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_disc.xdot_comp.foo'), expected, tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_disc.ydot_comp.foo'), expected, tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_disc.vdot_comp.foo'), expected, tolerance=1.0E-5)
 
     def test_mixed_static(self):
         import numpy as np
@@ -674,12 +693,18 @@ class TestMixedStaticDynamicParameterTargets(unittest.TestCase):
         self.assertEqual({'xdot_comp.foo', 'ydot_comp.foo'}, phase.parameter_options['foo']['static_targets'])
         assert_near_equal(p.get_val('traj.phase0.timeseries.time')[-1], 1.8016, tolerance=1.0E-5)
         assert_near_equal(p.get_val('traj.phase0.parameter_vals:foo')[-1], 5.0, tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_col.xdot_comp.foo'), expected, tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_col.ydot_comp.foo'), expected, tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_col.vdot_comp.foo'), expected*np.ones(10), tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_disc.xdot_comp.foo'), expected, tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_disc.ydot_comp.foo'), expected, tolerance=1.0E-5)
-        assert_near_equal(p.get_val('traj.phase0.rhs_disc.vdot_comp.foo'), expected*np.ones(20), tolerance=1.0E-5)
+        if os.environ.get('DYMOS_2') == '1':
+            ode_path = 'traj.phase0.ode'
+            assert_near_equal(p.get_val(f'{ode_path}.xdot_comp.foo'), expected, tolerance=1.0E-5)
+            assert_near_equal(p.get_val(f'{ode_path}.ydot_comp.foo'), expected, tolerance=1.0E-5)
+            assert_near_equal(p.get_val(f'{ode_path}.vdot_comp.foo'), expected*np.ones(30), tolerance=1.0E-5)
+        else:
+            assert_near_equal(p.get_val('traj.phase0.rhs_col.xdot_comp.foo'), expected, tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_col.ydot_comp.foo'), expected, tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_col.vdot_comp.foo'), expected*np.ones(10), tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_disc.xdot_comp.foo'), expected, tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_disc.ydot_comp.foo'), expected, tolerance=1.0E-5)
+            assert_near_equal(p.get_val('traj.phase0.rhs_disc.vdot_comp.foo'), expected*np.ones(20), tolerance=1.0E-5)
 
 
 if __name__ == '__main__':  # pragma: no cover
