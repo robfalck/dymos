@@ -29,6 +29,7 @@ class TestCollocationBalanceIndex(unittest.TestCase):
     def tearDown(self):
         dm.options['include_check_partials'] = False
 
+    @unittest.skipIf(_DYMOS_2, 'state_idx_map not available in GaussLobattoNew')
     def test_3_lgl(self):
         """
         Test one 3rd order LGL segment indices
@@ -48,6 +49,7 @@ class TestCollocationBalanceIndex(unittest.TestCase):
         self.assertSetEqual(set(state_indeps_comp.state_idx_map['x']['solver']), {1})
         self.assertSetEqual(set(state_indeps_comp.state_idx_map['x']['indep']), {0})
 
+    @unittest.skipIf(_DYMOS_2, 'state_idx_map not available in GaussLobattoNew')
     def test_5_lgl(self):
         """
         Test one 5th order LGL segment indices
@@ -66,6 +68,7 @@ class TestCollocationBalanceIndex(unittest.TestCase):
         self.assertSetEqual(set(state_indeps_comp.state_idx_map['x']['solver']), {1, 2})
         self.assertSetEqual(set(state_indeps_comp.state_idx_map['x']['indep']), {0})
 
+    @unittest.skipIf(_DYMOS_2, 'state_idx_map not available in GaussLobattoNew')
     def test_3_lgl_compressed(self):
         """
         Test one 3rd order LGL segment indices
@@ -85,6 +88,7 @@ class TestCollocationBalanceIndex(unittest.TestCase):
         self.assertSetEqual(set(state_indeps_comp.state_idx_map['x']['solver']), {1, 2})
         self.assertSetEqual(set(state_indeps_comp.state_idx_map['x']['indep']), {0})
 
+    @unittest.skipIf(_DYMOS_2, 'state_idx_map not available in GaussLobattoNew')
     def test_5_lgl_compressed(self):
         """
         Test two 5th order LGL segment indices
@@ -104,6 +108,7 @@ class TestCollocationBalanceIndex(unittest.TestCase):
         self.assertSetEqual(set(state_indeps_comp.state_idx_map['x']['solver']), {1, 2, 3, 4})
         self.assertSetEqual(set(state_indeps_comp.state_idx_map['x']['indep']), {0})
 
+    @unittest.skipIf(_DYMOS_2, 'state_idx_map not available in GaussLobattoNew')
     def test_3_lgl_uncompressed(self):
         """
         Test two 3rd order LGL segment indices
@@ -123,6 +128,7 @@ class TestCollocationBalanceIndex(unittest.TestCase):
         self.assertSetEqual(set(state_indeps_comp.state_idx_map['x']['solver']), {1, 3})
         self.assertSetEqual(set(state_indeps_comp.state_idx_map['x']['indep']), {0, 2})
 
+    @unittest.skipIf(_DYMOS_2, 'state_idx_map not available in GaussLobattoNew')
     def test_5_lgl_uncompressed(self):
         """
         Test two 5th order LGL segment indices
@@ -326,9 +332,16 @@ class TestCollocationBalanceApplyNL(unittest.TestCase):
         p.final_setup()
         p.model.run_apply_nonlinear()  # need to make sure residuals are computed
 
-        expected = np.array([[0., 1., 1., 1.]]).T
-
-        outputs = p.model.traj0.phases.phase0.indep_states.list_outputs(residuals=True, out_stream=None)
+        if _DYMOS_2:
+            # In GaussLobattoNew, InputResidsComp drives all input nodes (including the initial),
+            # so all residuals are nonzero when unrun.
+            expected = np.array([[1., 1., 1., 1.]]).T
+            comp = p.model.traj0.phases.phase0.ode_iter_group.states_resids_comp
+        else:
+            # In the old StateIndependentsComp the initial node is independent (R=0).
+            expected = np.array([[0., 1., 1., 1.]]).T
+            comp = p.model.traj0.phases.phase0.indep_states
+        outputs = comp.list_outputs(residuals=True, out_stream=None)
         resids = {k: v['resids'] for k, v in outputs}
 
         assert_almost_equal(resids['states:x'], expected)
@@ -368,7 +381,10 @@ class TestCollocationBalanceApplyNL(unittest.TestCase):
                     self.assertLess(check_data['abs error'].forward, 1e-8)
 
         cpd = p.check_partials(compact_print=True, method='fd', out_stream=None)
-        data = cpd['traj0.phases.phase0.indep_states']
+        if _DYMOS_2:
+            data = cpd['traj0.phases.phase0.ode_iter_group.states_resids_comp']
+        else:
+            data = cpd['traj0.phases.phase0.indep_states']
         assert_partials(data)
 
     @unittest.skipIf(_DYMOS_2, 'Test invalid for updated Radau transcription')
