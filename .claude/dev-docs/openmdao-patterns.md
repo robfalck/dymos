@@ -110,23 +110,31 @@ index N is out of bounds for source dimension of size M
 
 even though `N < global_size`.
 
-**Fix:** Move the connection to the **phase level** (or any level above the group
-containing the distributed source). At the phase level, OpenMDAO uses the global size
-for validation.
+**Fix:** Ensure only ONE connection exists for that target. The correct location for
+ODE-type `f_ode:{name}` connections is inside the iter group's `configure_io`
+(group-level `self.connect`), mirroring `GaussLobattoIterGroup`. The `configure_defects`
+method must skip ODE-type rate sources to avoid creating a duplicate.
 
 ```python
-# WRONG -- inside RadauIterGroup (self.connect):
-self.connect('ode_all.x0dot', 'f_ode:x0',
-             src_indices=om.slicer[col_idxs, ...])
-# → fails if ode_all is distributed and max(col_idxs) >= local_size
+# WRONG -- connecting at both group level AND phase level (duplicate):
+# RadauIterGroup.configure_io:
+self.connect('ode_all.x0dot', 'f_ode:x0', src_indices=...)
+# RadauNew.configure_defects:
+phase.connect('ode_all.x0dot', 'f_ode:x0', src_indices=...)  # duplicate → error
 
-# CORRECT -- at the phase level (phase.connect):
-phase.connect('ode_all.x0dot', 'f_ode:x0',
-              src_indices=om.slicer[col_idxs, ...])
+# CORRECT -- group level only, configure_defects skips ODE-type:
+# RadauIterGroup.configure_io:
+if var_type == 'ode':
+    self.connect(f'ode_all.{rate_source}', f'f_ode:{name}',
+                 src_indices=om.slicer[col_idxs, ...])
+# RadauNew.configure_defects:
+if var_type == 'ode':
+    continue  # already handled inside RadauIterGroup
 ```
 
-This is why `RadauNew.configure_defects()` makes the `ode_all → f_ode` connection
-at the phase level, not inside `RadauIterGroup`.
+Note: the earlier hypothesis that group-level `self.connect` fails for distributed ODEs
+was incorrect — the real failure was caused by having the connection in **both** places.
+Removing the duplicate (from `configure_defects`) resolves the issue.
 
 ### `flat_src_indices=True`
 
@@ -211,9 +219,9 @@ This often surfaces as a hidden duplicate when a connection is made in two place
 (e.g., once inside a sub-group's `configure_io` and again in the transcription's
 `configure_defects`). Always check for existing connections when adding new ones.
 
-**Known case in dymos:** `f_ode:{name}` in RadauNew is connected by
-`RadauNew.configure_defects()`. Do not also connect it inside
-`RadauIterGroup.configure_io()`.
+**Known case in dymos:** `f_ode:{name}` for ODE-type rate sources is connected inside
+`RadauIterGroup.configure_io()` (group-level). `RadauNew.configure_defects()` skips
+ODE-type with `continue`. Do not connect it in both places.
 
 ---
 
@@ -250,7 +258,55 @@ but the root cause is a setup error on one rank. Fix the setup error first; the 
 will resolve itself.
 
 The vanderpol distributed ODE (`VanderpolODE` with `distrib=True`) is the canonical
-example: it uses `evenly_distrib_idxs(comm.size, num_nodes)` so each rank owns
-`num_nodes // n_ranks` elements. With `num_nodes=120` and 2 ranks, each rank owns 60
-nodes. Global col indices go up to 118, which exceeds 60 → group-level connection fails
-→ hang.
+example. The historical failure was a **duplicate** `ode_all → f_ode` connection: one
+inside `RadauIterGroup` (group-level) and another in `RadauNew.configure_defects`
+(phase-level). The duplicate caused an "already connected" error on one rank, which
+triggered the MPI hang on the others. Fix: keep the connection only inside
+`RadauIterGroup.configure_io` and skip ODE-type in `configure_defects`.
+
+---
+
+## Subsystem Access in Tests: `_get_subsystem()` vs Attribute Access
+
+OpenMDAO exposes subsystems as Python attributes on their parent group after `setup()`,
+but this is not reliable in all execution contexts (e.g., running testflo from a
+subdirectory, or certain OpenMDAO versions). Always use `_get_subsystem('name')` for
+programmatic subsystem access in tests:
+
+```python
+# Unreliable — may raise AttributeError depending on context:
+comp = p.model.traj0.phases.phase0.ode_iter_group.states_resids_comp
+
+# Reliable:
+comp = (p.model.traj0.phases.phase0
+        ._get_subsystem('ode_iter_group')
+        ._get_subsystem('states_resids_comp'))
+```
+
+Note: string keys in `check_partials` output (`cpd[...]`) use the absolute path and are
+unaffected by this issue:
+```python
+data = cpd['traj0.phases.phase0.ode_iter_group.states_resids_comp']  # always works
+```
+
+---
+
+## `InputResidsComp` Residual Behavior
+
+`InputResidsComp.apply_nonlinear` is implemented as:
+```python
+residuals.set_val(inputs.asarray())
+```
+
+This flattens **all inputs** in declaration order and maps them positionally onto **all
+residuals** in declaration order. Consequences:
+
+- Residuals of ALL output variables (including initial-state nodes) are nonzero when
+  any defect input is at its default value (1.0).
+- In the old `StateIndependentsComp`, the initial node was an IndepVarComp output with
+  R=0. In DYMOS_2, the initial node is part of `InputResidsComp`'s output and its
+  residual comes from `initial_state_defects:{name}` (default 1.0), so R[0]=1.0
+  before any solve.
+
+When writing tests that check `list_outputs(residuals=True)` on `states_resids_comp`,
+the expected residuals for the unrun state are all ones (not `[0, 1, 1, ...]`).

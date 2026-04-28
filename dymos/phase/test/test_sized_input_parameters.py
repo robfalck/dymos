@@ -12,6 +12,9 @@ from dymos.utils.lgl import lgl
 from dymos.models.eom import FlightPathEOM2D
 
 
+_DYMOS_2 = env_truthy('DYMOS_2')
+
+
 @use_tempdirs
 class TestParameterConnections(unittest.TestCase):
 
@@ -197,13 +200,20 @@ class TestParameterConnections(unittest.TestCase):
 
         gd = p.model.phase0.options['transcription'].grid_data
 
-        expected = np.broadcast_to(np.array([[1, 2], [3, 4]]),
-                                   (gd.subset_num_nodes['state_disc'], 2, 2))
-        assert_near_equal(p.get_val('phase0.rhs_disc.sum.m'), expected)
+        if _DYMOS_2:
+            expected = np.broadcast_to(np.array([[1, 2], [3, 4]]),
+                                    (gd.subset_num_nodes['all'], 2, 2))
+            assert_near_equal(p.get_val('phase0.ode.sum.m'), expected)
 
-        expected = np.broadcast_to(np.array([[1, 2], [3, 4]]),
-                                   (gd.subset_num_nodes['col'], 2, 2))
-        assert_near_equal(p.get_val('phase0.rhs_col.sum.m'), expected)
+        else:
+            expected = np.broadcast_to(np.array([[1, 2], [3, 4]]),
+                                    (gd.subset_num_nodes['state_disc'], 2, 2))
+            
+            assert_near_equal(p.get_val('phase0.rhs_disc.sum.m'), expected)
+
+            expected = np.broadcast_to(np.array([[1, 2], [3, 4]]),
+                                    (gd.subset_num_nodes['col'], 2, 2))
+            assert_near_equal(p.get_val('phase0.rhs_col.sum.m'), expected)
 
     @require_pyoptsparse(optimizer='SLSQP')
     def test_static_parameter_connections_gl(self):
@@ -262,8 +272,12 @@ class TestParameterConnections(unittest.TestCase):
         p.run_model()
 
         expected = np.array([[1, 2], [3, 4]])
-        assert_near_equal(p.get_val('phase0.rhs_disc.sum.m'), expected)
-        assert_near_equal(p.get_val('phase0.rhs_col.sum.m'), expected)
+        
+        if _DYMOS_2:
+            assert_near_equal(p.get_val('phase0.ode.sum.m'), expected)
+        else:
+            assert_near_equal(p.get_val('phase0.rhs_disc.sum.m'), expected)
+            assert_near_equal(p.get_val('phase0.rhs_col.sum.m'), expected)
 
 
 if __name__ == '__main__':  # pragma: no cover

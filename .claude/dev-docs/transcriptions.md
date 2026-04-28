@@ -289,29 +289,39 @@ self.set_input_defaults(f'states:{name}', val=1.0, units=units, src_shape=(nin,)
 self.promotes('defects', inputs=('dt_dstau',),
               src_indices=om.slicer[col_idxs, ...], src_shape=(nn,))
 
-# The f_ode:{name} connection (ode_all rate source → defects) is NOT made here.
-# It is made at the phase level by RadauNew.configure_defects().
+# ODE-type rate source → f_ode (group-level, mirrors GaussLobattoIterGroup pattern)
+if var_type == 'ode':
+    self.connect(f'ode_all.{rate_source}', f'f_ode:{name}',
+                 src_indices=om.slicer[gd.subset_node_indices['col'], ...])
 ```
 
 #### `configure_defects` (RadauNew)
+
+Mirrors `GaussLobattoNew.configure_defects`: **skips ODE-type rate sources** because they
+are already connected inside `RadauIterGroup.configure_io`. Only handles time, control,
+and parameter rate sources.
+
 ```python
-# ODE-type rate sources → f_ode (at phase level, not group level)
-# MUST be phase-level to correctly handle distributed ODEs.
-phase.connect('ode_all.{rate_source}', f'f_ode:{name}',
-              src_indices=om.slicer[col_idxs, ...])
+for name, options in phase.state_options.items():
+    var_type = phase.classify_var(options['rate_source'])
 
-# parameter rate sources get zero-broadcast indices
-phase.connect('parameter_vals:{var}', f'f_ode:{name}',
-              src_indices=om.slicer[np.zeros_like(col_idxs), ...])
+    if var_type == 'ode':
+        continue  # Already handled in RadauIterGroup.configure_io
 
-# state-as-rate: connect states:{name} (not 'states:' prefix check skips this)
-# rate_src_path.startswith('states:') skips it (no connect made for state-as-rate here)
+    rate_src_path = self._get_rate_source_path(...)
+    if rate_src_path.startswith('parameter_vals:'):
+        src_idxs = om.slicer[np.zeros_like(col_idxs), ...]
+    else:
+        src_idxs = om.slicer[col_idxs, ...]
+
+    if not rate_src_path.startswith('states:'):
+        phase.connect(rate_src_path, f'f_ode:{name}', src_indices=src_idxs)
 ```
 
-**CRITICAL:** The `f_ode:{name}` connection **must** be made by `configure_defects` at the
-phase level using the promoted path `ode_all.{rate_source}`. Do **not** add a group-level
-`self.connect('ode_all.{rate_source}', 'f_ode:{name}', ...)` inside `RadauIterGroup`,
-because that creates a duplicate and fails for distributed ODEs (see openmdao-patterns.md).
+**Pattern:** ODE-type connections go inside the iter group; non-ODE connections go in
+`configure_defects`. This is identical to how `GaussLobattoNew` / `GaussLobattoIterGroup`
+split the work. Do **not** also connect ODE-type rate sources in `configure_defects` —
+that creates a duplicate "already connected" error.
 
 ### Constraint / Response Paths
 
@@ -356,14 +366,15 @@ connection_info.append(('ode_all.{tgt}', (src_idxs,)))
 
 ## Known Pitfalls
 
-1. **Duplicate `f_ode` connection in RadauNew:** `configure_defects` makes the phase-level
-   connection. Do not also add it inside `RadauIterGroup.configure_io`. Adding a second
-   group-level connect produces "already connected" errors.
+1. **Duplicate `f_ode` connection:** ODE-type rate sources must be connected in exactly one
+   place — inside the iter group's `configure_io`. Do **not** also connect them in
+   `configure_defects`. The canonical split is: iter group handles ODE-type; `configure_defects`
+   handles all other types (time, control, parameter). Both GL and Radau follow this pattern.
 
-2. **Distributed ODE and `src_indices`:** Group-internal `self.connect()` validates
-   `src_indices` against the local (per-rank) size of a distributed source, not the global
-   size. Use `phase.connect()` at the phase level for any connection involving distributed
-   ODE outputs with global-index `src_indices`. See openmdao-patterns.md for details.
+2. **`rate_source` must be extracted in the iter group loop:** `RadauIterGroup.configure_io`
+   and `GaussLobattoIterGroup.configure_io` extract `rate_source = options['rate_source']`
+   at the top of the per-state loop. If this line is accidentally removed, any code lower
+   in the loop that references `rate_source` will raise `NameError`.
 
 3. **`src_shape` is not a parameter of `Group.connect()`:** It is a parameter of
    `Group.promotes()` (helps auto_ivc determine the shape to provide). Do not pass `src_shape`
