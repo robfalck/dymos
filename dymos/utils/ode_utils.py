@@ -23,12 +23,14 @@ var_rgx = re.compile(r'([_a-zA-Z][\w.:]*\b(?!\()(\[[\d:.,-]+\])*)')
 def _parse_index_string(index_str):
     """
     Convert a string representation of array indices to a tuple of slice objects,
+    
     integer indices, or ellipsis that can be used for array access.
 
     Args:
         index_str (str): String representation of indices, e.g. '[1, 3]', '[1:5, 2]', '[..., 0]'
 
-    Returns:
+    Returns
+    -------
         tuple: A tuple containing slice objects, integers, or Ellipsis for indexing
     """
     if index_str is None:
@@ -94,6 +96,7 @@ class ExprParser():
     return a legal name for the variable in the expression and an indexer
     if indices were specified.
     """
+
     def __init__(self):
         self._unique_int = 0
 
@@ -148,6 +151,7 @@ class ODEGroup(om.Group):
     parameter_options : dict
         The parameter_options dictionary of the owning phase instance.
     """
+
     def __init__(self, ode_class, num_nodes, ode_init_kwargs=None, calc_exprs=None, parameter_options=None):
         super().__init__()
         self._ode_class = ode_class
@@ -174,7 +178,7 @@ class ODEGroup(om.Group):
 
     def configure(self):
         """
-        Setup up connections and promotions in the ODEGroup.
+        Set up up connections and promotions in the ODEGroup.
         """
         num_nodes = self._num_nodes
 

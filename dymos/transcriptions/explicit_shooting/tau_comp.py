@@ -18,6 +18,7 @@ class TauComp(om.ExplicitComponent):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def __init__(self, grid_data=None, **kwargs):
         super().__init__(**kwargs)
         self._grid_data = grid_data

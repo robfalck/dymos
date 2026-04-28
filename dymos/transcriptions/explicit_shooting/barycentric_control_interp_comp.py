@@ -10,6 +10,21 @@ except ImportError:
     # If numba is not available, just write a dummy njit wrapper.
     # Code will still run at a significant performance hit.
     def njit(*args, **kwargs):
+        """
+        Stub decorator that replaces numba.njit when numba is not available.
+
+        Parameters
+        ----------
+        *args : tuple
+            Positional arguments (ignored).
+        **kwargs : dict
+            Keyword arguments (ignored).
+
+        Returns
+        -------
+        callable
+            A decorator that wraps the function without JIT compilation.
+        """
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
@@ -59,7 +74,7 @@ def _compute_dl_dg(tau: float,
         l[i] = np.prod(g)
         # dl_dg is symmetric, so fill two elements at once
         if dl_dg is not None:
-            for j in range(i+1, n):
+            for j in range(i + 1, n):
                 j_save = g[j]
                 g[j] = 1.0
                 val = np.prod(g)
@@ -116,6 +131,7 @@ class BarycentricControlInterpComp(om.ExplicitComponent):
     **kwargs : dict, optional
         Keyword arguments passed to ExplicitComponent.
     """
+
     def __init__(self, grid_data, control_options=None,
                  time_units=None, standalone_mode=False, compute_derivs=True, **kwargs):
         self._grid_data = grid_data
@@ -301,7 +317,6 @@ class BarycentricControlInterpComp(om.ExplicitComponent):
         """
         I/O creation is delayed until configure so we can determine shape and units for the controls.
         """
-
         # self.add_discrete_input('segment_index', val=0, desc='index of the segment')
         self.add_input('stau', shape=(1,), units=None)
         self.add_input('dstau_dt', val=1.0, units=f'1/{self._time_units}')
@@ -311,7 +326,7 @@ class BarycentricControlInterpComp(om.ExplicitComponent):
         self._configure_controls()
 
     def _compute_barycentric_weights(self, taus: ArrayLike, ptaus: dict):
-        """Computes the barycentric weights given a set of nodes.
+        """Compute the barycentric weights given a set of nodes.
 
         Parameters
         ----------
@@ -466,12 +481,10 @@ class BarycentricControlInterpComp(om.ExplicitComponent):
         ----------
         inputs : `Vector`
             `Vector` containing inputs.
-        outputs : `Vector`
-            `Vector` containing outputs.
+        partials : `Jacobian`
+            `Jacobian` containing partial derivatives.
         discrete_inputs : `Vector`
-            `Vector` containing discrete_inputs.
-        discrete_outputs : `Vector`
-            `Vector` containing discrete_outputs.
+            `Vector` containing discrete inputs.
         """
         if self._control_options:
             gd = self._grid_data

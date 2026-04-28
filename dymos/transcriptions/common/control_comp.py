@@ -16,7 +16,7 @@ from dymos._options import options as dymos_options
 
 
 class ControlInterpComp(om.ExplicitComponent):
-    """
+    r"""
     Class definition for the ControlInterpComp.
 
     Compute the approximated control values and rates given the values of a control at all nodes,
@@ -49,6 +49,7 @@ class ControlInterpComp(om.ExplicitComponent):
     and :math:`\\frac{d\\tau_s}{dt}` is the ratio of segment duration in segment tau space
     [-1 1] to segment duration in time.
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._no_check_partials = not dymos_options['include_check_partials']

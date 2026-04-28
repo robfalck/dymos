@@ -19,7 +19,7 @@ class Motors(om.ExplicitComponent):
         num_nodes = self.options['num_nodes']
 
         # Inputs
-        self.add_input('power_out_gearbox', val=3.6*np.ones(num_nodes), units='W',
+        self.add_input('power_out_gearbox', val=3.6 * np.ones(num_nodes), units='W',
                        desc='Power at gearbox output')
         self.add_input('current_in_motor', val=np.ones(num_nodes), units='A',
                        desc='Total current demanded')

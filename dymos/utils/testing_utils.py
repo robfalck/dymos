@@ -13,7 +13,7 @@ from openmdao import __version__ as openmdao_version
 
 def assert_check_partials(data, atol=1.0E-6, rtol=1.0E-6):
     """
-    Wrapper around OpenMDAO's assert_check_partials with a dymos-specific message.
+    Wrap OpenMDAO's assert_check_partials with a dymos-specific message.
 
     Calls OpenMDAO's assert_check_partials but verifies that the dictionary of assertion data is
     not empty due to dymos.options['include_check_partials'] being False.
@@ -130,8 +130,7 @@ def assert_cases_equal(case1, case2, tol=1.0E-12, require_same_vars=True):
 def _write_out_timeseries_values_out_of_tolerance(isclose, rel_tolerance, abs_tolerance,
                                                   t_check, x_check, x_ref):
     """
-    Helper function used to write out a table of values indicating which timeseries values
-    were out of tolerance.
+    Write out a table of values indicating which timeseries values were out of tolerance.
 
     Parameters
     ----------
@@ -366,13 +365,14 @@ class PhaseStub():
 
     It just supports the classify_var method and returns "ode", the only value needed for unittests.
     """
+
     def __init__(self):
         self.nonlinear_solver = None
         self.linear_solver = None
 
     def classify_var(self, name):
         """
-        A stand-in for classify_var that always sets the variable type to name.
+        Act as a stand-in for classify_var that always sets the variable type to name.
 
         Parameters
         ----------
@@ -398,6 +398,7 @@ class SimpleODE(om.ExplicitComponent):
     **kwargs : dict of keyword arguments
         Keyword arguments that will be mapped into the Component options.
     """
+
     def initialize(self):
         """
         Declare options for SimpleODE.
@@ -448,7 +449,7 @@ class SimpleODE(om.ExplicitComponent):
             Vector of partials.
         """
         t = inputs['t']
-        partials['x_dot', 't'] = -2*t
+        partials['x_dot', 't'] = -2 * t
 
 
 class SimpleVectorizedODE(om.ExplicitComponent):
@@ -462,6 +463,7 @@ class SimpleVectorizedODE(om.ExplicitComponent):
     **kwargs : dict of keyword arguments
         Keyword arguments that will be mapped into the Component options.
     """
+
     def initialize(self):
         """
         Declare options for SimpleVectorizedODE.
@@ -517,5 +519,5 @@ class SimpleVectorizedODE(om.ExplicitComponent):
             Vector of partials.
         """
         t = inputs['t']
-        partials['z_dot', 't'][0::2] = -2*t
+        partials['z_dot', 't'][0::2] = -2 * t
         partials['z_dot', 't'][1::2] = 10

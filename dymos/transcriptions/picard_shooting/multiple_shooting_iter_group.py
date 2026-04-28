@@ -18,6 +18,7 @@ class MultipleShootingIterGroup(om.Group):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 

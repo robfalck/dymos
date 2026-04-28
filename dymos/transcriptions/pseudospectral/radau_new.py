@@ -30,6 +30,7 @@ class RadauNew(TranscriptionBase):
         The path providing an ODE for the phase that can be interrogated
         for shape and unit information.
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._rhs_source = 'ode_iter_group.ode_all'
@@ -172,7 +173,7 @@ class RadauNew(TranscriptionBase):
 
     def setup_controls(self, phase):
         """
-        Setup the control group.
+        Set up the control group.
 
         Parameters
         ----------
@@ -741,7 +742,7 @@ class RadauNew(TranscriptionBase):
 
     def get_parameter_connections(self, name, phase):
         """
-        Returns info about a parameter's target connections in the phase.
+        Return info about a parameter's target connections in the phase.
 
         Parameters
         ----------
@@ -846,7 +847,7 @@ class RadauNew(TranscriptionBase):
 
     def _get_linkage_source_ode(self, promoted=False):
         """
-        Returns the path of the ODE system providing sources for linkage constraints.
+        Return the path of the ODE system providing sources for linkage constraints.
 
         Nominally this is the _rhs_source but will need to be overridden in transcriptions
         with boundary ODEs or ODEs that are in a promoted path.

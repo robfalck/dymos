@@ -6,7 +6,7 @@ import numpy as np
 
 def write_error(f, iter_number, phases, refine_results):
     """
-    Writes a summary of the current grid refinement iteration to the given stream.
+    Write a summary of the current grid refinement iteration to the given stream.
 
     Parameters
     ----------
@@ -57,7 +57,7 @@ def write_error(f, iter_number, phases, refine_results):
 
 def write_refine_iter(f, iter_number, phases, refine_results):
     """
-    Writes a summary of the current grid refinement iteration to the given stream.
+    Write a summary of the current grid refinement iteration to the given stream.
 
     Parameters
     ----------
@@ -71,7 +71,6 @@ def write_refine_iter(f, iter_number, phases, refine_results):
         A dictionary containing the grid refinement data for each phase, keyed by the phase path
         in the model.
     """
-
     for phase_path, phase in phases.items():
         refine_data = refine_results[phase_path]
         refine_options = phase.refine_options

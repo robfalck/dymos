@@ -10,8 +10,10 @@ from .fuel_burn_rate_comp import FuelBurnRateComp
 class PropulsionGroup(om.Group):
     """
     The PropulsionGroup computes propulsive forces (thrust), the specific fuel consumption and
+    
     fuel expenditure rate, and the aircraft throttle setting.
     """
+
     def initialize(self):
         self.options.declare('num_nodes', types=int)
 

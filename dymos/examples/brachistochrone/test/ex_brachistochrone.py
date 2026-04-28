@@ -9,6 +9,33 @@ from dymos.examples.brachistochrone.brachistochrone_ode import BrachistochroneOD
 def brachistochrone_min_time(transcription='gauss-lobatto', num_segments=8, transcription_order=3,
                              compressed=True, optimizer='SLSQP', run_driver=True, force_alloc_complex=False,
                              solve_segments=False):
+    """
+    Build and run the brachistochrone minimum-time problem.
+
+    Parameters
+    ----------
+    transcription : str
+        One of 'gauss-lobatto', 'radau-ps', 'shooting-gauss-lobatto', 'shooting-radau', or 'birkhoff'.
+    num_segments : int
+        Number of segments in the transcription.
+    transcription_order : int
+        Polynomial order of the transcription.
+    compressed : bool
+        If True, use a compressed transcription.
+    optimizer : str
+        The pyoptsparse optimizer to use.
+    run_driver : bool
+        If True, run the optimization driver.
+    force_alloc_complex : bool
+        If True, force allocation of complex arrays for complex-step derivative checking.
+    solve_segments : bool
+        If True, use a Newton solver to enforce defect constraints within segments.
+
+    Returns
+    -------
+    p : om.Problem
+        The OpenMDAO Problem instance after the run.
+    """
     p = om.Problem(model=om.Group())
 
     p.driver = om.pyOptSparseDriver()
@@ -64,7 +91,7 @@ def brachistochrone_min_time(transcription='gauss-lobatto', num_segments=8, tran
     phase.add_parameter('g', targets=['g'], units='m/s**2')
 
     phase.add_timeseries('timeseries2',
-                         transcription=dm.Radau(num_segments=num_segments*5,
+                         transcription=dm.Radau(num_segments=num_segments * 5,
                                                 order=transcription_order,
                                                 compressed=compressed),
                          subset='control_input')

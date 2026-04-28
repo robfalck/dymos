@@ -5,6 +5,19 @@ from dymos.examples.water_rocket.water_propulsion_ode import WaterPropulsionODE
 
 
 def new_propelled_ascent_phase(transcription):
+    """
+    Build and return the propelled ascent phase for the water rocket trajectory.
+
+    Parameters
+    ----------
+    transcription : Transcription
+        The Dymos transcription instance to use for this phase.
+
+    Returns
+    -------
+    propelled_ascent : dm.Phase
+        The configured propelled ascent Phase object.
+    """
     propelled_ascent = dm.Phase(ode_class=WaterPropulsionODE,
                                 transcription=transcription)
 
@@ -43,6 +56,19 @@ def new_propelled_ascent_phase(transcription):
 
 
 def new_ballistic_ascent_phase(transcription):
+    """
+    Build and return the ballistic ascent phase for the water rocket trajectory.
+
+    Parameters
+    ----------
+    transcription : Transcription
+        The Dymos transcription instance to use for this phase.
+
+    Returns
+    -------
+    ballistic_ascent : dm.Phase
+        The configured ballistic ascent Phase object.
+    """
     ballistic_ascent = dm.Phase(ode_class=WaterPropulsionODE, transcription=transcription,
                                 ode_init_kwargs={'ballistic': True})
 
@@ -69,6 +95,19 @@ def new_ballistic_ascent_phase(transcription):
 
 
 def new_descent_phase(transcription):
+    """
+    Build and return the descent phase for the water rocket trajectory.
+
+    Parameters
+    ----------
+    transcription : Transcription
+        The Dymos transcription instance to use for this phase.
+
+    Returns
+    -------
+    descent : dm.Phase
+        The configured descent Phase object.
+    """
     descent = dm.Phase(ode_class=WaterPropulsionODE, transcription=transcription,
                        ode_init_kwargs={'ballistic': True})
 
@@ -94,6 +133,22 @@ def new_descent_phase(transcription):
 
 
 def new_water_rocket_trajectory(objective):
+    """
+    Build the full water rocket trajectory with three phases.
+
+    Parameters
+    ----------
+    objective : str
+        The optimization objective: 'height' to maximize apogee altitude,
+        or 'range' to maximize horizontal range at landing.
+
+    Returns
+    -------
+    traj : dm.Trajectory
+        The configured Trajectory object.
+    phases : dict
+        Dictionary mapping phase name strings to their Phase objects.
+    """
     tx_prop = dm.Radau(num_segments=20, order=3, compressed=True)
     tx_bal = dm.Radau(num_segments=10, order=3, compressed=True)
     tx_desc = dm.Radau(num_segments=10, order=3, compressed=True)
@@ -147,8 +202,8 @@ def new_water_rocket_trajectory(objective):
                        targets={'propelled_ascent': 'V_b'},
                        opt=False)
 
-    traj.add_parameter('S', units='m**2', val=np.pi*106e-3**2/4, opt=False)
-    traj.add_parameter('A_out', units='m**2', val=np.pi*22e-3**2/4.,
+    traj.add_parameter('S', units='m**2', val=np.pi * 106e-3**2 / 4, opt=False)
+    traj.add_parameter('A_out', units='m**2', val=np.pi * 22e-3**2 / 4.,
                        targets={'propelled_ascent': ['water_engine.A_out']},
                        opt=False)
     traj.add_parameter('k', units=None, val=1.2, opt=False,
@@ -163,6 +218,15 @@ def new_water_rocket_trajectory(objective):
 
 
 def set_sane_initial_guesses(phases):
+    """
+    Set reasonable initial state and time guesses on all water rocket phases.
+
+    Parameters
+    ----------
+    phases : dict
+        Dictionary mapping phase name strings to Phase objects, as returned by
+        `new_water_rocket_trajectory`.
+    """
     propelled_ascent = phases['propelled_ascent']
     ballistic_ascent = phases['ballistic_ascent']
     descent = phases['descent']

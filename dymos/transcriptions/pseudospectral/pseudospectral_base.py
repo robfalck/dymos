@@ -20,6 +20,7 @@ class PseudospectralBase(TranscriptionBase):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -44,7 +45,7 @@ class PseudospectralBase(TranscriptionBase):
 
     def setup_time(self, phase):
         """
-        Setup the time component.
+        Set up the time component.
 
         Parameters
         ----------
@@ -77,7 +78,7 @@ class PseudospectralBase(TranscriptionBase):
 
     def setup_states(self, phase):
         """
-        Setup the states for this transcription.
+        Set up the states for this transcription.
 
         Parameters
         ----------
@@ -249,7 +250,7 @@ class PseudospectralBase(TranscriptionBase):
 
     def setup_ode(self, phase):
         """
-        Setup the ode for this transcription.
+        Set up the ode for this transcription.
 
         Parameters
         ----------
@@ -287,7 +288,7 @@ class PseudospectralBase(TranscriptionBase):
 
     def setup_defects(self, phase):
         """
-        Setup the Collocation and Continuity components as necessary.
+        Set up the Collocation and Continuity components as necessary.
 
         Parameters
         ----------
@@ -301,7 +302,7 @@ class PseudospectralBase(TranscriptionBase):
 
     def _configure_solve_segments(self, state_name, options, phase):
         """
-        Provides error checking for solve_segments and establishes necessary data structures.
+        Provide error checking for solve_segments and establishes necessary data structures.
 
         Parameters
         ----------
@@ -440,7 +441,7 @@ class PseudospectralBase(TranscriptionBase):
 
     def setup_solvers(self, phase):
         """
-        Setup the solvers.
+        Set up the solvers.
 
         Parameters
         ----------
@@ -469,7 +470,7 @@ class PseudospectralBase(TranscriptionBase):
 
     def setup_timeseries_outputs(self, phase):
         """
-        Setup the timeseries for this transcription.
+        Set up the timeseries for this transcription.
 
         Parameters
         ----------
@@ -579,7 +580,7 @@ class PseudospectralBase(TranscriptionBase):
 
     def _get_num_timeseries_nodes(self):
         """
-        Returns the number of nodes in the default timeseries for this transcription.
+        Return the number of nodes in the default timeseries for this transcription.
 
         Returns
         -------

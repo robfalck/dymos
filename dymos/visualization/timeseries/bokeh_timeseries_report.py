@@ -68,11 +68,14 @@ def _meta_tree_subsys_iter(tree, recurse=True, cls=None, path=None):
 
     Parameters
     ----------
+    tree : dict
+        The model tree dictionary to iterate over.
     recurse : bool
         If True, iterate over the whole tree under this system.
     cls : None, str, or Sequence
-        The class of the nodes to be iterated
-    path : The absolute path of the given tree.
+        The class of the nodes to be iterated.
+    path : str or None
+        The absolute path of the given tree node.
 
     Yields
     ------
@@ -242,7 +245,7 @@ def _load_data_sources(traj_and_phase_meta=None, solution_record_file=None, simu
         and associated options.
     solution_record_file : str
         The path to the solution record file.
-    sim_record_file : str
+    simulation_record_file : str
         The path to the corresponding simulation record file.
 
     Returns
@@ -472,7 +475,7 @@ def make_timeseries_report(prob, solution_record_file=None, simulation_record_fi
                 param_tables.append(DataTable(source=ColumnDataSource(param_data),
                                               columns=columns,
                                               index_position=None,
-                                              height=30*len(param_data['param']),
+                                              height=30 * len(param_data['param']),
                                               sizing_mode='stretch_both'))
 
             # Plot the timeseries
