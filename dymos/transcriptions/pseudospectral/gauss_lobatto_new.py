@@ -154,12 +154,21 @@ class GaussLobattoNew(TranscriptionBase):
         """
         self.any_solved_segs = False
         self.any_connected_opt_segs = False
+        self._connected_initial_states = set()
+        self._connected_final_states = set()
         for name, options in phase.state_options.items():
             # Transcription solve_segments overrides state solve_segments if not set
             if options['solve_segments'] is None:
                 options['solve_segments'] = self.options['solve_segments']
 
             solve_segs = options['solve_segments']
+
+            # Record user-explicitly-connected states BEFORE auto-setting so that
+            # configure_defects can add the appropriate boundary defect constraints.
+            if options['input_initial'] and not options['fix_initial'] and not solve_segs:
+                self._connected_initial_states.add(name)
+            if options['input_final'] and not options['fix_final'] and not solve_segs:
+                self._connected_final_states.add(name)
 
             # For non-solve_segments states, states:{name} at all input nodes is the DV.
             # Setting input_initial/input_final=True prevents separate initial_states/final_states
@@ -349,6 +358,46 @@ class GaussLobattoNew(TranscriptionBase):
                 phase.connect(rate_src_path,
                               f'staterate_disc:{name}',
                               src_indices=disc_src_idxs)
+
+        # Add boundary defect constraints for user-connected states.
+        # When input_initial=True was explicitly set by the user (e.g. via link_phases),
+        # the optimizer must enforce initial_state_defects:{name} = 0 so that
+        # states_all[0] tracks the externally-provided initial_states:{name} value.
+        # (GaussLobattoDefectComp computes this residual but does not constrain it
+        # by default; the constraint is added here only for user-connected states.)
+        for name in self._connected_initial_states:
+            options = phase.state_options[name]
+            shape = options['shape']
+            if 'defect_ref' in options and options['defect_ref'] is not None:
+                defect_ref = np.atleast_1d(options['defect_ref'])
+            elif 'defect_scaler' in options and options['defect_scaler'] is not None:
+                defect_ref = np.divide(1.0, np.atleast_1d(options['defect_scaler']))
+            elif 'ref' in options and options['ref'] is not None:
+                defect_ref = np.atleast_1d(options['ref'])
+            elif 'scaler' in options and options['scaler'] is not None:
+                defect_ref = np.divide(1.0, np.atleast_1d(options['scaler']))
+            else:
+                defect_ref = 1.0
+            if np.isscalar(defect_ref):
+                defect_ref = defect_ref * np.ones(shape)
+            phase.add_constraint(f'initial_state_defects:{name}', equals=0.0, ref=defect_ref)
+
+        for name in self._connected_final_states:
+            options = phase.state_options[name]
+            shape = options['shape']
+            if 'defect_ref' in options and options['defect_ref'] is not None:
+                defect_ref = np.atleast_1d(options['defect_ref'])
+            elif 'defect_scaler' in options and options['defect_scaler'] is not None:
+                defect_ref = np.divide(1.0, np.atleast_1d(options['defect_scaler']))
+            elif 'ref' in options and options['ref'] is not None:
+                defect_ref = np.atleast_1d(options['ref'])
+            elif 'scaler' in options and options['scaler'] is not None:
+                defect_ref = np.divide(1.0, np.atleast_1d(options['scaler']))
+            else:
+                defect_ref = 1.0
+            if np.isscalar(defect_ref):
+                defect_ref = defect_ref * np.ones(shape)
+            phase.add_constraint(f'final_state_defects:{name}', equals=0.0, ref=defect_ref)
 
     def setup_solvers(self, phase):
         """
@@ -913,6 +962,6 @@ class GaussLobattoNew(TranscriptionBase):
             Otherwise, return the full path of the system from the context of the Phase.
         """
         if promoted:
-            return 'ode_iter_group.ode_interp_group'
+            return 'ode'
         else:
             return 'ode_iter_group.ode_interp_group.ode'
