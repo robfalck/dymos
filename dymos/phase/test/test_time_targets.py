@@ -10,6 +10,9 @@ from openmdao.utils.general_utils import env_truthy
 import dymos as dm
 
 
+_DYMOS_2 = env_truthy('DYMOS_2')
+
+
 class _BrachistochroneTestODE(om.ExplicitComponent):
 
     def initialize(self):
@@ -164,26 +167,35 @@ class TestPhaseTimeTargets(unittest.TestCase):
                 gd = p.model.phase0.options['transcription'].grid_data
 
                 time_all = p[f'phase0.timeseries.{time_name}'].ravel()
-                time_col = time_all[gd.subset_node_indices['col']]
-                time_disc = time_all[gd.subset_node_indices['state_disc']]
-
                 time_phase_all = p[f'phase0.timeseries.{time_name}_phase'].ravel()
-                time_phase_col = time_phase_all[gd.subset_node_indices['col']]
-                time_phase_disc = time_phase_all[gd.subset_node_indices['state_disc']]
 
-                assert_near_equal(p['phase0.rhs_disc.time_phase'][-1], 1.8016, tolerance=1.0E-3)
+                if _DYMOS_2:
+                    assert_near_equal(p['phase0.ode.time_phase'][-1], 1.8016, tolerance=1.0E-3)
+                    assert_near_equal(p['phase0.ode.t_initial'], p['phase0.t_initial'])
+                    assert_near_equal(p['phase0.ode.t_duration'], p['phase0.t_duration'])
+                    assert_near_equal(p['phase0.ode.time_phase'], time_phase_all)
+                    assert_near_equal(p['phase0.ode.time'], time_all)
 
-                assert_near_equal(p['phase0.rhs_disc.t_initial'], p['phase0.t_initial'])
-                assert_near_equal(p['phase0.rhs_col.t_initial'], p['phase0.t_initial'])
+                else:
+                    time_col = time_all[gd.subset_node_indices['col']]
+                    time_disc = time_all[gd.subset_node_indices['state_disc']]
 
-                assert_near_equal(p['phase0.rhs_disc.t_duration'], p['phase0.t_duration'])
-                assert_near_equal(p['phase0.rhs_col.t_duration'], p['phase0.t_duration'])
+                    time_phase_col = time_phase_all[gd.subset_node_indices['col']]
+                    time_phase_disc = time_phase_all[gd.subset_node_indices['state_disc']]
 
-                assert_near_equal(p['phase0.rhs_disc.time_phase'], time_phase_disc)
-                assert_near_equal(p['phase0.rhs_col.time_phase'], time_phase_col)
+                    assert_near_equal(p['phase0.rhs_disc.time_phase'][-1], 1.8016, tolerance=1.0E-3)
 
-                assert_near_equal(p['phase0.rhs_disc.time'], time_disc)
-                assert_near_equal(p['phase0.rhs_col.time'], time_col)
+                    assert_near_equal(p['phase0.rhs_disc.t_initial'], p['phase0.t_initial'])
+                    assert_near_equal(p['phase0.rhs_col.t_initial'], p['phase0.t_initial'])
+
+                    assert_near_equal(p['phase0.rhs_disc.t_duration'], p['phase0.t_duration'])
+                    assert_near_equal(p['phase0.rhs_col.t_duration'], p['phase0.t_duration'])
+
+                    assert_near_equal(p['phase0.rhs_disc.time_phase'], time_phase_disc)
+                    assert_near_equal(p['phase0.rhs_col.time_phase'], time_phase_col)
+
+                    assert_near_equal(p['phase0.rhs_disc.time'], time_disc)
+                    assert_near_equal(p['phase0.rhs_col.time'], time_col)
 
                 exp_out = p.model._get_subsystem('phase0').simulate()
 
@@ -323,19 +335,26 @@ class TestPhaseTimeTargets(unittest.TestCase):
         time_phase_segends = np.reshape(time_phase_all[gd.subset_node_indices['segment_ends']],  # noqa: F841
                                         (gd.num_segments, 2))
 
-        assert_near_equal(p['phase0.rhs_disc.time_phase'][-1], 1.8016, tolerance=1.0E-3)
+        if _DYMOS_2:
+            assert_near_equal(p['phase0.ode.time_phase'][-1], 1.8016, tolerance=1.0E-3)
+            assert_near_equal(p['phase0.ode.t_initial'], p['phase0.t_initial'])
+            assert_near_equal(p['phase0.ode.t_duration'], p['phase0.t_duration'])
+            assert_near_equal(p['phase0.ode.time_phase'], time_phase_all)
+            assert_near_equal(p['phase0.ode.time'], time_all)
+        else:
+            assert_near_equal(p['phase0.rhs_disc.time_phase'][-1], 1.8016, tolerance=1.0E-3)
 
-        assert_near_equal(p['phase0.rhs_disc.t_initial'], p['phase0.t_initial'])
-        assert_near_equal(p['phase0.rhs_col.t_initial'], p['phase0.t_initial'])
+            assert_near_equal(p['phase0.rhs_disc.t_initial'], p['phase0.t_initial'])
+            assert_near_equal(p['phase0.rhs_col.t_initial'], p['phase0.t_initial'])
 
-        assert_near_equal(p['phase0.rhs_disc.t_duration'], p['phase0.t_duration'])
-        assert_near_equal(p['phase0.rhs_col.t_duration'], p['phase0.t_duration'])
+            assert_near_equal(p['phase0.rhs_disc.t_duration'], p['phase0.t_duration'])
+            assert_near_equal(p['phase0.rhs_col.t_duration'], p['phase0.t_duration'])
 
-        assert_near_equal(p['phase0.rhs_disc.time_phase'], time_phase_disc)
-        assert_near_equal(p['phase0.rhs_col.time_phase'], time_phase_col)
+            assert_near_equal(p['phase0.rhs_disc.time_phase'], time_phase_disc)
+            assert_near_equal(p['phase0.rhs_col.time_phase'], time_phase_col)
 
-        assert_near_equal(p['phase0.rhs_disc.time'], time_disc)
-        assert_near_equal(p['phase0.rhs_col.time'], time_col)
+            assert_near_equal(p['phase0.rhs_disc.time'], time_disc)
+            assert_near_equal(p['phase0.rhs_col.time'], time_col)
 
         exp_out = p.model._get_subsystem('phase0').simulate()
 

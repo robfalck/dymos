@@ -7,7 +7,7 @@ from scipy.interpolate import interp1d
 
 import openmdao.api as om
 from openmdao.utils.assert_utils import assert_near_equal
-from openmdao.utils.testing_utils import use_tempdirs, require_pyoptsparse
+from openmdao.utils.testing_utils import use_tempdirs, require_pyoptsparse, env_truthy
 
 import dymos as dm
 from dymos.examples.brachistochrone.brachistochrone_ode import BrachistochroneODE
@@ -17,6 +17,9 @@ from dymos.models.atmosphere import USatm1976Comp
 from dymos.examples.min_time_climb.aero import AeroGroup
 from dymos.examples.min_time_climb.prop import PropGroup
 from dymos.models.eom import FlightPathEOM2D
+
+
+_DYMOS_2 = env_truthy('DYMOS_2')
 
 
 @use_tempdirs
@@ -76,11 +79,16 @@ class TestTimeseriesOutput(unittest.TestCase):
                           p.get_val('phase0.timeseries.time_phase')[:, 0])
 
         for state in ('x', 'y', 'v'):
+
             assert_near_equal(p.get_val(f'phase0.states:{state}'),
                               p.get_val(f'phase0.timeseries.{state}')[state_input_idxs])
 
-            assert_near_equal(p.get_val(f'phase0.state_interp.state_col:{state}'),
-                              p.get_val(f'phase0.timeseries.{state}')[col_idxs])
+            if _DYMOS_2:
+                assert_near_equal(p.get_val(f'phase0.states_col:{state}'),
+                                p.get_val(f'phase0.timeseries.{state}')[col_idxs])
+            else:
+                assert_near_equal(p.get_val(f'phase0.state_interp.state_col:{state}'),
+                                p.get_val(f'phase0.timeseries.{state}')[col_idxs])
 
         for control in ('theta',):
             assert_near_equal(p.get_val(f'phase0.controls:{control}'),
