@@ -290,7 +290,11 @@ class RadauNew(TranscriptionBase):
 
     def configure_defects(self, phase):
         """
-        Configure the continuity_comp and connect the collocation constraints.
+        Configure connections for non-ODE rate sources.
+
+        For states whose rate_source is an ODE output, connections are made inside
+        RadauIterGroup.configure_io. This method handles the remaining cases
+        (time, control, parameter, state-as-rate).
 
         Parameters
         ----------
@@ -300,7 +304,13 @@ class RadauNew(TranscriptionBase):
         grid_data = self.grid_data
         col_idxs = grid_data.subset_node_indices['col']
 
-        for name in phase.state_options:
+        for name, options in phase.state_options.items():
+            rate_source = options['rate_source']
+            var_type = phase.classify_var(rate_source)
+
+            if var_type == 'ode':
+                continue  # Already handled in RadauIterGroup.configure_io
+
             rate_src_path = self._get_rate_source_path(state_name=name, phase=phase)
             if rate_src_path.startswith('parameter_vals:'):
                 src_idxs = om.slicer[np.zeros_like(col_idxs), ...]
