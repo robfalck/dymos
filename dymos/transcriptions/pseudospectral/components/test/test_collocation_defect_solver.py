@@ -336,7 +336,7 @@ class TestCollocationBalanceApplyNL(unittest.TestCase):
             # In GaussLobattoNew, InputResidsComp drives all input nodes (including the initial),
             # so all residuals are nonzero when unrun.
             expected = np.array([[1., 1., 1., 1.]]).T
-            comp = p.model.traj0.phases.phase0.ode_iter_group.states_resids_comp
+            comp = p.model.traj0.phases.phase0._get_subsystem('ode_iter_group')._get_subsystem('states_resids_comp')
         else:
             # In the old StateIndependentsComp the initial node is independent (R=0).
             expected = np.array([[0., 1., 1., 1.]]).T
