@@ -204,7 +204,6 @@ class RadauIterGroup(om.Group):
 
         for name, options in state_options.items():
             units = options['units']
-            rate_source = options['rate_source']
             shape = options['shape']
 
             for tgt in options['targets']:
@@ -283,16 +282,3 @@ class RadauIterGroup(om.Group):
             if f'final_states:{name}' in self._implicit_outputs:
                 states_resids_comp.add_output(f'final_states:{name}', shape=(1,) + shape, units=units,
                                               lower=final_lb, upper=final_ub)
-
-            try:
-                rate_source_var = options['rate_source']
-            except RuntimeError:
-                raise ValueError(f"state '{name}' in phase '{phase.name}' was not given a "
-                                 "rate_source")
-
-            # Note the rate source must be shape-compatible with the state
-            var_type = phase.classify_var(rate_source_var)
-
-            if var_type == 'ode':
-                self.connect(f'ode_all.{rate_source}', f'f_ode:{name}',
-                             src_indices=om.slicer[gd.subset_node_indices['col'], ...])

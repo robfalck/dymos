@@ -188,7 +188,7 @@ class GaussLobattoIterGroup(om.Group):
                                               promotes_inputs=['*'],
                                               promotes_outputs=['*'])
         ode_interp_group.nonlinear_solver = om.NonlinearBlockGS(maxiter=10, iprint=0)
-        ode_interp_group.linear_solver = om.DirectSolver()
+        ode_interp_group.linear_solver = om.LinearBlockGS()
 
         # Store grid_data for use in guess_nonlinear
         self._gd = gd
