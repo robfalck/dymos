@@ -30,6 +30,7 @@ class RadauNew(TranscriptionBase):
         The path providing an ODE for the phase that can be interrogated
         for shape and unit information.
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._rhs_source = 'ode_iter_group.ode_all'
@@ -172,7 +173,7 @@ class RadauNew(TranscriptionBase):
 
     def setup_controls(self, phase):
         """
-        Setup the control group.
+        Set up the control group.
 
         Parameters
         ----------
@@ -291,23 +292,14 @@ class RadauNew(TranscriptionBase):
         """
         Configure the continuity_comp and connect the collocation constraints.
 
+        In RadauNew, this is handled in the RadauIterGroup.configure_io method.
+
         Parameters
         ----------
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-        grid_data = self.grid_data
-        col_idxs = grid_data.subset_node_indices['col']
-
-        for name in phase.state_options:
-            rate_src_path = self._get_rate_source_path(state_name=name, phase=phase)
-            if rate_src_path.startswith('parameter_vals:'):
-                src_idxs = om.slicer[np.zeros_like(col_idxs), ...]
-            else:
-                src_idxs = om.slicer[col_idxs, ...]
-
-            if not rate_src_path.startswith('states:'):
-                phase.connect(rate_src_path, f'f_ode:{name}', src_indices=src_idxs)
+        pass
 
     def setup_solvers(self, phase):
         """
@@ -741,7 +733,7 @@ class RadauNew(TranscriptionBase):
 
     def get_parameter_connections(self, name, phase):
         """
-        Returns info about a parameter's target connections in the phase.
+        Return info about a parameter's target connections in the phase.
 
         Parameters
         ----------
@@ -847,7 +839,7 @@ class RadauNew(TranscriptionBase):
 
     def _get_linkage_source_ode(self, promoted=False):
         """
-        Returns the path of the ODE system providing sources for linkage constraints.
+        Return the path of the ODE system providing sources for linkage constraints.
 
         Nominally this is the _rhs_source but will need to be overridden in transcriptions
         with boundary ODEs or ODEs that are in a promoted path.
