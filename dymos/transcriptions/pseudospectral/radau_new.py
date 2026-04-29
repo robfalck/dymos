@@ -30,7 +30,6 @@ class RadauNew(TranscriptionBase):
         The path providing an ODE for the phase that can be interrogated
         for shape and unit information.
     """
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._rhs_source = 'ode_iter_group.ode_all'
@@ -173,7 +172,7 @@ class RadauNew(TranscriptionBase):
 
     def setup_controls(self, phase):
         """
-        Set up the control group.
+        Setup the control group.
 
         Parameters
         ----------
@@ -742,7 +741,7 @@ class RadauNew(TranscriptionBase):
 
     def get_parameter_connections(self, name, phase):
         """
-        Return info about a parameter's target connections in the phase.
+        Returns info about a parameter's target connections in the phase.
 
         Parameters
         ----------
@@ -763,7 +762,7 @@ class RadauNew(TranscriptionBase):
             for tgt in options['targets']:
                 if tgt in options['static_targets']:
                     src_idxs = np.squeeze(get_src_indices_by_row([0], options['shape']), axis=0)
-                    endpoint_src_idxs = om.slicer[:, ...]
+                    endpoint_src_idxs = None
                 else:
                     src_idxs_raw = np.zeros(self.grid_data.subset_num_nodes['all'], dtype=int)
                     src_idxs = get_src_indices_by_row(src_idxs_raw, options['shape'])
@@ -772,9 +771,10 @@ class RadauNew(TranscriptionBase):
                     if options['shape'] == (1,):
                         src_idxs = src_idxs.ravel()
                         endpoint_src_idxs = endpoint_src_idxs.ravel()
+                    endpoint_src_idxs = (endpoint_src_idxs,)
 
                 connection_info.append((f'ode_all.{tgt}', (src_idxs,)))
-                connection_info.append((f'boundary_vals.{tgt}', (endpoint_src_idxs,)))
+                connection_info.append((f'boundary_vals.{tgt}', endpoint_src_idxs))
 
         return connection_info
 
@@ -847,7 +847,7 @@ class RadauNew(TranscriptionBase):
 
     def _get_linkage_source_ode(self, promoted=False):
         """
-        Return the path of the ODE system providing sources for linkage constraints.
+        Returns the path of the ODE system providing sources for linkage constraints.
 
         Nominally this is the _rhs_source but will need to be overridden in transcriptions
         with boundary ODEs or ODEs that are in a promoted path.
