@@ -228,8 +228,8 @@ jobs:
           echo "============================================================="
           echo "Setting environement variable DYMOS_2=1"
           echo "============================================================="
-          export "$DYMOS_2"=1
-          echo "$DYMOS_2=1" >> $"GITHUB_ENV"
+          export DYMOS_2=1
+          echo "DYMOS_2=1" >> "$GITHUB_ENV"
 
       - name: Perform linting with Ruff
         if: ${{ ! matrix.EXCLUDE && matrix.NAME == 'baseline' }}
