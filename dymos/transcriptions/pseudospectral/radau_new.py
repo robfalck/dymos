@@ -292,14 +292,47 @@ class RadauNew(TranscriptionBase):
         """
         Configure the continuity_comp and connect the collocation constraints.
 
-        In RadauNew, this is handled in the RadauIterGroup.configure_io method.
+        In RadauNew, this is handled in the RadauIterGroup.configure_io method for ODE rate sources.
+        Non-ODE rate sources are connected here at the phase level.
 
         Parameters
         ----------
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-        pass
+        # Connect non-ODE rate sources to f_ode inputs in ode_iter_group
+        gd = self.grid_data
+        col_idxs = gd.subset_node_indices['col']
+
+        for name in phase.state_options:
+            rate_source_var = phase.state_options[name]['rate_source']
+            var_type = phase.classify_var(rate_source_var)
+
+            # Skip ODE rate sources (already handled in RadauIterGroup.configure_io)
+            # and skip state rate sources (handled internally by defect comp)
+            if var_type in ('ode', 'state'):
+                continue
+
+            # Connect non-ODE, non-state rate sources at the phase level
+            # Use promoted connection since ode_iter_group promotes all outputs
+            if var_type == 'control':
+                phase.connect(f'control_values:{rate_source_var}',
+                             f'f_ode:{name}',
+                             src_indices=om.slicer[col_idxs, ...])
+            elif var_type == 'control_rate':
+                control_name = rate_source_var[:-5]
+                phase.connect(f'control_rates:{control_name}_rate',
+                             f'f_ode:{name}',
+                             src_indices=om.slicer[col_idxs, ...])
+            elif var_type == 'control_rate2':
+                control_name = rate_source_var[:-6]
+                phase.connect(f'control_rates:{control_name}_rate2',
+                             f'f_ode:{name}',
+                             src_indices=om.slicer[col_idxs, ...])
+            elif var_type == 'parameter':
+                phase.connect(f'parameter_vals:{rate_source_var}',
+                             f'f_ode:{name}',
+                             src_indices=om.slicer[...])
 
     def setup_solvers(self, phase):
         """
