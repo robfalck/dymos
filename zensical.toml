@@ -1,0 +1,162 @@
+[project]
+site_name        = "Dymos"
+site_description = "Open-source optimal control for the OpenMDAO framework"
+site_author      = "The Dymos Development Team"
+site_url         = "https://openmdao.github.io/dymos/"
+docs_dir         = "docs/markdown"
+site_dir         = "site"
+extra_css        = ["_static/myfile.css"]
+extra_javascript = ["https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"]
+
+# ---------------------------------------------------------------------------
+# Repository integration
+# ---------------------------------------------------------------------------
+[project.repo]
+url    = "https://github.com/OpenMDAO/dymos"
+branch = "master"
+
+# ---------------------------------------------------------------------------
+# Theme
+# ---------------------------------------------------------------------------
+[project.theme]
+variant  = "modern"
+language = "en"
+logo     = "dymos_logo.png"
+features = [
+    "navigation.instant",
+    "navigation.instant.progress",
+    "navigation.tabs",
+    "navigation.sections",
+    "navigation.path",
+    "navigation.indexes",
+    "navigation.top",
+    "toc.follow",
+    "search.highlight",
+]
+
+# ---------------------------------------------------------------------------
+# Markdown extensions
+# ---------------------------------------------------------------------------
+[project.markdown_extensions]
+# Core Python-Markdown
+admonition      = {}
+attr_list       = {}
+def_list        = {}
+footnotes       = {}
+md_in_html      = {}
+tables          = {}
+
+[project.markdown_extensions.toc]
+permalink = true
+
+# Syntax highlighting
+[project.markdown_extensions."pymdownx.highlight"]
+anchor_linenums        = true
+line_spans             = "__span"
+pygments_lang_as_class = true
+
+[project.markdown_extensions."pymdownx.inlinehilite"]
+
+[project.markdown_extensions."pymdownx.superfences"]
+
+[project.markdown_extensions."pymdownx.tabbed"]
+alternate_style = true
+
+[project.markdown_extensions."pymdownx.details"]
+
+[project.markdown_extensions."pymdownx.snippets"]
+
+[project.markdown_extensions."pymdownx.smartsymbols"]
+
+# Math — both $...$ (inline) and $$...$$ / \begin{align}...\end{align} (block)
+[project.markdown_extensions."pymdownx.arithmatex"]
+generic_mode = false   # MathJax mode
+
+# ---------------------------------------------------------------------------
+# Navigation  (mirrors docs/dymos_book/_toc.yml)
+# ---------------------------------------------------------------------------
+[project]
+nav = [
+    { "Home"         = "index.md" },
+    { "Installation" = "installation.md" },
+
+    { "Getting Started" = [
+        { "Optimal Control"   = "getting_started/optimal_control.md" },
+        { "Transcriptions"    = "getting_started/transcriptions.md" },
+        { "Defining ODEs"     = "getting_started/defining_odes.md" },
+        { "Collocation"       = "getting_started/collocation.md" },
+        { "Introduction to Dymos" = [
+            { "Initial Value Problems" = "getting_started/intro_to_dymos/intro_ivp.md" },
+            { "Segments and Controls"  = "getting_started/intro_to_dymos/intro_segments.md" },
+        ]},
+    ]},
+
+    { "Examples and Tutorials" = [
+        { "Overview"                         = "examples/examples.md" },
+        { "Brachistochrone"                  = "examples/brachistochrone/brachistochrone.md" },
+        { "Brachistochrone (Upstream States/Duration)" = "examples/brachistochrone/brachistochrone_upstream_init_duration_states.md" },
+        { "Van der Pol Oscillator"           = "examples/vanderpol/vanderpol.md" },
+        { "Balanced Field Length"            = "examples/balanced_field/balanced_field.md" },
+        { "Balanced Field (FuncComp)"        = "examples/balanced_field/balanced_field_funccomp.md" },
+        { "Bryson-Denham Problem"            = "examples/bryson_denham/bryson_denham.md" },
+        { "Commercial Aircraft"              = "examples/commercial_aircraft/commercial_aircraft.md" },
+        { "Double Integrator"                = "examples/double_integrator/double_integrator.md" },
+        { "Hull Problem"                     = "examples/hull/hull_problem.md" },
+        { "Hypersensitive Problem"           = "examples/hypersensitive/hypersensitive.md" },
+        { "Finite Burn Orbit Raise"          = "examples/finite_burn_orbit_raise/finite_burn_orbit_raise.md" },
+        { "Length-Constrained Brachistochrone" = "examples/length_constrained_brachistochrone/length_constrained_brachistochrone.md" },
+        { "Minimum Time-to-Climb"            = "examples/min_time_climb/min_time_climb.md" },
+        { "Mountain Car"                     = "examples/mountain_car/mountain_car.md" },
+        { "Moon Landing"                     = "examples/moon_landing/moon_landing.md" },
+        { "Multi-Phase Cannonball"           = "examples/multi_phase_cannonball/multi_phase_cannonball.md" },
+        { "Multibranch Trajectory"           = "examples/multibranch_trajectory/multibranch_trajectory.md" },
+        { "Racecar"                          = "examples/racecar/racecar.md" },
+        { "Atmospheric Reentry"             = "examples/reentry/reentry.md" },
+        { "SSTO — Earth"                     = "examples/ssto_earth/ssto_earth.md" },
+        { "SSTO — Moon (Linear Tangent)"     = "examples/ssto_moon_linear_tangent/ssto_moon_linear_tangent.md" },
+        { "SSTO — Moon (Polynomial Controls)" = "examples/ssto_moon_polynomial_controls/ssto_moon_polynomial_controls.md" },
+        { "Robertson Problem"                = "examples/robertson_problem/robertson_problem.md" },
+        { "Water Rocket"                     = "examples/water_rocket/water_rocket.md" },
+        { "Cart Pole"                        = "examples/cart_pole/cart_pole.md" },
+        { "Tandem Phases"                    = "examples/brachistochrone/brachistochrone_tandem_phases.md" },
+        { "Implicit Phase Duration"          = "examples/implicit_duration/brachistochrone_implicit_duration.md" },
+    ]},
+
+    { "Feature Reference" = [
+        { "Phases" = [
+            { "Overview"               = "features/phases/phases_list.md" },
+            { "Phase Basics"           = "features/phases/phases.md" },
+            { "Analytic Phases"        = "features/phases/analytic_phases.md" },
+            { "Segments"               = "features/phases/segments.md" },
+            { "Variables"              = "features/phases/variables.md" },
+            { "Constraints"            = "features/phases/constraints.md" },
+            { "Objective"              = "features/phases/objective.md" },
+            { "Timeseries"             = "features/phases/timeseries.md" },
+            { "Calculated Expressions" = "features/phases/calc_expressions.md" },
+        ]},
+        { "Trajectories"        = "features/trajectories/trajectories.md" },
+        { "Exploiting Sparsity" = "features/exploiting_sparsity.md" },
+        { "Plotting"            = "features/plotting.md" },
+    ]},
+
+    { "FAQ" = [
+        { "Overview"                         = "faq/faq.md" },
+        { "Add ODE Output to Timeseries"     = "faq/add_ode_output_to_timeseries.md" },
+        { "Connect Scalar Parameters to ODE" = "faq/connect_scalar_parameters_to_ode.md" },
+        { "Upstream Analysis"                = "faq/upstream_analysis.md" },
+        { "Downstream Analysis"              = "faq/downstream_analysis.md" },
+        { "Tandem Phases"                    = "faq/tandem_phases.md" },
+        { "Use Partial Coloring"             = "faq/use_partial_coloring.md" },
+        { "Debugging"                        = "faq/debugging.md" },
+    ]},
+
+    { "API Reference" = [
+        { "Overview"       = "api/api.md" },
+        { "run_problem"    = "api/run_problem_function.md" },
+        { "Phase"          = "api/phase_api.md" },
+        { "Transcriptions" = "api/transcriptions_api.md" },
+        { "Trajectory"     = "api/trajectory_api.md" },
+    ]},
+
+    { "Contributing" = "contributing/contributing.md" },
+]
