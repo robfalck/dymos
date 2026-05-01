@@ -296,10 +296,10 @@ jobs:
             ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
             cp .coveragerc $HOME
             cd $HOME
-            testflo dymos -n 1 --pre_announce --show_skipped --durations 20 --coverage --coverpkg dymos || HAS_ERRORS=true
+            testflo dymos -n 4 --pre_announce --show_skipped --durations 20 --coverage --coverpkg dymos || HAS_ERRORS=true
           else
             cd $HOME
-            testflo dymos -n 1 --pre_announce --show_skipped --durations 20 || HAS_ERRORS=true
+            testflo dymos -n 4 --pre_announce --show_skipped --durations 20 || HAS_ERRORS=true
           fi
 
           if [ "$HAS_ERRORS" = true ]; then
