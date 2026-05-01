@@ -61,7 +61,8 @@ except ImportError:
 import openmdao.api as om
 import openmdao.utils.units as om_units
 from openmdao.utils.general_utils import env_truthy
-from openmdao.utils.testing_utils import require_pyoptsparse
+from openmdao.utils.testing_utils import require_pyoptsparse, set_env_vars
+set_env_vars(DYMOS_2='1')
 import dymos as dm
 
 
@@ -98,7 +99,8 @@ class TestBallisticSpacecraft(unittest.TestCase):
         txs = {'birkhoff': dm.Birkhoff(num_nodes=20)}
 
         if env_truthy('DYMOS_2'):
-            txs['radau'] = dm.Radau(num_segments=5, order=5)
+            from dymos.transcriptions.pseudospectral.radau_new import RadauNew
+            txs['radau'] = RadauNew(num_segments=5, order=5)
 
         for tx_name, tx in txs.items():
 
