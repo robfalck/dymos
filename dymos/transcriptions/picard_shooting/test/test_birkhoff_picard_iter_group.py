@@ -7,7 +7,7 @@ import openmdao.api as om
 
 import dymos
 from openmdao.utils.assert_utils import assert_check_partials, assert_near_equal
-from openmdao.utils.testing_utils import use_tempdirs
+from openmdao.utils.testing_utils import use_tempdirs, set_env_vars
 
 from dymos.utils.misc import GroupWrapperConfig, om_version
 from dymos.utils.testing_utils import PhaseStub, SimpleODE
@@ -23,13 +23,13 @@ BirkhoffPicardIterGroup = GroupWrapperConfig(BirkhoffPicardIterGroup, [PhaseStub
 @unittest.skipIf(om_version()[0] < (3, 37, 0), 'Requires OpenMDAO version later than 3.37.0')
 class TestBirkhoffPicardIterGroup(unittest.TestCase):
 
+    @set_env_vars(OPENMDAO_CHECK_ALL_PARTIALS='1')
     def test_birkhoff_picard_solve_segments(self):
         for direction in ['forward', 'backward']:
             for grid_type in ['lgl', 'cgl']:
                 for nl_solver in ['newton', 'nlbgs']:
                     for num_segments, nodes_per_seg in [(1, 11)]:
                         with self.subTest(msg=f'{direction=} {grid_type=} {nl_solver=}'):
-                            with dymos.options.temporary(include_check_partials=True):
 
                                 state_options = {'x': StateOptionsDictionary()}
 
@@ -206,7 +206,6 @@ class TestBirkhoffPicardIterGroup(unittest.TestCase):
         for direction in ['forward']:
             for grid_type in ['lgl']:
                 with self.subTest(msg=grid_type):
-                    with dymos.options.temporary(include_check_partials=True):
 
                         state_options = {'x': StateOptionsDictionary(),
                                          'y': StateOptionsDictionary(),
