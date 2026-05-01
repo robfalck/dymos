@@ -278,6 +278,7 @@ jobs:
         if: ${{ ! matrix.EXCLUDE }}
         env:
           DYMOS_CHECK_PARTIALS: True
+          DYMOS_2: ${{ matrix.DYMOS_2 }}
         continue-on-error: true
         run: |
           eval "$(pixi shell-hook -e ${{ matrix.OPENMDAO_PIXI_ENVIRONMENT }} --manifest-path=${{ env.PIXI_MANIFEST }})"
@@ -285,6 +286,7 @@ jobs:
           echo "Run Tests"
           echo "Environment:"
           echo "   DYMOS_CHECK_PARTIALS: $DYMOS_CHECK_PARTIALS"
+          echo "   DYMOS_2: $DYMOS_2"
           echo "============================================================="
           testflo -n 1 docs/dymos_book/test --pre_announce || HAS_ERRORS=true
           testflo -n 1 joss/test --pre_announce || HAS_ERRORS=true

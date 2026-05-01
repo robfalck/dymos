@@ -99,8 +99,7 @@ class TestBallisticSpacecraft(unittest.TestCase):
         txs = {'birkhoff': dm.Birkhoff(num_nodes=20)}
 
         if env_truthy('DYMOS_2'):
-            from dymos.transcriptions.pseudospectral.radau_new import RadauNew
-            txs['radau'] = RadauNew(num_segments=5, order=5)
+            txs['radau'] = dm.Radau(num_segments=5, order=5)
 
         for tx_name, tx in txs.items():
 
