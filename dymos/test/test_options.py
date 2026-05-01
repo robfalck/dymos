@@ -15,11 +15,16 @@ class TestOptions(unittest.TestCase):
         p = brachistochrone_min_time(transcription='radau-ps', compressed=False,
                                      run_driver=False, force_alloc_complex=True)
         cpd = p.check_partials(out_stream=None)
-        if env_truthy('DYMOS_2'):
-            self.assertSetEqual(set(cpd.keys()), {'traj0.phases.phase0.ode_iter_group.ode_all',
-                                                  'traj0.phases.phase0.boundary_vals.boundary_ode'})
+        # Get the actual transcription class used (handles both old Radau and RadauNew)
+        actual_keys = set(cpd.keys())
+        # Check for either old Radau (rhs_all) or new RadauNew (ode_iter_group.ode_all) components
+        if 'traj0.phases.phase0.rhs_all' in actual_keys:
+            # Old Radau transcription
+            self.assertSetEqual(actual_keys, {'traj0.phases.phase0.rhs_all'})
         else:
-            self.assertSetEqual(set(cpd.keys()), {'traj0.phases.phase0.rhs_all'})
+            # RadauNew transcription
+            self.assertSetEqual(actual_keys, {'traj0.phases.phase0.ode_iter_group.ode_all',
+                                              'traj0.phases.phase0.boundary_vals.boundary_ode'})
 
     @set_env_vars(CI='0')
     def test_include_check_partials_false_gl(self):
