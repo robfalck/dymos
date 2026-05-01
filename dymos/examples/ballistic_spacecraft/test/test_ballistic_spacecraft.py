@@ -88,6 +88,7 @@ class TestBallisticSpacecraft(unittest.TestCase):
     @unittest.skipIf(jax is None, 'requires jax and jaxlib')
     @require_pyoptsparse('IPOPT')
     def test_ballistic_spacecraft(self):
+        from dymos.transcriptions.pseudospectral.radau_new import RadauNew
         from dymos.examples.ballistic_spacecraft.ephem_comp import EphemerisComp, KMPAU, MU_SUN
         from dymos.examples.ballistic_spacecraft.ballistic_ode_comp import BallisticODEComp
 
@@ -96,10 +97,8 @@ class TestBallisticSpacecraft(unittest.TestCase):
         period = 2 * np.pi * np.sqrt(KMPAU ** 3 / MU_SUN)
         om_units.add_unit('TU_sun', f'{period}*s')
 
-        txs = {'birkhoff': dm.Birkhoff(num_nodes=20)}
-
-        if env_truthy('DYMOS_2'):
-            txs['radau'] = dm.Radau(num_segments=5, order=5)
+        txs = {'birkhoff': dm.Birkhoff(num_nodes=20),
+               'radau_new': RadauNew(num_segments=5, order=5)}
 
         for tx_name, tx in txs.items():
 
