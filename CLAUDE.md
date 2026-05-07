@@ -1,6 +1,6 @@
 # Project
 
-dymos is a pytho package for trajectory optimization within OpenMDAO.
+dymos is a python package for trajectory optimization within OpenMDAO.
 
 # Development Guidelines
 
@@ -28,9 +28,6 @@ Internal implementation knowledge is stored in `.claude/dev-docs/`. Consult thes
 before modifying transcription, ODE connection, or grid-data code, and update them
 when making non-obvious discoveries.
 
-- `.claude/dev-docs/transcriptions.md` — phase subsystem hierarchy, setup/configure
-  call sequence, key connections and promotions for GaussLobattoNew and RadauNew.
-  Also covers constraint/response path logic and known pitfalls.
 - `.claude/dev-docs/grid-data.md` — node subset names, index maps, node layout
   by transcription type, and common usage patterns.
 - `.claude/dev-docs/openmdao-patterns.md` — promoted paths, `connect` vs `promotes`,
