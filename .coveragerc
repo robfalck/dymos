@@ -4,3 +4,8 @@
 disable_warnings = module-not-measured
 relative_files = True
 source = dymos
+
+[paths]
+source =
+    dymos/
+    */site-packages/dymos/

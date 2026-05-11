@@ -223,14 +223,9 @@ jobs:
           testflo -b benchmark --pre_announce || HAS_ERRORS=true
           # Run the readme test from the checked out directory.
           testflo -n 1 ./dymos/test/test_readme.py --pre_announce || HAS_ERRORS=true
-          if [[ "${{ matrix.NAME }}" != "latest" && "${{ matrix.SKIP_COVERAGE }}" != "true" ]]; then
-            echo "Coverage files before moving to HOME:"
-            ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
-            cp .coveragerc $HOME
-            cd $HOME
+          if [[ "${{ matrix.SKIP_COVERAGE }}" != "true" ]]; then
             testflo dymos -n 4 --pre_announce --show_skipped --durations 20 --coverage --coverpkg dymos || HAS_ERRORS=true
           else
-            cd $HOME
             testflo dymos -n 4 --pre_announce --show_skipped --durations 20 || HAS_ERRORS=true
           fi
 
@@ -254,12 +249,10 @@ jobs:
           echo "============================================================="
           echo "Submit coverage"
           echo "============================================================="
-          cd $HOME
+          cd $GITHUB_WORKSPACE
           coverage report -m
           pip install coveralls
-          coveralls --basedir $GITHUB_WORKSPACE/dymos
-          # Copy coverage file back to repo for artifact upload
-          cp $HOME/.coverage .
+          coveralls
 
       # Uncomment for debug if coverage isn't working as expected.
       # - name: Upload coverage artifacts
