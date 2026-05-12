@@ -35,7 +35,7 @@ if missing_packages:
 # Supersonic Interceptor Minimum Time Climb
 
 This example is based on the _A/C Min Time to Climb_ example given in
-chapter 4 of Bryson {cite}`bryson1999dynamic`. It finds the
+chapter 4 of [Bryson (1999)](../../../bibliography.md#bryson-1999). It finds the
 angle-of-attack history required to accelerate a supersonic interceptor
 from near ground level, Mach 0.4 to an altitude of 20 km and Mach 1.0.
 
@@ -43,6 +43,7 @@ from near ground level, Mach 0.4 to an altitude of 20 km and Mach 1.0.
 
 The vehicle dynamics are given by
 
+$$
 \begin{align}
   \frac{dv}{dt} &= \frac{T}{m} \cos \alpha - \frac{D}{m} - g \sin \gamma \\
   \frac{d\gamma}{dt} &= \frac{T}{m v} \sin \alpha + \frac{L}{m v} - \frac{g \cos \gamma}{v} \\
@@ -50,9 +51,11 @@ The vehicle dynamics are given by
   \frac{dr}{dt} &= v \cos \gamma \\
   \frac{dm}{dt} &= - \frac{T}{g I_{sp}}
 \end{align}
+$$
 
 The initial conditions are
 
+$$
 \begin{align}
   r_0 &= 0 \rm{\,m} \\
   h_0 &= 100 \rm{\,m} \\
@@ -60,14 +63,17 @@ The initial conditions are
   \gamma_0 &= 0 \rm{\,deg} \\
   m_0 &= 19030.468 \rm{\,kg}
 \end{align}
+$$
 
 and the final conditions are
 
+$$
 \begin{align}
   h_f &= 20000 \rm{\,m} \\
   M_f &= 1.0 \\
   \gamma_0 &= 0 \rm{\,deg}
 \end{align}
+$$
 
 ## The ODE System: min_time_climb_ode.py
 

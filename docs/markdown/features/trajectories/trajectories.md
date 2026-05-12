@@ -71,9 +71,11 @@ There are two methods in dymos which provide this functionality.
 The `add_linkage_constraint` method provides a very general way of coupling two phases together.
 It does so by generating a constraint of the following form:
 
+$$
 \begin{align}
     c = \mathrm{sign}_a \mathrm{var}_a + \mathrm{sign}_b \mathrm{var}_b
 \end{align}
+$$
 
 Method `add_linkage_constraint` lets the user specify the variables and phases to be compared for this constraint, as well as the location of the variable in each phase (either 'initial' or 'final')
 By default this method is setup to provide continuity in a variable between two phases:

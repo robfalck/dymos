@@ -41,7 +41,7 @@ the optimization.
 Instead of optimizing the thrust angle at any point in time as a dynamic
 control, we use our knowledge that the form of the solution is a
 _linear tangent_.
-See section 4.6 of Longuski, Guzmán, and Prussing {cite}`a-longuski2014optimal` for more explanation.
+See section 4.6 of [Longuski, Guzmán, and Prussing (2014)](../../../bibliography.md#longuski-2014) for more explanation.
 In short, we've simplified the problem by finding the optimal value of $\theta$ at many points into optimizing the value of just two scalar parameters, $a$ and $b$.
 
 $$\theta = \arctan{\left(a * t + b\right)}$$

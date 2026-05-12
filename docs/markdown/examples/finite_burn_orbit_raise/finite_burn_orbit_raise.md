@@ -36,10 +36,11 @@ if missing_packages:
 This example demonstrates the use of a Trajectory to encapsulate a
 three-phase orbit raising maneuver with a burn-coast-burn phase
 sequence. This example is based on the problem provided in
-Enright {cite}`enright1991optimal`.
+[Enright & Conway (1991)](../../../bibliography.md#enright-1991).
 
 The dynamics are given by
 
+$$
 \begin{align}
   \frac{dr}{dt} &= v_r \\
   \frac{d\theta}{dt} &= \frac{v_\theta}{r} \\
@@ -48,9 +49,11 @@ The dynamics are given by
   \frac{da_{thrust}}{dt} &= \frac{a^2_{thrust}}{c} \\
   \frac{d \Delta v}{dt} &= a_{thrust}
 \end{align}
+$$
 
 The initial conditions are
 
+$$
 \begin{align}
   r &= 1 \rm{\,DU} \\
   \theta &= 0 \rm{\,rad} \\
@@ -59,9 +62,11 @@ The initial conditions are
   a_{thrust} &= 0.1 \rm{\,DU/TU^2}\\
   \Delta v &= 0 \rm{\,DU/TU}
 \end{align}
+$$
 
 and the final conditions are
 
+$$
 \begin{align}
   r &= 3 \rm{\,DU} \\
   \theta &= \rm{free} \\
@@ -70,6 +75,7 @@ and the final conditions are
   a_{thrust} &= \rm{free}\\
   \Delta v &= \rm{free}
 \end{align}
+$$
 
 ## Building and running the problem
 

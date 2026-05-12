@@ -33,7 +33,7 @@ if missing_packages:
 
 # Moon Landing Problem
 
-The Moon landing problem is a version of the soft landing problem presented in {cite}`Meditch1964`. The problem is simplified to have one degree-of-freedom and normalized such that the Moon's gravity is unity. The goal is to minimize the amount of fuel consumed or, stated differently, maximize the final mass, while bringing the lander down to the surface for a soft landing.
+The Moon landing problem is a version of the soft landing problem presented in [Meditch (1964)](../../../bibliography.md#meditch-1964). The problem is simplified to have one degree-of-freedom and normalized such that the Moon's gravity is unity. The goal is to minimize the amount of fuel consumed or, stated differently, maximize the final mass, while bringing the lander down to the surface for a soft landing.
 
 ## State and control variables
 
@@ -43,37 +43,47 @@ This system has one control variable, ($T$), the thrust applied to the vehicle.
 
 The dynamics of the system are given by
 
+$$
 \begin{align}
   \dot{h} &= v \\
   \dot{v} &= -1 + \frac{T}{m} \\
   \dot{m} &= -\frac{T}{2.349}
 \end{align}
+$$
 
 ## Problem Definition
 
 We seek to maximize the final mass of the vehicle while bringing it to a soft landing.
 
+$$
 \begin{align}
   \mathrm{Minimize} \, J &= m_f
 \end{align}
+$$
 
 The initial conditions are
+$$
 \begin{align}
   h_0 &= 1 \\
   v_0 &= -0.783 \\
   m_0 &= 1
 \end{align}
+$$
 and the terminal constraints are
+$$
 \begin{align}
   h_f &= 0 \\
   v_f &= 0
 \end{align}
+$$
 
 Additionally, the thrust is constrained to be positive but remain under 1.227.
 
+$$
 \begin{align}
   0 \le T \le 1.227 
 \end{align}
+$$
 
 ## Defining the ODE
 

@@ -183,9 +183,11 @@ In our case, we set `phase.add_boundary_balance(param='t_duration', name='x', tg
 
 This specifies that we want `t_duration` to be associated with the following residual:
 
+$$
 \begin{align}
   \mathcal{R}(t_d) = x - 10 = 0
 \end{align}
+$$
 
 Note that we limit the angle $\theta$ to be between 0 and 180, the bead must move to the right and we can just terminate the propagation when x=10.
 
@@ -279,9 +281,11 @@ That means that `theta_rate` is a parameter as far as dymos is concerned.
 We then make `theta` a state variable whose rate is provided by the `theta_rate` parameter.
 We'll set the initial value of `theta` to zero degrees, since we know that is approximately correct for this problem.
 
+$$
 \begin{align}
   \mathcal{R}(\dot{\theta}) &= y_f - 5
 \end{align}
+$$
 
 Dymos currently doesn't support making parameters implicit outputs, so we're going to do this the manual OpenMDAO way.
 

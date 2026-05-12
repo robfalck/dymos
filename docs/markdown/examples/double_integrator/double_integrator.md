@@ -40,24 +40,30 @@ friction along a horizontal surface, with acceleration as the control.
 We minimize the final time, $t_f$, by varying the dynamic control,
 $u$, subject to the dynamics:
 
+$$
 \begin{align}
   \frac{dx}{dt} &= v \\
   \frac{dv}{dt} &= u
 \end{align}
+$$
 
 The initial conditions are
 
+$$
 \begin{align}
   x_0 &= 0 \\
   v_0 &= 0
 \end{align}
+$$
 
 and the final conditions are
 
+$$
 \begin{align}
   x_f &= \rm{free} \\
   v_f &= 0
 \end{align}
+$$
 
 The control $u$ is constrained to fall between -1 and 1. Due to the fact
 that the control appears linearly in the equations of motion, we should

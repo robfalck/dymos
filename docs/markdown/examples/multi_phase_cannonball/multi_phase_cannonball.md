@@ -62,27 +62,33 @@ descent phase follows until the cannonball impacts the ground.
 
 The dynamics are given by
 
+$$
 \begin{align}
   \frac{dv}{dt} &= \frac{D}{m} - g \sin \gamma \\
   \frac{d\gamma}{dt} &= - \frac{g \cos \gamma}{v} \\
   \frac{dh}{dt} &= v \sin \gamma \\
   \frac{dr}{dt} &= v \cos \gamma \\
 \end{align}
+$$
 
 The initial conditions are
 
+$$
 \begin{align}
   r_0 &= 0 \rm{\,m} \\
   h_0 &= 100 \rm{\,m} \\
   v_0 &= \rm{free} \\
   \gamma_0 &= \rm{free}
 \end{align}
+$$
 
 and the final conditions are
 
+$$
 \begin{align}
   h_f &= 0 \rm{\,m}
 \end{align}
+$$
 
 ## Designing a cannonball for maximum range
 
@@ -95,9 +101,11 @@ mass) of the cannonball is proportional to its radius cubed, while the
 cross-sectional area is proportional to its radius squared. If we
 increase the size of the cannonball, the ballistic coefficient
 
+$$
 \begin{align}
   BC &= \frac{m}{C_D A}
 \end{align}
+$$
 
 will increase, meaning the cannonball overcome air resistance more
 easily and thus carry more distance.

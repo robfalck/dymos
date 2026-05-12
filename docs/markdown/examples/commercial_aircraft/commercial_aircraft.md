@@ -44,7 +44,7 @@ This example is simplified in several ways. The Mach number is fixed at
 slower to conserve fuel, ignoring the running costs of being airborne.
 
 For a more detailed optimization of commercial aircraft performance, see
-Betts {cite}`ex_commercial_aircraft-betts1995application`.
+[Betts (1995)](../../../bibliography.md#betts-1995).
 
 ## Differential Inclusion
 
@@ -60,12 +60,12 @@ flight path angle and true airspeed, we use a nonlinear solver to
 determine the alpha and thrust time-history which is needed to make the
 given altitude and airspeed time-history possible.
 This technique is known as differential inclusion.
-It was demonstrated by Seywald {cite}`ex_commercial_aircraft-Seywald1994`.
+It was demonstrated by [Seywald (1994)](../../../bibliography.md#seywald-1994).
 Since the collocation techniques in Dymos are based on polynomial approximations, rates of the control variables  can be easily calculated, which can then be applied to the reordered dynamics equations to solve for angle of attack and thrust.
 
 The use of collocation/psuedospectral techniques in solving problems via
-differential inclusion has been examined by Fahroo and Ross {cite}`ex_commercial_aircraft-fahroo2001second`
-and Kumar and Seywald {cite}`ex_commercial_aircraft-Kumar1996`. Since the differential inclusion
+differential inclusion has been examined by [Fahroo and Ross (2001)](../../../bibliography.md#fahroo-2001)
+and [Kumar and Seywald (1996)](../../../bibliography.md#kumar-1996). Since the differential inclusion
 approach demonstrated here relies on nonlinear solvers running within
 the ODE model, obtaining accurate derivatives is paramount. Computing
 derivatives with finite differences in the presence of nonlinear solvers
@@ -208,9 +208,11 @@ _TrueAirspeedComp_ uses the Mach number, provided as a
 control, and the speed of sound from the atmosphere model to compute the
 true airspeed of the aircraft.
 
+$$
 \begin{align}
   TAS &= mach \cdot sos
 \end{align}
+$$
 
 |Name  |Description           |Input or Output|
 |------|----------------------|---------------|
@@ -224,9 +226,11 @@ _SteadyFlightPathAngleComp_ uses the true airspeed and the
 climb rate, obtained by differentiating the altitude time history at the
 nodes, to compute the flight path angle.
 
+$$
 \begin{align}
   \gamma &= \arcsin \frac{\dot h}{TAS}
 \end{align}
+$$
 
 |Name       |Description              |Input or Output|
 |-----------|-------------------------|---------------|
@@ -240,9 +244,11 @@ _RangeRateComp_ uses the true airspeed and the flight path
 angle to determine the velocity projected along the ground. This is the
 derivative of the state variable _range_.
 
+$$
 \begin{align}
   \dot{range} &= TAS \cos \gamma
 \end{align}
+$$
 
 |Name        |Description              |Input or Output|
 |------------|-------------------------|---------------|
@@ -257,10 +263,12 @@ The component _MassComp_ defined in
 its empty mass, payload mass, and current fuel mass. It also computes
 total weight which simplifies some equations later on.
 
+$$
 \begin{align}
   mass_{total} &= mass_{empty} + mass_{payload} + mass_{fuel} \\
   W_{total} &= 9.80665 \, mass_{total}
 \end{align}
+$$
 
 |Name           |Description                |Input or Output|
 |---------------|---------------------------|---------------|
@@ -275,9 +283,11 @@ total weight which simplifies some equations later on.
 The _DynamicPressureComp_ computes the dynamic pressure from
 true airspeed and atmospheric density.
 
+$$
 \begin{align}
   q &= \frac{1}{2} \rho TAS^2
 \end{align}
+$$
 
 |Name  |Description                      |Input or Output|
 |------|---------------------------------|---------------|
@@ -338,16 +348,20 @@ discrete points (nodes) in the trajectory is not terribly inaccurate.
 The thrust necessary for steady flight is computed by balancing the drag
 equation
 
+$$
 \begin{align}
   C_T &= W_{total} \frac{sin \gamma}{q \cdot S \cdot \cos \alpha} + \frac{C_D}{\cos \alpha}
 \end{align}
+$$
 
 The lift coefficient required for steady flight is found by balancing
 lift and weight:
 
+$$
 \begin{align}
   \tilde{C_L} &= W_{total} \frac{cos \gamma}{q \cdot S} - C_T \sin \alpha
 \end{align}
+$$
 
 Using coefficients in the balance equations is better scaled from a numerical standpoint.
 
@@ -359,35 +373,45 @@ the maximum possible thrust, we obtain the throttle parameter $\tau$.
 The propulsion group uses a number of components to perform these
 calculations.
 
+$$
 \begin{align}
   T &= C_T \cdot q \cdot S
 \end{align}
+$$
 
 Maximum thrust is computed by multiplying sea-level thrust by the ratio
 of pressure to sea-level atmospheric pressure.
 
+$$
 \begin{align}
   T_{max} &= T_{max,sl} \frac{P}{P_{sl}}
 \end{align}
+$$
 
 The throttle parameter is then the ratio current thrust to maximum
 possible thrust.
 
+$$
 \begin{align}
   \tau &= \frac{T}{T_{max}}
 \end{align}
+$$
 
 The thrust specific fuel consumption is computed as follows:
 
+$$
 \begin{align}
   TSFC &= TSFC_{sl} - 1.5 E - 10 \cdot 9.80665 \cdot alt
 \end{align}
+$$
 
 Finally, fuel burn rate is:
 
+$$
 \begin{align}
   \dot{mass_{fuel}} &= -TSFC \frac{T}{9.80665}
 \end{align}
+$$
 
 ## The ODE System: aircraft_ode.py
 

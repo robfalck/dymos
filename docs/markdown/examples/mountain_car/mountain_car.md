@@ -37,8 +37,8 @@ if missing_packages:
 The mountain car problem proposes a vehicle stuck in a "well."  It lacks the power to directly climb out of the well, but instead must accelerate repeatedly forwards and backwards until it has achieved the energy necessary to exit the well.
 
 The problem is a popular machine learning test case, though the methods in Dymos are capable of solving it.
-It first appeared in the PhD thesis of Andrew Moore in 1990. {cite}`moore1990efficient`.
-The implementation here is based on that given by Melnikov, Makmal, and Briegel {cite}`melnikov2014projective`.
+It first appeared in the PhD thesis of Andrew [Moore (1990)](../../../bibliography.md#moore-1990).
+The implementation here is based on that given by [Melnikov, Makmal, and Briegel (2014)](../../../bibliography.md#melnikov-2014).
 
 ## State and control variables
 
@@ -48,10 +48,12 @@ This system has a single control variable ($u$), the effort put into moving.  Th
 
 The dynamics of the system are governed by
 
+$$
 \begin{align}
   \dot{x} &= v \\
   \dot{v} &= 0.001 * u - 0.0025 * \cos(3 x)
 \end{align}
+$$
 
 
 
@@ -59,29 +61,37 @@ The dynamics of the system are governed by
 
 We seek to minimize the time required to exit the well in the positive direction.
 
+$$
 \begin{align}
     \mathrm{Minimize} \, J &= t_f
 \end{align}
+$$
 
 Subject to the initial conditions
 
+$$
 \begin{align}
     x_0 &= -0.5 \\
     v_0 &= 0.0
 \end{align}
+$$
 
 the control constraints
 
+$$
 \begin{align}
     |u| \le 1
 \end{align}
+$$
 
 and the terminal constraints
 
+$$
 \begin{align}
     x_f &= 0.5 \\
     v_f &\ge 0.0
 \end{align}
+$$
 
 ## Defining the ODE
 

@@ -34,26 +34,32 @@ if missing_packages:
 # Hyper-Sensitive Problem
 
 This example is based on the Hyper-Sensitive problem given in
-Patterson {cite}`patterson2015ph`. In this problem we seek to minimize both
+[Patterson (2015)](../../../bibliography.md#patterson-2015). In this problem we seek to minimize both
 the distance traveled when moving between fixed boundary conditions and
 also to minimize the control $u$ used. The cost function to be minimized is:
 
+$$
 \begin{align}
     J &= \frac{1}{2} \int_{0}^{t_f} (x^2 + u^2) dt
 \end{align}
+$$
 
 The system is subject to the dynamic constraints:
 
+$$
 \begin{align}
     \frac{dx}{dt} &= -x + u
 \end{align}
+$$
 
 The boundary conditions are:
 
+$$
 \begin{align}
     x(t_0) &= 1.5 \\
     x(t_f) &= 1
 \end{align}
+$$
 
 The control $u$ is unconstrained while the final time $t_f$ is fixed.
 
@@ -64,17 +70,21 @@ end while remaining relatively constant in the middle.
 
 This problem has a known analytic optimal solution:
 
+$$
 \begin{align}
     x^*(t) &= c_1 e^{\sqrt{2} t} + c_2 e^{-\sqrt{2} t} \\
       u^*(t) &= \dot{x}^*(t) + x^*(t)
 \end{align}
+$$
 
 where:
 
+$$
 \begin{align}
     c_1 &= \frac{1.5 e^{-\sqrt{2} t_f} - 1}{e^{-\sqrt{2} t_f} - e^{\sqrt{2} t_f}} \\
     c_2 &= \frac{1 - 1.5 e^{\sqrt{2} t_f}}{e^{-\sqrt{2} t_f} - e^{\sqrt{2} t_f}}
 \end{align}
+$$
 
 ## The ODE System: hyper\_sensitive\_ode.py
 

@@ -68,7 +68,7 @@ state of charge.
 
 ## Battery and Motor models
 
-The models are loosely based on the work done in Chin {cite}`chin2019battery`.
+The models are loosely based on the work done in [Chin et al. (2019)](../../../bibliography.md#chin-2019).
 
 ```python
 """

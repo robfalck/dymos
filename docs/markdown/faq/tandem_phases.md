@@ -53,9 +53,11 @@ This is a trivial solution which should find a straight line from the starting p
 There are two phases involved, the first utilizes the standard ODE for the brachistochrone problem.
 The second integrates the arclength (𝑆) of the wire using the equation:
 
+$$
 \begin{align}
     S = \int v \sin \theta  \sqrt{1 + \frac{1}{\tan^2 \theta}} dt
 \end{align}
+$$
 
 ## The ODE for the wire arclength
 

@@ -158,11 +158,13 @@ In this implementation, three _state_ variables are used to define the configura
 
 From the free-body diagram above, the evolution of the state variables is given by the following ordinary differential equations (ODE).
 
+$$
 \begin{align}
     \frac{d x}{d t} &= v \sin(\theta) \\
     \frac{d y}{d t} &= -v \cos(\theta) \\
     \frac{d v}{d t} &= g \cos(\theta)
 \end{align}
+$$
 
 ## Control variables
 
@@ -177,22 +179,26 @@ The point moving along the curve will begin there with zero initial velocity.
 
 The initial conditions are:
 
+$$
 \begin{align}
     x_0 &= 0 \\
     y_0 &= 10 \\
     v_0 &= 0
 \end{align}
+$$
 
 The end point **B** is given as _(10, 5)_.
 The point will end there, but the velocity at that point is not constrained.
 
 The final conditions are:
 
+$$
 \begin{align}
     x_f &= 10 \\
     y_f &= 5 \\
     v_f &= \mathrm{free}
 \end{align}
+$$
 
 ## Defining the ODE as an OpenMDAO System
 

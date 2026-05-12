@@ -34,7 +34,7 @@ if missing_packages:
 # SSTO Earth Launch
 
 This example is based on the _Time-Optimal Launch of a Titan II_
-example given in Appendix B of Longuski {cite}`longuski2014optimal`.
+example given in Appendix B of [Longuski et al. (2014)](../../../bibliography.md#longuski-2014).
 It finds the pitch profile for a single-stage-to-orbit launch vehicle that minimizes the time
 required to reach orbit insertion under constant thrust.
 
@@ -42,6 +42,7 @@ required to reach orbit insertion under constant thrust.
 
 The vehicle dynamics are given by
 
+$$
 \begin{align}
   \frac{dx}{dt} &= v_x \\
   \frac{dy}{dt} &= v_y \\
@@ -49,9 +50,11 @@ The vehicle dynamics are given by
   \frac{dv_y}{dt} &= \frac{1}{m} (T \sin \theta - D \sin \gamma) - g \\
   \frac{dm}{dt} &= \frac{T}{g I_{sp}}
 \end{align}
+$$
 
 The initial conditions are
 
+$$
 \begin{align}
   x_0 &= 0 \\
   y_0 &= 0 \\
@@ -59,9 +62,11 @@ The initial conditions are
   v_{y0} &= 0 \\
   m_0 &= 117000 \rm{\,kg}
 \end{align}
+$$
 
 and the final conditions are
 
+$$
 \begin{align}
   x_f &= \rm{free} \\
   y_f &= 185 \rm{\,km} \\
@@ -69,6 +74,7 @@ and the final conditions are
   v_{yf} &= 0 \\
   m_f &= \rm{free}
 \end{align}
+$$
 
 ## Defining the ODE
 

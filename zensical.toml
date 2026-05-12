@@ -9,73 +9,8 @@ extra_css        = ["_static/myfile.css"]
 extra_javascript = ["https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"]
 
 # ---------------------------------------------------------------------------
-# Repository integration
-# ---------------------------------------------------------------------------
-[project.repo]
-url    = "https://github.com/OpenMDAO/dymos"
-branch = "master"
-
-# ---------------------------------------------------------------------------
-# Theme
-# ---------------------------------------------------------------------------
-[project.theme]
-variant  = "modern"
-language = "en"
-logo     = "dymos_logo.png"
-features = [
-    "navigation.instant",
-    "navigation.instant.progress",
-    "navigation.tabs",
-    "navigation.sections",
-    "navigation.path",
-    "navigation.indexes",
-    "navigation.top",
-    "toc.follow",
-    "search.highlight",
-]
-
-# ---------------------------------------------------------------------------
-# Markdown extensions
-# ---------------------------------------------------------------------------
-[project.markdown_extensions]
-# Core Python-Markdown
-admonition      = {}
-attr_list       = {}
-def_list        = {}
-footnotes       = {}
-md_in_html      = {}
-tables          = {}
-
-[project.markdown_extensions.toc]
-permalink = true
-
-# Syntax highlighting
-[project.markdown_extensions."pymdownx.highlight"]
-anchor_linenums        = true
-line_spans             = "__span"
-pygments_lang_as_class = true
-
-[project.markdown_extensions."pymdownx.inlinehilite"]
-
-[project.markdown_extensions."pymdownx.superfences"]
-
-[project.markdown_extensions."pymdownx.tabbed"]
-alternate_style = true
-
-[project.markdown_extensions."pymdownx.details"]
-
-[project.markdown_extensions."pymdownx.snippets"]
-
-[project.markdown_extensions."pymdownx.smartsymbols"]
-
-# Math — both $...$ (inline) and $$...$$ / \begin{align}...\end{align} (block)
-[project.markdown_extensions."pymdownx.arithmatex"]
-generic_mode = false   # MathJax mode
-
-# ---------------------------------------------------------------------------
 # Navigation  (mirrors docs/dymos_book/_toc.yml)
 # ---------------------------------------------------------------------------
-[project]
 nav = [
     { "Home"         = "index.md" },
     { "Installation" = "installation.md" },
@@ -159,4 +94,67 @@ nav = [
     ]},
 
     { "Contributing" = "contributing/contributing.md" },
+    { "Bibliography" = "bibliography.md" },
 ]
+
+# ---------------------------------------------------------------------------
+# Repository integration
+# ---------------------------------------------------------------------------
+[project.repo]
+url    = "https://github.com/OpenMDAO/dymos"
+branch = "master"
+
+# ---------------------------------------------------------------------------
+# Theme
+# ---------------------------------------------------------------------------
+[project.theme]
+variant  = "modern"
+language = "en"
+logo     = "dymos_logo.png"
+features = [
+    "navigation.instant",
+    "navigation.instant.progress",
+    "navigation.tabs",
+    "navigation.sections",
+    "navigation.path",
+    "navigation.indexes",
+    "navigation.top",
+    "toc.follow",
+    "search.highlight",
+]
+
+# ---------------------------------------------------------------------------
+# Markdown extensions
+# ---------------------------------------------------------------------------
+[project.markdown_extensions]
+# Core Python-Markdown
+admonition      = {}
+attr_list       = {}
+def_list        = {}
+footnotes       = {}
+md_in_html      = {}
+tables          = {}
+
+[project.markdown_extensions.toc]
+permalink = true
+
+# Syntax highlighting
+[project.markdown_extensions."pymdownx.highlight"]
+anchor_linenums = true
+line_spans      = "__span"
+
+[project.markdown_extensions."pymdownx.inlinehilite"]
+
+[project.markdown_extensions."pymdownx.superfences"]
+
+[project.markdown_extensions."pymdownx.tabbed"]
+alternate_style = true
+
+[project.markdown_extensions."pymdownx.details"]
+
+[project.markdown_extensions."pymdownx.snippets"]
+
+[project.markdown_extensions."pymdownx.smartsymbols"]
+
+# Math — both $...$ (inline) and $$...$$ / \begin{align}...\end{align} (block)
+[project.markdown_extensions."pymdownx.arithmatex"]

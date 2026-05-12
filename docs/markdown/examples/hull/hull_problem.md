@@ -34,7 +34,7 @@ if missing_packages:
 (examples:hull)=
 # The Hull Problem
 
-The Hull problem is a 1-DOF optimal control problem {cite}`hull2003oct`. It can be stated as:
+The Hull problem is a 1-DOF optimal control problem [Hull (2003)](../../../bibliography.md#hull-2003). It can be stated as:
 
 Minimize the control effort required to move a frictionless sliding block from some initial position such that the final displacement from a pre-specified point is minimized.
 
@@ -46,9 +46,11 @@ This system has a single control variable ($u$), the velocity of the block.
 
 The dynamics of the system are governed by
 
+$$
 \begin{align}
   \dot{x} &= u
 \end{align}
+$$
 
 
 
@@ -56,22 +58,28 @@ The dynamics of the system are governed by
 
 We seek to minimize the control effort required and minimize the displacement from the origin.
 
+$$
 \begin{align}
     \mathrm{Minimize} \, J &= 2.5x_f^2 \, + \, 0.5 \int_0^1 u^2 dt
 \end{align}
+$$
 
 Subject to the initial conditions
 
+$$
 \begin{align}
     t_0 &= 0.0 \\
     x_0 &= 1.5
 \end{align}
+$$
 
 and the terminal constraints
 
+$$
 \begin{align}
     t_f &= 10.0
 \end{align}
+$$
 
 
 
@@ -82,10 +90,12 @@ Dymos does not distinguish between the two.
 In this case, since the objective $J$ consists of both a terminal cost and an integrated cost (Bolza form), we add a term to the ODE to account for the integrated quantity
 
 
+$$
 \begin{align}
   \dot{x_L} &= L \\
   L &= 0.5 u^2
 \end{align}
+$$
 
 where $x_L$ is a state added to account for the Lagrange term.
 

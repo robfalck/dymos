@@ -99,7 +99,7 @@ at the end of the RTO phase is equal to `range` at the end of the climb phase.
 
 More information on calculating the balanced field length is available
 in section 17.8 of _Aircraft Design: A Conceptual Approach_ by
-Daniel Raymer {cite}`raymer2012aircraft`.
+Daniel [Raymer (2012)](../../../bibliography.md#raymer-2012).
 
 ## The ODE System
 
@@ -115,17 +115,21 @@ Both sets of equations of motion have common aerodynamic models.
 
 First, the lift coefficient is computed using a model which assumes linearity in lift wrt the angle of attack.
 
+$$
 \begin{align}
     C_L &= C_{L0} + \frac{\alpha}{\alpha_{max}} \left(C_{L-max} - C_{L0}\right)
 \end{align}
+$$
 
-Next, the drag-due-to-lift factor is computed (Equations 12.48 and 12.61 in Raymer[@raymer2012aircraft]).
+Next, the drag-due-to-lift factor is computed (Equations 12.48 and 12.61 in [Raymer 2012](../../../bibliography.md#raymer-2012)).
 
+$$
 \begin{align}
     K_{nom} &= \frac{1}{ \pi  AR  e} \\
     b &= \frac{span}{2} \\
     K &= 33 K_{nom} \frac{ \left(\frac{h + h_w}{b} \right) ^{\frac{3}{2}}}{1.0 + 33 \left( \frac{h + h_w}{b}\right) ^{\frac{3}{2}}}
 \end{align}
+$$
 
 Note the singularity in the equation for $K$ when $h + h_w$ is negative.
 This causes this problem to be difficult to solve using a shooting method.
@@ -133,32 +137,38 @@ If the optimizer proposes a combination of initial states and a control history 
 
 Finally, the lift and drag are computed after computing the dynamic pressure.
 
+$$
 \begin{align}
     q &= 0.5 \rho v^2 \\
     L &= q  S  C_L \\
     D &= q S \left( C_{D0} + K C_{L}^2 \right)
 \end{align}
+$$
 
 ### Stall Speed
 
 This model relies on the ratio of the current true airspeed to stall speed ($\frac{v}{v_{stall}}$).
 This constraint is used to trigger the beginning of rotation and is used as a boundary constraint at the end of the initial climb.
-Stall speed is given by Equation 5.6 in Raymer[@raymer2012aircraft].
+Stall speed is given by Equation 5.6 in [Raymer 2012](../../../bibliography.md#raymer-2012).
 
+$$
 \begin{align}
     W &= m g \\
     v_{stall} &= \sqrt{\frac{2 * W}{\rho S C_{L-max}}}
 \end{align}
+$$
 
 ### Runway Equations of Motion
 
 The runway equations of motion are used to integrate range and speed as the vehicle rolls along the runway.
 
+$$
 \begin{align}
   F_r &= mg - L \cos \alpha - T \sin \alpha \\
   \dot{v} &= \frac{T \cos \alpha - D - F_r \mu_r}{m} \\
   \dot{r} &= v
 \end{align}
+$$
 
 
 |State  | Description           |Units        |
@@ -171,12 +181,14 @@ The runway equations of motion are used to integrate range and speed as the vehi
 
 The flight equations of motion include two additional state variables: the flight-path angle ($\gamma$) and altitude ($h$).
 
+$$
 \begin{align}
   \dot{v} &= \frac{T}{m} \cos \alpha - \frac{D}{m} - g \sin \gamma \\
   \dot{\gamma} &= \frac{T}{m v} \sin \alpha + \frac{L}{m v} - \frac{g \cos \gamma}{v} \\
   \dot{h} &= v \sin \gamma \\
   \dot{r} &= v \cos \gamma
 \end{align}
+$$
 
 |State    | Description           |Units       |
 |---------|-----------------------|------------|
@@ -249,11 +261,11 @@ The following constraints and objective complete the definition of this optimal 
 
 | First Phase      | Second Phase      | Variables                   |
 |------------------|-------------------|-----------------------------|
-| br_to_v1[final]  | v1_to_vr[initial] | $time$, $r$, $v$            |
-| vr_to_v1[final]  | rotate[initial]   | $time$, $r$, $v$, $\alpha$  |
-| rotate[final]    | climb[initial]    | $time$, $r$, $v$, $\alpha$  |
-| br_to_v1[final]  | rto[initial]      | $time$, $r$, $v$            |
-| climb[final]     | rto[final]        | $r$                         |
+| br_to_v1`[final]`  | v1_to_vr`[initial]` | $time$, $r$, $v$            |
+| vr_to_v1`[final]`  | rotate`[initial]`   | $time$, $r$, $v$, $\alpha$  |
+| rotate`[final]`    | climb`[initial]`    | $time$, $r$, $v$, $\alpha$  |
+| br_to_v1`[final]`  | rto`[initial]`      | $time$, $r$, $v$            |
+| climb`[final]`     | rto`[final]`        | $r$                         |
 
 ## Source Code
 

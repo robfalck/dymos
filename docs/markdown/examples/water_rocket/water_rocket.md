@@ -36,7 +36,7 @@ if missing_packages:
 Author: Bernardo Bahia Monteiro (bbahia@umich.edu)
 
 In this example, we will optimize a water rocket for range and height at the apogee, using design variables that are easily modifiable just before launch: the empty mass, the initial water volume and the launch angle.
-This example builds on [multi-phase cannonball](../multi_phase_cannonball/multi_phase_cannonball.ipynb) ane is adapted from _Optimization of a Water Rocket in OpenMDAO/Dymos_ {cite}`bbahia_2020`.
+This example builds on [multi-phase cannonball](../multi_phase_cannonball/multi_phase_cannonball.ipynb) and is adapted from _Optimization of a Water Rocket in OpenMDAO/Dymos_ [Bahia Monteiro (2020)](../../../bibliography.md#bahia-monteiro-2020).
 
 ## Nomenclature
 
@@ -65,6 +65,7 @@ This means that the volume available for water and air is fixed, the initial lau
 Given these manufacturing constraints, the design variables we are left with are the empty mass (it can be easily changed through adding ballast), the water volume at the launch, and the launch angle.
 With this considerations in mind, a natural formulation for the water rocket problem is
 
+$$
 \begin{align}
     \text{maximize}   &\quad \text{range or height} \\
     \text{w.r.t.}     &\quad \text{empty mass, initial water volume, launch angle, trajectory} \\
@@ -74,6 +75,7 @@ With this considerations in mind, a natural formulation for the water rocket pro
                       &\quad 0^\circ < \text{launch angle} < 90^\circ \\
                       &\quad 0 < \text{empty mass}
 \end{align}
+$$
 
 ##  Model
 
@@ -111,10 +113,10 @@ assumptions:
 2. The area inside the bottle is much smaller than the nozzle area
 3. The inertial forces do not affect the fluid dynamics inside the bottle
 
-This simplified modelling can be found in Prusa[@Prusa2000].
-A more rigorous formulation, which drops all these simplifying assumptions can be found in Wheeler[@Wheeler2002], Gommes[@Gommes2010], and Barria-Perotti[@BarrioPerotti2010].
+This simplified modelling can be found in [Prusa (2000)](../../../bibliography.md#prusa-2000).
+A more rigorous formulation, which drops all these simplifying assumptions can be found in [Wheeler (2002)](../../../bibliography.md#wheeler-2002), [Gommes (2010)](../../../bibliography.md#gommes-2010), and [Barrio-Perotti (2010)](../../../bibliography.md#barrio-perotti-2010).
 
-The first assumption leads to an underestimation of the rocket performance, since the air left in the bottle after it is out of water is known to generate appreciable thrust[@Thorncroft2009].
+The first assumption leads to an underestimation of the rocket performance, since the air left in the bottle after it is out of water is known to generate appreciable thrust [Thorncroft (2009)](../../../bibliography.md#thorncroft-2009).
 This simplified model, however, produces physically meaningful results.
 
 There are two states in this dynamical model, the water volume in the rocket $V_w$ and the gauge pressure inside the rocket $p$.
@@ -175,9 +177,11 @@ display_source('dymos.examples.water_rocket.water_engine_comp._WaterFlowRate')
 The `_MassAdder` component calculates the rocket's instantaneous mass by
 summing the water mass with the rockets empty mass, i.e.
 
+$$
 \begin{align}
     m = m_\text{empty}+\rho_w V_w
 \end{align}
+$$
 
 ```python
 # tags: remove-input
@@ -229,10 +233,10 @@ Values for parameters in the water rocket model
 
 |   Parameter        | Value                | Unit         | Reference                                           |
 |--------------------|----------------------|--------------|-----------------------------------------------------|
-| $C_D$              | 0.3450               | -            | {cite}`BarrioPerotti2009`                           |
-| $S$                | $\pi 106^2/4$        | $mm^2$       | {cite}`BarrioPerotti2009`                           |
-| $k$                | 1.2                  | -            | {cite}`Thorncroft2009` {cite}`Fischer2020` {cite}`Romanelli2013`   |
-| $A_\text{out}$     | $\pi22^2/4$          | $mm^2$       | {cite}`aircommand_nozzle`                                |
+| $C_D$              | 0.3450               | -            | [Barrio-Perotti 2009](../../../bibliography.md#barrio-perotti-2009)                           |
+| $S$                | $\pi 106^2/4$        | $mm^2$       | [Barrio-Perotti 2009](../../../bibliography.md#barrio-perotti-2009)                           |
+| $k$                | 1.2                  | -            | [Thorncroft 2009](../../../bibliography.md#thorncroft-2009) [Fischer 2020](../../../bibliography.md#fischer-2020) [Romanelli 2013](../../../bibliography.md#romanelli-2013)   |
+| $A_\text{out}$     | $\pi22^2/4$          | $mm^2$       | [Air Command Rockets (2013)](../../../bibliography.md#aircommand-nozzles)                                |
 | $V_b$              | 2                    | L            |                                                     |
 | $\rho_w$           | 1000                 | $kg/m^3$     |                                                     |
 | $p_0$              | 6.5                  | bar          |                                                     |

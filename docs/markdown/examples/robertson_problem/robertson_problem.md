@@ -41,18 +41,22 @@ The [Robertson Problem](https://en.wikipedia.org/w/index.php?title=Stiff_equatio
 
 The ODE of the Robertson Problem is
 
+$$
 \begin{align}
     \dot x = &        - 0.04 x + 10^4 y \cdot z &                          \\
     \dot y = & \;\;\;\: 0.04 x - 10^4 y \cdot z &        - 3\cdot 10^7 y^2 \\
     \dot z = &                                  & \;\;\;\: 3\cdot 10^7 y^2 \\
 \end{align}
+$$
 
 where $x$, $y$ and $z$ are arbitrary states. The initial conditions are
 
+$$
 \begin{align}
     x_0 &= 1 \\
     y_0 &= z_0 = 0.
 \end{align}
+$$
 
 The problem is solved for the time interval $t\in[0,40)$. There are no controls and constraints.
 

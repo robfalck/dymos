@@ -48,12 +48,14 @@ Let's consider that we want to solve for the elevation angle that results in the
 range flown by a cannonball.  In this situation we have some set of initial conditions that are
 fixed.
 
+$$
 \begin{align}
     t_0 &= 0 \, \mathrm{s} \\
     x_0 &= 0 \, \mathrm{m} \\
     y_0 &= 0 \, \mathrm{m} \\
     v_0 &= 100 \, \frac{\mathrm{m}}{\mathrm{s}}
 \end{align}
+$$
 
 The first, most obvious way to constrain fixed values is to remove them from the optimization problem altogether.
 
@@ -126,10 +128,12 @@ Constraints may be defined using mathematical expressions of the form `y=f(x)` t
 
 Consider, again, the example of maximizing the range flown by a cannonball. But now, rather than a constraint on the initial velocity, we wish to apply a constraint to the initial normalized kinetic energy.
 
+$$
 \begin{align}
     ke &= 0.5 * v^2 \\
     ke_0 &= 5000 \, \frac{\mathrm{m^2}}{\mathrm{s^2}}
 \end{align}
+$$
 
 The first way to achieve this is to add kinetic energy as a state in the model. This state may then be constrained either using `fix_initial=True` or `add_boundary_constraint(‘ke’, loc=’initial’ , equals=5000)`.
 

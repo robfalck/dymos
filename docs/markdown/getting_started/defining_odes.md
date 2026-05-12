@@ -38,9 +38,11 @@ Typically this evolution occurs in time, and the ODE represents equations of mot
 The equations of motion can define a variety of systems, not just mechanical ones.
 In other fields they are sometimes referred to as *process equations*.
 
+$$
 \begin{align}
     \dot{\bar{x}} = f_{ode}(\bar{x},t,\bar{u},\bar{d})
 \end{align}
+$$
 
 To represent EOM, Dymos uses a standard OpenMDAO System (a Group or Component).
 This System takes some set of variables as input and computes outputs that include the time-derivatives of the state variables $\bar{x}$.

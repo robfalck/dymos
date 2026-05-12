@@ -73,9 +73,11 @@ Let's assume that we have a brachistochrone ODE that was provided to us, but for
 
 Here we're adding a calculation expression for the additional output k, which is the ratio
 
+$$
 \begin{align}
     k &= \frac{sin(\theta)}{v}
 \end{align}
+$$
 
 In the brachistochrone solution, $k$ is approximately constant, and its value is dependent upon the start and end point of the trajectory, as well as the gravitational parameter. In practice, it's value is somewhat large at the start since we're starting with nearly zero velocity.
 

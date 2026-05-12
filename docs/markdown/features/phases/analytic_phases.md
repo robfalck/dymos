@@ -46,9 +46,11 @@ Compared to explicit approaches it removes the need to numerically propagate the
 For analytic phases, the OpenMDAO system we provide to the phase provides the _solution_ to the ODE, not the ODE itself.
 
 
+$$
 \begin{align}  
     \textbf x = \textbf f(t, \textbf p)
 \end{align}
+$$
 
 where
 $\textbf x$ is the vector of *state variables* (the variable being integrated),
@@ -85,32 +87,40 @@ This means that values of an output of an `AnalyticPhase` can be fed into anothe
 
 Suppose we want to use Dymos to solve the ODE
 
+$$
 \begin{align}
   \frac{dx}{dt} = x - t^2 + 1
 \end{align}
+$$
 
 subject to:
 
+$$
 \begin{align}
   x(0) = 0.5
 \end{align}
+$$
 
 Here we want to find the value of _x_ at t=2.
 
 We can absolutely use a pseudospectral method or explicit shooting in Dymos to find the value of _x_ on a given interval using this information.
 But in this case, the solution is known analytically.
 
+$$
 \begin{align}
   x(t) &= t^2 + 2t + 1 - c_1e^t
 \end{align}
+$$
 
 We need to find the value of constant $c_1$ to find our particular solution.
 Applying the given initial condition gives c_1 as 0.
 
+$$
 \begin{align}
   x(0) &= 1 - c_1 = 0.5 \\
   c_1 &\equiv y_0 = 0.5
 \end{align}
+$$
 
 The component that provides the solution is then:
 

@@ -36,9 +36,10 @@ if missing_packages:
 The problem of the space shuttle reentering Earth's atmosphere is an
 optimal control problem governed by six equations of motion and limited
 by the aerodynamic heating rate. For a detailed layout of this problem
-and other optimal control problems see Betts {cite}`betts2010practical`.
+and other optimal control problems see [Betts (2010)](../../../bibliography.md#betts-2010).
 The governing equations of motion for this problem are:
 
+$$
 \begin{align}
   \frac{dh}{dt} &= v \sin \gamma \\
   \frac{d\phi}{dt} &= \frac{v}{r} \cos \gamma \frac{\sin \psi}{\cos \theta} \\
@@ -47,6 +48,7 @@ The governing equations of motion for this problem are:
   \frac{d\gamma}{dt} &= \frac{L}{mv} \cos \beta + \cos \gamma (\frac{v}{r} - \frac{g}{v}) \\
   \frac{d\psi}{dt} &= \frac{L \sin \beta}{mv \cos \gamma} + \frac{v}{r \cos \theta} \cos \gamma \sin \psi \sin \theta
 \end{align}
+$$
 
 where $v$ $[ft/s]$ is airspeed, $\gamma$ $[rad]$ is flight path angle,
 $r$ $[ft]$ is distance from the center of the Earth, $\psi$ $[rad]$ is
@@ -65,6 +67,7 @@ $[\frac{btu}{ft^2s}]$ is the heating rate.
 
 The initial conditions are
 
+$$
 \begin{align}
   h_0 &= 26000 \\
   v_0 &= 25600 \\
@@ -73,9 +76,11 @@ The initial conditions are
   \theta_0 &= 0 \\
   \psi_0 &= \frac{\pi}{2}
 \end{align}
+$$
 
 and the final conditions are
 
+$$
 \begin{align}
   h_0 &= 80000 \\
   v_0 &= 2500 \\
@@ -83,6 +88,7 @@ and the final conditions are
   \theta &= \rm{free} \\
   \psi &= \rm{free}
 \end{align}
+$$
 
 Notice that no final condition appears for $\phi$. This is because none
 of the equations of motion actually depend on $\phi$, and as a result,
@@ -97,15 +103,19 @@ shuttle. The third component is where the heating rate on the leading
 edge of the shuttles wings is computed. The heating rate is given by
 $q = q_a q_r$ where
 
+$$
 \begin{align}
   q_a &= c_0 + c_1\alpha + c_2 \alpha^2 + c_3 \alpha^3
 \end{align}
+$$
 
 and
 
+$$
 \begin{align}
   q_r &= 17700 \rho^.5 (.0001v)^{3.07}
 \end{align}
+$$
 
 where $c_0, c_1, c_2,$ and $c_3$ are constants, $\alpha$ $[deg]$ is the
 angle of attack, $\rho$ $[\frac{sl}{ft^3}]$ is local atmospheric density,

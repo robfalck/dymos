@@ -63,16 +63,20 @@ This makes scaling the problem easier, and gives the implicit variables more int
 As a "hello, world" problem for Dymos, consider the vertical fall of an object acting under gravity - like Galileo dropping cannonballs from the Tower of Pisa.
 Ignoring aerodynamics and treating the ball as a point mass in a rectilinear gravity field, the motion is governed by:
 
+$$
 \begin{align}
     \ddot{y} = -g
 \end{align}
+$$
 
 The techniques in Dymos are generally centered around first-order dynamics, so we convert the above equation into the following system of ODEs.
 
+$$
 \begin{align}
     \dot{y} &= v_y \\
     \dot{v_y} &= -g
 \end{align}
+$$
 
 One common way to propagate this trajectory would be to use an "explicit time-marching" approach.
 That is, we can use Euler's method or a Runge-Kutta approach to propagate the trajectory of the ball, one small slice of time at a time.
@@ -117,12 +121,14 @@ To form 3rd-order polynomials for the states we need four pieces of information,
 We'll use the state rates at the state discretization nodes to provide the other two values needed for interpolation.
 To obtain these, we evaluate our ODE at the state discretization nodes.
 
+$$
 \begin{align}
     \dot{y}_0 &= 0 \\
     \dot{y}_f &= -50 \\
     \dot{v}_{y0} &= -9.80665 \\
     \dot{v}_{yf} &= -9.80665
 \end{align}
+$$
 
 ![Screenshot](scripts/lgl_animation_1.png)
 
@@ -135,26 +141,32 @@ Having computed the ODE at the state discretization nodes, we can form interpola
 Dymos uses Lagrange interpolants, such that the inputs to the system are the values of the states and controls, rather than less intuitive coefficients.
 In this case, the state values at our single collocation node are:
 
+$$
 \begin{align}
     y_m &= 50 \\
     v_{ym} &= -25
 \end{align}
+$$
 
 ![Screenshot](scripts/lgl_animation_2.png)
 
 The polynomial slopes at the collocation node are:
 
+$$
 \begin{align}
     y'_m &= 50 \\
     v'_{ym} &= -25
 \end{align}
+$$
 
 Now, having the state and time values at the collocation nodes, we can again evaluate the ODE.
 
+$$
 \begin{align}
     \dot{y}_m &= -17 \\
     \dot{v}_{ym} &= -9.80665
 \end{align}
+$$
 
 ![Screenshot](scripts/lgl_animation_3.png)
 

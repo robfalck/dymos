@@ -13,10 +13,10 @@ While normally this would significantly impair performance, Dymos can optimize s
 
 ## Key Features
 
--   Employ Gauss-Lobatto collocation {cite}`herman1996direct` or the Radau Pseudospectral method {cite}`garg2011direct` to find optimal control for a dynamic system.
+-   Employ Gauss-Lobatto collocation [Herman (1996)](bibliography.md#herman-1996) or the Radau Pseudospectral method [Garg (2011)](bibliography.md#garg-2011) to find optimal control for a dynamic system.
 -   Find the optimal design of a system that can satisfy a variety of different trajectories.
 -   Embed nonlinear solvers within the system dynamics.
--   Transform typical state variables into control variables (differential inclusion {cite}`Seywald1994`).
+-   Transform typical state variables into control variables (differential inclusion [Seywald (1994)](bibliography.md#seywald-1994)).
 -   Use nonlinear solvers to satisfy the collocation constraints.
 -   Single and multiple shooting within the same interface.
 -   Leverage multiprocessing capabilities to improve performance.
@@ -24,7 +24,7 @@ While normally this would significantly impair performance, Dymos can optimize s
 ## Why Dymos?
 
 There is no shortage of optimal control software based on pseudospectral approaches.
-There are a number of other optimal control libraries that tackle similar kinds of problems, such as OTIS4 {cite}`paris_riehl_sjauw_2006`, GPOPS-II {cite}`patterson2014gpops`,and CASADI {cite}`Andersson2018`.
+There are a number of other optimal control libraries that tackle similar kinds of problems, such as OTIS4 [Paris et al. (2006)](bibliography.md#paris-2006), GPOPS-II [Patterson & Rao (2014)](bibliography.md#patterson-2014), and [CasADi](bibliography.md#andersson-2018) [Andersson et al. (2018)](bibliography.md#andersson-2018).
 
 Given the amount of software existing in this space, why did we develop Dymos?
 
@@ -39,17 +39,17 @@ Many state-of-the-art optimal control software packages rely on finite-differenc
 This inherently couples the accuracy of the derivatives to the scaling of the problem.
 We'd like to use analytic derivative calculations to better decouple this interaction.
 Even those software packages which employ analytic derivatives generally use a forward-differentiation approach.
-The work of Hwang and Martins {cite}`hwang2018b` demonstrated how to develop a framework for accurate derivative calculation, including analytic derivatives and both complex-step and finite-difference approximations as fallbacks.
+The work of [Hwang and Martins (2018)](bibliography.md#hwang-2018b) demonstrated how to develop a framework for accurate derivative calculation, including analytic derivatives and both complex-step and finite-difference approximations as fallbacks.
 Their approach gives us a few key capabilities:
 
 - Adjoint differentiation which can be more efficient for pure shooting-methods in optimal control, where the number of constraints/objectives is far fewer than the number of design variables.
 - The ability to compute derivatives across complex iterative systems _without the need to reconverge the system_.
-- The ability to provide a general, bidirectional derivative coloring system {cite}`gray2019coloring` which can minimize the computational effort required to compute the sensitivies of the outputs with respect to the inputs.
+- The ability to provide a general, bidirectional derivative coloring system [Gray et al. (2019)](bibliography.md#gray-2019) which can minimize the computational effort required to compute the sensitivies of the outputs with respect to the inputs.
 
 In addition to making optimal control more performant for use in multidisciplinary optimization, we were keen to study what sort of work these capabilities could enable.
 Embedding iterative systems within the optimization, in particular, is generally avoided for performance reasons.
-But with the state-of-the-art differentiation approach of OpenMDAO, built upon the work of Martins and Hwang, we can embed complex implicit systems with minimal impact on performance.
-This enables more efficient optimization via differential inclusion {cite}`Seywald1994`, and allows us to employ shooting methods within the pseudospectral framework.
+But with the state-of-the-art differentiation approach of OpenMDAO, built upon the work of [Martins and Hwang (2018)](bibliography.md#hwang-2018b), we can embed complex implicit systems with minimal impact on performance.
+This enables more efficient optimization via differential inclusion [Seywald (1994)](bibliography.md#seywald-1994), and allows us to employ shooting methods within the pseudospectral framework.
 
 Some developers involved in Dymos are involved with NASA's legacy optimal control software, OTIS.
 The general approach used by Dymos is similar to that of OTIS (trajectories divided into time portions called Phases, dynamic controls and static parameters, and both bound constraints as well as nonlinear boundary constraints and path constraints are all notions carried over from OTIS).

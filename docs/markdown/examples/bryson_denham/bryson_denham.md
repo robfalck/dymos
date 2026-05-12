@@ -34,7 +34,7 @@ if missing_packages:
 (examples:bryson_denham)=
 # The Bryson-Denham Problem
 
-The Bryson-Denham problem is a variation of the double integrator problem {cite}`bryson1975applied`. It can be stated as:
+The Bryson-Denham problem is a variation of the double integrator problem [Bryson & Ho (1975)](../../../bibliography.md#bryson-1975). It can be stated as:
 
 Minimize the control effort required to reverse the direction of motion of a frictionless sliding block such that the reversal happens with some limited amount of displacement.
 
@@ -46,10 +46,12 @@ This system has a single control variable ($u$), the acceleration of the block.
 
 The dynamics of the system are governed by
 
+$$
 \begin{align}
   \dot{x} &= v \\
   \dot{v} &= u
 \end{align}
+$$
 
 
 
@@ -57,29 +59,37 @@ The dynamics of the system are governed by
 
 We seek to minimize the time required to exit the well in the positive direction.
 
+$$
 \begin{align}
     \mathrm{Minimize} \, J &= 0.5 \int_0^1 u^2 dt
 \end{align}
+$$
 
 Subject to the initial conditions
 
+$$
 \begin{align}
     x_0 &= 0.0 \\
     v_0 &= 1.0
 \end{align}
+$$
 
 and the terminal constraints
 
+$$
 \begin{align}
     x_f &= 0.0 \\
     v_f &= -1.0
 \end{align}
+$$
 
 In addition, $x$ is constrained to remain below a displacement of 1/9.
 
+$$
 \begin{align}
     x &\le 1/9
 \end{align}
+$$
 
 ## Dealing with integral costs in Dymos
 
@@ -87,9 +97,11 @@ In classic optimal control, the objective is often broken into the terminal comp
 Dymos does not distinguish between the two.
 In this case, since the objective $J$ is an integrated quantity, we add a term to the ODE
 
+$$
 \begin{align}
 \dot{J} &= 0.5 u^2
 \end{align}
+$$
 
 ## Defining the ODE
 

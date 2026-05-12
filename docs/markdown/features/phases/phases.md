@@ -41,9 +41,11 @@ For implicit and explicit phases, the equations-of-motion or process equations a
 
 An ODE is of the form
 
+$$
 \begin{align}  
     \frac{\partial \textbf x}{\partial t} = \textbf f(t, \textbf x, \textbf u)
 \end{align}
+$$
 
 where
 $\textbf x$ is the vector of *state variables* (the variable being integrated),
@@ -57,6 +59,7 @@ In addition, Dymos automatically calculates the first and second time-derivative
 These derivatives can then be utilized as via constraints or as additional parameters to the ODE.
 Subsequently, the optimal control problem as solved by Dymos can be expressed as:
 
+$$
 \begin{align}
   \textrm{Minimize}:& \quad J = \textbf f_{obj}(t, \textbf x, \textbf u, \dot{\textbf u}, \ddot{\textbf u}) \\
   \textrm{subject to:}& \\
@@ -68,6 +71,7 @@ Subsequently, the optimal control problem as solved by Dymos can be expressed as
   &\textrm{nonlinear boundary constraints} \quad &\textbf g_{b,lb} &\,\le\, \textbf g_{b}(t, \textbf x, \textbf u, \dot{\textbf u}, \ddot{\textbf u}) \,\le\, \textbf g_{b,ub} \\
   &\textrm{nonlinear path constraints} \quad &\textbf g_{p,lb} &\,\le\, \textbf g_{p}(t, \textbf x, \textbf u, \dot{\textbf u}, \ddot{\textbf u}) \,\le\, \textbf g_{p,ub} \\
 \end{align}
+$$
 
 The ability to utilize control derivatives in the equations of motion provides some unique capabilities, namely the ability to
 easily solve problems using _differential inclusion_, which will be demonstrated in the examples.

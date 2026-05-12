@@ -47,16 +47,20 @@ Consider a simple damped harmonic oscillator.
 
 ![Damped harmonic oscillator free-body diagram](figures/spring_mass_damper.png)
 
+$$
 \begin{align}
     \ddot{x} &= -\frac{kx}{m} - \frac{c \dot{x}}{m}
 \end{align}
+$$
 
 Converting this to a first order system results in an ODE system with two states:
 
+$$
 \begin{align}
     \dot{x} &= v \\
     \dot{v} &= -\frac{kx}{m} - \frac{c \dot{x}}{m}
 \end{align}
+$$
 
 ## The OpenMDAO model of the ODE
 

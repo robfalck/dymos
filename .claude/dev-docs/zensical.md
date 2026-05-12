@@ -172,10 +172,9 @@ title           = "Contents"   # optional custom heading
 # :smile: shortcodes; Twemoji SVGs by default
 
 [project.markdown_extensions."pymdownx.highlight"]
-anchor_linenums            = true
-line_spans                 = "__span"
-pygments_lang_as_class     = true
-auto_title                 = true
+anchor_linenums = true
+line_spans      = "__span"
+# Note: pygments_lang_as_class is not a valid option in current pymdownx versions
 
 [project.markdown_extensions."pymdownx.inlinehilite"]
 # `:::python inline_code`
@@ -213,24 +212,22 @@ custom_checkbox = true
 
 ## Math support
 
-### MathJax (full LaTeX; recommended for scientific docs)
+### Math rendering
+
+The `pymdownx.arithmatex` extension enables both inline (`$...$`) and block (`$$...$$`) math.
+
+To add MathJax (full LaTeX support):
 
 ```toml
-[project.markdown_extensions."pymdownx.arithmatex"]
-generic_mode = false   # MathJax mode (default)
-
 [project]
 extra_javascript = [
     "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js",
 ]
 ```
 
-### KaTeX (faster, simpler)
+To add KaTeX (faster, simpler):
 
 ```toml
-[project.markdown_extensions."pymdownx.arithmatex"]
-generic_mode = true
-
 [project]
 extra_css = [
     "https://cdn.jsdelivr.net/npm/katex@0.16/dist/katex.min.css",
@@ -240,6 +237,8 @@ extra_javascript = [
     "https://cdn.jsdelivr.net/npm/katex@0.16/dist/contrib/auto-render.min.js",
 ]
 ```
+
+**Note:** The `generic_mode` option is not valid in current pymdownx versions and should not be used.
 
 ### Syntax in markdown
 
@@ -253,6 +252,210 @@ $$
   \frac{dy}{dt} &= -v \cos\theta
 \end{align}
 $$
+```
+
+---
+
+## Sphinx Alternative
+
+A Sphinx configuration is also available for comparison and development. See `docs/SPHINX_BUILD.md` for details.
+
+### When to use Sphinx instead of Zensical:
+
+- **Code execution**: Sphinx can execute Python code blocks and display results (via `jupyter-sphinx`)
+- **PDF output**: Built-in PDF generation (requires LaTeX)
+- **Versioning**: Native documentation versioning support
+- **API docs**: Better integration with Python docstrings (`sphinx.ext.autodoc`)
+- **Multiple formats**: ePub, man pages, etc.
+
+### When to use Zensical:
+
+- **Speed**: Zensical builds significantly faster
+- **Simplicity**: Easier configuration for basic documentation
+- **Modern UX**: Zensical's theme is more modern out-of-the-box
+- **TOML config**: Simpler configuration format vs Python
+
+### Setup:
+
+```bash
+cd docs
+pip install -r requirements-sphinx.txt
+make html
+make serve
+```
+
+---
+
+## Math rendering issues
+
+### Symptom: LaTeX math not rendering (align blocks display as raw text)
+
+**Cause:** Block math with `\begin{align}...\end{align}` must be wrapped in `$$...$$` delimiters for pymdownx.arithmatex to recognize and process them.
+
+**Solution:** Ensure all LaTeX blocks use the proper delimiter syntax:
+
+```markdown
+# Correct:
+$$
+\begin{align}
+  x = y + z
+\end{align}
+$$
+
+# Incorrect (won't render):
+\begin{align}
+  x = y + z
+\end{align}
+```
+
+---
+
+## Troubleshooting
+
+### Warning: unresolved link reference (bibliography anchors)
+
+**Symptom:** Build shows warnings like:
+```
+Warning: anchor does not exist
+[Raymer (2012)](bibliography.md#aircraft-design-a-conceptual-approach)
+```
+
+**Cause:** The anchor ID you specified in the markdown doesn't match the auto-generated heading ID that Zensical creates. Zensical converts headings to lowercase, hyphenated IDs.
+
+**Solution:** Create explicit subsection headings in your bibliography file with simple, predictable anchor IDs. For example:
+
+```markdown
+## Aeronautics and Aircraft Design
+
+### Raymer 2012
+...
+
+## Water Rocket Physics
+
+### Prusa 2000
+...
+```
+
+Then link to `#raymer-2012` or `#prusa-2000` (Zensical auto-converts to lowercase and hyphens).
+
+Avoid anchor IDs that contain special characters or long descriptive text, as the auto-generated ID may not match your link.
+
+---
+
+### Warning: unresolved link reference (citations)
+
+**Symptom:** Build shows warnings like:
+```
+Warning: unresolved link reference
+[@raymer2012aircraft]
+```
+
+**Cause:** Zensical does not currently support Pandoc-style citations (`[@key]`) or Jupyter Book `{cite}` directive out of the box. These are being interpreted as broken link references.
+
+**Solution:** Zensical is a static site generator without built-in bibliography support. For now:
+
+1. **Remove inline citations**: Replace `[@key]` with plain text references like "Raymer 2012"
+2. **Use footnotes instead** (if full citation needed):
+   ```markdown
+   This is a reference[^1].
+
+   [^1]: Raymer, D. P. (2012). Aircraft Design: A Conceptual Approach. ...
+   ```
+3. **Build a bibliography page**: Create a `bibliography.md` file with full citations and link to it
+
+For more robust citation support in future versions, Zensical may add bibliography plugins (targeted for 2026).
+
+---
+
+### Warning: unresolved link reference (table cells)
+
+**Symptom:** Warnings for table cells containing text like `[initial]` or `[final]`:
+```
+Warning: unresolved link reference
+[initial]
+```
+
+**Cause:** Text in the format `[word]` in any markdown context is interpreted as a link reference.
+
+**Solution:** Escape the brackets or use HTML entities:
+```markdown
+| Column1        | Column2        | Description    |
+|----------------|----------------|----------------|
+| phase\[initial\] | other\[final\] | description   |
+```
+
+Or use inline code:
+```markdown
+| Column1        | Column2        | Description    |
+|----------------|----------------|----------------|
+| phase `[initial]` | other `[final]` | description   |
+```
+
+---
+
+### KeyError: 'nav'
+
+**Symptom:** `zensical serve` fails with `KeyError: 'nav'` or similar when rendering markdown.
+
+**Cause:** In TOML, once a subsection like `[project.theme]` is opened, you cannot add simple keys back to the parent `[project]` section at the end of the file. The key gets misinterpreted as part of the last subsection.
+
+**Solution:** Ensure all simple `[project]` keys (like `nav`, `site_name`, etc.) are defined **before** any subsections (like `[project.repo]`, `[project.theme]`, `[project.markdown_extensions]`). The correct structure is:
+
+```toml
+[project]
+site_name = "..."
+nav = [...]    # Must come before subsections
+
+[project.repo]
+url = "..."
+
+[project.theme]
+# ...
+```
+
+---
+
+### KeyError: 'generic_mode'
+
+**Symptom:** `zensical serve` fails with `KeyError: 'generic_mode'` in the pymdownx.arithmatex extension.
+
+**Cause:** The `generic_mode` option is not a valid configuration parameter in current versions of pymdownx.
+
+**Solution:** Remove `generic_mode` from the `[project.markdown_extensions."pymdownx.arithmatex"]` section in `zensical.toml`. Instead, configure math rendering by adding the appropriate CDN links to `extra_javascript` or `extra_css` in the main `[project]` section.
+
+---
+
+### KeyError: 'pygments_lang_as_class'
+
+**Symptom:** `zensical serve` fails with `KeyError: 'pygments_lang_as_class'` in the pymdownx.highlight extension.
+
+**Cause:** The `pygments_lang_as_class` option is not a valid configuration parameter in current versions of pymdownx. It may have been removed or never existed.
+
+**Solution:** Remove `pygments_lang_as_class` and `auto_title` from the `[project.markdown_extensions."pymdownx.highlight"]` section in `zensical.toml`. Keep only valid options like `anchor_linenums` and `line_spans`.
+
+---
+
+### TOMLDecodeError: Cannot declare ('project',) twice
+
+**Symptom:** `zensical serve` fails with `TOMLDecodeError: Cannot declare ('project',) twice (at line X, column Y)`
+
+**Cause:** The `zensical.toml` file contains duplicate `[project]` section headers. TOML does not allow the same section to be declared twice.
+
+**Solution:** Merge all `[project]` configuration into a single `[project]` block at the top of the file. Sub-tables like `[project.theme]` and `[project.markdown_extensions]` are allowed, but the root `[project]` header should appear only once. For example:
+
+```toml
+# Correct structure
+[project]
+site_name = "Site"
+# ... all project-level settings ...
+
+[project.theme]
+# ... theme settings ...
+
+[project.markdown_extensions]
+# ... extensions ...
+
+nav = [...]  # Can be directly under [project] scope at the end of the file
 ```
 
 ---

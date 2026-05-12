@@ -33,11 +33,13 @@ if missing_packages:
 
 # The Van der Pol Oscillator
 
-In dynamics, the Van Der Pol oscillator {cite}`wikivanderpol` is a non-conservative oscillator with non-linear damping. It evolves in time according to the second-order differential equation:
+In dynamics, the [Van Der Pol oscillator](../../../bibliography.md#van-der-pol-oscillator) is a non-conservative oscillator with non-linear damping. It evolves in time according to the second-order differential equation:
 
+$$
 \begin{align}
     \frac{d^2x}{dt^2} - u (1 - x^2) \frac{dx}{dt} + x &= 0
 \end{align}
+$$
 
 where $x$ is the position coordinate (a function of the time $t$), and $u$ is a scalar parameter
 indicating the nonlinearity and the strength of the damping.
@@ -45,9 +47,11 @@ indicating the nonlinearity and the strength of the damping.
 To make this an optimal control problem, we want to find the smallest control that will dampen the oscillation
 (drive the state variables to zero). We can express this as an objective function $J$ to minimize:
 
+$$
 \begin{align}
     J &= \int x^2_0 + x^2_1 + u^2
 \end{align}
+$$
 
 In other words, we want to find the optimal (smallest) trajectory of the control $u$ such that the oscillation
 and the oscillation's rate of change are driven to zero.
@@ -68,11 +72,13 @@ The $x_1$ and $x_0$ state variables are also inputs to the system, along with th
 
 The evolution of the state variables is given by the following ordinary differential equations (ODE):
 
+$$
 \begin{align}
     \frac{dx_0}{dt} &= (1 - x^2_1) x_0 - x_1 + u \\
     \frac{dx_1}{dt} &= x_0 \\
     \frac{dJ}{dt} &= x^2_0 + x^2_1 + u^2
 \end{align}
+$$
 
 ## Control Variables
 
@@ -86,21 +92,25 @@ The control variable has a constraint: $-0.75 \leq u \leq 1.0$
 
 The initial conditions are:
 
+$$
 \begin{align}
     t_i &= 0 \\
     x_{0i} &= 1 \\
     x_{1i} &= 1 \\
       u_i &= -0.75
 \end{align}
+$$
 
 The final conditions are:
 
+$$
 \begin{align}
     t_f &= 10 \\
     x_{0f} &= 0 \\
     x_{1f} &= 0 \\
       u_f &= 0
 \end{align}
+$$
 
 ## Defining the ODE as an OpenMDAO System
 

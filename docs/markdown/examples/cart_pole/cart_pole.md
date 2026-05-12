@@ -35,7 +35,7 @@ if missing_packages:
 # Cart-Pole Optimal Control
 
 This example is authored by Shugo Kaneko and Bernardo Pacini of the [MDO Lab](https://mdolab.engin.umich.edu/).
-The cart-pole problem is an instructional case described in _An introduction to trajectory optimization: How to do your own direct collocation_ {cite}`Kelly2017`, and is adapted to work within Dymos.
+The cart-pole problem is an instructional case described in _An introduction to trajectory optimization: How to do your own direct collocation_ [Kelly (2017)](../../../bibliography.md#kelly-2017), and is adapted to work within Dymos.
 We consider a pole that can rotate freely attached to a cart, on which we can exert an external force (control input) in the $x$-direction.
 
 Our goal is to bring the cart-pole system from an initial state to a terminal state with minimum control efforts.
@@ -103,12 +103,14 @@ To summarize, the ODE for the cart-pole system is given by
 
 ### Initial and terminal conditions
 The initial state variables are all zero at $t_0 = 0$, and the final conditions at time $t_f$ are
+$$
 \begin{align}
     x_f &= d \\
     \dot{x}_f &= 0 \\
     \theta_f &= \pi \\
     \dot{\theta_f} &= 0
 \end{align}
+$$
 
 ### Parameters
 The fixed parameters are summarized as follows.
