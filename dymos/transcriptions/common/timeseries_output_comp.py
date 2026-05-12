@@ -3,7 +3,6 @@ import openmdao.api as om
 from scipy import sparse as sp
 
 from ...transcriptions.grid_data import GridData
-from ..._options import options as dymos_options
 from ...utils.lagrange import lagrange_matrices
 
 
@@ -16,10 +15,11 @@ class TimeseriesOutputComp(om.ExplicitComponent):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self._no_check_partials = not dymos_options['include_check_partials']
+        self._no_check_partials = True
 
         # _vars keeps track of the name of each output and maps to its metadata;
         # a tuple of (input_name, name, shape, rate)
@@ -207,7 +207,7 @@ class TimeseriesOutputComp(om.ExplicitComponent):
             if ogd is igd and output_subset == 'all':
                 optau_segi = iptau_segi
             else:
-                ptau_hi = igd.segment_ends[iseg+1]
+                ptau_hi = igd.segment_ends[iseg + 1]
                 if iseg < igd.num_segments - 1:
                     optau_segi = output_nodes_ptau[output_nodes_ptau <= ptau_hi]
                 else:
@@ -237,10 +237,9 @@ class TimeseriesOutputComp(om.ExplicitComponent):
 
         Parameters
         ----------
-        phase : Phase
-            The phase to which this component belongs.
-        timeseries_name : str
-            The name of the timeseries being configured.
+        timeseries_options : dict
+            Dictionary of timeseries output options specifying the variables to include,
+            their units, shapes, and other metadata.
 
         Returns
         -------

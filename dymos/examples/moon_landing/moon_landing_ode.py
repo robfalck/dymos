@@ -25,8 +25,8 @@ class MoonLandingProblemODE(om.ExplicitComponent):
         self.declare_partials(of='h_dot', wrt='v', rows=ar, cols=ar, val=1.0)
         self.declare_partials(of='v_dot', wrt='m', rows=ar, cols=ar)
         self.declare_partials(of='v_dot', wrt='T', rows=ar, cols=ar)
-        self.declare_partials(of='m_dot', wrt='T', rows=ar, cols=ar, val=-1/2.349)
-        self.declare_partials(of='m_dot', wrt='T', rows=ar, cols=ar, val=-1/2.349)
+        self.declare_partials(of='m_dot', wrt='T', rows=ar, cols=ar, val=-1 / 2.349)
+        self.declare_partials(of='m_dot', wrt='T', rows=ar, cols=ar, val=-1 / 2.349)
 
     def compute(self, inputs, outputs, discrete_inputs=None, discrete_outputs=None):
         v = inputs['v']
@@ -34,12 +34,12 @@ class MoonLandingProblemODE(om.ExplicitComponent):
         T = inputs['T']
 
         outputs['h_dot'] = v
-        outputs['v_dot'] = -1 + T/m
-        outputs['m_dot'] = -T/2.349
+        outputs['v_dot'] = -1 + T / m
+        outputs['m_dot'] = -T / 2.349
 
     def compute_partials(self, inputs, partials, discrete_inputs=None):
         m = inputs['m']
         T = inputs['T']
 
-        partials['v_dot', 'T'] = 1/m
-        partials['v_dot', 'm'] = -T/m**2
+        partials['v_dot', 'T'] = 1 / m
+        partials['v_dot', 'm'] = -T / m**2

@@ -3,12 +3,11 @@ import numpy as np
 
 from openmdao.core.explicitcomponent import ExplicitComponent
 from dymos.transcriptions.grid_data import GridData
-from dymos._options import options as dymos_options
 
 
 class StatesComp(ExplicitComponent):
     """
-    This component provides inputs for states and outputs their values during Picard iteration.
+    Component that provides inputs for states and outputs their values during Picard iteration.
 
     This component serves to accept variables 'states:{state_name}' and echo them out as
     'state_val:{state_name}'.  This is necessary when using NonlinearBlockGS to converge
@@ -33,7 +32,7 @@ class StatesComp(ExplicitComponent):
         """
         super().__init__(**kwargs)
 
-        self._no_check_partials = not dymos_options['include_check_partials']
+        self._no_check_partials = True
 
     def initialize(self):
         """

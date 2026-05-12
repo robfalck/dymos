@@ -29,6 +29,7 @@ MU_SUN = 1.32712440041279419E11  # Gravitational parameter of sun (km**3/s**2)
 def _solve_kepler(M: float, e: float, tol: float = 1e-10, max_iter: int = 20) -> float:
     """
     Solve Kepler's equation M = E - e*sin(E) for eccentric anomaly E
+    
     using Newton-Raphson iteration with jax.lax.scan for AD compatibility.
     """
     # Initial guess: use jax.lax.cond for JIT compatibility
@@ -63,8 +64,8 @@ def ephemeris(elements: jnp.ndarray, t: jnp.ndarray, mu=MU_SUN) -> tuple[jnp.nda
         - right ascension of ascending node (radians)
         - argument of periapsis (radians)
         - mean anomaly at the year 0 epoch (radians)
-    time : float
-        The time at which the cartesian state is requested.
+    t : jnp.ndarray
+        The time at which the Cartesian state is requested.
     mu : float
         The gravitational parameter of the central body.
 

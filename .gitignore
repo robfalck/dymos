@@ -97,3 +97,6 @@ docs/faq/*.db
 
 # Jupyter Ignores
 docs/_build/
+# pixi environments
+.pixi/*
+!.pixi/config.toml

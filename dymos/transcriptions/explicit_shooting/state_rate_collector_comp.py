@@ -3,7 +3,6 @@ import numpy as np
 import openmdao.api as om
 
 from dymos.utils.misc import get_rate_units
-from ..._options import options as dymos_options
 
 
 class StateRateCollectorComp(om.ExplicitComponent):
@@ -23,12 +22,13 @@ class StateRateCollectorComp(om.ExplicitComponent):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def __init__(self, vec_size=1, **kwargs):
         super().__init__(**kwargs)
 
         self._vec_size = vec_size
 
-        self._no_check_partials = not dymos_options['include_check_partials']
+        self._no_check_partials = True
 
     def initialize(self):
         """
@@ -61,7 +61,7 @@ class StateRateCollectorComp(om.ExplicitComponent):
             self.add_input(input_name, shape=(vec_size,) + shape, units=rate_units)
             self.add_output(output_name, shape=(vec_size,) + shape, units=rate_units)
 
-            ar = np.arange(vec_size*size, dtype=int)
+            ar = np.arange(vec_size * size, dtype=int)
             self.declare_partials(of=output_name, wrt=input_name, rows=ar, cols=ar, val=1.0)
 
     def compute(self, inputs, outputs, discrete_inputs=None, discrete_outputs=None):

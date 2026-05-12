@@ -19,6 +19,7 @@ class FlightPathEOM2D(om.ExplicitComponent):
     ----------
     .. [1] Bryson, Arthur Earl. Dynamic optimization. Vol. 1. Prentice Hall, p.172, 1999.
     """
+
     def initialize(self):
         """
         Declare component options.

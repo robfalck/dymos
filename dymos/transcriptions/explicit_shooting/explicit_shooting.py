@@ -40,6 +40,7 @@ class ExplicitShooting(TranscriptionBase):
     **kwargs : dict
         Dictionary of arguments.
     """  # nopep8: E501, W605
+
     def __init__(self, **kwargs):
         super(ExplicitShooting, self).__init__(**kwargs)
         self._rhs_source = 'ode'
@@ -101,7 +102,7 @@ class ExplicitShooting(TranscriptionBase):
 
     def init_grid(self):
         """
-        Setup the GridData object for the Transcription.
+        Set up the GridData object for the Transcription.
         """
         if self.options['grid'] in ('gauss-lobatto', None):
             self.options['grid'] = GaussLobattoGrid(num_segments=self.options['num_segments'],
@@ -130,7 +131,7 @@ class ExplicitShooting(TranscriptionBase):
 
     def setup_time(self, phase):
         """
-        Setup the time component.
+        Set up the time component.
 
         Parameters
         ----------
@@ -245,7 +246,7 @@ class ExplicitShooting(TranscriptionBase):
 
     def setup_states(self, phase):
         """
-        Setup the states for this transcription.
+        Set up the states for this transcription.
 
         Parameters
         ----------
@@ -291,7 +292,7 @@ class ExplicitShooting(TranscriptionBase):
 
     def setup_ode(self, phase):
         """
-        Setup the ode for this transcription.
+        Set up the ode for this transcription.
 
         Parameters
         ----------
@@ -351,7 +352,7 @@ class ExplicitShooting(TranscriptionBase):
 
     def setup_controls(self, phase):
         """
-        Setup the control group.
+        Set up the control group.
 
         Parameters
         ----------
@@ -530,7 +531,7 @@ class ExplicitShooting(TranscriptionBase):
 
     def setup_timeseries_outputs(self, phase):
         """
-        Setup the timeseries for this transcription.
+        Set up the timeseries for this transcription.
 
         Parameters
         ----------
@@ -559,7 +560,7 @@ class ExplicitShooting(TranscriptionBase):
 
     def setup_solvers(self, phase):
         """
-        Setup the solvers for this transcription.
+        Set up the solvers for this transcription.
 
         Parameters
         ----------
@@ -570,7 +571,7 @@ class ExplicitShooting(TranscriptionBase):
 
     def configure_solvers(self, phase, requires_solvers=None):
         """
-        Setup the solvers for this transcription.
+        Set up the solvers for this transcription.
 
         Parameters
         ----------
@@ -583,7 +584,7 @@ class ExplicitShooting(TranscriptionBase):
 
     def get_parameter_connections(self, name, phase):
         """
-        Returns info about a parameter's target connections in the phase.
+        Return info about a parameter's target connections in the phase.
 
         Parameters
         ----------
@@ -697,7 +698,7 @@ class ExplicitShooting(TranscriptionBase):
 
     def _requires_continuity_constraints(self, phase):
         """
-        Tests whether state and/or control and/or control rate continuity are required.
+        Test whether state and/or control and/or control rate continuity are required.
 
         Parameters
         ----------
@@ -733,7 +734,7 @@ class ExplicitShooting(TranscriptionBase):
 
     def _get_num_timeseries_nodes(self):
         """
-        Returns the number of nodes in the default timeseries for this transcription.
+        Return the number of nodes in the default timeseries for this transcription.
 
         Returns
         -------
@@ -829,8 +830,7 @@ class ExplicitShooting(TranscriptionBase):
 
     def _phase_set_state_val(self, phase, name, vals, time_vals=None, interpolation_kind=None):
         """
-        Method to interpolate the provided input and return the variables that need to be set
-        along with their appropriate value.
+        Interpolate the provided input and return the variables that need to be set along with their appropriate value.
 
         Parameters
         ----------

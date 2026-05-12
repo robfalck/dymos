@@ -121,10 +121,31 @@ lines = x_sol_line, v_sol_line
 
 
 def init():
+    """
+    Initialize the animation by returning the line artists to be drawn.
+
+    Returns
+    -------
+    tuple
+        The matplotlib line artists used in the animation.
+    """
     return lines
 
 
 def update(frame):
+    """
+    Update the animation for a given frame index.
+
+    Parameters
+    ----------
+    frame : int
+        The index of the current animation frame (corresponds to an optimizer iteration).
+
+    Returns
+    -------
+    tuple
+        Updated matplotlib line artists for the current frame.
+    """
     # xdata.append(frame)
     # ydata.append(np.sin(frame))
 

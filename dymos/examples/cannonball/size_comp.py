@@ -14,6 +14,7 @@ class CannonballSizeComp(om.ExplicitComponent):
     component does not reside in the ODE but instead its outputs are connected to the trajectory via
     input design parameters.
     """
+
     def setup(self):
         self.add_input(name='radius', val=1.0, desc='cannonball radius', units='m')
         self.add_input(name='dens', val=7870., desc='cannonball density', units='kg/m**3')
@@ -30,14 +31,14 @@ class CannonballSizeComp(om.ExplicitComponent):
         radius = inputs['radius']
         dens = inputs['dens']
 
-        outputs['mass'] = (4/3.) * dens * np.pi * radius ** 3
+        outputs['mass'] = (4 / 3.) * dens * np.pi * radius ** 3
         outputs['S'] = np.pi * radius ** 2
 
     def compute_partials(self, inputs, partials):
         radius = inputs['radius']
         dens = inputs['dens']
 
-        partials['mass', 'dens'] = (4/3.) * np.pi * radius ** 3
+        partials['mass', 'dens'] = (4 / 3.) * np.pi * radius ** 3
         partials['mass', 'radius'] = 4. * dens * np.pi * radius ** 2
 
         partials['S', 'radius'] = 2 * np.pi * radius

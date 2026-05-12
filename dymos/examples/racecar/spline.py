@@ -5,6 +5,23 @@ from scipy import interpolate
 
 
 def get_track_points(track, initial_direction=np.array([1, 0])):
+    """
+    Place nodes along the track centerline for spline fitting.
+
+    Nodes are placed more densely around corners than on straights.
+
+    Parameters
+    ----------
+    track : object
+        A track description object with segment geometry methods.
+    initial_direction : np.ndarray
+        The initial heading direction as a unit vector.
+
+    Returns
+    -------
+    np.ndarray
+        Array of shape (N, 2) containing the (x, y) coordinates of the track nodes.
+    """
     # given a track description, place nodes along the centerlines in order to fit a spline
     # through them. Nodes are denser around corners
     pos = np.array([0, 0])
@@ -61,12 +78,58 @@ def get_track_points(track, initial_direction=np.array([1, 0])):
 
 
 def parametric_circle(t, xc, yc, R):
+    """
+    Compute the (x, y) coordinates of a circle at parameter values t.
+
+    Parameters
+    ----------
+    t : array_like
+        Parameter values (angles in radians).
+    xc : float
+        x-coordinate of the circle center.
+    yc : float
+        y-coordinate of the circle center.
+    R : float
+        Radius of the circle.
+
+    Returns
+    -------
+    x : np.ndarray
+        x-coordinates of the circle.
+    y : np.ndarray
+        y-coordinates of the circle.
+    """
     x = xc + R * np.cos(t)
     y = yc + R * np.sin(t)
     return x, y
 
 
 def get_spline(points, interval=0.0001, s=0.0):
+    """
+    Fit a B-spline to the given track points and return spline data.
+
+    Parameters
+    ----------
+    points : np.ndarray
+        Array of (x, y) track node positions to fit.
+    interval : float
+        Step size for the uniform spline parameter array.
+    s : float
+        Smoothing factor passed to scipy's splprep.
+
+    Returns
+    -------
+    finespline : list of np.ndarray
+        Densely sampled spline coordinates.
+    gates : list of np.ndarray
+        Spline coordinates evaluated at the original node parameter values.
+    gatesd : list of np.ndarray
+        First derivatives of the spline at the original node parameter values.
+    curv : np.ndarray
+        Signed curvature of the spline at each fine sample point.
+    single : list of np.ndarray
+        First derivatives of the spline at each fine sample point.
+    """
     # this function fits the spline
     tck, u = interpolate.splprep(points.transpose(), s=s, k=5)
     unew = np.arange(0, 1.0, interval)
@@ -85,6 +148,21 @@ def get_spline(points, interval=0.0001, s=0.0):
 
 
 def get_gate_normals(gates, gatesd):
+    """
+    Compute the outward and inward normal vectors at each gate location.
+
+    Parameters
+    ----------
+    gates : list of np.ndarray
+        Gate positions as [x_array, y_array].
+    gatesd : list of np.ndarray
+        First-derivative vectors at each gate as [dx_array, dy_array].
+
+    Returns
+    -------
+    normals : list of list
+        List of [normal_outward, normal_inward] unit vector pairs for each gate.
+    """
     normals = []
     for i in range(len(gates[0])):
         der = [gatesd[0][i], gatesd[1][i]]
@@ -98,6 +176,21 @@ def get_gate_normals(gates, gatesd):
 
 
 def transform_gates(gates):
+    """
+    Transform gates from column-array format to row-point format.
+
+    Converts from [[x positions], [y positions]] to [[x0, y0], [x1, y1], ...].
+
+    Parameters
+    ----------
+    gates : list of np.ndarray
+        Gate positions in column format [x_array, y_array].
+
+    Returns
+    -------
+    newgates : list of list
+        Gate positions as a list of [x, y] pairs.
+    """
     # transforms from [[x positions],[y positions]] to [[x0, y0],[x1, y1], etc..]
     newgates = []
     for i in range(len(gates[0])):
@@ -106,6 +199,21 @@ def transform_gates(gates):
 
 
 def reverse_transform_gates(gates):
+    """
+    Transform gates from row-point format back to column-array format.
+
+    Converts from [[x0, y0], [x1, y1], ...] to [[x positions], [y positions]].
+
+    Parameters
+    ----------
+    gates : list of list
+        Gate positions as a list of [x, y] pairs.
+
+    Returns
+    -------
+    newgates : np.ndarray
+        Gate positions as a (2, N) array with rows for x and y coordinates.
+    """
     # transforms from [[x0, y0],[x1, y1], etc..] to [[x positions],[y positions]]
     newgates = np.zeros((2, len(gates)))
     for i in range(len(gates)):
@@ -115,6 +223,25 @@ def reverse_transform_gates(gates):
 
 
 def set_gate_displacements(gate_displacements, gates, normals):
+    """
+    Apply lateral displacements to gate positions along their normal directions.
+
+    Does not modify the original gates array; returns a new updated copy.
+
+    Parameters
+    ----------
+    gate_displacements : array_like
+        Signed displacement values for each gate (positive = outward normal direction).
+    gates : np.ndarray
+        Gate positions in column format [x_array, y_array].
+    normals : list of list
+        List of [normal_outward, normal_inward] unit vector pairs for each gate.
+
+    Returns
+    -------
+    newgates : np.ndarray
+        Updated gate positions after applying the displacements.
+    """
     # does not modify original gates, returns updated version
     newgates = np.copy(gates)
     for i in range(len(gates[0])):

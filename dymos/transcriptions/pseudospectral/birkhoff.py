@@ -15,18 +15,19 @@ from dymos.utils.indexing import get_constraint_flat_idxs, get_src_indices_by_ro
 
 class Birkhoff(TranscriptionBase):
     """
-        Birkhoff Pseudospectral Transcription.
+    Birkhoff Pseudospectral Transcription.
 
-        Parameters
-        ----------
-        **kwargs : dict
-            Dictionary of optional arguments.
+    Parameters
+    ----------
+    **kwargs : dict
+        Dictionary of optional arguments.
 
-        References
-        ----------
-        I. M. Ross, "A Universeal Birkhoff Theory for Fast Trajectory Optimization"
-        https://arxiv.org/abs/2308.01400v2
-        """
+    References
+    ----------
+    I. M. Ross, "A Universeal Birkhoff Theory for Fast Trajectory Optimization"
+    https://arxiv.org/abs/2308.01400v2
+    """
+
     def __init__(self, **kwargs):
         super(Birkhoff, self).__init__(**kwargs)
         self._rhs_source = 'ode_iter_group.ode_all'
@@ -59,7 +60,7 @@ class Birkhoff(TranscriptionBase):
 
     def init_grid(self):
         """
-        Setup the GridData object for the Transcription.
+        Set up the GridData object for the Transcription.
         """
         self.grid_data = BirkhoffGrid(num_nodes=self.options['num_nodes'],
                                       grid_type=self.options['grid_type'])
@@ -71,7 +72,7 @@ class Birkhoff(TranscriptionBase):
 
     def setup_time(self, phase):
         """
-        Setup the time component.
+        Set up the time component.
 
         Parameters
         ----------
@@ -146,7 +147,7 @@ class Birkhoff(TranscriptionBase):
 
     def setup_states(self, phase):
         """
-        Setup the states for this transcription.
+        Set up the states for this transcription.
 
         In the Birkhoff transcription, everything typically done in this
         method is instead done by the BirkhoffIterGroup.
@@ -209,14 +210,13 @@ class Birkhoff(TranscriptionBase):
 
     def setup_ode(self, phase):
         """
-        Setup the ode for this transcription.
+        Set up the ode for this transcription.
 
         Parameters
         ----------
         phase : dymos.Phase
             The phase object to which this transcription instance applies.
         """
-
         ODEClass = phase.options['ode_class']
         grid_data = self.grid_data
 
@@ -284,7 +284,7 @@ class Birkhoff(TranscriptionBase):
 
     def setup_solvers(self, phase):
         """
-        Setup the solvers.
+        Set up the solvers.
 
         Parameters
         ----------
@@ -339,7 +339,7 @@ class Birkhoff(TranscriptionBase):
 
     def setup_timeseries_outputs(self, phase):
         """
-        Setup the timeseries for this transcription.
+        Set up the timeseries for this transcription.
 
         Parameters
         ----------
@@ -529,7 +529,7 @@ class Birkhoff(TranscriptionBase):
 
     def _get_num_timeseries_nodes(self):
         """
-        Returns the number of nodes in the default timeseries for this transcription.
+        Return the number of nodes in the default timeseries for this transcription.
 
         Returns
         -------
@@ -696,7 +696,7 @@ class Birkhoff(TranscriptionBase):
 
     def get_parameter_connections(self, name, phase):
         """
-        Returns info about a parameter's target connections in the phase.
+        Return info about a parameter's target connections in the phase.
 
         Parameters
         ----------
@@ -735,7 +735,7 @@ class Birkhoff(TranscriptionBase):
 
     def _requires_continuity_constraints(self, phase):
         """
-        Tests whether state and/or control and/or control rate continuity are required.
+        Test whether state and/or control and/or control rate continuity are required.
 
         Parameters
         ----------
@@ -765,8 +765,7 @@ class Birkhoff(TranscriptionBase):
 
     def _phase_set_state_val(self, phase, name, vals, time_vals, interpolation_kind):
         """
-        Method to interpolate the provided input and return the variables that need to be set
-        along with their appropriate value.
+        Interpolate the provided input and return the variables that need to be set along with their appropriate value.
 
         Parameters
         ----------
@@ -821,7 +820,7 @@ class Birkhoff(TranscriptionBase):
 
     def _get_linkage_source_ode(self, promoted=False):
         """
-        Returns the path of the ODE system providing sources for linkage constraints.
+        Return the path of the ODE system providing sources for linkage constraints.
 
         Nominally this is the _rhs_source but will need to be overridden in transcriptions
         with boundary ODEs or ODEs that are in a promoted path.

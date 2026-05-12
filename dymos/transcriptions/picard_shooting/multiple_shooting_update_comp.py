@@ -4,7 +4,6 @@ import scipy.sparse as sp
 import openmdao.api as om
 
 from dymos.transcriptions.grid_data import GridData
-from dymos._options import options as dymos_options
 
 
 class MultipleShootingUpdateComp(om.ExplicitComponent):
@@ -34,7 +33,7 @@ class MultipleShootingUpdateComp(om.ExplicitComponent):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._no_check_partials = not dymos_options['include_check_partials']
+        self._no_check_partials = True
         self._M_fwd = None
         self._M_bkwd = None
 
@@ -71,12 +70,12 @@ class MultipleShootingUpdateComp(om.ExplicitComponent):
         M_fwd = sp.lil_array((num_segs, num_nodes))
         for iseg in range(1, gd.num_segments):
             # The ith row of M_fwd contains in the column pertaining to first node in the (i-1)th segment
-            M_fwd[iseg, seg_end_nodes[iseg-1]] = 1.
+            M_fwd[iseg, seg_end_nodes[iseg - 1]] = 1.
 
         M_bkwd = sp.lil_array((num_segs, num_nodes))
-        for iseg in range(gd.num_segments-1):
+        for iseg in range(gd.num_segments - 1):
             # The ith row of M_bkwd contains in the column pertaining to first node in the (i+1)th segment
-            M_bkwd[iseg, seg_start_nodes[iseg+1]] = 1.
+            M_bkwd[iseg, seg_start_nodes[iseg + 1]] = 1.
 
         self._M_fwd = {}
         self._M_bkwd = {}

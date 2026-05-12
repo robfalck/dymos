@@ -5,7 +5,6 @@ import openmdao.api as om
 
 from ...grid_data import GridData
 from ....utils.misc import get_rate_units
-from ...._options import options as dymos_options
 
 
 class CollocationComp(om.ExplicitComponent):
@@ -21,9 +20,10 @@ class CollocationComp(om.ExplicitComponent):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._no_check_partials = not dymos_options['include_check_partials']
+        self._no_check_partials = True
 
     def initialize(self):
         """

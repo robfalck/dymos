@@ -20,6 +20,7 @@ class BirkhoffIterGroup(om.Group):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._implicit_outputs = set()
@@ -203,7 +204,7 @@ class BirkhoffIterGroup(om.Group):
                                                units=units)
 
                 states_balance_comp.add_input(f'state_defects:{name}',
-                                              shape=(nn+ns,) + shape,
+                                              shape=(nn + ns,) + shape,
                                               units=units)
 
                 if ns > 1:

@@ -41,9 +41,9 @@ class LowThrustODE(om.ExplicitComponent):
 
         T = 1e-3
 
-        outputs['theta_dot'] = vt/r
-        outputs['vr_dot'] = vt**2/r - 1/r**2 + T*np.sin(alpha)
-        outputs['vt_dot'] = -vr*vt/r + T*np.cos(alpha)
+        outputs['theta_dot'] = vt / r
+        outputs['vr_dot'] = vt**2 / r - 1 / r**2 + T * np.sin(alpha)
+        outputs['vt_dot'] = -vr * vt / r + T * np.cos(alpha)
 
     def compute_partials(self, inputs, partials, discrete_inputs=None):
         r = inputs['r']
@@ -53,14 +53,14 @@ class LowThrustODE(om.ExplicitComponent):
 
         T = 1e-3
 
-        partials['theta_dot', 'r'] = -vt/r**2
-        partials['theta_dot', 'vt'] = 1/r
+        partials['theta_dot', 'r'] = -vt / r**2
+        partials['theta_dot', 'vt'] = 1 / r
 
-        partials['vr_dot', 'r'] = -(vt/r)**2 + 2/r**3
-        partials['vr_dot', 'vt'] = 2*vt/r
+        partials['vr_dot', 'r'] = -(vt / r)**2 + 2 / r**3
+        partials['vr_dot', 'vt'] = 2 * vt / r
         partials['vr_dot', 'alpha'] = T * np.cos(alpha)
 
-        partials['vt_dot', 'r'] = vt*vr/r**2
-        partials['vt_dot', 'vr'] = -vt/r
-        partials['vt_dot', 'vt'] = -vr/r
+        partials['vt_dot', 'r'] = vt * vr / r**2
+        partials['vt_dot', 'vr'] = -vt / r
+        partials['vt_dot', 'vt'] = -vr / r
         partials['vt_dot', 'alpha'] = -T * np.sin(alpha)

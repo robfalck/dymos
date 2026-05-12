@@ -6,7 +6,6 @@ import openmdao.api as om
 
 from dymos.transcriptions.grid_data import GridData
 from dymos.utils.misc import get_rate_units
-from dymos._options import options as dymos_options
 from dymos.utils.lgl import lgl
 from dymos.utils.cgl import cgl
 from dymos.utils.birkhoff import birkhoff_matrix
@@ -33,7 +32,7 @@ class BirkhoffDefectComp(om.ExplicitComponent):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._no_check_partials = not dymos_options['include_check_partials']
+        self._no_check_partials = True
 
     def initialize(self):
         """
@@ -155,7 +154,7 @@ class BirkhoffDefectComp(om.ExplicitComponent):
             if not np.isscalar(defect_ref):
                 defect_ref = np.asarray(defect_ref)
                 if defect_ref.shape == shape:
-                    defect_ref_state = np.tile(defect_ref.flatten(), num_nodes+num_segs)
+                    defect_ref_state = np.tile(defect_ref.flatten(), num_nodes + num_segs)
                     defect_ref_v = np.tile(defect_ref.flatten(), num_nodes)
                 else:
                     raise ValueError('array-valued scaler/ref must length equal to state-size')

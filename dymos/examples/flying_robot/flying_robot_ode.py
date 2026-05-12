@@ -4,6 +4,7 @@ import openmdao.api as om
 class FlyingRobotODE(om.ExplicitComponent):
     """
     The flying robot ODE mimics a free flying robot with thrusters in the vertical axis and
+    
     horizontal axis.
 
     The controls on the robot are external accelerations in these two orthogonal axes.

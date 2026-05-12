@@ -13,6 +13,7 @@ class BalancedFieldODEComp(om.ExplicitComponent):
     .. [1] Raymer, Daniel. Aircraft design: a conceptual approach. American Institute of
     Aeronautics and Astronautics, Inc., 2012.
     """
+
     def initialize(self):
         self.options.declare('num_nodes', types=int)
         self.options.declare('g', types=(float, int), default=9.80665, desc='gravitational acceleration (m/s**2)')

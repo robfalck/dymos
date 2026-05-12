@@ -2,8 +2,6 @@ import numpy as np
 
 import openmdao.api as om
 
-from ..._options import options as dymos_options
-
 
 class TimeComp(om.ExplicitComponent):
     """
@@ -14,9 +12,10 @@ class TimeComp(om.ExplicitComponent):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._no_check_partials = not dymos_options['include_check_partials']
+        self._no_check_partials = True
 
     def initialize(self):
         """

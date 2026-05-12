@@ -328,6 +328,7 @@ class ODEEvaluationGroup(om.Group):
     def _get_rate_source_path(self, state_var):
         """
         Get path of the rate source variable so that we can connect it to the
+        
         outputs when we're done.
 
         Parameters

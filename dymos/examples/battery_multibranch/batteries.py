@@ -47,11 +47,11 @@ class Battery(om.ExplicitComponent):
 
         self.add_output('V_oc', val=np.ones(num_nodes), units='V',
                         desc='Open Circuit Voltage')
-        self.add_output('I_pack', val=0.1*np.ones(num_nodes), units='A',
+        self.add_output('I_pack', val=0.1 * np.ones(num_nodes), units='A',
                         desc='Total Pack Current')
-        self.add_output('V_pack', val=9.0*np.ones(num_nodes), units='V',
+        self.add_output('V_pack', val=9.0 * np.ones(num_nodes), units='V',
                         desc='Total Pack Voltage')
-        self.add_output('P_pack', val=1.0*np.ones(num_nodes), units='W',
+        self.add_output('P_pack', val=1.0 * np.ones(num_nodes), units='W',
                         desc='Total Pack Power')
 
         # Derivatives
@@ -94,7 +94,7 @@ class Battery(om.ExplicitComponent):
 
         partials['V_L', 'I_Li'] = -opt['R_0']
 
-        partials['dXdt:SOC', 'I_Li'] = -1./(3600.0*opt['Q_max'])
+        partials['dXdt:SOC', 'I_Li'] = -1. / (3600.0 * opt['Q_max'])
 
         n_parallel = opt['n_parallel']
         n_series = opt['n_series']

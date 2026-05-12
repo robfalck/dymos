@@ -28,9 +28,9 @@ class TimeAdder(om.ExplicitComponent):
     def compute(self, inputs, outputs):
         sdot = inputs['sdot']
 
-        outputs['dt_ds'] = 1/sdot
+        outputs['dt_ds'] = 1 / sdot
 
     def compute_partials(self, inputs, jacobian):
         sdot = inputs['sdot']
 
-        jacobian['dt_ds', 'sdot'] = -1/sdot**2
+        jacobian['dt_ds', 'sdot'] = -1 / sdot**2

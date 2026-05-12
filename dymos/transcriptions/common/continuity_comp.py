@@ -3,7 +3,6 @@ import openmdao.api as om
 
 from ..grid_data import GridData
 from ...utils.misc import get_rate_units
-from ..._options import options as dymos_options
 
 
 class ContinuityCompBase(om.ExplicitComponent):
@@ -15,9 +14,10 @@ class ContinuityCompBase(om.ExplicitComponent):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._no_check_partials = not dymos_options['include_check_partials']
+        self._no_check_partials = True
 
     def initialize(self):
         """
@@ -120,8 +120,8 @@ class ContinuityCompBase(om.ExplicitComponent):
             n = len(num_nodes_per_segment)
             indices = np.array([], dtype=int)
             for i in range(1, n):
-                if num_nodes_per_segment[i] > 3 or num_nodes_per_segment[i-1] > 3:
-                    np.append(indices, i-1)
+                if num_nodes_per_segment[i] > 3 or num_nodes_per_segment[i - 1] > 3:
+                    np.append(indices, i - 1)
 
             indices = om.slicer[indices, ...]
 
@@ -143,7 +143,7 @@ class ContinuityCompBase(om.ExplicitComponent):
 
                 self.add_output(
                     name=f'defect_controls:{control_name}',
-                    val=5*np.ones((num_segments - 1,) + shape),
+                    val=5 * np.ones((num_segments - 1,) + shape),
                     desc=f'Continuity constraint values for control {control_name}',
                     units=units)
 
@@ -345,6 +345,7 @@ class GaussLobattoContinuityComp(ContinuityCompBase):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def _configure_state_continuity(self):
         state_options = self.options['state_options']
         num_segments = self.options['grid_data'].num_segments
@@ -395,6 +396,7 @@ class RadauPSContinuityComp(ContinuityCompBase):
     **kwargs : dict
         Dictionary of optional arguments.
     """
+
     def _configure_state_continuity(self):
         state_options = self.options['state_options']
         num_segments = self.options['grid_data'].num_segments

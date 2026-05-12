@@ -57,8 +57,8 @@ class AccelerationODE(om.ExplicitComponent):
         ax = inputs['ax']
         ay = inputs['ay']
 
-        outputs['axdot'] = (Vdot+omega*V*lamb-ax)/tau_x
-        outputs['aydot'] = (omega*V-(V*lambdadot+Vdot*lamb)-ay)/tau_y
+        outputs['axdot'] = (Vdot + omega * V * lamb - ax) / tau_x
+        outputs['aydot'] = (omega * V - (V * lambdadot + Vdot * lamb) - ay) / tau_y
 
     def compute_partials(self, inputs, jacobian):
         tau_y = inputs['tau_y']
@@ -69,15 +69,15 @@ class AccelerationODE(om.ExplicitComponent):
         Vdot = inputs['Vdot']
         lambdadot = inputs['lambdadot']
 
-        jacobian['axdot', 'ax'] = -1/tau_x
-        jacobian['axdot', 'Vdot'] = 1/tau_x
-        jacobian['axdot', 'omega'] = (V*lamb)/tau_x
-        jacobian['axdot', 'lambda'] = (omega*V)/tau_x
-        jacobian['axdot', 'V'] = (omega*lamb)/tau_x
+        jacobian['axdot', 'ax'] = -1 / tau_x
+        jacobian['axdot', 'Vdot'] = 1 / tau_x
+        jacobian['axdot', 'omega'] = (V * lamb) / tau_x
+        jacobian['axdot', 'lambda'] = (omega * V) / tau_x
+        jacobian['axdot', 'V'] = (omega * lamb) / tau_x
 
-        jacobian['aydot', 'ay'] = -1/tau_y
-        jacobian['aydot', 'omega'] = V/tau_y
-        jacobian['aydot', 'V'] = (omega-lambdadot)/tau_y
-        jacobian['aydot', 'lambda'] = -Vdot/tau_y
-        jacobian['aydot', 'lambdadot'] = -V/tau_y
-        jacobian['aydot', 'Vdot'] = -lamb/tau_y
+        jacobian['aydot', 'ay'] = -1 / tau_y
+        jacobian['aydot', 'omega'] = V / tau_y
+        jacobian['aydot', 'V'] = (omega - lambdadot) / tau_y
+        jacobian['aydot', 'lambda'] = -Vdot / tau_y
+        jacobian['aydot', 'lambdadot'] = -V / tau_y
+        jacobian['aydot', 'Vdot'] = -lamb / tau_y

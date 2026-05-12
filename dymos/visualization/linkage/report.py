@@ -13,11 +13,12 @@ _default_linkage_report_filename = 'linkage_report.html'
 
 def _create_model_data(traj):
     """
-    Creates the model_data dictionary for the given trajectory.
+    Create the model_data dictionary for the given trajectory.
 
     Parameters
     ----------
-    traj : A dymos Trajectory object.
+    traj : Trajectory
+        A dymos Trajectory object.
 
     Returns
     -------
@@ -392,8 +393,7 @@ def _convert_dicts_to_lists(tree_dict, show_all_vars):
 
 
 def _run_linkage_report(prob):
-    """ Function invoked by the reports system """
-
+    """ Invoke the linkage report for all trajectories in the problem. """
     # Find all Trajectory objects in the Problem. Usually, there's only one
     for traj in prob.model.system_iter(include_self=True, recurse=True, typ=dm.Trajectory):
         # Only create a report for a trajectory with linkages

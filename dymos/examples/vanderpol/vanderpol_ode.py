@@ -50,15 +50,15 @@ class VanderpolODE(om.ExplicitComponent):
         r = np.arange(self.io_size, dtype=int)
         c = r + self.start_idx
 
-        self.declare_partials(of='x0dot', wrt='x0',  rows=r, cols=c)
-        self.declare_partials(of='x0dot', wrt='x1',  rows=r, cols=c)
-        self.declare_partials(of='x0dot', wrt='u',   rows=r, cols=c, val=1.0)
+        self.declare_partials(of='x0dot', wrt='x0', rows=r, cols=c)
+        self.declare_partials(of='x0dot', wrt='x1', rows=r, cols=c)
+        self.declare_partials(of='x0dot', wrt='u', rows=r, cols=c, val=1.0)
 
-        self.declare_partials(of='x1dot', wrt='x0',  rows=r, cols=c, val=1.0)
+        self.declare_partials(of='x1dot', wrt='x0', rows=r, cols=c, val=1.0)
 
-        self.declare_partials(of='Jdot', wrt='x0',  rows=r, cols=c)
-        self.declare_partials(of='Jdot', wrt='x1',  rows=r, cols=c)
-        self.declare_partials(of='Jdot', wrt='u',   rows=r, cols=c)
+        self.declare_partials(of='Jdot', wrt='x0', rows=r, cols=c)
+        self.declare_partials(of='Jdot', wrt='x1', rows=r, cols=c)
+        self.declare_partials(of='Jdot', wrt='u', rows=r, cols=c)
 
     def compute(self, inputs, outputs):
         # introduce slowness proportional to size of computation

@@ -15,6 +15,7 @@ class ControlOptionsDictionary(om.OptionsDictionary):
     read_only : bool
         If True, setting (via __setitem__ or update) is not permitted.
     """
+
     def __init__(self, read_only=False):
         super(ControlOptionsDictionary, self).__init__(read_only)
 
@@ -158,6 +159,7 @@ class ParameterOptionsDictionary(om.OptionsDictionary):
     read_only : bool
         If True, setting (via __setitem__ or update) is not permitted.
     """
+
     def __init__(self, read_only=False):
         super(ParameterOptionsDictionary, self).__init__(read_only)
 
@@ -253,6 +255,7 @@ class TrajParameterOptionsDictionary(ParameterOptionsDictionary):
     read_only : bool
         If True, setting (via __setitem__ or update) is not permitted.
     """
+
     def __init__(self, read_only=False):
         super(TrajParameterOptionsDictionary, self).__init__(read_only)
 
@@ -282,6 +285,7 @@ class StateOptionsDictionary(om.OptionsDictionary):
     read_only : bool
         If True, setting (via __setitem__ or update) is not permitted.
     """
+
     def __init__(self, read_only=False):
         super(StateOptionsDictionary, self).__init__(read_only)
 
@@ -432,6 +436,7 @@ class TimeOptionsDictionary(om.OptionsDictionary):
     read_only : bool
         If True, setting (via __setitem__ or update) is not permitted.
     """
+
     def __init__(self, read_only=False):
         super(TimeOptionsDictionary, self).__init__(read_only)
 
@@ -525,6 +530,7 @@ class GridRefinementOptionsDictionary(om.OptionsDictionary):
     read_only : bool
         If True, setting (via __setitem__ or update) is not permitted.
     """
+
     def __init__(self, read_only=False):
         super(GridRefinementOptionsDictionary, self).__init__(read_only)
 
@@ -552,6 +558,7 @@ class SimulateOptionsDictionary(om.OptionsDictionary):
     read_only : bool
         If True, setting (via __setitem__ or update) is not permitted.
     """
+
     def __init__(self, read_only=False):
         super(SimulateOptionsDictionary, self).__init__(read_only)
 
@@ -585,6 +592,7 @@ class ConstraintOptionsDictionary(om.OptionsDictionary):
     read_only : bool
         If True, setting (via __setitem__ or update) is not permitted.
     """
+
     def __init__(self, read_only=False):
         super(ConstraintOptionsDictionary, self).__init__(read_only)
 
@@ -646,6 +654,7 @@ class TimeseriesOutputOptionsDictionary(om.OptionsDictionary):
     read_only : bool
         If True, setting (via __setitem__ or update) is not permitted.
     """
+
     def __init__(self, read_only=False):
         super(TimeseriesOutputOptionsDictionary, self).__init__(read_only)
 
@@ -689,6 +698,7 @@ class PhaseTimeseriesOptionsDictionary(om.OptionsDictionary):
     read_only : bool
         If True, setting (via __setitem__ or update) is not permitted.
     """
+
     def __init__(self, read_only=False):
         super().__init__(read_only)
 

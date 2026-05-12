@@ -18,7 +18,7 @@ class BreakwellODE(om.ExplicitComponent):
 
     def compute(self, inputs, outputs, discrete_inputs=None, discrete_outputs=None):
         u = inputs['u']
-        outputs['J_dot'] = 0.5*u**2
+        outputs['J_dot'] = 0.5 * u**2
 
     def compute_partials(self, inputs, partials, discrete_inputs=None):
         u = inputs['u']

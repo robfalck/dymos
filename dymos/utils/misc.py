@@ -162,6 +162,7 @@ class CoerceDesvar(object):
     options : dict
         Variable options dictionary, should contain "shape".
     """
+
     def __init__(self, num_input_nodes, desvar_indices=None, options=None):
         self.num_input_nodes = num_input_nodes
         shape = options['shape']
@@ -211,7 +212,7 @@ class CoerceDesvar(object):
         if isinstance(val, list):
             val = np.asarray(val)
         if val.shape == self.options['shape']:
-            return np.tile(val.flatten(), int(len(self.desvar_indices)/val.size))
+            return np.tile(val.flatten(), int(len(self.desvar_indices) / val.size))
         else:
             raise ValueError('array-valued option {0} must have same shape '
                              'as states ({1})'.format(option, self.options['shape']))
@@ -219,7 +220,7 @@ class CoerceDesvar(object):
 
 def CompWrapperConfig(comp_class, config_io_args=None):
     """
-    Returns a wrapped comp_class that calls its configure_io method at the end of setup.
+    Return a wrapped comp_class that calls its configure_io method at the end of setup.
 
     This allows for standalone testing of Dymos components that normally require their parent group
     to configure them.
@@ -240,7 +241,7 @@ def CompWrapperConfig(comp_class, config_io_args=None):
 
         def setup(self):
             """
-            Appends a call to configure_io after setup.
+            Append a call to configure_io after setup.
             """
             super(WrappedClass, self).setup()
             args = [] if config_io_args is None else config_io_args
@@ -252,7 +253,7 @@ def CompWrapperConfig(comp_class, config_io_args=None):
 # Modify class so we can run it standalone.
 def GroupWrapperConfig(comp_class, config_io_args=None):
     """
-    Returns a wrapped group_class that calls its configure_io method at the end of setup.
+    Return a wrapped group_class that calls its configure_io method at the end of setup.
 
     This allows for standalone testing of Dymos components that normally require their parent group
     to configure them.
@@ -273,7 +274,7 @@ def GroupWrapperConfig(comp_class, config_io_args=None):
 
         def setup(self):
             """
-            Setup as normal.
+            Set up as normal.
             """
             super(WrappedClass, self).setup()
 
@@ -353,7 +354,7 @@ def om_version():
 
 def is_scalar_or_singleton(x):
     """
-    Returns True if x is a scalar, is an instance of np.generic, or is an array of length 1.
+    Return True if x is a scalar, is an instance of np.generic, or is an array of length 1.
 
     Parameters
     ----------
