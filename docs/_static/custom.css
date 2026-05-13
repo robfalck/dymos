@@ -1,0 +1,80 @@
+/* Custom CSS for Dymos Sphinx documentation */
+
+/* Math rendering */
+.math {
+    font-family: 'Courier New', monospace;
+    overflow-x: auto;
+}
+
+/* Code blocks */
+.highlight {
+    border-radius: 4px;
+    padding: 12px;
+}
+
+/* Tables */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+}
+
+table td, table th {
+    border: 1px solid #e0e0e0;
+    padding: 0.75em;
+    text-align: left;
+}
+
+table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+/* Admonitions */
+.admonition {
+    border-left: 4px solid #003366;
+    padding: 1em;
+    margin: 1em 0;
+    background-color: #f9f9f9;
+}
+
+.admonition.note {
+    border-left-color: #0066cc;
+}
+
+.admonition.warning {
+    border-left-color: #ff9900;
+}
+
+.admonition.danger {
+    border-left-color: #cc0000;
+}
+
+/* Link styling */
+a {
+    color: #003366;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #0066cc;
+}
+
+/* Version badge */
+.version-badge {
+    display: inline-block;
+    padding: 0.25em 0.5em;
+    background-color: #f0f0f0;
+    border-radius: 3px;
+    font-size: 0.85em;
+    margin-right: 0.5em;
+}
+
+/* Bibliography references */
+.citation {
+    margin: 0.5em 0;
+}
+
+.cite {
+    color: #003366;
+}

@@ -1,0 +1,27 @@
+# Sphinx documentation build requirements
+# Install with: pip install -r docs/requirements-sphinx.txt
+
+# Core Sphinx
+sphinx>=7.0
+sphinx-sitemap>=2.5
+
+# Markdown support
+myst-parser>=1.0
+myst-nb>=0.17
+
+# Theme
+furo>=2023.12
+
+# Code execution
+jupyter-sphinx>=0.4
+jupyter>=1.0
+ipython>=8.0
+ipykernel>=6.0
+
+# Bibliography
+sphinxcontrib-bibtex>=2.6
+
+# Optional but recommended
+sphinx-autodoc-typehints>=1.25
+sphinx-copybutton>=0.5
+sphinx-tabs>=3.4
