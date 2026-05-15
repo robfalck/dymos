@@ -1,14 +1,16 @@
 repos:
 - repo: local
   hooks:
-    - id: ruff
-      name: ruff
-      language: system
-      entry: ruff check
-      types_or: [ python, pyi, jupyter ]
-    - id: check-notebook-outputs
-      name: Check that notebooks have no output cells.
-      description: Verifies that documentation notebooks contain no output cells.
-      language: python
-      pass_filenames: false
-      entry: python ./docs/clean_notebooks.py --dryrun ./docs
+  - id: ruff
+    name: Run Ruff check
+    description: Run Ruff linter with local environment
+    entry: pixi run ruff check --config pyproject.toml
+    language: system
+    types_or: [ python, pyi, jupyter ]
+    pass_filenames: true
+  - id: check-notebook-outputs
+    name: Check that notebooks have no output cells.
+    description: Verifies that documentation notebooks contain no output cells.
+    language: python
+    pass_filenames: false
+    entry: python ./docs/clean_notebooks.py --dryrun ./docs

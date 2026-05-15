@@ -13,33 +13,6 @@ confusion during dymos development. Read this before working on connection/promo
 path through subsystems. When a group uses `promotes=['*']`, its children's inputs and
 outputs are promoted to the group's level.
 
-**Example — GaussLobattoNew:**
-
-`ode_iter_group` is added with `promotes=['*']`. Inside it, `ode_interp_group` promotes
-everything, and inside that, `ode` is a subsystem. The `ode` component's output `xdot` is
-promoted through both inner groups to the phase level. So from outside the phase:
-
-```python
-# Correct promoted path:
-p.get_val('traj.phase0.ode.xdot_comp.xdot')
-
-# WRONG (absolute path, not promoted):
-p.get_val('traj.phase0.ode_iter_group.ode_interp_group.ode.xdot_comp.xdot')
-```
-
-**Example — RadauNew:**
-
-`ode_iter_group` promotes everything. Inside it, `ode_all` is a subsystem (not promoted).
-`ode_all`'s output `x0dot` is promoted to the phase level:
-
-```python
-# Correct:
-p.get_val('traj.phase0.ode_all.x0dot')
-
-# WRONG:
-p.get_val('traj.phase0.ode_iter_group.ode_all.x0dot')
-```
-
 ### `traj.phases.phase0` vs `traj.phase0`
 
 The absolute path to a phase subsystem under a trajectory is `traj.phases.phase0`
@@ -94,47 +67,6 @@ self.promotes('defects', inputs=('dt_dstau',),
 
 `src_indices` is validated against the **global size** of the source variable. This is
 the standard case and works as expected at any group level.
-
-### Distributed sources
-
-A component output marked `distributed=True` is split across MPI ranks. Each rank owns
-a contiguous slice of `io_size` elements, where `io_size = nn // n_ranks`.
-
-**Critical:** When you call `self.connect()` **inside a group**, OpenMDAO validates
-`src_indices` against the **local (per-rank) size**, not the global size. If
-`max(src_indices) >= local_size`, you get:
-
-```
-index N is out of bounds for source dimension of size M
-```
-
-even though `N < global_size`.
-
-**Fix:** Ensure only ONE connection exists for that target. The correct location for
-ODE-type `f_ode:{name}` connections is inside the iter group's `configure_io`
-(group-level `self.connect`), mirroring `GaussLobattoIterGroup`. The `configure_defects`
-method must skip ODE-type rate sources to avoid creating a duplicate.
-
-```python
-# WRONG -- connecting at both group level AND phase level (duplicate):
-# RadauIterGroup.configure_io:
-self.connect('ode_all.x0dot', 'f_ode:x0', src_indices=...)
-# RadauNew.configure_defects:
-phase.connect('ode_all.x0dot', 'f_ode:x0', src_indices=...)  # duplicate → error
-
-# CORRECT -- group level only, configure_defects skips ODE-type:
-# RadauIterGroup.configure_io:
-if var_type == 'ode':
-    self.connect(f'ode_all.{rate_source}', f'f_ode:{name}',
-                 src_indices=om.slicer[col_idxs, ...])
-# RadauNew.configure_defects:
-if var_type == 'ode':
-    continue  # already handled inside RadauIterGroup
-```
-
-Note: the earlier hypothesis that group-level `self.connect` fails for distributed ODEs
-was incorrect — the real failure was caused by having the connection in **both** places.
-Removing the duplicate (from `configure_defects`) resolves the issue.
 
 ### `flat_src_indices=True`
 
@@ -195,11 +127,14 @@ OpenMDAO performs two phases of initialization:
 
 1. **`setup()`** — builds the system tree: adds subsystems, declares I/O.
    Shape/unit information is not available. Use `add_subsystem`, `add_input`,
-   `add_output`, `add_design_var`, `declare_partials`.
+   `add_output`, `add_design_var`, `declare_partials`. This occurs in a top-down
+   manner starting at the root model and proceeding to the leaf nodes (Components).
 
 2. **`configure()`** — called after the first setup pass resolves shapes/units.
    Use `connect`, `promotes`, `set_input_defaults`. Also safe to add additional
-   I/O here (deferred I/O).
+   I/O here (deferred I/O). This proceeds "bottom up", starting at the leaf nodes
+   and proceeding to the root. Note that components don't have a configure method
+   because it would be executed immediately after setup.
 
 In dymos, `setup_*` methods use `add_subsystem`; `configure_*` methods use
 `connect`, `promotes`, and deferred I/O like `configure_io()`.
@@ -219,35 +154,6 @@ This often surfaces as a hidden duplicate when a connection is made in two place
 (e.g., once inside a sub-group's `configure_io` and again in the transcription's
 `configure_defects`). Always check for existing connections when adding new ones.
 
-**Known case in dymos:** `f_ode:{name}` for ODE-type rate sources is connected inside
-`RadauIterGroup.configure_io()` (group-level). `RadauNew.configure_defects()` skips
-ODE-type with `continue`. Do not connect it in both places.
-
----
-
-## DYMOS_2 Path Differences
-
-When `DYMOS_2=1`:
-- `dm.GaussLobatto` → `GaussLobattoNew`; ODE runs at all `n_all` nodes
-- `dm.Radau` → `RadauNew`; ODE runs at all `n_all` nodes
-
-| Variable | DYMOS_2=0 path | DYMOS_2=1 path |
-|----------|----------------|----------------|
-| ODE output (GL) | `traj.phase0.rhs_col.{comp}.{var}` (n=n_col) OR `traj.phase0.rhs_disc.{comp}.{var}` (n=n_disc) | `traj.phase0.ode.{comp}.{var}` (n=n_all) |
-| ODE output (Radau) | `traj.phase0.rhs_all.{var}` | `traj.phase0.ode_all.{var}` |
-
-For tests that must work with both `DYMOS_2=0` and `DYMOS_2=1`, check the env var:
-
-```python
-import os
-if os.environ.get('DYMOS_2') == '1':
-    path = f'traj.phase0.ode.{comp}.{var}'
-    expected_size = n_all   # e.g. 30 for 3 segments × order=10
-else:
-    path = f'traj.phase0.rhs_col.{comp}.{var}'
-    expected_size = n_col
-```
-
 ---
 
 ## MPI / Distributed Component Hang
@@ -258,55 +164,6 @@ but the root cause is a setup error on one rank. Fix the setup error first; the 
 will resolve itself.
 
 The vanderpol distributed ODE (`VanderpolODE` with `distrib=True`) is the canonical
-example. The historical failure was a **duplicate** `ode_all → f_ode` connection: one
-inside `RadauIterGroup` (group-level) and another in `RadauNew.configure_defects`
-(phase-level). The duplicate caused an "already connected" error on one rank, which
-triggered the MPI hang on the others. Fix: keep the connection only inside
-`RadauIterGroup.configure_io` and skip ODE-type in `configure_defects`.
-
----
-
-## Subsystem Access in Tests: `_get_subsystem()` vs Attribute Access
-
-OpenMDAO exposes subsystems as Python attributes on their parent group after `setup()`,
-but this is not reliable in all execution contexts (e.g., running testflo from a
-subdirectory, or certain OpenMDAO versions). Always use `_get_subsystem('name')` for
-programmatic subsystem access in tests:
-
-```python
-# Unreliable — may raise AttributeError depending on context:
-comp = p.model.traj0.phases.phase0.ode_iter_group.states_resids_comp
-
-# Reliable:
-comp = (p.model.traj0.phases.phase0
-        ._get_subsystem('ode_iter_group')
-        ._get_subsystem('states_resids_comp'))
-```
-
-Note: string keys in `check_partials` output (`cpd[...]`) use the absolute path and are
-unaffected by this issue:
-```python
-data = cpd['traj0.phases.phase0.ode_iter_group.states_resids_comp']  # always works
-```
-
----
-
-## `InputResidsComp` Residual Behavior
-
-`InputResidsComp.apply_nonlinear` is implemented as:
-```python
-residuals.set_val(inputs.asarray())
-```
-
-This flattens **all inputs** in declaration order and maps them positionally onto **all
-residuals** in declaration order. Consequences:
-
-- Residuals of ALL output variables (including initial-state nodes) are nonzero when
-  any defect input is at its default value (1.0).
-- In the old `StateIndependentsComp`, the initial node was an IndepVarComp output with
-  R=0. In DYMOS_2, the initial node is part of `InputResidsComp`'s output and its
-  residual comes from `initial_state_defects:{name}` (default 1.0), so R[0]=1.0
-  before any solve.
-
-When writing tests that check `list_outputs(residuals=True)` on `states_resids_comp`,
-the expected residuals for the unrun state are all ones (not `[0, 1, 1, ...]`).
+example: it uses `evenly_distrib_idxs(comm.size, num_nodes)` so each rank owns
+`num_nodes // n_ranks` elements. With `num_nodes=120` and 2 ranks, each rank owns 60
+nodes.
