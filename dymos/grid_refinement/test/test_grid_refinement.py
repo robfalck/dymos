@@ -143,5 +143,44 @@ class TestGridRefinement(unittest.TestCase):
         self.assertGreaterEqual(sum(seg_orders), 5 * 3)
 
 
+    def test_refine_birkhoff(self):
+        p = om.Problem()
+
+        p.driver = om.ScipyOptimizeDriver()
+        p.driver.declare_coloring()
+
+        traj = p.model.add_subsystem('traj', dm.Trajectory())
+        tx = dm.Birkhoff(num_nodes=7, grid_type='lgl')
+        phase = traj.add_phase('phase0', dm.Phase(ode_class=_BrysonDenhamODE, transcription=tx))
+
+        phase.set_time_options(fix_initial=True, fix_duration=True)
+
+        phase.add_state('x', fix_initial=True, fix_final=True, rate_source='v')
+        phase.add_state('v', fix_initial=True, fix_final=True, rate_source='u')
+        phase.add_state('J', fix_initial=True, fix_final=False)
+        phase.add_control('u', continuity=True, rate_continuity=False)
+
+        phase.add_objective('J', loc='final', ref=1)
+        phase.add_path_constraint('x', upper=1/9)
+
+        # Raise max_order so refinement has room to add nodes
+        phase.refine_options['max_order'] = 50
+
+        p.setup()
+
+        phase.set_time_val(initial=0, duration=1)
+        phase.set_state_val('x', [0, 0])
+        phase.set_state_val('v', [1, -1])
+        phase.set_state_val('J', [0, 1])
+        phase.set_control_val('u', [0, 0])
+
+        dm.run_problem(p, run_driver=True, simulate=False, refine_iteration_limit=5)
+
+        num_nodes = p.model.traj.phases.phase0.options['transcription'].options['num_nodes']
+
+        self.assertGreater(num_nodes, 7)
+        self.assertLessEqual(num_nodes, 50)
+
+
 if __name__ == '__main__':
     unittest.main()

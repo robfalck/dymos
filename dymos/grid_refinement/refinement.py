@@ -3,6 +3,7 @@ Utility for performing grid refinement on each phase.
 """
 from .ph_adaptive.ph_adaptive import PHAdaptive
 from .hp_adaptive.hp_adaptive import HPAdaptive
+from .birkhoff_adaptive.birkhoff_adaptive import BirkhoffAdaptive
 from .write_iteration import write_error, write_refine_iter
 
 from dymos.grid_refinement.error_estimation import check_error
@@ -40,7 +41,13 @@ def _refine_iter(problem, refine_iteration_limit=0, refine_method='hp', case_pre
     if refine_iteration_limit > 0:
         out_file = 'grid_refinement.out'
 
-        ref = refinement_methods[refine_method](phases)
+        birkhoff_phases = {k: v for k, v in phases.items()
+                           if v.options['transcription'].grid_data.transcription == 'birkhoff'}
+        other_phases = {k: v for k, v in phases.items() if k not in birkhoff_phases}
+
+        ref_other = refinement_methods[refine_method](other_phases) if other_phases else None
+        ref_birkhoff = BirkhoffAdaptive(birkhoff_phases) if birkhoff_phases else None
+
         with open(out_file, 'w+') as f:
             for i in range(1, refine_iteration_limit + 1):
                 refine_results = check_error(phases)
@@ -55,7 +62,10 @@ def _refine_iter(problem, refine_iteration_limit=0, refine_method='hp', case_pre
                 if not refined_phases:
                     break
 
-                ref.refine(refine_results, i)
+                if ref_other:
+                    ref_other.refine(refine_results, i)
+                if ref_birkhoff:
+                    ref_birkhoff.refine(refine_results, i)
 
                 for stream in f, sys.stdout:
                     write_refine_iter(stream, i, phases, refine_results)

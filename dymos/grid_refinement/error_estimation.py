@@ -13,6 +13,99 @@ from ..utils.introspection import get_targets
 from .grid_refinement_ode_system import GridRefinementODESystem
 
 
+def _hermite_lagrange_matrices(nodes, midpoints):
+    """
+    Build the matrices needed for the Lagrange-Hermite error check at midpoints.
+
+    Given N nodes and M evaluation points, returns:
+    - L_mid  : Lagrange interpolation matrix  (M x N)
+    - H_y    : Hermite value contribution     (M x N)
+    - H_yd   : Hermite derivative contribution (M x N), derivative w.r.t. stau
+
+    The Hermite estimate at a midpoint m is:
+        x_hermite[m] = H_y @ x_nodes + H_yd @ xdot_stau
+    where xdot_stau = (dx/dt) * (t_duration / 2).
+
+    Parameters
+    ----------
+    nodes : ndarray
+        Node positions in stau, shape (N,).
+    midpoints : ndarray
+        Evaluation points in stau, shape (M,).
+
+    Returns
+    -------
+    L_mid : ndarray
+        Lagrange interpolation matrix, shape (M, N).
+    H_y : ndarray
+        Hermite value matrix, shape (M, N).
+    H_yd : ndarray
+        Hermite derivative matrix (in stau units), shape (M, N).
+    """
+    L_mid, _ = lagrange_matrices(nodes, midpoints)
+    _, D_nodes = lagrange_matrices(nodes, nodes)
+    diag_D = np.diag(D_nodes)                              # shape (N,)
+    dx = midpoints[:, np.newaxis] - nodes[np.newaxis, :]  # shape (M, N)
+    L_sq = L_mid ** 2                                      # shape (M, N)
+    H_y = (1.0 - 2.0 * diag_D[np.newaxis, :] * dx) * L_sq
+    H_yd = dx * L_sq
+    return L_mid, H_y, H_yd
+
+
+def _check_error_birkhoff(phase, phase_path, refine_results):
+    """
+    Estimate interpolation error for a Birkhoff phase using Lagrange-Hermite comparison.
+
+    Compares a degree-(N-1) Lagrange interpolant (state values only) against a
+    degree-(2N-1) Hermite interpolant (state values + ODE rates) at N-1 midpoints
+    between adjacent nodes.  No ODE re-evaluation is required.
+
+    The difference is an O(h^N) error indicator.
+
+    Parameters
+    ----------
+    phase : Phase
+        A solved Birkhoff phase.
+    phase_path : str
+        Path to the phase in the problem.
+    refine_results : dict
+        The refine_results dict to populate in-place.
+    """
+    tx = phase.options['transcription']
+    gd = tx.grid_data
+    nodes = gd.node_stau                              # shape (N,)
+    midpoints = 0.5 * (nodes[:-1] + nodes[1:])       # shape (N-1,)
+    t_dur = phase.get_val('t_duration')[0]
+    tol = phase.refine_options['tolerance']
+
+    L_mid, H_y, H_yd = _hermite_lagrange_matrices(nodes, midpoints)
+
+    max_rel_error = 0.0
+    error_state = ''
+
+    for state_name, options in phase.state_options.items():
+        x = phase.get_val(f'states:{state_name}', units=options['units'])
+        f = phase.get_val(f'state_rates:{state_name}')
+        xdot_stau = f * (t_dur / 2.0)
+
+        # Use einsum to handle multi-dimensional states cleanly
+        x_lag = np.einsum('mi,i...->m...', L_mid, x)
+        x_herm = np.einsum('mi,i...->m...', H_y, x) + np.einsum('mi,i...->m...', H_yd, xdot_stau)
+
+        abs_err = np.abs(x_herm - x_lag)
+        norm = 1.0 + np.max(np.abs(x))
+        rel_err = float(np.max(abs_err) / norm)
+
+        if rel_err > max_rel_error:
+            max_rel_error = rel_err
+            error_state = state_name
+
+    refine_results[phase_path]['max_rel_error'][0] = max_rel_error
+    refine_results[phase_path]['error_state'] = error_state
+    if max_rel_error > tol:
+        refine_results[phase_path]['need_refinement'][0] = True
+
+
 def interpolation_lagrange_matrix(old_grid, new_grid):
     """
     Evaluate lagrange matrix to interpolate state and control values from the solved grid onto the new grid.
@@ -338,6 +431,10 @@ def check_error(phases):
         refine_results[phase_path]['need_refinement'] = np.zeros(numseg, dtype=bool)
         refine_results[phase_path]['max_rel_error'] = np.zeros(numseg, dtype=float)  # Eq. 21
         refine_results[phase_path]['error_state'] = ['' for _ in phase.state_options]
+
+        if gd.transcription == 'birkhoff':
+            _check_error_birkhoff(phase, phase_path, refine_results)
+            continue
 
         new_tx = tx._get_refinement_error_transcription()
 

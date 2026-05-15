@@ -545,6 +545,10 @@ class GridRefinementOptionsDictionary(om.OptionsDictionary):
 
         self.declare(name='max_order', types=int, default=14,
                      desc='Maximum transcription order for segments in this phase.')
+
+        self.declare(name='max_num_segments', types=int, default=500,
+                     desc='Maximum number of segments that may be created in the new grid.')
+        
         self.declare(name='smoothness_factor', types=float, default=1.2,
                      desc='Maximum allowed ratio of state second derivatives across refinement iterations')
 
