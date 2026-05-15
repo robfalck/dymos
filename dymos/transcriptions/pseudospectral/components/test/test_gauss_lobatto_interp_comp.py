@@ -6,6 +6,7 @@ from numpy.testing import assert_almost_equal
 
 import openmdao.api as om
 from openmdao.utils.assert_utils import assert_check_partials
+from openmdao.utils.testing_utils import set_env_vars
 
 import dymos as dm
 from dymos.utils.misc import CompWrapperConfig
@@ -49,12 +50,6 @@ def _make_dt_dstau(gd, segends):
 
 class TestGaussLobattoInterpComp(unittest.TestCase):
 
-    def setUp(self):
-        dm.options['include_check_partials'] = True
-
-    def tearDown(self):
-        dm.options['include_check_partials'] = False
-
     def _make_problem(self, gd, states):
         """Build a Problem containing only GaussLobattoInterpComp."""
         p = om.Problem()
@@ -83,6 +78,7 @@ class TestGaussLobattoInterpComp(unittest.TestCase):
         p.setup(force_alloc_complex=True)
         return p
 
+    @set_env_vars(OPENMDAO_CHECK_ALL_PARTIALS='1')
     def test_states_all_disc_passthrough(self):
         """Col-node values in states_col must match Hermite interpolation from state_disc exactly."""
         segends = np.array([0.0, 3.0, 10.0])
@@ -108,6 +104,7 @@ class TestGaussLobattoInterpComp(unittest.TestCase):
         exact_col = x(t_all[col_idxs]).reshape(-1, 1)
         assert_almost_equal(states_col, exact_col, decimal=8)
 
+    @set_env_vars(OPENMDAO_CHECK_ALL_PARTIALS='1')
     def test_hermite_interpolation_accuracy(self):
         """Hermite interpolation should be exact for polynomials within the interpolation degree."""
         segends = np.array([0.0, 3.0, 10.0])
@@ -136,6 +133,7 @@ class TestGaussLobattoInterpComp(unittest.TestCase):
             assert_almost_equal(states_col, exact_col, decimal=8,
                                  err_msg=f'Interpolated col state {name} does not match exact')
 
+    @set_env_vars(OPENMDAO_CHECK_ALL_PARTIALS='1')
     def test_staterate_col_accuracy(self):
         """Interpolated rates at col nodes should be accurate for low-degree polynomials."""
         segends = np.array([0.0, 3.0, 10.0])
@@ -159,6 +157,7 @@ class TestGaussLobattoInterpComp(unittest.TestCase):
         assert_almost_equal(staterate_col, exact_rate_col, decimal=8,
                              err_msg='Interpolated col rate does not match exact')
 
+    @set_env_vars(OPENMDAO_CHECK_ALL_PARTIALS='1')
     def test_check_partials_scalar_state(self):
         """Verify analytic partials against finite differences for scalar state."""
         segends = np.array([0.0, 3.0, 10.0])
@@ -184,6 +183,7 @@ class TestGaussLobattoInterpComp(unittest.TestCase):
         cpd = p.check_partials(compact_print=True, method='cs', out_stream=None)
         assert_check_partials(cpd, atol=5.0e-8, rtol=1.0e-6)
 
+    @set_env_vars(OPENMDAO_CHECK_ALL_PARTIALS='1')
     def test_check_partials_vector_state(self):
         """Verify analytic partials for a vector-valued state."""
         segends = np.array([0.0, 5.0])
