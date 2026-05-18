@@ -75,7 +75,7 @@ def _check_error_birkhoff(phase, phase_path, refine_results):
     gd = tx.grid_data
     nodes = gd.node_stau                              # shape (N,)
     midpoints = 0.5 * (nodes[:-1] + nodes[1:])       # shape (N-1,)
-    t_dur = phase.get_val('t_duration')[0]
+    t_dur = phase.get_val('t_duration', units=phase.time_options['units'])[0]
     tol = phase.refine_options['tolerance']
 
     L_mid, H_y, H_yd = _hermite_lagrange_matrices(nodes, midpoints)
@@ -102,7 +102,8 @@ def _check_error_birkhoff(phase, phase_path, refine_results):
 
     refine_results[phase_path]['max_rel_error'][0] = max_rel_error
     refine_results[phase_path]['error_state'] = error_state
-    if max_rel_error > tol:
+    at_max = tx.options['num_nodes'] >= phase.refine_options['max_order']
+    if max_rel_error > tol and not at_max:
         refine_results[phase_path]['need_refinement'][0] = True
 
 
