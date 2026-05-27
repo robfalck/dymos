@@ -3,7 +3,7 @@ import importlib
 import unittest
 
 from openmdao.utils.assert_utils import assert_near_equal
-from openmdao.utils.testing_utils import use_tempdirs, set_env_vars_context
+from openmdao.utils.testing_utils import use_tempdirs
 
 import numpy as np
 import openmdao.api as om
@@ -15,6 +15,8 @@ from dymos.examples.brachistochrone.brachistochrone_ode import BrachistochroneOD
 class TestSetVal(unittest.TestCase):
 
     def test_set_state_val(self):
+
+        from dymos.transcriptions.pseudospectral.radau_new import RadauNew
 
         for tx in (dm.Radau(num_segments=5, order=3),
                    dm.GaussLobatto(num_segments=5, order=3),
@@ -49,7 +51,7 @@ class TestSetVal(unittest.TestCase):
                 v = phase.get_val('states:v')
 
                 # Test initial_states and final_states in those transcriptions which support them
-                if isinstance(tx, (dm.Radau, dm.Birkhoff, dm.PicardShooting)):
+                if isinstance(tx, (RadauNew, dm.Birkhoff, dm.PicardShooting)):
                     x0 = phase.get_val('initial_states:x')[0]
                     y0 = phase.get_val('initial_states:y')[0]
                     v0 = phase.get_val('initial_states:v')[0]
