@@ -21,12 +21,6 @@ class TestExampleTwoBurnOrbitRaise(unittest.TestCase):
             assert_near_equal(p.get_val('traj.burn2.states:deltav')[-1], 0.3995,
                               tolerance=2.0E-3)
 
-
-# This test is separate because connected phases aren't directly parallelizable.
-@require_pyoptsparse(optimizer='IPOPT')
-@use_tempdirs
-class TestExampleTwoBurnOrbitRaiseConnected(unittest.TestCase):
-
     def test_ex_two_burn_orbit_raise_connected(self):
         optimizer = 'IPOPT'
 
