@@ -160,7 +160,7 @@ class TestBallisticSpacecraft(unittest.TestCase):
                 p.model.add_objective('c3')
 
                 p.driver = om.pyOptSparseDriver(optimizer='IPOPT', print_results=True)
-                p.driver.opt_settings['print_level'] = 5
+                p.driver.opt_settings['print_level'] = 0
                 p.driver.opt_settings['nlp_scaling_method'] = 'gradient-based'
                 p.driver.declare_coloring()
 

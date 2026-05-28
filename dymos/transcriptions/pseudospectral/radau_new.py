@@ -174,6 +174,17 @@ class RadauNew(TranscriptionBase):
                 self.any_solved_segs = True
             elif options['input_initial']:
                 self.any_connected_opt_segs = True
+    
+    def configure_states(self, phase):
+        nin = self.grid_data.subset_num_nodes['state_input']
+        super().configure_states(phase)
+    
+        # Now that state metadata has been introspected, we can set the input defaults for the phase.
+        for name, options in phase.state_options.items():
+            phase.set_input_defaults(f'states:{name}',
+                                     src_shape=(nin,) + options['shape'],
+                                     val=options['val'],
+                                     units=options['units'])
 
     def setup_controls(self, phase):
         """
