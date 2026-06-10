@@ -382,7 +382,7 @@ class PicardShooting(TranscriptionBase):
                 # If the src was added, promote it if it was a state,
                 # or connect it otherwise.
                 if src.startswith('states:'):
-                    state_name = src.split(':')[-1]
+                    state_name = src.removeprefix("states:")
                     ts_inputs_to_promote.append((input_name, f'states:{state_name}'))
                 else:
                     phase.connect(src_name=src,
