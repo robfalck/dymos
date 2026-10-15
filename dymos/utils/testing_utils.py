@@ -1,14 +1,11 @@
 import io
 
-from packaging.version import Version
-
 import numpy as np
 
 from scipy.interpolate import Akima1DInterpolator
 
 import openmdao.api as om
 import openmdao.utils.assert_utils as _om_assert_utils
-from openmdao import __version__ as openmdao_version
 
 
 def assert_check_partials(data, atol=1.0E-6, rtol=1.0E-6):
@@ -349,14 +346,7 @@ def assert_timeseries_near_equal(t_ref, x_ref, t_check, x_check, abs_tolerance=N
 
 
 def _get_reports_dir(prob):
-    # need this to work with older OM versions with old reports system API
-    # reports API changed between 3.18 and 3.19, so handle it here in order to be able to
-    #  test against older versions of openmdao
-    if Version(openmdao_version) > Version("3.18"):
-        return prob.get_reports_dir()
-
-    from openmdao.utils.reports_system import get_reports_dir
-    return get_reports_dir(prob)
+    return prob.get_reports_dir()
 
 
 class PhaseStub():

@@ -5,7 +5,6 @@ import openmdao.api as om
 from openmdao.utils.testing_utils import require_pyoptsparse
 
 import dymos as dm
-from dymos.utils.misc import om_version
 from dymos.examples.balanced_field.balanced_field_ode import BalancedFieldODEComp
 
 

@@ -292,7 +292,7 @@ environments:
       - pypi: ./
       - pypi: https://files.pythonhosted.org/packages/20/b6/5a02761969f8bf2c8263ce413c6253cb51a7224559c45608fa8f83e00f3a/aiounittest-1.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/29/c7/4114aed427f831344faee68fd209331c6e3376191980be3e878b68ecce71/openmdao-3.43.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/3d/12/373995de37a7509106536db43d5779b50f49d3ec4b2b6865835f6ff793a0/openmdao-3.45.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/53/37/02af1867f5b1441aaeda9c82deed061b7cd1372572ddcd717f6df90b5e93/wrapt-2.1.2-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/5e/0a/9bc5b9febd30f10ffbbdedd561fbd39fbc815865d26db464a0eafd9f91e7/testflo-1.4.22-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/70/aa/dfac6d72cc35bc07e7587115b6946e333ef4ccb2e6cd26ecf639438c5d26/jax-0.10.0-py3-none-any.whl
@@ -509,7 +509,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/20/b6/5a02761969f8bf2c8263ce413c6253cb51a7224559c45608fa8f83e00f3a/aiounittest-1.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/22/49/b4418a7a892c0dd64442bbbeef54e1cdfe722dfc5a7bf0d611d3f5f90e99/jax-0.4.38-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/29/c7/4114aed427f831344faee68fd209331c6e3376191980be3e878b68ecce71/openmdao-3.43.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/3d/12/373995de37a7509106536db43d5779b50f49d3ec4b2b6865835f6ff793a0/openmdao-3.45.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/4c/7a/d936840735c828b38d26a854e85d5338894cda544cb7a85a9d5b8b9c4df7/wrapt-2.1.2-cp313-cp313-macosx_10_13_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/5e/0a/9bc5b9febd30f10ffbbdedd561fbd39fbc815865d26db464a0eafd9f91e7/testflo-1.4.22-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/80/91/fd219aa78ca03d37e93aaedaed4e224131e3090a9264f9bb773c8271d67e/playwright-1.59.0-py3-none-macosx_11_0_universal2.whl
@@ -724,7 +724,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/08/71/5e4d98b2ce3641b4343623c6450ff33b9de1c979d12a957505e392338b07/playwright-1.59.0-py3-none-macosx_11_0_arm64.whl
       - pypi: https://files.pythonhosted.org/packages/20/b6/5a02761969f8bf2c8263ce413c6253cb51a7224559c45608fa8f83e00f3a/aiounittest-1.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/29/c7/4114aed427f831344faee68fd209331c6e3376191980be3e878b68ecce71/openmdao-3.43.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/3d/12/373995de37a7509106536db43d5779b50f49d3ec4b2b6865835f6ff793a0/openmdao-3.45.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5e/0a/9bc5b9febd30f10ffbbdedd561fbd39fbc815865d26db464a0eafd9f91e7/testflo-1.4.22-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5e/88/9a9b9a90ac8ca11c2fdb6a286cb3a1fc7dd774c00ed70929a6434f6bc634/wrapt-2.1.2-cp313-cp313-macosx_11_0_arm64.whl
       - pypi: https://files.pythonhosted.org/packages/70/aa/dfac6d72cc35bc07e7587115b6946e333ef4ccb2e6cd26ecf639438c5d26/jax-0.10.0-py3-none-any.whl
@@ -904,7 +904,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/20/b6/5a02761969f8bf2c8263ce413c6253cb51a7224559c45608fa8f83e00f3a/aiounittest-1.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/24/08/26e6a3ecf0a95f1ec0dcd7a668d5c9a72e581c40fe4ae51e102ca63174c5/jaxlib-0.10.0-cp314-cp314-win_amd64.whl
-      - pypi: https://files.pythonhosted.org/packages/29/c7/4114aed427f831344faee68fd209331c6e3376191980be3e878b68ecce71/openmdao-3.43.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/3d/12/373995de37a7509106536db43d5779b50f49d3ec4b2b6865835f6ff793a0/openmdao-3.45.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5e/0a/9bc5b9febd30f10ffbbdedd561fbd39fbc815865d26db464a0eafd9f91e7/testflo-1.4.22-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/65/0a/6bd83be7bff2e7efaac7b4ac9748da9d75a34634bbbbc8ad077d527146df/wrapt-2.1.2-cp314-cp314-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/70/aa/dfac6d72cc35bc07e7587115b6946e333ef4ccb2e6cd26ecf639438c5d26/jax-0.10.0-py3-none-any.whl
@@ -1309,9 +1309,9 @@ environments:
       - pypi: ./
       - pypi: https://files.pythonhosted.org/packages/20/b6/5a02761969f8bf2c8263ce413c6253cb51a7224559c45608fa8f83e00f3a/aiounittest-1.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/29/c7/4114aed427f831344faee68fd209331c6e3376191980be3e878b68ecce71/openmdao-3.43.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/38/64/285f20a31679bf547b75602702f7800e74dbabae36ef324f716c02804753/jupyter-1.1.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3b/00/2344469e2084fb287c2e0b57b72910309874c3245463acd6cf5e3db69324/appdirs-1.4.4-py2.py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/3d/12/373995de37a7509106536db43d5779b50f49d3ec4b2b6865835f6ff793a0/openmdao-3.45.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/47/0b/bdf449df87be3f07b23091ceafee8c3ef569cf6d2fb7edec6e3b12b3faa4/bokeh-3.9.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/53/37/02af1867f5b1441aaeda9c82deed061b7cd1372572ddcd717f6df90b5e93/wrapt-2.1.2-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/5b/e5/d0bff1cda8e5404a41aedd734a2f6087eaa152966df0c84bc0522b2b4ef0/baron-0.10.1-py2.py3-none-any.whl
@@ -1665,9 +1665,9 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/20/b6/5a02761969f8bf2c8263ce413c6253cb51a7224559c45608fa8f83e00f3a/aiounittest-1.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/22/49/b4418a7a892c0dd64442bbbeef54e1cdfe722dfc5a7bf0d611d3f5f90e99/jax-0.4.38-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/29/c7/4114aed427f831344faee68fd209331c6e3376191980be3e878b68ecce71/openmdao-3.43.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/38/64/285f20a31679bf547b75602702f7800e74dbabae36ef324f716c02804753/jupyter-1.1.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3b/00/2344469e2084fb287c2e0b57b72910309874c3245463acd6cf5e3db69324/appdirs-1.4.4-py2.py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/3d/12/373995de37a7509106536db43d5779b50f49d3ec4b2b6865835f6ff793a0/openmdao-3.45.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/47/0b/bdf449df87be3f07b23091ceafee8c3ef569cf6d2fb7edec6e3b12b3faa4/bokeh-3.9.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/4c/7a/d936840735c828b38d26a854e85d5338894cda544cb7a85a9d5b8b9c4df7/wrapt-2.1.2-cp313-cp313-macosx_10_13_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/5b/e5/d0bff1cda8e5404a41aedd734a2f6087eaa152966df0c84bc0522b2b4ef0/baron-0.10.1-py2.py3-none-any.whl
@@ -2019,9 +2019,9 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/08/71/5e4d98b2ce3641b4343623c6450ff33b9de1c979d12a957505e392338b07/playwright-1.59.0-py3-none-macosx_11_0_arm64.whl
       - pypi: https://files.pythonhosted.org/packages/20/b6/5a02761969f8bf2c8263ce413c6253cb51a7224559c45608fa8f83e00f3a/aiounittest-1.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/29/c7/4114aed427f831344faee68fd209331c6e3376191980be3e878b68ecce71/openmdao-3.43.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/38/64/285f20a31679bf547b75602702f7800e74dbabae36ef324f716c02804753/jupyter-1.1.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3b/00/2344469e2084fb287c2e0b57b72910309874c3245463acd6cf5e3db69324/appdirs-1.4.4-py2.py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/3d/12/373995de37a7509106536db43d5779b50f49d3ec4b2b6865835f6ff793a0/openmdao-3.45.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/47/0b/bdf449df87be3f07b23091ceafee8c3ef569cf6d2fb7edec6e3b12b3faa4/bokeh-3.9.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5b/e5/d0bff1cda8e5404a41aedd734a2f6087eaa152966df0c84bc0522b2b4ef0/baron-0.10.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5e/0a/9bc5b9febd30f10ffbbdedd561fbd39fbc815865d26db464a0eafd9f91e7/testflo-1.4.22-py2.py3-none-any.whl
@@ -2336,9 +2336,9 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/20/b6/5a02761969f8bf2c8263ce413c6253cb51a7224559c45608fa8f83e00f3a/aiounittest-1.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/24/08/26e6a3ecf0a95f1ec0dcd7a668d5c9a72e581c40fe4ae51e102ca63174c5/jaxlib-0.10.0-cp314-cp314-win_amd64.whl
-      - pypi: https://files.pythonhosted.org/packages/29/c7/4114aed427f831344faee68fd209331c6e3376191980be3e878b68ecce71/openmdao-3.43.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/38/64/285f20a31679bf547b75602702f7800e74dbabae36ef324f716c02804753/jupyter-1.1.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3b/00/2344469e2084fb287c2e0b57b72910309874c3245463acd6cf5e3db69324/appdirs-1.4.4-py2.py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/3d/12/373995de37a7509106536db43d5779b50f49d3ec4b2b6865835f6ff793a0/openmdao-3.45.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/47/0b/bdf449df87be3f07b23091ceafee8c3ef569cf6d2fb7edec6e3b12b3faa4/bokeh-3.9.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5b/e5/d0bff1cda8e5404a41aedd734a2f6087eaa152966df0c84bc0522b2b4ef0/baron-0.10.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5e/0a/9bc5b9febd30f10ffbbdedd561fbd39fbc815865d26db464a0eafd9f91e7/testflo-1.4.22-py2.py3-none-any.whl
@@ -4075,8 +4075,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/17/9c/e897231c880f69e32251d3b1145894d7a04e4342d9bef8d29644c440d11b/jax-0.9.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/20/b6/5a02761969f8bf2c8263ce413c6253cb51a7224559c45608fa8f83e00f3a/aiounittest-1.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/2c/85/22af49854d278e468c4276d0614fe20698366a2c174ed950b818bea98673/openmdao-3.39.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/2c/f4/ef9a6ef930c455ccb73daab8da8e25bca1a1b0901280365a5ee6afab9ef8/jaxlib-0.9.2-cp311-cp311-manylinux_2_27_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/3d/12/373995de37a7509106536db43d5779b50f49d3ec4b2b6865835f6ff793a0/openmdao-3.45.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5e/0a/9bc5b9febd30f10ffbbdedd561fbd39fbc815865d26db464a0eafd9f91e7/testflo-1.4.22-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/73/0c/1e513d37c5be07d12829ebce93dbfe7baee230084cb66966c423432799c4/playwright-1.59.0-py3-none-manylinux1_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/a0/c4/b4d4827c93ef43c01f599ef31453ccc1c132b353284fc6c87d535c233129/pyee-13.0.1-py3-none-any.whl
@@ -4286,7 +4286,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/20/b6/5a02761969f8bf2c8263ce413c6253cb51a7224559c45608fa8f83e00f3a/aiounittest-1.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/22/49/b4418a7a892c0dd64442bbbeef54e1cdfe722dfc5a7bf0d611d3f5f90e99/jax-0.4.38-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/2c/85/22af49854d278e468c4276d0614fe20698366a2c174ed950b818bea98673/openmdao-3.39.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/3d/12/373995de37a7509106536db43d5779b50f49d3ec4b2b6865835f6ff793a0/openmdao-3.45.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5e/0a/9bc5b9febd30f10ffbbdedd561fbd39fbc815865d26db464a0eafd9f91e7/testflo-1.4.22-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/80/91/fd219aa78ca03d37e93aaedaed4e224131e3090a9264f9bb773c8271d67e/playwright-1.59.0-py3-none-macosx_11_0_universal2.whl
       - pypi: https://files.pythonhosted.org/packages/8b/0f/a91f143f356523ff682309732b175765a9bc2836fd7c081c2c67fedc1ad4/greenlet-3.5.0-cp311-cp311-macosx_11_0_universal2.whl
@@ -4497,7 +4497,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/17/9c/e897231c880f69e32251d3b1145894d7a04e4342d9bef8d29644c440d11b/jax-0.9.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/20/b6/5a02761969f8bf2c8263ce413c6253cb51a7224559c45608fa8f83e00f3a/aiounittest-1.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/2c/85/22af49854d278e468c4276d0614fe20698366a2c174ed950b818bea98673/openmdao-3.39.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/3d/12/373995de37a7509106536db43d5779b50f49d3ec4b2b6865835f6ff793a0/openmdao-3.45.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5e/0a/9bc5b9febd30f10ffbbdedd561fbd39fbc815865d26db464a0eafd9f91e7/testflo-1.4.22-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/6b/be/80e80e39e7cb90b006a0eaf11c73ac3a62bbfb3068469aec15cc0bc795de/wrapt-2.1.2-cp311-cp311-macosx_11_0_arm64.whl
       - pypi: https://files.pythonhosted.org/packages/8b/0f/a91f143f356523ff682309732b175765a9bc2836fd7c081c2c67fedc1ad4/greenlet-3.5.0-cp311-cp311-macosx_11_0_universal2.whl
@@ -4674,7 +4674,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/17/9c/e897231c880f69e32251d3b1145894d7a04e4342d9bef8d29644c440d11b/jax-0.9.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/20/b6/5a02761969f8bf2c8263ce413c6253cb51a7224559c45608fa8f83e00f3a/aiounittest-1.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/23/cd/066e86230ae37ed0be70aae89aabf03ca8d9f39c8aea0dec8029455b5540/opt_einsum-3.4.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/2c/85/22af49854d278e468c4276d0614fe20698366a2c174ed950b818bea98673/openmdao-3.39.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/3d/12/373995de37a7509106536db43d5779b50f49d3ec4b2b6865835f6ff793a0/openmdao-3.45.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3f/c3/2b1c7bd07a27b1db885a2fab469b707bdd35bddf30a113b4917a7e2139d2/wrapt-2.1.2-cp311-cp311-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/5e/0a/9bc5b9febd30f10ffbbdedd561fbd39fbc815865d26db464a0eafd9f91e7/testflo-1.4.22-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/a0/c4/b4d4827c93ef43c01f599ef31453ccc1c132b353284fc6c87d535c233129/pyee-13.0.1-py3-none-any.whl
@@ -19308,7 +19308,7 @@ packages:
   name: dymos
   requires_dist:
   - numpy>=2.0
-  - openmdao>=3.39
+  - openmdao>=3.45.1
   - scipy>=1.13
   - aiounittest ; extra == 'all'
   - bokeh ; extra == 'all'
@@ -19462,10 +19462,34 @@ packages:
   - numpy>=2.0
   - ml-dtypes>=0.5.0
   requires_python: '>=3.11'
-- pypi: https://files.pythonhosted.org/packages/29/c7/4114aed427f831344faee68fd209331c6e3376191980be3e878b68ecce71/openmdao-3.43.0-py3-none-any.whl
+- pypi: https://files.pythonhosted.org/packages/2c/f4/ef9a6ef930c455ccb73daab8da8e25bca1a1b0901280365a5ee6afab9ef8/jaxlib-0.9.2-cp311-cp311-manylinux_2_27_x86_64.whl
+  name: jaxlib
+  version: 0.9.2
+  sha256: 9ac995b4ba1aaeedae0d69f319987d515dcaecd4505b642b6312f9e15439351f
+  requires_dist:
+  - scipy>=1.13
+  - numpy>=2.0
+  - ml-dtypes>=0.5.0
+  requires_python: '>=3.11'
+- pypi: https://files.pythonhosted.org/packages/38/64/285f20a31679bf547b75602702f7800e74dbabae36ef324f716c02804753/jupyter-1.1.1-py2.py3-none-any.whl
+  name: jupyter
+  version: 1.1.1
+  sha256: 7a59533c22af65439b24bbe60373a4e95af8f16ac65a6c00820ad378e3f7cc83
+  requires_dist:
+  - notebook
+  - jupyter-console
+  - nbconvert
+  - ipykernel
+  - ipywidgets
+  - jupyterlab
+- pypi: https://files.pythonhosted.org/packages/3b/00/2344469e2084fb287c2e0b57b72910309874c3245463acd6cf5e3db69324/appdirs-1.4.4-py2.py3-none-any.whl
+  name: appdirs
+  version: 1.4.4
+  sha256: a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128
+- pypi: https://files.pythonhosted.org/packages/3d/12/373995de37a7509106536db43d5779b50f49d3ec4b2b6865835f6ff793a0/openmdao-3.45.1-py3-none-any.whl
   name: openmdao
-  version: 3.43.0
-  sha256: fc98acea841df58710ffd2bfe1f34692901272ddd10b603522e7f37955259093
+  version: 3.45.1
+  sha256: 2ac96fcd3ebd4f3096d527f6f792f4b5ddb8823093c2fff1f89f147159fab6da
   requires_dist:
   - networkx>=3.3
   - numpy>=2.0,!=2.4.0
@@ -19492,8 +19516,9 @@ packages:
   - playwright>=1.20 ; extra == 'all'
   - pre-commit ; extra == 'all'
   - pycodestyle>=2.4.0 ; extra == 'all'
+  - pydata-sphinx-theme>=0.15.0,<0.16.0 ; extra == 'all'
   - pydocstyle>=2.0.0 ; extra == 'all'
-  - pydoe3 ; extra == 'all'
+  - pydoe ; extra == 'all'
   - rich ; extra == 'all'
   - sphinx-sitemap ; extra == 'all'
   - testflo>=1.3.6 ; extra == 'all'
@@ -19505,9 +19530,10 @@ packages:
   - jupyter-book>=1.0.3,<2 ; extra == 'docs'
   - matplotlib ; extra == 'docs'
   - numpydoc>=1.1 ; extra == 'docs'
+  - pydata-sphinx-theme>=0.15.0,<0.16.0 ; extra == 'docs'
   - sphinx-sitemap ; extra == 'docs'
   - tqdm>=4.66.3 ; extra == 'docs'
-  - pydoe3 ; extra == 'doe'
+  - pydoe ; extra == 'doe'
   - jax>=0.4.0 ; extra == 'jax'
   - jaxlib>=0.4.0 ; extra == 'jax'
   - omjlcomps>=0.2.6 ; extra == 'julia'
@@ -19532,97 +19558,6 @@ packages:
   - panel ; extra == 'visualization'
   - rich ; extra == 'visualization'
   requires_python: '>=3.10'
-- pypi: https://files.pythonhosted.org/packages/2c/85/22af49854d278e468c4276d0614fe20698366a2c174ed950b818bea98673/openmdao-3.39.0-py3-none-any.whl
-  name: openmdao
-  version: 3.39.0
-  sha256: e78f52678983b9d5d2d8551633f0e9106557a8140a653fa3e5b6306519611677
-  requires_dist:
-  - networkx>=2.0
-  - numpy
-  - packaging
-  - requests
-  - scipy
-  - aiounittest ; extra == 'all'
-  - bokeh>=3.4.0 ; extra == 'all'
-  - colorama ; extra == 'all'
-  - idna>=3.7 ; extra == 'all'
-  - ipympl ; extra == 'all'
-  - ipyparallel ; extra == 'all'
-  - jax>=0.4.0 ; extra == 'all'
-  - jaxlib>=0.4.0 ; extra == 'all'
-  - jinja2>=3.1.4 ; extra == 'all'
-  - jupyter-book==0.14 ; extra == 'all'
-  - matplotlib ; extra == 'all'
-  - notebook ; extra == 'all'
-  - num2words ; extra == 'all'
-  - numpydoc>=1.1 ; extra == 'all'
-  - panel ; extra == 'all'
-  - parameterized ; extra == 'all'
-  - playwright>=1.20 ; extra == 'all'
-  - pre-commit ; extra == 'all'
-  - pycodestyle>=2.4.0 ; extra == 'all'
-  - pydocstyle>=2.0.0 ; extra == 'all'
-  - pydoe3 ; extra == 'all'
-  - rich ; extra == 'all'
-  - sphinx-sitemap ; extra == 'all'
-  - testflo>=1.3.6 ; extra == 'all'
-  - tqdm>=4.66.3 ; extra == 'all'
-  - websockets>8 ; extra == 'all'
-  - idna>=3.7 ; extra == 'docs'
-  - ipyparallel ; extra == 'docs'
-  - jinja2>=3.1.4 ; extra == 'docs'
-  - jupyter-book==0.14 ; extra == 'docs'
-  - matplotlib ; extra == 'docs'
-  - numpydoc>=1.1 ; extra == 'docs'
-  - sphinx-sitemap ; extra == 'docs'
-  - tqdm>=4.66.3 ; extra == 'docs'
-  - pydoe3 ; extra == 'doe'
-  - jax>=0.4.0 ; extra == 'jax'
-  - jaxlib>=0.4.0 ; extra == 'jax'
-  - idna>=3.7 ; extra == 'notebooks'
-  - ipympl ; extra == 'notebooks'
-  - notebook ; extra == 'notebooks'
-  - numba ; extra == 'numba'
-  - aiounittest ; extra == 'test'
-  - num2words ; extra == 'test'
-  - numpydoc>=1.1 ; extra == 'test'
-  - parameterized ; extra == 'test'
-  - playwright>=1.20 ; extra == 'test'
-  - pre-commit ; extra == 'test'
-  - pycodestyle>=2.4.0 ; extra == 'test'
-  - pydocstyle>=2.0.0 ; extra == 'test'
-  - testflo>=1.3.6 ; extra == 'test'
-  - websockets>8 ; extra == 'test'
-  - bokeh>=3.4.0 ; extra == 'visualization'
-  - colorama ; extra == 'visualization'
-  - matplotlib ; extra == 'visualization'
-  - panel ; extra == 'visualization'
-  - rich ; extra == 'visualization'
-  requires_python: '>=3.9'
-- pypi: https://files.pythonhosted.org/packages/2c/f4/ef9a6ef930c455ccb73daab8da8e25bca1a1b0901280365a5ee6afab9ef8/jaxlib-0.9.2-cp311-cp311-manylinux_2_27_x86_64.whl
-  name: jaxlib
-  version: 0.9.2
-  sha256: 9ac995b4ba1aaeedae0d69f319987d515dcaecd4505b642b6312f9e15439351f
-  requires_dist:
-  - scipy>=1.13
-  - numpy>=2.0
-  - ml-dtypes>=0.5.0
-  requires_python: '>=3.11'
-- pypi: https://files.pythonhosted.org/packages/38/64/285f20a31679bf547b75602702f7800e74dbabae36ef324f716c02804753/jupyter-1.1.1-py2.py3-none-any.whl
-  name: jupyter
-  version: 1.1.1
-  sha256: 7a59533c22af65439b24bbe60373a4e95af8f16ac65a6c00820ad378e3f7cc83
-  requires_dist:
-  - notebook
-  - jupyter-console
-  - nbconvert
-  - ipykernel
-  - ipywidgets
-  - jupyterlab
-- pypi: https://files.pythonhosted.org/packages/3b/00/2344469e2084fb287c2e0b57b72910309874c3245463acd6cf5e3db69324/appdirs-1.4.4-py2.py3-none-any.whl
-  name: appdirs
-  version: 1.4.4
-  sha256: a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128
 - pypi: https://files.pythonhosted.org/packages/3f/c3/2b1c7bd07a27b1db885a2fab469b707bdd35bddf30a113b4917a7e2139d2/wrapt-2.1.2-cp311-cp311-win_amd64.whl
   name: wrapt
   version: 2.1.2

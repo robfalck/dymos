@@ -12,11 +12,6 @@ from .indexing import get_desvar_indices
 # unique object to check if default is given (when None is an allowed value)
 _unspecified = _ReprClass("unspecified")
 
-# Finite magnitude for the unbounded elements of a design variable bound array whose other
-# elements are bounded. Unbounded variables should use None instead. Infinity is not used here
-# because older versions of OpenMDAO pass it unaltered to optimizers that cannot accept it.
-_FINITE_INF_BOUND = 1.0E30
-
 
 def is_unspecified(obj):
     """

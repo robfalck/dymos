@@ -3,7 +3,6 @@ import unittest
 import numpy as np
 import openmdao.api as om
 import dymos as dm
-from dymos.utils.misc import om_version
 
 from openmdao.utils.assert_utils import assert_check_partials, assert_near_equal
 from openmdao.utils.testing_utils import set_env_vars
@@ -18,8 +17,6 @@ from dymos.utils.testing_utils import SimpleODE
 class TestODEIntegrationComp(unittest.TestCase):
 
     @set_env_vars(OPENMDAO_CHECK_ALL_PARTIALS='1')
-    @unittest.skipIf(om_version()[0] >= (3, 36, 0) and om_version()[0] < (3, 37, 0),
-                     reason='Test skipped due to an issue in OpenMDAO 3.36.x')
     def test_integrate_scalar_ode(self):
 
         for ogd_eq_igd in (True, False):
@@ -82,8 +79,6 @@ class TestODEIntegrationComp(unittest.TestCase):
                 assert_check_partials(cpd, atol=1.0E-4, rtol=1.0E-5)
 
     @set_env_vars(OPENMDAO_CHECK_ALL_PARTIALS='1')
-    @unittest.skipIf(om_version()[0] >= (3, 36, 0) and om_version()[0] < (3, 37, 0),
-                     reason='Test skipped due to an issue in OpenMDAO 3.36.x')
     def test_integrate_with_controls(self):
 
         gd = dm.GaussLobattoGrid(num_segments=5, nodes_per_seg=3, compressed=True)
@@ -162,8 +157,6 @@ class TestODEIntegrationComp(unittest.TestCase):
             assert_check_partials(cpd, atol=1.0E-4, rtol=1.0E-4)
 
     @set_env_vars(OPENMDAO_CHECK_ALL_PARTIALS='1')
-    @unittest.skipIf(om_version()[0] >= (3, 36, 0) and om_version()[0] < (3, 37, 0),
-                     reason='Test skipped due to an issue in OpenMDAO 3.36.x')
     def test_integrate_with_polynomial_controls(self):
 
         gd = dm.GaussLobattoGrid(num_segments=5, nodes_per_seg=3, compressed=True)

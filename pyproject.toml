@@ -25,7 +25,7 @@ classifiers = [
 dependencies = [
     "numpy>=2.0",
     "scipy>=1.13",
-    "openmdao>=3.39",
+    "openmdao>=3.45.1",
 ]
 
 [project.optional-dependencies]
@@ -162,7 +162,7 @@ requests = ">=2.32.5"
 
 [tool.pixi.pypi-dependencies]
 dymos = { path = ".", editable = true }
-openmdao = ">=3.39.0"
+openmdao = ">=3.45.1"
 jax = "*"
 
 [tool.pixi.feature.opt.dependencies]
@@ -250,7 +250,7 @@ numpy = "2.0.*"
 scipy = "1.13.*"
 
 [tool.pixi.feature.oldest.pypi-dependencies]
-openmdao = "==3.39.0"
+openmdao = "==3.45.1"
 
 [tool.pixi.feature.dev-local.dependencies]
 swig = "*"
@@ -264,7 +264,7 @@ install-local-pyoptsparse = { cmd = "pip uninstall -y pyoptsparse && python -c \
 install-unopy = { cmd = "pip install --no-build-isolation unopy", description = "Install unopy with isolation disabled to allow access to system libraries during build (dev-local only)." }
 
 [tool.pixi.feature.oldest-env.pypi-dependencies]
-openmdao = "==3.39.0"
+openmdao = "==3.45.1"
 
 [tool.pixi.environments]
 default = { features = ["test", "opt", "mpi"], solve-group = "default" }

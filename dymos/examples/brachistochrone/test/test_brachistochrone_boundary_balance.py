@@ -13,7 +13,6 @@ import openmdao.api as om
 import dymos as dm
 
 from openmdao.utils.testing_utils import use_tempdirs
-from dymos.utils.misc import om_version
 
 
 class GuidedBrachistochroneODE(om.JaxExplicitComponent):
@@ -70,7 +69,6 @@ class GuidedBrachistochroneODE(om.JaxExplicitComponent):
 
 
 @unittest.skipIf(jax is None, 'Test Requires Jax')
-@unittest.skipIf(om_version()[0] <= (3, 37, 0), 'Requires OpenMDAO version later than 3.37.0')
 @use_tempdirs
 class TestBrachistochroneBoundaryBalance(unittest.TestCase):
     """
